@@ -29,7 +29,7 @@ env:
 
 after_script:
       - zip -r ${TRAVIS_JOB_NUMBER}_${TRAVIS_BRANCH}.zip ./testfx-test*.png ./build/reports/* ./build/libs/*
-      - sshpass -p ${SCP_PASSWORD} scp -o StrictHostKeyChecking=no ${TRAVIS_JOB_NUMBER}_${TRAVIS_BRANCH}.zip ${SCP_USER}@ravana.dyn.wpi.edu:public_html/${TRAVIS_REPO_SLUG}/
+      - sshpass -p ${SCP_PASS} scp -o StrictHostKeyChecking=no ${TRAVIS_JOB_NUMBER}_${TRAVIS_BRANCH}.zip ${SCP_USER}@ravana.dyn.wpi.edu:public_html/${TRAVIS_REPO_SLUG}/
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
