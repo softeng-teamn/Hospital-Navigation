@@ -1,5 +1,35 @@
 language: java
 jdk:
       - oraclejdk8
-# notifications:
-#  slack: teamnd19:eCaZORx7MtWGFel0fd0XkoNx
+
+before_install:
+      - chmod +x gradlew
+      - sudo apt-get install -y sshpass
+
+before_script:
+      - "export DISPLAY=:99.0"
+      - "sh -e /etc/init.d/xvfb start"
+      - sleep 3 # give xvfb some time to start
+
+jobs:
+      include:
+            - if: branch = master
+              script: ./gradlew clean check spotbugsMain spotbugsTest jar
+            - if: branch = dev
+              script: ./gradlew clean check spotbugsMain spotbugsTest jar
+            - if: branch = ui
+              script: ./gradlew clean fastTest uiFastTest uiSlowTest spotbugsMain spotbugsTest
+            - if: branch != master AND branch != dev AND branch != ui
+              script: ./gradlew clean fastTest uiFastTest spotbugsMain spotbugsTest
+
+env:
+      global:
+            - secure: "jrV59Bt9tzhN7ZJfdO99Extxy/j9g1DhvXKFxJgITIULmgJwcKC4XKF/W2V/p9ANd9vTIOeGqc9yr2O3/8C5rK/2ERiZv7TnGuABrEikFTg4EVUxGknRRsXEewhFgXSmu6+G3rfB1gx0LmvpbA4UofkloSK6eR6wMeTRvgFh11D2MOfCVdOag+u5pFhwLgBwvVznXSjt8X0cQNzZYuIK6k9vMgQhVULPtqyuFlbP135EduutsNfOEvbbS2UuImBgQen0EkJoq/HTd/ZFuF2O1qUnwFVfjLUK5fqZlQmWbillCzthMHQe8ckDxlDzI4knn1s9n/fmlYF1L8OgiGJQdkzuoD/YCPeu3n5FpOZzOaX5w4OdX1eU0zS+o7QEZRrj1T7dgAEHH1UAP71ElrcBnza88LKuQxE6HtoskfmFNDQ4wny1mApWiUs/OsVE4NLg7ecYGQqh5uhzHrlCGNvuvL+VgpBYMPhjD0kH7t1folq/AwkzC3sT/sD9ruhEq6z3kZnboKxHETTp2UnAfyixtMKFa+L4vZXeisv+KpVNVY4cBs6d8/ddD1lPDaRpkONNjxaycAWbXdKOh5wUcpLYo1+tWbg3qh7gkVc2Qk0lFHdbDItn8i7y9bX/m5FbhM4ioud1RKiDH2vU0LIT1nFDs8C32aYCpGS9dRvescklF00="
+            - secure: "O+CyqXXWIecZfcUNFmeDHG8pG6LY3SeLH9IdXxkDxWzvisbEBpy1zPVeMbsjCOmfV1kte4seyxEruinP0Ll3C/pT3jdHwbmjEvK3nGdVEFP3xnFG9lfuc6Zi30puAwBhDLGHjAeX3q0lKdktpDrhJ3Ap9JLanOIJS2UXlpfErNxyMVvLGlbHy7+9ehMCzNA2MRqbGQAeYHEsUsuIvtfC4+l7deKzh9ceja3KUZElOcIgEbHdrtS4urhxKoPzj2V54wNmR3XyWXEiAJUeZZL+Aw6Kpte3XkGqeHl7I8IriRD9k6kkvQF6Pnl3fyzfFOYeBdtDQX+G9iB1U2NxZhY4RXrXHzH5Z5kGr3Skh3MQdcT4eX6MSGzPpH9jCHBG1ceLw78d04QmslrM6N7/3DaQ6q6+6ntmMfuMTnZvbnV1l08fX76AfzXLcOLpUqWyfqCpbQ6E/YG7PZAQVG7u+R2r+/mJH64Xv9d90s3Y6JCqwkgf2YUGIbfnZkT7yJszHO3mRut3UmqRzkVIx6z6tRpXSpnlXkRt+1SxU3+ZldMMc67e0hkeWhOcFjtxUFKLzeW5PbqC8C2ok6U7xyqjx3O7PEsEbV9GKqj8mdtgw/BxYowLMW/HldnTE8ZXYptLjgnYUiCm660tDWYA2WlZWW6fvlj8bkro18lqTpq53y0AKko="
+
+after_script:
+      - zip -r ${TRAVIS_JOB_NUMBER}_${TRAVIS_BRANCH}.zip ./testfx-test*.png ./build/reports/* ./build/libs/*
+      - sshpass -p ${SFTP_PASSWORD} scp -o StrictHostKeyChecking=no ${TRAVIS_JOB_NUMBER}_${TRAVIS_BRANCH}.zip ${SFTP_USER}@ravana.dyn.wpi.edu:public_html/${TRAVIS_REPO_SLUG}/
+
+notifications:
+   slack: teamnd19:eCaZORx7MtWGFel0fd0XkoNx
