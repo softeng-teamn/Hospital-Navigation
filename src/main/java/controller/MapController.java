@@ -8,7 +8,6 @@ public class MapController {
 
     // Creates static variables when compiled
     static {
-        System.out.println("MapService was run");
         map = new MapService();
     }
 
