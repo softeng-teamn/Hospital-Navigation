@@ -23,7 +23,7 @@ public class HomeController extends MapController {
 
     // Get path from start node to destination node
     private Point requestPath(Node start, Node dest) {
-        Point myPath = new Point();
+        Point myPath = new Point(1,1,1,"someID", null);
         return myPath;
     }
 

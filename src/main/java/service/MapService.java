@@ -10,7 +10,7 @@ public class MapService {
 
     // find path from start to destination
     public Point findPath(Node start, Node dest) {
-        Point myPath = new Point();
+        Point myPath = new Point(1,1,1, "someID", null);
         return myPath;
     }
 
