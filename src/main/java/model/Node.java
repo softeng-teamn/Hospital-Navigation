@@ -83,6 +83,28 @@ public class Node {
         nodeID = "" + x + y;
     }
 
+    public boolean equals(Node n) {
+        return (this.getNodeID().equals(n.getNodeID()) &&
+                this.getXcoord() == n.getXcoord() &&
+                this.getYcoord() == n.getYcoord() &&
+                this.getFloor().equals(n.getFloor()) &&
+                this.getBuilding().equals(n.getBuilding()) &&
+                this.getLongName().equals(n.getLongName()) &&
+                this.getShortName().equals(n.getShortName())
+                );
+    }
+
+    public Node( String nodeID, int xcoord, int ycoord, String floor, String building, String nodeType, String longName, String shortName) {
+        this.xcoord = xcoord;
+        this.ycoord = ycoord;
+        this.nodeID = nodeID;
+        this.floor = floor;
+        this.building = building;
+        this.nodeType = nodeType;
+        this.longName = longName;
+        this.shortName = shortName;
+    }
+
     public Node(int xcoord, int ycoord, String nodeID, String floor, String building, String nodeType, String longName, String shortName) {
         this.xcoord = xcoord;
         this.ycoord = ycoord;
