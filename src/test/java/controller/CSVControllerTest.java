@@ -19,7 +19,7 @@ public class CSVControllerTest {
     public void loadNodes() {
         try {
             // create the nodes
-            ArrayList<Node> nodes = (ArrayList<Node>) CSVController.loadNodes("nodes.csv");
+            ArrayList<Node> nodes = (ArrayList<Node>) CSVController.loadNodes();
             // test first row
             assertEquals("ACONF00102", nodes.get(0).getNodeID());
             assertEquals(1580, nodes.get(0).getXcoord());

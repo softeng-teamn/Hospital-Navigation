@@ -18,7 +18,7 @@ public class CSVController extends Controller {
     }
 
     // loads .csv file into into nodes database
-    public static Collection<Node> loadNodes(String nodePath) throws FileNotFoundException, URISyntaxException {
+    public static Collection<Node> loadNodes() throws FileNotFoundException, URISyntaxException {
         ArrayList<Node> nodes = new ArrayList<Node>();
         File file = Paths.get(ResourceLoader.nodes.toURI()).toFile();
         Scanner scanner = new Scanner(file);
