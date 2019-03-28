@@ -4,8 +4,10 @@ import com.github.spotbugs.SpotBugsTask
 plugins {
     id "com.github.spotbugs" version "1.7.1"
 }
+
 spotbugs {
     toolVersion = '3.1.12'
+    excludeFilter = new File("exclusionBugs.xml")
 }
 
 // To generate an HTML report instead of XML
