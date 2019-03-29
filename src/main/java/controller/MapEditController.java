@@ -7,9 +7,14 @@ import java.util.Collection;
 
 public class MapEditController extends MapController {
 
+    @FXML
+    private JFXButton homeBtn;
+
     // switches window to home screen
     private void showHome() {
-
+        Stage stage = (Stage) homeBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.home);
+        StageManager.changeWindow(stage, root, "Home (Path Finder)");
     }
 
     // add a new node into map and DB
