@@ -4,6 +4,7 @@ import org.testfx.api.FxRobot;
 import testclassifications.FastTest;
 
 import javafx.stage.Window;
+import testclassifications.LocalTest;
 import testclassifications.UiTest;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class MainTest {
     private final int ALLOWABLE_STARTUP_DELAY = 1000; // milliseconds
 
     @Test
-    @Category(FastTest.class)
+    @Category({FastTest.class, LocalTest.class})
     public void testMain() {
 
         // This test serves two purposes:
