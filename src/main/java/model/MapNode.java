@@ -3,9 +3,10 @@ package model;
 import service.DatabaseService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 
-public class MapNode {
+public class MapNode implements Comparable<MapNode>{
 
     int g, x, y;
     double h, f;
@@ -68,6 +69,10 @@ public class MapNode {
         }
     }
 
+    public int getG(){
+        return this.g;
+    }
+
     @Override
     public String toString() {
         return "MapNode{" +
@@ -81,4 +86,16 @@ public class MapNode {
                 '}';
     }
 
+    @Override
+    public int compareTo(MapNode node) {
+        if(this.getF() > node.getF()) {
+            return 1;
+        }
+        if(this.getF() < node.getF()){
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
 }
