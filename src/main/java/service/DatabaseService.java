@@ -11,7 +11,7 @@ public class DatabaseService {
 
     private Connection connection;
 
-    public DatabaseService(Connection connection) {
+    private DatabaseService(Connection connection) {
         this.connection = connection;
     }
 
@@ -35,8 +35,7 @@ public class DatabaseService {
     }
 
     public static DatabaseService init() throws SQLException{
-        DatabaseService myDB = init("hospital-db");
-        return myDB;
+        return init("hospital-db");
     }
 
     // create tables in the database if they do not already exist.
@@ -98,7 +97,6 @@ public class DatabaseService {
             insertStatus = true;
         } catch (SQLException e) {
             e.printStackTrace();
-            insertStatus = false;
         } finally {
             if(insertNode != null){
                 try {
@@ -161,7 +159,28 @@ public class DatabaseService {
 
         // delete existing node in database
     public boolean deleteNode(Node n) {
-        return true;
+        PreparedStatement stmt = null;
+        String nodeID = n.getNodeID();
+        String query = "DELETE FROM NODE WHERE (nodeID = ?)";
+        boolean deleteStatus = false;
+        try {
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1,nodeID);
+            stmt.executeUpdate();
+            deleteStatus = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return deleteStatus;
     }
 
     // retrieves the given node from the database
@@ -245,8 +264,8 @@ public class DatabaseService {
     }
 
     //public Edge retrieveEdge(String EdgeID){
-    //    return true;
-    //}
+    //    return new Edge("Sthing");
+   //}
 
     public boolean updateEdge(Edge e){
         return true;
@@ -255,10 +274,6 @@ public class DatabaseService {
     public boolean deleteEdge(Edge e){
         return true;
     }
-
-    // EMPLOYEE FUNCTIONS
-    // oh what the heck
-    // gigantic ugh we're missing stuff
 
 
 

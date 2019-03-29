@@ -102,7 +102,17 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteNode() {
+        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        myDB.insertNode(testNode);
+        // make sure it can be got
+        assertThat(myDB.getNode("ACONF00102").getNodeID(), is("ACONF00102"));
+        // delete the node from the database successfully
+        assertThat(myDB.deleteNode(testNode),is(true));
+        //make sure that it is not in the database
+        assertThat((myDB.getNode("ACONF00102")), is(nullValue()));
+        //delete is like update so trying to delete a record that isn't there doesn't cause problems. No case needed for that.
     }
 
 
