@@ -226,6 +226,44 @@ public class DatabaseService {
         return null;
     }
 
+    public ArrayList<Node> getAllNodes() {
+        ArrayList<Node> allNodes = new ArrayList<Node>();
+        String query = "Select * FROM NODE";
+        Statement stmt = null;
+        ResultSet nodes = null;
+        try{
+            stmt = connection.createStatement();
+
+            // execute the query
+            nodes = stmt.executeQuery(query);
+            while(nodes.next()){
+                // extract results from each row of the database.
+                String newNodeID = nodes.getString("nodeID");
+                int newxcoord = nodes.getInt("xcoord");
+                int newycoord = nodes.getInt("ycoord");
+                String newFloor = nodes.getString("floor");
+                String newBuilding = nodes.getString("building");
+                String newNodeType = nodes.getString("nodeType");
+                String newLongName = nodes.getString("longName");
+                String newShortName = nodes.getString("shortName");
+                // construct the new node and return it
+                Node newNode = new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
+                allNodes.add(newNode);
+            }
+            stmt.close();
+            nodes.close();
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, nodes);
+        }
+
+        return allNodes;
+    }
+
 
 
     // get all nodes from the specified floor
@@ -258,7 +296,8 @@ public class DatabaseService {
         return edges;
 
     }
-
+    // insert an edge. The method will fail and return false if the two nodes it points to
+    // do not already exist in the database.
     public boolean insertEdge(Edge e){
         return true;
     }

@@ -9,6 +9,7 @@ import testclassifications.FastTest;
 
 import javax.xml.crypto.Data;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -122,6 +123,28 @@ public class DatabaseServiceTest {
 
     @Test
     public void getEdges() {
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllNodes() {
+        // insert nodes
+        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        myDB.insertNode(testNode);
+        testNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        myDB.insertNode(testNode);
+        ArrayList<Node> allNodes = myDB.getAllNodes();
+        assertThat(allNodes.size(),is(2));
+        assertThat(allNodes.get(0).getNodeID(),is("ACONF00102"));
+        assertThat(allNodes.get(1).getNodeID(),is("ACONF00103"));
+
+        testNode = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        myDB.insertNode(testNode);
+        allNodes = myDB.getAllNodes();
+        assertThat(allNodes.size(),is(3));
+        assertThat(allNodes.get(0).getNodeID(),is("ACONF00102"));
+        assertThat(allNodes.get(1).getNodeID(),is("ACONF00103"));
+        assertThat(allNodes.get(2).getNodeID(),is("ACONF00104"));
     }
 
     // uh i legit don't know how to test this because everything relies on it and we can't delete
