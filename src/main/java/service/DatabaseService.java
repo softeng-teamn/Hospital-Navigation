@@ -60,7 +60,7 @@ public class DatabaseService {
 
     }
 
-
-
-
+    public ArrayList<Node> getAllNodes() {
+        return null;
+    }
 }

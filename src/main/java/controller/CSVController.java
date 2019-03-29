@@ -2,6 +2,9 @@ package controller;
 
 public class CSVController extends Controller {
 
+    public static final String NODE_EXPORT_PATH = "nodes.csv";
+    public static final String EDGE_EXPORT_PATH = "edges.csv";
+
     /**
      * Export the entire database into CSV format
      */
