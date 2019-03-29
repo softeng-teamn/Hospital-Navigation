@@ -21,7 +21,7 @@ public class CSVController extends Controller {
     public static Collection<Node> loadNodes() throws FileNotFoundException, URISyntaxException {
         ArrayList<Node> nodes = new ArrayList<Node>();
         File file = Paths.get(ResourceLoader.nodes.toURI()).toFile();
-        Scanner scanner = new Scanner(file);
+        Scanner scanner = new Scanner(file, "UTF-8");
         scanner.nextLine();
         while (scanner.hasNextLine()) {
             List<String> line = Arrays.asList(scanner.nextLine().split(","));

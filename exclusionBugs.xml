@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
   <Match>
-    <Bug code="UuF" />
+    <Bug code="UuF,UrF" />
+  </Match>
+  <Match>
+    <Class name="model.MapNode" />
+  </Match>
+  <Match>
+    <Class name="service.MapService" />
   </Match>
 </FindBugsFilter>
 
