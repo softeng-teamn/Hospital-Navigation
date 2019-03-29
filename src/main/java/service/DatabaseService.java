@@ -302,7 +302,32 @@ public class DatabaseService {
     // insert an edge. The method will fail and return false if the two nodes it points to
     // do not already exist in the database.
     public boolean insertEdge(Edge e){
-        return true;
+        String insertStatement = ("INSERT INTO EDGE VALUES(?,?,?)");
+        PreparedStatement statement = null;
+        String node1ID = e.getNode1().getNodeID();
+        String node2ID = e.getNode2().getNodeID();
+        boolean returnValue = false;
+        try {
+            statement = connection.prepareStatement(insertStatement);
+            statement.setString(1,e.getEdgeID());
+            statement.setString(2,node1ID);
+            statement.setString(3,node2ID);
+            statement.execute();
+            returnValue = true;
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        } finally {
+            if(statement != null){
+                try {
+                    statement.close();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }
+
+        return returnValue;
     }
 
     //public Edge getEdge(String EdgeID){
@@ -362,8 +387,9 @@ public class DatabaseService {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.execute("DELETE FROM NODE");
             statement.execute("DELETE FROM EDGE");
+            statement.execute("DELETE FROM NODE");
+
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();

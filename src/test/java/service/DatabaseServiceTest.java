@@ -1,5 +1,6 @@
 package service;
 
+import model.Edge;
 import model.Node;
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,7 @@ public class DatabaseServiceTest {
     public void setUp(){
 
         try {
-            myDB = DatabaseService.init("newer-test-DB");
+            myDB = DatabaseService.init("testerDB");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -149,7 +150,16 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void insertEdge(){
+        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
+        assertFalse(myDB.insertEdge(newEdge));
+        myDB.insertNode(testNode);
+        assertFalse(myDB.insertEdge(newEdge));
+        myDB.insertNode(otherNode);
+        assertTrue(myDB.insertEdge(newEdge));
 
     }
 
