@@ -9,5 +9,8 @@
   <Match>
     <Class name="service.MapService" />
   </Match>
+  <Match>
+    <Class name="service.PathFindingService" />
+  </Match>
 </FindBugsFilter>
 

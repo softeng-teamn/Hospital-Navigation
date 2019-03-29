@@ -36,8 +36,26 @@ public class MapNodeTest {
         assertEquals(9, mn1.g);
     }
 
+    @Test
+    public void equalTest() {
+        MapNode bob = new MapNode(0, 0);
+        MapNode tom = new MapNode(0, 0);
+        assertEquals(true, tom.equals(bob));
+    }
 
+    @Test
+    public void badEqualTest() {
+        MapNode bob = new MapNode(1, 0);
+        MapNode tom = new MapNode(0, 0);
+        assertEquals(false, tom.equals(bob));
+    }
 
+    @Test
+    public void nullEqualTest() {
+        MapNode bob = null;
+        MapNode tom = new MapNode(0, 0);
+        assertEquals(false, tom.equals(bob));
+    }
 
 
 }

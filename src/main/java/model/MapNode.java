@@ -1,5 +1,10 @@
 package model;
 
+import service.DatabaseService;
+
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class MapNode {
 
     int g, x, y;
@@ -11,6 +16,39 @@ public class MapNode {
         this.x = x;
         this.y = y;
         this.g = 99999999;
+    }
+
+    public MapNode(int x, int y, Node data) {
+        this.x = x;
+        this.y = y;
+        this.data = data;
+        this.g = 99999999;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MapNode mapNode = (MapNode) o;
+        return (x == mapNode.x &&
+                y == mapNode.y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(g, x, y, h, f, parent, data);
+    }
+
+    public Node getData() {
+        return this.data;
+    }
+
+    public void setF(double f) {
+        this.f = f;
+    }
+
+    public double getF() {
+        return this.f = this.g + this.h;
     }
 
     public void calculateHeuristic(MapNode destination) {
@@ -30,8 +68,17 @@ public class MapNode {
         }
     }
 
-    public void calculateF() {
-        this.f = this.g + this.h;
+    @Override
+    public String toString() {
+        return "MapNode{" +
+                "g=" + g +
+                ", x=" + x +
+                ", y=" + y +
+                ", h=" + h +
+                ", f=" + f +
+                ", parent=" + parent +
+                ", data=" + data +
+                '}';
     }
 
 }
