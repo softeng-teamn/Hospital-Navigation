@@ -48,7 +48,7 @@ public class DatabaseService {
                 statement.execute("CREATE TABLE NODE (nodeID varchar(255) PRIMARY KEY, xcoord int, ycoord int, floor varchar(255), building varchar(255), nodeType varchar(255), longName varchar(255), shortName varchar(255))");
             }
             if(!tableExists("EDGE")){
-                statement.execute("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(10), node2 varchar(10))");
+                statement.execute("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
             }
             if(!tableExists("EMPLOYEE")){
                 statement.execute("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean)");
@@ -62,6 +62,8 @@ public class DatabaseService {
             if(!tableExists("RESERVABLESPACE")){
                 statement.execute("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY , spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
             }
+            statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
+            statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -296,13 +298,14 @@ public class DatabaseService {
         return edges;
 
     }
+
     // insert an edge. The method will fail and return false if the two nodes it points to
     // do not already exist in the database.
     public boolean insertEdge(Edge e){
         return true;
     }
 
-    //public Edge retrieveEdge(String EdgeID){
+    //public Edge getEdge(String EdgeID){
     //    return new Edge("Sthing");
    //}
 

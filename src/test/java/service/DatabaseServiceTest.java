@@ -23,7 +23,7 @@ public class DatabaseServiceTest {
     public void setUp(){
 
         try {
-            myDB = DatabaseService.init();
+            myDB = DatabaseService.init("newer-test-DB");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -116,15 +116,6 @@ public class DatabaseServiceTest {
         //delete is like update so trying to delete a record that isn't there doesn't cause problems. No case needed for that.
     }
 
-
-    @Test
-    public void getNodes() {
-    }
-
-    @Test
-    public void getEdges() {
-    }
-
     @Test
     @Category(FastTest.class)
     public void getAllNodes() {
@@ -146,6 +137,32 @@ public class DatabaseServiceTest {
         assertThat(allNodes.get(1).getNodeID(),is("ACONF00103"));
         assertThat(allNodes.get(2).getNodeID(),is("ACONF00104"));
     }
+
+    @Test
+    public void getNodes() {
+
+    }
+
+    @Test
+    public void getEdge() {
+
+    }
+
+    @Test
+    public void insertEdge(){
+
+    }
+
+    @Test
+    public void updateEdge(){
+
+    }
+
+    @Test
+    public void deleteEdge(){
+
+    }
+
 
     // uh i legit don't know how to test this because everything relies on it and we can't delete
     // the tables yet
