@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
+    <children>
+        <JFXButton layoutX="384.0" layoutY="14.0" minWidth="48.0" prefHeight="42.0" prefWidth="65.0" style="-fx-background-color: #ADD8E6;" text=" Service">
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
-   <children>
-      <JFXButton fx:id="schedulerBtn" layoutX="69.0" layoutY="50.0" onAction="#showSchedule" text="Scheduler" />
-      <JFXButton fx:id="serviceBtn" layoutX="238.0" layoutY="50.0" onAction="#showRequest" text="Service Request" />
-      <JFXButton fx:id="editBtn" layoutX="408.0" layoutY="50.0" onAction="#showMapEditor" text="Map Editor" />
-   </children>
+        </JFXButton>
+        <JFXButton layoutX="457.0" layoutY="14.0" prefHeight="42.0" prefWidth="68.0" style="-fx-background-color: #ADD8E6;" text=" Schedule">
+
+        </JFXButton>
+        <JFXButton layoutX="533.0" layoutY="14.0" prefHeight="42.0" prefWidth="58.0" style="-fx-background-color: #ADD8E6;" text=" Edit">
+
+        </JFXButton>
+        <JFXButton layoutX="525.0" layoutY="344.0" prefHeight="42.0" prefWidth="58.0" style="-fx-background-color: #ADD8E6;" text=" Help">
+
+        </JFXButton>
+      <JFXTextField layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="166.0" promptText="Search This Hospital" style="-fx-border-color: #000;" />
+    </children>
+
+
 </AnchorPane>
