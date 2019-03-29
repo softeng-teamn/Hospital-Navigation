@@ -1,5 +1,6 @@
 package controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.Node;
 import org.junit.After;
 import org.junit.Before;
@@ -11,6 +12,7 @@ import org.junit.experimental.categories.Category;
 import service.DatabaseService;
 import testclassifications.FastTest;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -25,6 +27,7 @@ public class CSVControllerTest {
     private ArrayList<Node> testNodes;
 
     @Before
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
     public void setUp() throws Exception {
         DatabaseService dbs = mock(DatabaseService.class);
 
@@ -59,6 +62,7 @@ public class CSVControllerTest {
         testNodes.add(n3);
 
         when(dbs.getAllNodes()).thenReturn(testNodes);
+
         CSVController.dbs = dbs;
     }
 
@@ -86,20 +90,35 @@ public class CSVControllerTest {
         // Assert that export nodes has the correct content
         File nodecsv = new File("./nodes.csv");
         assertTrue(nodecsv.exists());
-        BufferedReader reader = new BufferedReader(new FileReader("./nodes.csv"));
+        BufferedReader reader = new BufferedReader( new InputStreamReader(new FileInputStream("./nodes.csv"), StandardCharsets.UTF_8));
 
-        String fileContents = "";
+        StringBuffer fileContents = new StringBuffer();
         String line = reader.readLine();
         while(line != null){
-            fileContents += line + "\n";
+            fileContents.append(line);
+            fileContents.append("\n");
             line = reader.readLine();
         }
+
+        try {
+            reader.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+
+            if (reader != null) {
+                reader.close();
+            }
+        }
+
         String expectedValue = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName" + "\n"
                 + "ABC123,0,0,1,Main,ABC,Test Node 1,T1\n"
                 + "XYZ4242,50,50,L1,Aux,XYZ,Test Node 2,T2\n"
                 + "LMNO123,0,50,G,Main,LMNO,Test Node 3,T3\n";
 
-        assertThat(fileContents, is(expectedValue));
+        assertThat(fileContents.toString(), is(expectedValue));
+
+        File file = new File("./nodes.csv");
+        assertThat(file.delete(), is(true));
     }
 
     @Test

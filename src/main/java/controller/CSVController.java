@@ -1,9 +1,15 @@
 package controller;
 
+import model.Node;
+
+import java.io.*;
+
 public class CSVController extends Controller {
 
     public static final String NODE_EXPORT_PATH = "nodes.csv";
     public static final String EDGE_EXPORT_PATH = "edges.csv";
+
+    public static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
 
     /**
      * Export the entire database into CSV format
@@ -20,7 +26,36 @@ public class CSVController extends Controller {
     /**
      * Export the Nodes table
      */
-    public static void exportNodes() {
+    public static void exportNodes() throws IOException {
+        // Open a file
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(NODE_EXPORT_PATH), "UTF-8");;
+            writer.write(NODE_HEADER);
+
+            // Write out each node
+            for (Node node : dbs.getAllNodes()) {
+                writer.write(node.getNodeID() + ",");
+                writer.write(node.getXcoord() + ",");
+                writer.write(node.getYcoord() + ",");
+                writer.write(node.getFloor() + ",");
+                writer.write(node.getBuilding() + ",");
+                writer.write(node.getNodeType() + ",");
+                writer.write(node.getLongName() + ",");
+                writer.write(node.getShortName() + "\n");
+            }
+
+            // Close the writer
+            writer.close();
+        } catch (IOException e) {
+            // Cleanup the writer if possible
+            if (writer != null) {
+                writer.close();
+            }
+
+            // Throw the error so upstream can handle it
+            throw e;
+        }
     }
 
     /**
