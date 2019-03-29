@@ -2,6 +2,8 @@ package model;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import testclassifications.FastTest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,6 +14,7 @@ public class MapNodeTest {
     MapNode mn3;
 
     @Before
+    @Category(FastTest.class)
     public void createNodes() {
         mn1 = new MapNode(0, 0);
         mn2 = new MapNode(6, 3);
@@ -19,6 +22,7 @@ public class MapNodeTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void checkHeuristic() {
 
         // testing heuristic
@@ -28,6 +32,7 @@ public class MapNodeTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void checkG() {
         // we found a new path that is faster
         mn2.g = 4;
@@ -37,6 +42,7 @@ public class MapNodeTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void equalTest() {
         MapNode bob = new MapNode(0, 0);
         MapNode tom = new MapNode(0, 0);
@@ -44,6 +50,7 @@ public class MapNodeTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void badEqualTest() {
         MapNode bob = new MapNode(1, 0);
         MapNode tom = new MapNode(0, 0);
@@ -51,6 +58,7 @@ public class MapNodeTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void nullEqualTest() {
         MapNode bob = null;
         MapNode tom = new MapNode(0, 0);
