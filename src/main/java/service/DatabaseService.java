@@ -15,11 +15,22 @@ public class DatabaseService {
         this.connection = connection;
     }
 
-    public static DatabaseService init(String DBName) throws SQLException {
+    public static DatabaseService init(String DBName) throws SQLException{
         DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-        Connection connection = DriverManager.getConnection("jdbc:derby:"+DBName+";create=true");
+        Connection connection;
+        boolean createFlag = false;
+        try {
+            connection = DriverManager.getConnection("jdbc:derby:"+DBName+";");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection = DriverManager.getConnection("jdbc:derby:"+DBName+";create=true");
+            createFlag = true;
+        }
+
         DatabaseService myDB = new DatabaseService(connection);
-        myDB.createTables();
+        if(createFlag){
+            myDB.createTables();
+        }
         return myDB;
     }
 
@@ -70,13 +81,58 @@ public class DatabaseService {
 
     }
 
+
+
+    // NODE FUNCTIONS
+    /**
+     *
+     * @param n: the node to insert
+     * @param e: a collection of edges to insert
+     * @return: true if the node is successfully inserted, false if otherwise.
+     * @throws SQLException
+     */
+
     // add node and edges objects to tables
-    public boolean addNode(Node n, Collection<Edge> e) {
+    public boolean addNode(Node n, Collection<Edge> e) throws SQLException {
+        // create the prepared statements
+        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+        String edgeStatement = ("INSERT INTO EDGE VALUES(?, ?, ?)");
+        PreparedStatement insertNode = connection.prepareStatement(nodeStatement);
+        PreparedStatement insertEdges = connection.prepareStatement(edgeStatement);
+        // set the attributes of the statement for the node
+        insertNode.setString(0,n.getNodeID());
+        insertNode.setInt(1,n.getXcoord());
+        insertNode.setInt(2,n.getYcoord());
+        insertNode.setString(3,n.getFloor());
+        insertNode.setString(4,n.getBuilding());
+        insertNode.setString(5,n.getNodeType());
+        insertNode.setString(6,n.getLongName());
+        insertNode.setString(7,n.getShortName());
+        // execute the node insert query
+        insertNode.execute();
+        insertNode.close();
+        // for each edge in the collection, parse out the relevant fields and insert it into the database
+        for(Edge q: e){
+            insertEdges.setString(0,q.getEdgeID());
+            insertEdges.setString(1,q.getNode1().getNodeID());
+            insertEdges.setString(2,q.getNode2().getNodeID());
+            insertEdges.execute();
+        }
+        insertEdges.close();
+        return true;
+    }
+
+    //public Node getNode(String nodeID){
+    //    return new Node();
+    //}
+
+    // insert a new node into the database without any edges
+    public boolean insertNode(Node n){
         return true;
     }
 
     // edit existing node in database
-    public boolean editNode(Node n) {
+    public boolean updateNode(Node n) {
 
         return true;
     }
@@ -92,8 +148,10 @@ public class DatabaseService {
         return n;
     }
 
+    // EDGE FUNCTIONS
+
     // get edges from a specific floor
-    public static Collection<Edge> getEdges(String floor) {
+    public static Collection<Edge> getEdges(int floor) {
 
         ArrayList<Edge> edges = new ArrayList<>();
         Node a = new Node(0,0);
@@ -115,7 +173,29 @@ public class DatabaseService {
 
     }
 
-    //oi sam how the f does this work
+    public boolean insertEdge(Edge e){
+        return true;
+    }
+
+    //public Edge retrieveEdge(String EdgeID){
+    //    return true;
+    //}
+
+    public boolean updateEdge(Edge e){
+        return true;
+    }
+
+    public boolean deleteEdge(Edge e){
+        return true;
+    }
+
+    // EMPLOYEE FUNCTIONS
+    // oh what the heck
+    // gigantic ugh we're missing stuff
+
+
+
+    // CONTROLS
     boolean tableExists(String table){
         DatabaseMetaData dbm;
         try {

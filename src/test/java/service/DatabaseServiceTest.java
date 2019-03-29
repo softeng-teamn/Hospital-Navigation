@@ -22,6 +22,7 @@ public class DatabaseServiceTest {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     @After
@@ -29,21 +30,6 @@ public class DatabaseServiceTest {
         myDB.close();
     }
 
-    @Test
-    @Category(FastTest.class)
-    public void init() {
-        boolean testor;
-        try {
-            DatabaseService.init();
-            testor = true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            testor = false;
-        }
-        assertTrue(testor);
-
-
-    }
 
     @Test
     public void addNode() {
