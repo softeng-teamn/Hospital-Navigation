@@ -60,6 +60,20 @@ public class DatabaseService {
 
     }
 
+    public String getRoomSched(String day, String roomID){
+        return "";
+    }
+
+    public boolean bookRoom(String day, String roomID, String time){
+        return false;
+    }
+
+    public void addRequest(String Request){}
+
+    public boolean login(String id, String password){
+        return false;
+    }
+
 
 
 
