@@ -1,7 +1,14 @@
 package controller;
 
+import com.jfoenix.controls.JFXButton;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
 import model.Node;
 import model.Point;
+import service.ResourceLoader;
+import service.StageManager;
 
 public class HomeController extends MapController {
 
@@ -10,7 +17,7 @@ public class HomeController extends MapController {
 
     @FXML
     // switches window to map editor screen
-    private void showMapEditor() {
+    public void showMapEditor() throws Exception {
         Stage stage = (Stage) editBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.mapEdit);
         StageManager.changeWindow(stage, root, "Map Editor");
@@ -18,7 +25,7 @@ public class HomeController extends MapController {
 
     @FXML
     // switches window to request screen
-    private void showRequest() {
+    public void showRequest() throws Exception {
         Stage stage = (Stage) serviceBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request);
         StageManager.changeWindow(stage, root, "Service Request");
@@ -26,7 +33,7 @@ public class HomeController extends MapController {
 
     @FXML
     // switches window to schedule screen
-    private void showSchedule() {
+    public void showSchedule() throws Exception {
         Stage stage = (Stage) schedulerBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeWindow(stage, root, "Scheduler");
