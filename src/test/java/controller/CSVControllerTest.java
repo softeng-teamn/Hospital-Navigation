@@ -16,6 +16,7 @@ import static junit.framework.TestCase.assertEquals;
 public class CSVControllerTest {
 
     @Test
+    @Category(FastTest.class)
     public void loadNodes() {
         try {
             // create the nodes
