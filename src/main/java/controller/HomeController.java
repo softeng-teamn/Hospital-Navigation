@@ -16,7 +16,7 @@ public class HomeController extends MapController {
     private JFXButton editBtn, schedulerBtn, serviceBtn;
 
     @FXML
-    // switches window to map editor screen
+    // switches window to map editor screen.
     public void showMapEditor() throws Exception {
         Stage stage = (Stage) editBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.mapEdit);
