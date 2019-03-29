@@ -60,7 +60,6 @@ public class DatabaseServiceTest {
         assertThat(toGet.getNodeType(),is("HALL"));
         assertThat(toGet.getShortName(),is("Hall"));
         assertThat(toGet.getLongName(),is("Hall"));
-
     }
 
     @Test
@@ -69,12 +68,37 @@ public class DatabaseServiceTest {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         myDB.insertNode(testNode);
         assertThat(myDB.getNode("NOTINFIELD"), is(nullValue()));
-
-
     }
 
     @Test
-    public void editNode() {
+    @Category(FastTest.class)
+    public void updateNode() {
+        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        myDB.insertNode(testNode);
+
+        Node toGet = myDB.getNode("ACONF00102");
+        assertThat(toGet.getNodeID(),is("ACONF00102"));
+        assertThat(toGet.getXcoord(),is(1580));
+        assertThat(toGet.getYcoord(),is(2538));
+        assertThat(toGet.getFloor(),is("2"));
+        assertThat(toGet.getBuilding(),is("BTM"));
+        assertThat(toGet.getNodeType(),is("HALL"));
+        assertThat(toGet.getShortName(),is("Hall"));
+        assertThat(toGet.getLongName(),is("Hall"));
+
+
+        testNode = new Node("ACONF00102", 1582, 2540, "3", "BTM", "CONF", "Halla", "Halls");
+        myDB.updateNode(testNode);
+
+        toGet = myDB.getNode("ACONF00102");
+        assertThat(toGet.getNodeID(),is("ACONF00102"));
+        assertThat(toGet.getXcoord(),is(1582));
+        assertThat(toGet.getYcoord(),is(2540));
+        assertThat(toGet.getFloor(),is("3"));
+        assertThat(toGet.getBuilding(),is("BTM"));
+        assertThat(toGet.getNodeType(),is("CONF"));
+        assertThat(toGet.getShortName(),is("Halls"));
+        assertThat(toGet.getLongName(),is("Halla"));
     }
 
     @Test

@@ -84,41 +84,6 @@ public class DatabaseService {
 
 
     // NODE FUNCTIONS
-    // this method is bad, don't use it
-    /**
-     *
-     * @param n: the node to insert
-     * @param e: a collection of edges to insert
-     * @return: true if the node is successfully inserted, false if otherwise.
-     * @throws SQLException
-     *
-
-    // add node and edges objects to tables
-    public boolean addNode(Node n, Collection<Edge> e) throws SQLException {
-        // create the prepared statements
-        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-        String edgeStatement = ("INSERT INTO EDGE VALUES(?, ?, ?)");
-        PreparedStatement insertNode = connection.prepareStatement(nodeStatement);
-        PreparedStatement insertEdges = connection.prepareStatement(edgeStatement);
-        // set the attributes of the statement for the node
-        prepareNodeStatement(n, insertNode);
-        // execute the node insert query
-        insertNode.execute();
-        insertNode.close();
-        // for each edge in the collection, parse out the relevant fields and insert it into the database
-        for(Edge q: e){
-            insertEdges.setString(1,q.getEdgeID());
-            insertEdges.setString(2,q.getNode1().getNodeID());
-            insertEdges.setString(3,q.getNode2().getNodeID());
-            insertEdges.execute();
-        }
-        insertEdges.close();
-        return true;
-    }
-*/
-    //public Node getNode(String nodeID){
-    //    return new Node();
-    //}
 
     // insert a new node into the database without any edges
     public boolean insertNode(Node n){
@@ -146,48 +111,55 @@ public class DatabaseService {
         }
         return insertStatus;
     }
-    // delete all from each table. Almost exclusively used for testing.
-    public void wipeTables(){
-        Statement statement = null;
+
+    // edit existing node in database
+    public boolean updateNode(Node n) {
+        boolean updateResult = false;
+        String nodeID = n.getNodeID();
+        String floor = n.getFloor();
+        String building = n.getBuilding();
+        String nodeType = n.getNodeType();
+        String longName = n.getLongName();
+        String shortName = n.getShortName();
+        int xcoord = n.getXcoord();
+        int ycoord = n.getYcoord();
+        String insertStatement = "UPDATE NODE SET xcoord=?, ycoord=?, floor=?, building=?, nodeType=?, longName=?, shortName=? WHERE (nodeID = ?)";
+        PreparedStatement stmt = null;
         try {
-            statement = connection.createStatement();
-            statement.execute("DELETE FROM NODE");
-            statement.execute("DELETE FROM EDGE");
-            statement.close();
+            stmt = connection.prepareStatement(insertStatement);
+            stmt.setInt(1, xcoord);
+            stmt.setInt(2, ycoord);
+            stmt.setString(3, floor);
+            stmt.setString(4, building);
+            stmt.setString(5, nodeType);
+            stmt.setString(6, longName);
+            stmt.setString(7, shortName);
+            stmt.setString(8, nodeID);
+            try {
+                stmt.executeUpdate();
+                updateResult = true;
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+            stmt.close();
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         } finally {
-            if(statement != null){
+            if (stmt != null) {
                 try {
-                    statement.close();
+                    stmt.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
 
         }
-
-
+        return updateResult;
     }
 
-    private void prepareNodeStatement(Node n, PreparedStatement insertNode) throws SQLException {
-        insertNode.setString(1,n.getNodeID());
-        insertNode.setInt(2,n.getXcoord());
-        insertNode.setInt(3,n.getYcoord());
-        insertNode.setString(4,n.getFloor());
-        insertNode.setString(5,n.getBuilding());
-        insertNode.setString(6,n.getNodeType());
-        insertNode.setString(7,n.getLongName());
-        insertNode.setString(8,n.getShortName());
-    }
-
-    // edit existing node in database
-    public boolean updateNode(Node n) {
-
-        return true;
-    }
-
-    // delete existing node in database
+        // delete existing node in database
     public boolean deleteNode(Node n) {
         return true;
     }
@@ -233,9 +205,9 @@ public class DatabaseService {
             closeAll(stmt, rs);
         }
         return null;
-
-
     }
+
+
 
     // get all nodes from the specified floor
     public Collection<Node> getNodes(String floor) {
@@ -326,6 +298,41 @@ public class DatabaseService {
                 e.printStackTrace();
             }
         }
+    }
+
+    // delete all from each table. Almost exclusively used for testing.
+    public void wipeTables(){
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            statement.execute("DELETE FROM NODE");
+            statement.execute("DELETE FROM EDGE");
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if(statement != null){
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+
+    }
+
+    private void prepareNodeStatement(Node n, PreparedStatement insertNode) throws SQLException {
+        insertNode.setString(1,n.getNodeID());
+        insertNode.setInt(2,n.getXcoord());
+        insertNode.setInt(3,n.getYcoord());
+        insertNode.setString(4,n.getFloor());
+        insertNode.setString(5,n.getBuilding());
+        insertNode.setString(6,n.getNodeType());
+        insertNode.setString(7,n.getLongName());
+        insertNode.setString(8,n.getShortName());
     }
 
 
