@@ -330,9 +330,39 @@ public class DatabaseService {
         return returnValue;
     }
 
-    //public Edge getEdge(String EdgeID){
-    //    return new Edge("Sthing");
-   //}
+    public Edge getEdge(String EdgeID){
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String input = "SELECT * FROM EDGE WHERE (EDGEID = ?)";
+        Edge newEdge;
+        try {
+            stmt = connection.prepareStatement(input);
+            stmt.setString(1,EdgeID);
+            rs = stmt.executeQuery();
+
+            // extract results, only one record should be found.
+            boolean hasNext = rs.next();
+
+            // If there is no next node, return null
+            if (!hasNext) {
+                return null;
+            }
+            String newEdgeID = rs.getString("edgeID");
+            String node1Name = rs.getString("NODE1");
+            String node2Name = rs.getString("NODE2");
+            Node node1 = getNode(node1Name);
+            Node node2 = getNode(node2Name);
+            newEdge = new Edge (newEdgeID, node1, node2);
+            return newEdge;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
+        return null;
+
+    }
 
     public boolean updateEdge(Edge e){
         return true;

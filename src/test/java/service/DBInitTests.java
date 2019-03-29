@@ -28,6 +28,5 @@ public class DBInitTests {
         assertTrue(myDB.tableExists("NODE"));
     }
 
-
 }
 

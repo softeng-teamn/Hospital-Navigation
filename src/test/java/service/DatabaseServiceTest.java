@@ -145,7 +145,16 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void getEdge() {
+        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
+        myDB.insertNode(testNode);
+        myDB.insertNode(otherNode);
+        myDB.insertEdge(newEdge);
+        Edge gotEdge = myDB.getEdge("ACONF00102-ACONF00103");
+        assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
 
     }
 
