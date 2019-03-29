@@ -84,13 +84,14 @@ public class DatabaseService {
 
 
     // NODE FUNCTIONS
+    // this method is bad, don't use it
     /**
      *
      * @param n: the node to insert
      * @param e: a collection of edges to insert
      * @return: true if the node is successfully inserted, false if otherwise.
      * @throws SQLException
-     */
+     *
 
     // add node and edges objects to tables
     public boolean addNode(Node n, Collection<Edge> e) throws SQLException {
@@ -100,35 +101,84 @@ public class DatabaseService {
         PreparedStatement insertNode = connection.prepareStatement(nodeStatement);
         PreparedStatement insertEdges = connection.prepareStatement(edgeStatement);
         // set the attributes of the statement for the node
-        insertNode.setString(0,n.getNodeID());
-        insertNode.setInt(1,n.getXcoord());
-        insertNode.setInt(2,n.getYcoord());
-        insertNode.setString(3,n.getFloor());
-        insertNode.setString(4,n.getBuilding());
-        insertNode.setString(5,n.getNodeType());
-        insertNode.setString(6,n.getLongName());
-        insertNode.setString(7,n.getShortName());
+        prepareNodeStatement(n, insertNode);
         // execute the node insert query
         insertNode.execute();
         insertNode.close();
         // for each edge in the collection, parse out the relevant fields and insert it into the database
         for(Edge q: e){
-            insertEdges.setString(0,q.getEdgeID());
-            insertEdges.setString(1,q.getNode1().getNodeID());
-            insertEdges.setString(2,q.getNode2().getNodeID());
+            insertEdges.setString(1,q.getEdgeID());
+            insertEdges.setString(2,q.getNode1().getNodeID());
+            insertEdges.setString(3,q.getNode2().getNodeID());
             insertEdges.execute();
         }
         insertEdges.close();
         return true;
     }
-
+*/
     //public Node getNode(String nodeID){
     //    return new Node();
     //}
 
     // insert a new node into the database without any edges
     public boolean insertNode(Node n){
-        return true;
+        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement insertNode = null;
+        boolean insertStatus = false;
+        try {
+            insertNode = connection.prepareStatement(nodeStatement);
+            // set the attributes of the statement for the node
+            prepareNodeStatement(n, insertNode);
+            insertNode.execute();
+            insertStatus = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            insertStatus = false;
+        } finally {
+            if(insertNode != null){
+                try {
+                    insertNode.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return insertStatus;
+    }
+    // delete all from each table. Almost exclusively used for testing.
+    public void wipeTables(){
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            statement.execute("DELETE FROM NODE");
+            statement.execute("DELETE FROM EDGE");
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if(statement != null){
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+
+    }
+
+    private void prepareNodeStatement(Node n, PreparedStatement insertNode) throws SQLException {
+        insertNode.setString(1,n.getNodeID());
+        insertNode.setInt(2,n.getXcoord());
+        insertNode.setInt(3,n.getYcoord());
+        insertNode.setString(4,n.getFloor());
+        insertNode.setString(5,n.getBuilding());
+        insertNode.setString(6,n.getNodeType());
+        insertNode.setString(7,n.getLongName());
+        insertNode.setString(8,n.getShortName());
     }
 
     // edit existing node in database
@@ -140,6 +190,51 @@ public class DatabaseService {
     // delete existing node in database
     public boolean deleteNode(Node n) {
         return true;
+    }
+
+    // retrieves the given node from the database
+    public Node getNode(String nodeID){
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String input = "SELECT * FROM NODE WHERE (NODEID = ?)";
+        Node newNode;
+
+        try {
+            stmt = connection.prepareStatement(input);
+            stmt.setString(1,nodeID);
+            // execute the query
+            rs = stmt.executeQuery();
+
+            // extract results, only one record should be found.
+            boolean hasNext = rs.next();
+
+            // If there is no next node, return null
+            if (!hasNext) {
+                return null;
+            }
+
+            String newNodeID = rs.getString("nodeID");
+            int newxcoord = rs.getInt("xcoord");
+            int newycoord = rs.getInt("ycoord");
+            String newFloor = rs.getString("floor");
+            String newBuilding = rs.getString("building");
+            String newNodeType = rs.getString("nodeType");
+            String newLongName = rs.getString("longName");
+            String newShortName = rs.getString("shortName");
+            // construct the new node and return it
+            newNode = new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
+            stmt.close();
+            rs.close();
+            return newNode;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
+        return null;
+
+
     }
 
     // get all nodes from the specified floor
@@ -213,6 +308,23 @@ public class DatabaseService {
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void closeAll(Statement stmt, ResultSet rs) {
+        if(rs != null){
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if(stmt != null){
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
