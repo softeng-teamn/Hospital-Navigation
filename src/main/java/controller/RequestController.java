@@ -41,7 +41,7 @@ public class RequestController extends Controller {
 
     // getter for pendingRequests
     public Collection<Request> getPendingRequests () {
-        return pendingRequests  ;
+        return null;
     }
 
 }
