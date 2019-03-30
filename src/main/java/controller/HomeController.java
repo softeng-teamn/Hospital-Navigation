@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import model.Node;
 import model.Point;
@@ -13,14 +14,14 @@ import service.StageManager;
 public class HomeController extends MapController {
 
     @FXML
-    private JFXButton editBtn, schedulerBtn, serviceBtn;
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl;
 
     @FXML
     // switches window to map editor screen.
     public void showMapEditor() throws Exception {
         Stage stage = (Stage) editBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.mapEdit);
-        StageManager.changeWindow(stage, root, "Map Editor");
+        StageManager.changeExistingWindow(stage, root, "Map Editor");
     }
 
     @FXML
@@ -28,7 +29,7 @@ public class HomeController extends MapController {
     public void showRequest() throws Exception {
         Stage stage = (Stage) serviceBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request);
-        StageManager.changeWindow(stage, root, "Service Request");
+        StageManager.changeExistingWindow(stage, root, "Service Request");
     }
 
     @FXML
@@ -36,7 +37,7 @@ public class HomeController extends MapController {
     public void showSchedule() throws Exception {
         Stage stage = (Stage) schedulerBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
-        StageManager.changeWindow(stage, root, "Scheduler");
+        StageManager.changeExistingWindow(stage, root, "Scheduler");
     }
 
     // Get path from start node to destination node

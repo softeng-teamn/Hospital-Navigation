@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="350.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
+<AnchorPane prefHeight="350.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
 
     <children>
         <JFXTextField layoutX="14.0" layoutY="13.0" prefHeight="26.0" prefWidth="168.0" promptText="Search This Hospital" style="-fx-background-color: white;" />
@@ -19,7 +19,7 @@
                     </children>
                 </AnchorPane>
                 <TextField alignment="CENTER" layoutY="88.0" prefHeight="26.0" prefWidth="168.0" text="Choose Desired Time:" />
-                <JFXButton layoutY="374.0" style="-fx-background-color: red;" text="Cancel" />
+                <JFXButton fx:id="homeBtn" layoutY="374.0" onAction="#showHome" style="-fx-background-color: red;" text="Cancel" />
                 <JFXButton layoutX="108.0" layoutY="374.0" style="-fx-background-color: green;" text="Confirm" />
                 <CheckBox layoutX="44.0" layoutY="127.0" mnemonicParsing="false" text="8:00 am" />
                 <CheckBox layoutX="45.0" layoutY="153.0" mnemonicParsing="false" text="9:00 am" />

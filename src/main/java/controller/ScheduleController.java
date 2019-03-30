@@ -19,7 +19,7 @@ public class ScheduleController extends Controller {
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
-        StageManager.changeWindow(stage, root, "Home (Path Finder)");
+        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
 }
