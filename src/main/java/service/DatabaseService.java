@@ -505,8 +505,4 @@ public class DatabaseService {
         insertNode.setString(7,n.getLongName());
         insertNode.setString(8,n.getShortName());
     }
-
-
-
-
 }
