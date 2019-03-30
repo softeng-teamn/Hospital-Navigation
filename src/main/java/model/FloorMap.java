@@ -10,6 +10,13 @@ import java.util.HashMap;
 
 public class FloorMap {
 
+    private HashMap<String, Point> fMap;
+    private int floorNum;
+
+    public Point getReachable(String id) {
+        return fMap.get(id);
+    }
+
     public HashMap<String, Point> getfMap() {
         return fMap;
     }
@@ -26,14 +33,41 @@ public class FloorMap {
         this.floorNum = floorNum;
     }
 
-    private HashMap<String, Point> fMap;
-    private int floorNum;
+    public FloorMap(int floorNum, double defaultWeight) {
+        this.floorNum = floorNum;
+        fMap = new HashMap<String, Point>();
+        Collection<Edge> edges = DatabaseService.getEdges(floorNum);
+        for (Edge e: edges) {
+            Node n1 = e.getNode1();
+            Node n2 = e.getNode2();
+
+            double w = defaultWeight;
+
+            Point p1 = new Point(w, n1.getXcoord(), n1.getYcoord(), n1.getNodeID(), null);
+            Point p2 = new Point(w, n2.getXcoord(), n2.getYcoord(), n2.getNodeID(), null);
+
+            //if key already exists, append p2 to the end of
+            if(fMap.containsKey(n1.getNodeID())){
+                Point firstOcc = fMap.get(n1.getNodeID());
+                p2.setNext(firstOcc);
+            }
+            //if key already exists, append p2 to the end of
+            if(fMap.containsKey(n2.getNodeID())){
+                Point firstOcc = fMap.get(n2.getNodeID());
+                p1.setNext(firstOcc);
+            }
+
+            fMap.put(n1.getNodeID(), p2);
+            fMap.put(n2.getNodeID(), p1);
+        }
+    }
+
 
     public FloorMap(int floorNum){
         this.floorNum = floorNum;
         fMap = new HashMap<String, Point>();
         // Call DB for edges
-        Collection<Edge> edges = DatabaseService.getEdges(1);
+        Collection<Edge> edges = DatabaseService.getEdges(floorNum);
         for (Edge e: edges
         ) {
             Node n1 = e.getNode1();
