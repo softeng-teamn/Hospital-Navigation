@@ -11,23 +11,32 @@ public class DatabaseService {
 
     private Connection connection;
 
+    private String databaseName;
+
     private DatabaseService(Connection connection) {
         this.connection = connection;
     }
 
-    public static DatabaseService init(String DBName) throws SQLException{
+    public static DatabaseService init(String dbName) throws SQLException{
         DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
         Connection connection;
         boolean createFlag = false;
+
         try {
-            connection = DriverManager.getConnection("jdbc:derby:"+DBName+";");
+            connection = DriverManager.getConnection("jdbc:derby:"+dbName+";");
         } catch (SQLException e) {
             e.printStackTrace();
-            connection = DriverManager.getConnection("jdbc:derby:"+DBName+";create=true");
+            System.out.print("No existing database found, creating database...");
+            System.out.flush();
+            connection = DriverManager.getConnection("jdbc:derby:"+dbName+";create=true");
+            System.out.println("Database created");
             createFlag = true;
         }
 
         DatabaseService myDB = new DatabaseService(connection);
+
+        myDB.databaseName = dbName;
+
         if(createFlag){
             myDB.createTables();
         }
@@ -420,9 +429,13 @@ public class DatabaseService {
         }
     }
 
-     void close(){
+    void close(){
         try {
             connection.close();
+            DriverManager.getConnection(
+                    "jdbc:derby:" + databaseName + ";shutdown=true");
+        } catch (SQLNonTransientConnectionException e) {
+            System.out.println("Database '" + databaseName + "' shutdown successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
         }

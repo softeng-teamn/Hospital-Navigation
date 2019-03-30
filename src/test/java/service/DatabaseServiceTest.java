@@ -2,13 +2,16 @@ package service;
 
 import model.Edge;
 import model.Node;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.FastTest;
 
-import javax.xml.crypto.Data;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -19,42 +22,35 @@ import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class DatabaseServiceTest {
-    DatabaseService myDB;
+    private DatabaseService myDBS;
 
     @Before
-    public void setUp(){
-
-        try {
-            myDB = DatabaseService.init("testerDB");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+    public void setUp() throws SQLException {
+        myDBS = DatabaseService.init("hospital-db-test");
     }
 
     @After
-    public void tearDown() throws Exception {
-        myDB.wipeTables();
-        myDB.close();
+    public void tearDown() throws IOException {
+        myDBS.close();
+        FileUtils.deleteDirectory(new File("hospital-db-test"));
     }
-
 
     @Test
     @Category(FastTest.class)
     public void insertNode() {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         // make sure that the new node is successfully inserted
-        assertThat(myDB.insertNode(testNode), is(true));
+        assertThat(myDBS.insertNode(testNode), is(true));
         // make sure that the same node cannot be inserted a second time
-        assertThat(myDB.insertNode(testNode), is(false));
+        assertThat(myDBS.insertNode(testNode), is(false));
     }
 
     @Test
     @Category(FastTest.class)
     public void getNode(){
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode);
-        Node toGet = myDB.getNode("ACONF00102");
+        myDBS.insertNode(testNode);
+        Node toGet = myDBS.getNode("ACONF00102");
         assertThat(toGet.getNodeID(),is("ACONF00102"));
         assertThat(toGet.getXcoord(),is(1580));
         assertThat(toGet.getYcoord(),is(2538));
@@ -69,17 +65,17 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void getNodeFail() {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode);
-        assertThat(myDB.getNode("NOTINFIELD"), is(nullValue()));
+        myDBS.insertNode(testNode);
+        assertThat(myDBS.getNode("NOTINFIELD"), is(nullValue()));
     }
 
     @Test
     @Category(FastTest.class)
     public void updateNode() {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode);
+        myDBS.insertNode(testNode);
 
-        Node toGet = myDB.getNode("ACONF00102");
+        Node toGet = myDBS.getNode("ACONF00102");
         assertThat(toGet.getNodeID(),is("ACONF00102"));
         assertThat(toGet.getXcoord(),is(1580));
         assertThat(toGet.getYcoord(),is(2538));
@@ -91,9 +87,9 @@ public class DatabaseServiceTest {
 
 
         testNode = new Node("ACONF00102", 1582, 2540, "3", "BTM", "CONF", "Halla", "Halls");
-        myDB.updateNode(testNode);
+        myDBS.updateNode(testNode);
 
-        toGet = myDB.getNode("ACONF00102");
+        toGet = myDBS.getNode("ACONF00102");
         assertThat(toGet.getNodeID(),is("ACONF00102"));
         assertThat(toGet.getXcoord(),is(1582));
         assertThat(toGet.getYcoord(),is(2540));
@@ -108,13 +104,13 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void deleteNode() {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode);
+        myDBS.insertNode(testNode);
         // make sure it can be got
-        assertThat(myDB.getNode("ACONF00102").getNodeID(), is("ACONF00102"));
+        assertThat(myDBS.getNode("ACONF00102").getNodeID(), is("ACONF00102"));
         // delete the node from the database successfully
-        assertThat(myDB.deleteNode(testNode),is(true));
+        assertThat(myDBS.deleteNode(testNode),is(true));
         //make sure that it is not in the database
-        assertThat((myDB.getNode("ACONF00102")), is(nullValue()));
+        assertThat((myDBS.getNode("ACONF00102")), is(nullValue()));
         //delete is like update so trying to delete a record that isn't there doesn't cause problems. No case needed for that.
     }
 
@@ -123,17 +119,17 @@ public class DatabaseServiceTest {
     public void getAllNodes() {
         // insert nodes
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode);
+        myDBS.insertNode(testNode);
         testNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        myDB.insertNode(testNode);
-        ArrayList<Node> allNodes = myDB.getAllNodes();
+        myDBS.insertNode(testNode);
+        ArrayList<Node> allNodes = myDBS.getAllNodes();
         assertThat(allNodes.size(),is(2));
         assertThat(allNodes.get(0).getNodeID(),is("ACONF00102"));
         assertThat(allNodes.get(1).getNodeID(),is("ACONF00103"));
 
         testNode = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        myDB.insertNode(testNode);
-        allNodes = myDB.getAllNodes();
+        myDBS.insertNode(testNode);
+        allNodes = myDBS.getAllNodes();
         assertThat(allNodes.size(),is(3));
         assertThat(allNodes.get(0).getNodeID(),is("ACONF00102"));
         assertThat(allNodes.get(1).getNodeID(),is("ACONF00103"));
@@ -151,10 +147,10 @@ public class DatabaseServiceTest {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
-        myDB.insertNode(testNode);
-        myDB.insertNode(otherNode);
-        myDB.insertEdge(newEdge);
-        Edge gotEdge = myDB.getEdge("ACONF00102-ACONF00103");
+        myDBS.insertNode(testNode);
+        myDBS.insertNode(otherNode);
+        myDBS.insertEdge(newEdge);
+        Edge gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newEdge.getNode1().getNodeID()));
         assertThat(gotEdge.getNode2().getNodeID(), is(newEdge.getNode2().getNodeID()));
@@ -167,12 +163,11 @@ public class DatabaseServiceTest {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
-        assertFalse(myDB.insertEdge(newEdge));
-        myDB.insertNode(testNode);
-        assertFalse(myDB.insertEdge(newEdge));
-        myDB.insertNode(otherNode);
-        assertTrue(myDB.insertEdge(newEdge));
-
+        assertFalse(myDBS.insertEdge(newEdge));
+        myDBS.insertNode(testNode);
+        assertFalse(myDBS.insertEdge(newEdge));
+        myDBS.insertNode(otherNode);
+        assertTrue(myDBS.insertEdge(newEdge));
     }
 
     @Test
@@ -183,19 +178,19 @@ public class DatabaseServiceTest {
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Node anotherNode = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
-        myDB.insertNode(testNode);
-        myDB.insertNode(otherNode);
-        myDB.insertEdge(newEdge);
-        myDB.insertNode(anotherNode);
+        myDBS.insertNode(testNode);
+        myDBS.insertNode(otherNode);
+        myDBS.insertEdge(newEdge);
+        myDBS.insertNode(anotherNode);
         // get the edge and confirm its initial values
-        Edge gotEdge = myDB.getEdge("ACONF00102-ACONF00103");
+        Edge gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newEdge.getNode1().getNodeID()));
         assertThat(gotEdge.getNode2().getNodeID(), is(newEdge.getNode2().getNodeID()));
         Edge newerEdge = new Edge("ACONF00102-ACONF00104", testNode, anotherNode);
         // update the values and confirm that they were changed
-        assertTrue(myDB.updateEdge(newerEdge));
-        gotEdge = myDB.getEdge("ACONF00102-ACONF00103");
+        assertTrue(myDBS.updateEdge(newerEdge));
+        gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge,is(notNullValue()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newerEdge.getNode1().getNodeID()));
 
@@ -209,16 +204,16 @@ public class DatabaseServiceTest {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
-        myDB.insertNode(testNode);
-        myDB.insertNode(otherNode);
-        myDB.insertEdge(newEdge);
-        myDB.insertNode(testNode);
-        Edge gotEdge = myDB.getEdge("ACONF00102-ACONF00103");
+        myDBS.insertNode(testNode);
+        myDBS.insertNode(otherNode);
+        myDBS.insertEdge(newEdge);
+        myDBS.insertNode(testNode);
+        Edge gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         // delete it
-        myDB.deleteEdge(gotEdge);
+        myDBS.deleteEdge(gotEdge);
         //make sure that it's not there
-        assertThat((myDB.getEdge("ACONF00102-ACONF00103")), is(nullValue()));
+        assertThat((myDBS.getEdge("ACONF00102-ACONF00103")), is(nullValue()));
 
 
     }
@@ -233,8 +228,8 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void tableExists() {
-        assertTrue(myDB.tableExists("NODE"));
-        assertFalse(myDB.tableExists("NOTPRESENT"));
+        assertTrue(myDBS.tableExists("NODE"));
+        assertFalse(myDBS.tableExists("NOTPRESENT"));
 
 
     }
