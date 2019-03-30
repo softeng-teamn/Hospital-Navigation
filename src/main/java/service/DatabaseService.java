@@ -402,7 +402,28 @@ public class DatabaseService {
     }
 
     public boolean deleteEdge(Edge e){
-        return true;
+        PreparedStatement stmt = null;
+        String edgeID = e.getEdgeID();
+        String query = "DELETE FROM EDGE WHERE (edgeID = ?)";
+        boolean deleteStatus = false;
+        try {
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1,edgeID);
+            stmt.executeUpdate();
+            deleteStatus = true;
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        } finally {
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }
+        return deleteStatus;
     }
 
     public ArrayList<Edge> getAllEdges(){
