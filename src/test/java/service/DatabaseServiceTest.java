@@ -168,8 +168,8 @@ public class DatabaseServiceTest {
         myDB.insertEdge(testEdge4);
         ArrayList<Node> connectedNodes = myDB.getNodesConnectedTo(testNode1);
         assertThat(connectedNodes.get(0).getNodeID(), is(testNode2.getNodeID()));
-        //assertThat(connectedNodes.get(1).getNodeID(), is(testNode3.getNodeID()));
-        //assertThat(connectedNodes.get(2).getNodeID(), is(testNode4.getNodeID()));
+        assertThat(connectedNodes.get(1).getNodeID(), is(testNode3.getNodeID()));
+        assertThat(connectedNodes.get(2).getNodeID(), is(testNode4.getNodeID()));
     }
 
 
