@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class CSVControllerTest {
 
     private ArrayList<Node> testNodes;
-    private ArrayList<Edge> testEdge;
+    private ArrayList<Edge> testEdges;
 
     @Before
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
@@ -34,7 +34,7 @@ public class CSVControllerTest {
         DatabaseService dbs = mock(DatabaseService.class);
 
         testNodes = new ArrayList<>();
-        testEdge = new ArrayList<>();
+        testEdges = new ArrayList<>();
 
         Node n1 = new Node(0, 0);
         n1.setNodeID("ABC123");
@@ -67,11 +67,12 @@ public class CSVControllerTest {
         testNodes.add(n1);
         testNodes.add(n2);
         testNodes.add(n3);
-        testEdge.add(e1);
-        testEdge.add(e2);
-        testEdge.add(e3);
+        testEdges.add(e1);
+        testEdges.add(e2);
+        testEdges.add(e3);
 
         when(dbs.getAllNodes()).thenReturn(testNodes);
+        when(dbs.getAllEdges()).thenReturn(testEdges);
 
         CSVController.dbs = dbs;
     }
@@ -167,7 +168,7 @@ public class CSVControllerTest {
         String expectedValue = "edgeID,startNode,endNode" + "\n"
                 + "ABC123XYZ4242,ABC123,XYZ4242\n"
                 + "XYZ4242LMNO123,XYZ4242,LMNO123\n"
-                + "ABC123LMNO123, ABC123, LMNO123\n";
+                + "ABC123LMNO123,ABC123,LMNO123\n";
 
         assertThat(fileContents.toString(), is(expectedValue));
 

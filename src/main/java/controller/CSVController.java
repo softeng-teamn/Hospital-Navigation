@@ -1,5 +1,6 @@
 package controller;
 
+import model.Edge;
 import model.Node;
 
 import java.io.*;
@@ -9,7 +10,8 @@ public class CSVController extends Controller {
     public static final String NODE_EXPORT_PATH = "nodes.csv";
     public static final String EDGE_EXPORT_PATH = "edges.csv";
 
-    public static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
+    private static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
+    private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
 
     /**
      * Export the entire database into CSV format
@@ -61,7 +63,31 @@ public class CSVController extends Controller {
     /**
      * Export the Edges table
      */
-    public static void exportEdges() {
+    public static void exportEdges() throws IOException {
+        // Open a file
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(EDGE_EXPORT_PATH), "UTF-8");;
+            writer.write(EDGES_HEADER);
+
+            // Write out each node
+            for (Edge edge : dbs.getAllEdges()) {
+                writer.write(edge.getEdgeID() + ",");
+                writer.write(edge.getNode1().getNodeID() + ",");
+                writer.write(edge.getNode2().getNodeID() + "\n");
+            }
+
+            // Close the writer
+            writer.close();
+        } catch (IOException e) {
+            // Cleanup the writer if possible
+            if (writer != null) {
+                writer.close();
+            }
+
+            // Throw the error so upstream can handle it
+            throw e;
+        }
     }
 
     /**
