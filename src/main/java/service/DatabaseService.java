@@ -330,6 +330,7 @@ public class DatabaseService {
         return returnValue;
     }
 
+    // get an edge. This also pulls out the nodes that edge connects.
     public Edge getEdge(String EdgeID){
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -365,11 +366,47 @@ public class DatabaseService {
     }
 
     public boolean updateEdge(Edge e){
-        return true;
+        boolean updateResult = false;
+        String edgeID = e.getEdgeID();
+        String node1 = e.getNode1().getNodeID();
+        String node2 = e.getNode2().getNodeID();
+        String updateStatement = "UPDATE EDGE SET edgeID=?, NODE1=?, NODE2=? WHERE(EDGEID = ?)";
+        PreparedStatement stmt = null;
+        try {
+            stmt = connection.prepareStatement(updateStatement);
+            stmt.setString(1,edgeID);
+            stmt.setString(2,node1);
+            stmt.setString(3,node2);
+            stmt.setString(4,edgeID);
+            try {
+                stmt.executeUpdate();
+                updateResult = true;
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+                e1.printStackTrace();
+            }
+            stmt.close();
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }
+        return updateResult;
     }
 
     public boolean deleteEdge(Edge e){
         return true;
+    }
+
+    public ArrayList<Edge> getAllEdges(){
+        return new ArrayList<Edge>();
     }
 
 

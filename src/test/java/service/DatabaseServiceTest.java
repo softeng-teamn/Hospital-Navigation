@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
@@ -155,6 +156,8 @@ public class DatabaseServiceTest {
         myDB.insertEdge(newEdge);
         Edge gotEdge = myDB.getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
+        assertThat(gotEdge.getNode1().getNodeID(), is(newEdge.getNode1().getNodeID()));
+        assertThat(gotEdge.getNode2().getNodeID(), is(newEdge.getNode2().getNodeID()));
 
     }
 
@@ -173,7 +176,30 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateEdge(){
+        // set up the DB
+        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node anotherNode = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
+        myDB.insertNode(testNode);
+        myDB.insertNode(otherNode);
+        myDB.insertEdge(newEdge);
+        myDB.insertNode(anotherNode);
+        // get the edge and confirm its initial values
+        Edge gotEdge = myDB.getEdge("ACONF00102-ACONF00103");
+        assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
+        assertThat(gotEdge.getNode1().getNodeID(), is(newEdge.getNode1().getNodeID()));
+        assertThat(gotEdge.getNode2().getNodeID(), is(newEdge.getNode2().getNodeID()));
+        Edge newerEdge = new Edge("ACONF00102-ACONF00104", testNode, anotherNode);
+        // update the values and confirm that they were changed
+        assertTrue(myDB.updateEdge(newerEdge));
+        gotEdge = myDB.getEdge("ACONF00102-ACONF00103");
+        assertThat(gotEdge,is(notNullValue()));
+        assertThat(gotEdge.getNode1().getNodeID(), is(newerEdge.getNode1().getNodeID()));
+
+
 
     }
 
