@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="394.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
+<AnchorPane prefHeight="394.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
     <children>
         <JFXTextField layoutX="14.0" layoutY="13.0" prefHeight="26.0" prefWidth="168.0" promptText="Search This Hospital" style="-fx-background-color: white;" />
         <AnchorPane layoutX="432.0" prefHeight="394.0" prefWidth="168.0" style="-fx-background-color: white;">
@@ -22,7 +22,7 @@
                 <TextField alignment="CENTER" layoutY="237.0" prefHeight="26.0" prefWidth="168.0" text="Item Delivery" />
                 <TextField alignment="CENTER" layoutY="263.0" prefHeight="26.0" prefWidth="168.0" text="IT" />
                 <TextArea layoutX="16.0" layoutY="146.0" prefHeight="77.0" prefWidth="130.0" promptText="Enter details" />
-                <JFXButton layoutY="374.0" style="-fx-background-color: red;" text="Cancel" />
+                <JFXButton fx:id="homeBtn" layoutY="374.0" onAction="#showHome" style="-fx-background-color: red;" text="Cancel" />
                 <JFXButton layoutX="109.0" layoutY="374.0" style="-fx-background-color: green;" text="Confirm" />
             </children>
         </AnchorPane>

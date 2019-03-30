@@ -6,12 +6,12 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MapEditController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MapEditController">
 
     <children>
         <JFXTextArea layoutX="205.0" layoutY="32.0" prefHeight="276.0" prefWidth="191.0" style="-fx-background-color: white; -fx-border-color: black;" text="Edit:" />
-        <JFXButton layoutX="205.0" layoutY="276.0" style="-fx-background-color: green;" text="Save" />
-        <JFXButton layoutX="337.0" layoutY="276.0" prefHeight="25.0" prefWidth="59.0" style="-fx-background-color: red;" text="Cancel" />
+        <JFXButton layoutX="355.0" layoutY="277.0" style="-fx-background-color: green;" text="Save" />
+        <JFXButton fx:id="homeBtn" layoutX="205.0" layoutY="277.0" onAction="#showHome" prefHeight="25.0" prefWidth="59.0" style="-fx-background-color: red;" text="Cancel" />
         <JFXButton layoutX="255.0" layoutY="193.0" prefHeight="32.0" prefWidth="91.0" style="-fx-background-color: #1589FF;" text="Set Location" />
         <JFXButton layoutX="255.0" layoutY="235.0" prefHeight="32.0" prefWidth="91.0" style="-fx-background-color: red;" text="Delete" />
         <CheckBox layoutX="213.0" layoutY="157.0" mnemonicParsing="false" text="Open" />
