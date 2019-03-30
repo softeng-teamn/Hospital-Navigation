@@ -26,9 +26,6 @@ public class RequestController extends Controller {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
-    // "cancel" button
-    void showHome() {
-
     }
 
     // submits request to database
