@@ -1,9 +1,9 @@
 package controller;
 
+import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -31,8 +31,8 @@ public class HomeControllerTest extends ApplicationTest {
     public void scheduleSceneTest() throws InterruptedException {
         clickOn(schbtn);
         Thread.sleep(200);
-        Text text = (Text) GuiTest.find("#SceneID");
-        assertThat(text.getText(), is("Schedule"));
+        JFXTextField text = (JFXTextField) GuiTest.find("#SceneID");
+        assertThat(text.getText(), is("Book a Room"));
     }
 
     @Test
@@ -40,8 +40,8 @@ public class HomeControllerTest extends ApplicationTest {
     public void mapEditSceneTest() throws InterruptedException {
         clickOn(mapbtn);
         Thread.sleep(200);
-        Text text = (Text) GuiTest.find("#SceneID");
-        assertThat(text.getText(), is("Mapedit"));
+        JFXTextField text = (JFXTextField) GuiTest.find("#SceneID");
+        assertThat(text.getPromptText(), is("Name:"));
     }
 
     @Test
@@ -49,8 +49,8 @@ public class HomeControllerTest extends ApplicationTest {
     public void requestSceneTest() throws InterruptedException {
         clickOn(reqbtn);
         Thread.sleep(200);
-        Text text = (Text) GuiTest.find("#SceneID");
-        assertThat(text.getText(), is("Request"));
+        JFXTextField text = (JFXTextField) GuiTest.find("#SceneID");
+        assertThat(text.getText(), is("Service Request"));
     }
 
 
