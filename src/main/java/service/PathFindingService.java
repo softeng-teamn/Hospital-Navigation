@@ -11,46 +11,6 @@ import java.util.HashSet;
 
 public class PathFindingService {
 
-//    // A* Search Algorithm
-//1.  Initialize the open list
-//2.  Initialize the closed list
-//    put the starting node on the open
-//    list (you can leave its f at zero)
-//
-//3.  while the open list is not empty
-//    a) find the node with the least f on
-//    the open list, call it "q"
-//
-//    b) pop q off the open list
-//
-//    c) generate q's 8 successors and set their
-//    parents to q
-//
-//    d) for each successor
-//    i) if successor is the goal, stop search
-//    successor.g = q.g + distance between
-//    successor and q
-//    successor.h = distance from goal to
-//    successor (This can be done using many
-//            ways, we will discuss three heuristics-
-//                       Manhattan, Diagonal and Euclidean
-//                       Heuristics)
-//
-//    successor.f = successor.g + successor.h
-//
-//    ii) if a node with the same position as
-//    successor is in the OPEN list which has a
-//    lower f than successor, skip this successor
-//
-//    iii) if a node with the same position as
-//    successor  is in the CLOSED list which has
-//    a lower f than successor, skip this successor
-//    otherwise, add  the node to the open list
-//    end (for loop)
-//
-//    e) push q on the closed list
-//    end (while loop)
-
     private static final int DEFAULT_HV_COST = 10;
     private static final int DEFAULT_DIAGONAL_COST = 14;
 
@@ -58,76 +18,74 @@ public class PathFindingService {
 
     }
 
-    public ArrayList<MapNode> aStar(MapNode start, MapNode dest) {
-        //1.  Initialize the open list
-        PriorityQueue<MapNode> open = new PriorityQueue<>();
-        start.setF(0.0);
-        open.add(start);
-        //2.  Initialize the path list
-        ArrayList<MapNode> path = new ArrayList<>();
-        start.checkBetter(null, 0);
-        path.add(start);
-        //3. Initialize the closed list
-        ArrayList<MapNode> closed = new ArrayList<>();
-        closed.add(start);
-
-        while(!open.isEmpty()) {
-            MapNode parent = open.poll();
-            if (parent.equals(dest)){
-                break;
+    // Returns null on fail
+    public ArrayList<Node> genPath(MapNode start, MapNode dest) {
+        MapNode target = aStar(start, dest);
+        if (target != null) {
+            ArrayList<Node> path = new ArrayList<Node>();
+            while (target != null) {
+                // add every item to beginning of list
+                path.add(0, target.getData());
+                target = target.getParent();
             }
-            ArrayList<MapNode> children = getChildren(parent);
-            for (MapNode child : children) {
-                int cost = parent.getG() + DEFAULT_HV_COST;
-                if (!closed.contains(child) || cost < child.getG()){
-                    child.checkBetter(parent, cost);
-                    child.calculateHeuristic(dest);
-                    child.getF();
-                    open.add(child);
-                    path.add(parent);
-                }
-            }
+            return path;
         }
-        return path;
+        // PATH NOT FOUND
+        return null;
     }
 
-    public PriorityQueue<MapNode> aStar2(MapNode start, MapNode dest) {
+    // Will either return the last MapNode with a parent chain back to the start
+    // or returns null if we CANT get to the dest node
+    public MapNode aStar(MapNode start, MapNode dest) {
         //1.  Initialize queue and set
         PriorityQueue<MapNode> open = new PriorityQueue<>();
+        System.out.println("Created open PriorityQueue");
         Set<MapNode> explored = new HashSet<MapNode>();
         //2. Set up default values
         start.setG(0);
         open.add(start);
         while(!open.isEmpty()){
             MapNode current = open.poll();
+            System.out.println("Current Node: " + current.getData().getNodeID());
             explored.add(current);
-
+            System.out.println("Added current node to explored Set");
             if(current.equals(dest)){
-                break;
+                System.out.println("DESTINATION FOUND!!!!!");
+                return current;
             }
-
+            System.out.println("Iterating through children of current...");
             for (MapNode child : getChildren(current)){
+                System.out.println("child: " + child.getData().getNodeID());
                 child.calculateG(current);
                 child.calculateHeuristic(dest);
                 double cost = current.getG() + child.getG() + child.getH();
 
-                if(explored.contains(child) && cost>=child.getF()) {
+                if(open.contains(child) && cost>=child.getF()) {
+                    System.out.println("skipping this node because it was already seen");
                     continue;
                 }
+
+                if(explored.contains(child) && cost>=child.getF()) {
+                    System.out.println("skipping this node because the cost is to big");
+                    continue;
+                }
+
                 else if(!open.contains(child) || cost < child.getF()){
+                    System.out.println("setting child's parent to be current");
                     child.setParent(current, current.getG() + child.getG());
                     if(open.contains(child)){
                         open.remove(child);
                     }
+                    System.out.println("adding child to open list");
                     open.add(child);
                 }
             }
         }
-        return open;
+        return null;
     }
 
-
-    private ArrayList<MapNode> getChildren(MapNode node) {
+    // Gets rechable MapNodes from given MapNode
+    public ArrayList<MapNode> getChildren(MapNode node) {
         ArrayList<Node> neighbors = MapController.getNodesConnectedTo(node.getData());
         ArrayList<MapNode> nodeChildren = new ArrayList<>();
         for (Node n : neighbors) {
@@ -136,3 +94,6 @@ public class PathFindingService {
         return nodeChildren;
     }
 }
+
+
+

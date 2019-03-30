@@ -73,6 +73,13 @@ public class Node {
         return shortName;
     }
 
+    @Override
+    public String toString() {
+        return "Node{" +
+                "nodeID='" + nodeID + '\'' +
+                '}';
+    }
+
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }

@@ -1,6 +1,7 @@
 package service;
 
 import controller.MapController;
+import model.MapNode;
 import model.Node;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,24 +12,31 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import testclassifications.FastTest;
 
-import java.util.ArrayList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class PathFindingServiceTest {
 
-    Node n1 = new Node("n1", 0, 0, "f", "f", "f", "f", "f");
-    Node n2 = new Node("n2", 1, 0, "f", "f", "f", "f", "f");
-    Node n3 = new Node("n3", 1, 1, "f", "f", "f", "f", "f");
-    Node n4 = new Node("n4", 2, 1, "f", "f", "f", "f", "f");
-    Node n5 = new Node("n5", 3, 1, "f", "f", "f", "f", "f");
-    Node n6 = new Node("n6", 4, 0, "f", "f", "f", "f", "f");
-
-    @Before
-    public void init() {
-
-    }
+    final Node n1 = new Node("n1", 0, 0, "f", "f", "f", "f", "f");
+    final MapNode mn1 = new MapNode(0,0, n1);
+    final Node n2 = new Node("n2", 1, 0, "f", "f", "f", "f", "f");
+    final MapNode mn2 = new MapNode(1,0,n2);
+    final Node n3 = new Node("n3", 1, 1, "f", "f", "f", "f", "f");
+    final MapNode mn3 = new MapNode(1,1, n3);
+    final Node n4 = new Node("n4", 2, 1, "f", "f", "f", "f", "f");
+    final MapNode mn4 = new MapNode(2, 1, n4);
+    final Node n5 = new Node("n5", 3, 1, "f", "f", "f", "f", "f");
+    final MapNode mn5 = new MapNode(3, 1, n5);
+    final Node n6 = new Node("n6", 4, 0, "f", "f", "f", "f", "f");
+    final MapNode mn6 = new MapNode(4, 0, n6);
+    final PathFindingService mockPF = spy(new PathFindingService());
 
     @Mock
     MapController mockMapController;
@@ -36,18 +44,102 @@ public class PathFindingServiceTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
+//    @Test
+//    @Category(FastTest.class)
+//    public void sample() {
+//
+//    }
+
+    // generates the mock sinerio
+    //
+    //  1 - 2 - - - 6
+    //      |       |
+    //      3 - 4 - 5
+    //
+    @Before
     @Test
-    public void mockingConnectedTo() {
-        ArrayList<Node> neighbors = new ArrayList<>();
-//        neighbors.add();
-        MapController mockMapController = mock(MapController.class);
-//        when(mockMapController.getNodesConnectedTo(new Node(1,1)).thenReturn());
+    @Category(FastTest.class)
+    public void mockingGetChildren() {
+        ArrayList<MapNode> list = new ArrayList<MapNode>();
+        list.add(mn2);
+        when(mockPF.getChildren(mn1)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn1);
+        list.add(mn6);
+        list.add(mn3);
+        when(mockPF.getChildren(mn2)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn2);
+        list.add(mn4);
+        when(mockPF.getChildren(mn3)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn3);
+        list.add(mn5);
+        when(mockPF.getChildren(mn4)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn4);
+        list.add(mn6);
+        when(mockPF.getChildren(mn5)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn2);
+        list.add(mn5);
+        when(mockPF.getChildren(mn6)).thenReturn(list);
+    }
+
+    // make sure I built the sinerio correctly
+    @Test
+    @Category(FastTest.class)
+    public void testMocking() {
+        ArrayList<MapNode> expected = new ArrayList<MapNode>();
+        expected.add(mn1);
+        expected.add(mn6);
+        expected.add(mn3);
+        assertThat(mockPF.getChildren(mn2), is(expected));
+        expected = new ArrayList<MapNode>();
+        expected.add(mn2);
+        expected.add(mn5);
+        assertThat(mockPF.getChildren(mn6), is(expected));
+        expected = new ArrayList<MapNode>();
+        expected.add(mn2);
+        assertThat(mockPF.getChildren(mn1), is(expected));
     }
 
     @Test
     @Category(FastTest.class)
-    public void testingGetChildren() {
+    public void testAStar() {
+        // a path can be found
+        assertThat(mockPF.aStar(mn1, mn6), is(mn6));
+    }
 
+    @Test
+    @Category(FastTest.class)
+    public void testPathBackTracking() {
+        ArrayList<Node> expected = new ArrayList<Node>();
+        expected.add(0, n6);
+        expected.add(0, n2);
+        expected.add(0, n1);
+        assertThat(mockPF.genPath(mn1, mn6), is(expected));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void testPathBackTracking2() {
+        ArrayList<Node> expected = new ArrayList<Node>();
+        expected.add(0, n6);
+        expected.add(0, n2);
+        expected.add(0, n3);
+        assertThat(mockPF.genPath(mn3, mn6), is(expected));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void testPathBackTracking3() {
+        ArrayList<Node> expected = new ArrayList<Node>();
+        expected.add(0, n1);
+        expected.add(0, n2);
+        expected.add(0, n6);
+        expected.add(0, n5);
+        assertThat(mockPF.genPath(mn5, mn1), is(expected));
     }
 
 }

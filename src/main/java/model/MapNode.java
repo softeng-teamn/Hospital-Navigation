@@ -35,9 +35,13 @@ public class MapNode implements Comparable<MapNode>{
                 y == mapNode.y);
     }
 
+    public MapNode getParent() {
+        return this.parent;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(g, x, y, h, f, parent, data);
+        return Objects.hash(x,y,data);
     }
 
     public Node getData() {
