@@ -40,5 +40,5 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-#notifications:
-#   slack: teamnd19:eCaZORx7MtWGFel0fd0XkoNx
+notifications:
+   slack: teamnd19:eCaZORx7MtWGFel0fd0XkoNx
