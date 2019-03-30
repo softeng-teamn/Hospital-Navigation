@@ -1,8 +1,12 @@
 package controller;
 
+import model.MapNode;
+import model.Node;
 import service.MapService;
 
-public class MapController {
+import java.util.ArrayList;
+
+public class MapController extends Controller {
 
     static MapService map;
 
@@ -17,6 +21,9 @@ public class MapController {
 
     }
 
+    public static ArrayList<Node> getNodesConnectedTo(Node n) {
+        return Controller.dbs.getNodesConnectedTo(n);
+    }
 
 
 }

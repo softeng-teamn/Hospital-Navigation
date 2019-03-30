@@ -1,5 +1,6 @@
 package model;
 
+@SuppressWarnings("ALL")
 public class Point {
 
     private double weight;

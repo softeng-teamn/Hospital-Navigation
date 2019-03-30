@@ -275,6 +275,10 @@ public class DatabaseService {
     }
 
     // EDGE FUNCTIONS
+    // returns a list of nodes that are connected to the given node
+    public ArrayList<Node> getNodesConnectedTo(Node n) {
+        return new ArrayList<>();
+    }
 
     // get edges from a specific floor
     public static Collection<Edge> getEdges(int floor) {

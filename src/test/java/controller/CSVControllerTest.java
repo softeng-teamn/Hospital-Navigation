@@ -111,6 +111,7 @@ public class CSVControllerTest {
             line = reader.readLine();
         }
 
+    public void loadNodes() {
         try {
             reader.close();
         } catch(IOException e) {
