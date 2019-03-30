@@ -67,19 +67,8 @@ public class DatabaseService {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if(statement != null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            closeStatement(statement);
         }
-
-
-
-
-
     }
 
 
@@ -104,14 +93,7 @@ public class DatabaseService {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if(insertNode != null){
-                try {
-                    insertNode.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            closeStatement(insertNode);
         }
         return insertStatus;
     }
@@ -146,14 +128,7 @@ public class DatabaseService {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            closeStatement(stmt);
         }
         return updateResult;
     }
@@ -178,13 +153,7 @@ public class DatabaseService {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if(stmt != null){
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            closeStatement(stmt);
 
         }
         return deleteStatus;
@@ -341,14 +310,7 @@ public class DatabaseService {
         } catch (SQLException e1) {
             e1.printStackTrace();
         } finally {
-            if(statement != null){
-                try {
-                    statement.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
+            closeStatement(statement);
         }
 
         return returnValue;
@@ -414,14 +376,7 @@ public class DatabaseService {
         } catch (SQLException e1) {
             e1.printStackTrace();
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
+            closeStatement(stmt);
         }
         return updateResult;
     }
@@ -441,14 +396,7 @@ public class DatabaseService {
         } catch (SQLException e1) {
             e1.printStackTrace();
         } finally {
-            if(stmt != null){
-                try {
-                    stmt.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
+            closeStatement(stmt);
         }
         return deleteStatus;
     }
@@ -488,13 +436,7 @@ public class DatabaseService {
                 e.printStackTrace();
             }
         }
-        if(stmt != null){
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        closeStatement(stmt);
     }
 
     // delete all from each table. Almost exclusively used for testing.
@@ -507,17 +449,8 @@ public class DatabaseService {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if(statement != null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            closeStatement(statement);
         }
-
-
     }
 
     private void prepareNodeStatement(Node n, PreparedStatement insertNode) throws SQLException {
@@ -534,6 +467,20 @@ public class DatabaseService {
     private void prepareStatement(PreparedStatement preparedStatement, Object... values) throws SQLException {
         for (int i = 0; i < values.length; i++) {
             preparedStatement.setObject(i + 1, values[i]);
+        }
+    }
+
+    /**
+     * Attempt to close a statement
+     * @param statement the statement to close. Null is handled
+     */
+    private void closeStatement(Statement statement) {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
