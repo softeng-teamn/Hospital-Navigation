@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,12 +8,13 @@ import javafx.stage.Stage;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.loadui.testfx.GuiTest;
+import org.testfx.framework.junit.ApplicationTest;
 import testclassifications.UiTest;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class HomeControllerTest extends Application {
+public class HomeControllerTest extends ApplicationTest {
     final String schbtn = "#schedulerBtn";
     final String mapbtn = "#editBtn";
     final String reqbtn = "#serviceBtn";
@@ -30,7 +30,6 @@ public class HomeControllerTest extends Application {
     @Category(UiTest.class)
     public void scheduleSceneTest() throws InterruptedException {
         clickOn(schbtn);
-        press()
         Thread.sleep(200);
         Text text = (Text) GuiTest.find("#SceneID");
         assertThat(text.getText(), is("Schedule"));
@@ -54,28 +53,5 @@ public class HomeControllerTest extends Application {
         assertThat(text.getText(), is("Request"));
     }
 
-    @Test
-    public void showMapEditor() {
 
-    }
-
-    @Test
-    public void showRequest() {
-
-    }
-
-    @Test
-    public void showSchedule() {
-
-    }
-
-    @Test
-    public void requestPath() {
-
-    }
-
-    @Test
-    public void displayPath() {
-
-    }
 }
