@@ -2,12 +2,13 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <children>
       <JFXButton fx:id="schedulerBtn" layoutX="69.0" layoutY="50.0" onAction="#showSchedule" text="Scheduler" />
       <JFXButton fx:id="serviceBtn" layoutX="238.0" layoutY="50.0" onAction="#showRequest" text="Service Request" />
       <JFXButton fx:id="editBtn" layoutX="408.0" layoutY="50.0" onAction="#showMapEditor" text="Map Editor" />
+      <Text id="SceneID" layoutX="270.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Home" wrappingWidth="53.0673828125" />
    </children>
 </AnchorPane>

@@ -10,7 +10,7 @@ import model.Point;
 import service.ResourceLoader;
 import service.StageManager;
 
-public class HomeController extends MapController {
+public class HomeController extends controller.MapController {
 
     @FXML
     private JFXButton editBtn, schedulerBtn, serviceBtn;
