@@ -86,7 +86,11 @@ public class DatabaseService {
 
     // NODE FUNCTIONS
 
-    // insert a new node into the database without any edges
+    /**
+     * Attempt to insert a node into the database. Will not succeed if n.nodeID is not unique
+     * @param n A {@link Node} to insert into the database
+     * @return true if the node is successfully inserted, false otherwise.
+     */
     public boolean insertNode(Node n){
         String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
         PreparedStatement insertNode = null;
@@ -112,7 +116,11 @@ public class DatabaseService {
         return insertStatus;
     }
 
-    // edit existing node in database
+    /**
+     * Update the database entry for a given node
+     * @param n A {@link Node} to update. The node must have a valid ID
+     * @return true if the update is successful, false otherwise
+     */
     public boolean updateNode(Node n) {
         boolean updateResult = false;
         String nodeID = n.getNodeID();
@@ -127,24 +135,15 @@ public class DatabaseService {
         PreparedStatement stmt = null;
         try {
             stmt = connection.prepareStatement(insertStatement);
-            stmt.setInt(1, xcoord);
-            stmt.setInt(2, ycoord);
-            stmt.setString(3, floor);
-            stmt.setString(4, building);
-            stmt.setString(5, nodeType);
-            stmt.setString(6, longName);
-            stmt.setString(7, shortName);
-            stmt.setString(8, nodeID);
+            prepareStatement(stmt, xcoord, ycoord, floor, building, nodeType, longName, shortName, nodeID);
             try {
                 stmt.executeUpdate();
                 updateResult = true;
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
                 e.printStackTrace();
             }
             stmt.close();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
         } finally {
             if (stmt != null) {
@@ -159,7 +158,11 @@ public class DatabaseService {
         return updateResult;
     }
 
-        // delete existing node in database
+    /**
+     * Delete a node if it exists
+     * @param n A {@link Node} to delete. n.nodeId must not be null
+     * @return true if a record is deleted, false otherwise
+     */
     public boolean deleteNode(Node n) {
         PreparedStatement stmt = null;
         String nodeID = n.getNodeID();
@@ -167,7 +170,9 @@ public class DatabaseService {
         boolean deleteStatus = false;
         try {
             stmt = connection.prepareStatement(query);
-            stmt.setString(1,nodeID);
+
+            prepareStatement(stmt, nodeID);
+
             stmt.executeUpdate();
             deleteStatus = true;
         } catch (SQLException e) {
@@ -194,7 +199,9 @@ public class DatabaseService {
 
         try {
             stmt = connection.prepareStatement(input);
-            stmt.setString(1,nodeID);
+
+            prepareStatement(stmt, nodeID);
+
             // execute the query
             rs = stmt.executeQuery();
 
@@ -256,7 +263,6 @@ public class DatabaseService {
             nodes.close();
         }
         catch(SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
             return null;
         } finally {
@@ -327,9 +333,9 @@ public class DatabaseService {
         boolean returnValue = false;
         try {
             statement = connection.prepareStatement(insertStatement);
-            statement.setString(1,e.getEdgeID());
-            statement.setString(2,node1ID);
-            statement.setString(3,node2ID);
+
+            prepareStatement(statement, e.getEdgeID(), node1ID, node2ID);
+
             statement.execute();
             returnValue = true;
         } catch (SQLException e1) {
@@ -349,14 +355,16 @@ public class DatabaseService {
     }
 
     // get an edge. This also pulls out the nodes that edge connects.
-    public Edge getEdge(String EdgeID){
+    public Edge getEdge(String edgeID){
         PreparedStatement stmt = null;
         ResultSet rs = null;
         String input = "SELECT * FROM EDGE WHERE (EDGEID = ?)";
         Edge newEdge;
         try {
             stmt = connection.prepareStatement(input);
-            stmt.setString(1,EdgeID);
+
+            prepareStatement(stmt, edgeID);
+
             rs = stmt.executeQuery();
 
             // extract results, only one record should be found.
@@ -392,10 +400,9 @@ public class DatabaseService {
         PreparedStatement stmt = null;
         try {
             stmt = connection.prepareStatement(updateStatement);
-            stmt.setString(1,edgeID);
-            stmt.setString(2,node1);
-            stmt.setString(3,node2);
-            stmt.setString(4,edgeID);
+
+            prepareStatement(stmt, edgeID, node1, node2, edgeID);
+
             try {
                 stmt.executeUpdate();
                 updateResult = true;
@@ -426,7 +433,9 @@ public class DatabaseService {
         boolean deleteStatus = false;
         try {
             stmt = connection.prepareStatement(query);
-            stmt.setString(1,edgeID);
+
+            prepareStatement(stmt, edgeID);
+
             stmt.executeUpdate();
             deleteStatus = true;
         } catch (SQLException e1) {
@@ -495,8 +504,6 @@ public class DatabaseService {
             statement = connection.createStatement();
             statement.execute("DELETE FROM EDGE");
             statement.execute("DELETE FROM NODE");
-
-            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -514,13 +521,19 @@ public class DatabaseService {
     }
 
     private void prepareNodeStatement(Node n, PreparedStatement insertNode) throws SQLException {
-        insertNode.setString(1,n.getNodeID());
-        insertNode.setInt(2,n.getXcoord());
-        insertNode.setInt(3,n.getYcoord());
-        insertNode.setString(4,n.getFloor());
-        insertNode.setString(5,n.getBuilding());
-        insertNode.setString(6,n.getNodeType());
-        insertNode.setString(7,n.getLongName());
-        insertNode.setString(8,n.getShortName());
+        prepareStatement(insertNode, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
+    }
+
+    /**
+     * Set the values of a prepared statement. The number of variables in the prepared statement and the number of
+     * values must match.
+     * @param preparedStatement the prepared statement to prepare
+     * @param values the values to insert
+     * @throws SQLException there is a mismatch in number of variables or there is a database access error
+     */
+    private void prepareStatement(PreparedStatement preparedStatement, Object... values) throws SQLException {
+        for (int i = 0; i < values.length; i++) {
+            preparedStatement.setObject(i + 1, values[i]);
+        }
     }
 }
