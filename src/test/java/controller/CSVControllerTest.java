@@ -2,6 +2,7 @@ package controller;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.Node;
+import model.Edge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.when;
 public class CSVControllerTest {
 
     private ArrayList<Node> testNodes;
+    private ArrayList<Edge> testEdge;
 
     @Before
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
@@ -32,6 +34,7 @@ public class CSVControllerTest {
         DatabaseService dbs = mock(DatabaseService.class);
 
         testNodes = new ArrayList<>();
+        testEdge = new ArrayList<>();
 
         Node n1 = new Node(0, 0);
         n1.setNodeID("ABC123");
@@ -57,9 +60,16 @@ public class CSVControllerTest {
         n3.setShortName("T3");
         n3.setLongName("Test Node 3");
 
+        Edge e1 = new Edge(n1, n2);
+        Edge e2 = new Edge(n2, n3);
+        Edge e3 = new Edge(n1, n3);
+
         testNodes.add(n1);
         testNodes.add(n2);
         testNodes.add(n3);
+        testEdge.add(e1);
+        testEdge.add(e2);
+        testEdge.add(e3);
 
         when(dbs.getAllNodes()).thenReturn(testNodes);
 
@@ -122,7 +132,47 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void exportEdges() {
+    @Category(FastTest.class)
+    public void exportEdges() throws IOException{
+        // Precondition: Check that ./edges.csv does not exist
+        File tempfile = new File("./edges.csv");
+        assertFalse(tempfile.exists());
+
+        // Action: call CSVController.exportEdges
+        CSVController.exportEdges();
+
+        // Assert that export nodes has the correct content
+        File edgecsv = new File("./edges.csv");
+        assertTrue(edgecsv.exists());
+        BufferedReader reader = new BufferedReader( new InputStreamReader(new FileInputStream("./edges.csv"), StandardCharsets.UTF_8));
+
+        StringBuffer fileContents = new StringBuffer();
+        String line = reader.readLine();
+        while(line != null){
+            fileContents.append(line);
+            fileContents.append("\n");
+            line = reader.readLine();
+        }
+
+        try {
+            reader.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+
+            if (reader != null) {
+                reader.close();
+            }
+        }
+
+        String expectedValue = "edgeID,startNode,endNode" + "\n"
+                + "ABC123XYZ4242,ABC123,XYZ4242\n"
+                + "XYZ4242LMNO123,XYZ4242,LMNO123\n"
+                + "ABC123LMNO123, ABC123, LMNO123\n";
+
+        assertThat(fileContents.toString(), is(expectedValue));
+
+        File file = new File("./edges.csv");
+        assertThat(file.delete(), is(true));
     }
 
     @Test
