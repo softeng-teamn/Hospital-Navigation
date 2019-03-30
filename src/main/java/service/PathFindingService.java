@@ -6,6 +6,8 @@ import model.Node;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.HashSet;
 
 public class PathFindingService {
 
@@ -70,7 +72,7 @@ public class PathFindingService {
         closed.add(start);
 
         while(!open.isEmpty()) {
-            MapNode parent = open.remove();
+            MapNode parent = open.poll();
             if (parent.equals(dest)){
                 break;
             }
@@ -88,6 +90,42 @@ public class PathFindingService {
         }
         return path;
     }
+
+    public PriorityQueue<MapNode> aStar2(MapNode start, MapNode dest) {
+        //1.  Initialize queue and set
+        PriorityQueue<MapNode> open = new PriorityQueue<>();
+        Set<MapNode> explored = new HashSet<MapNode>();
+        //2. Set up default values
+        start.setG(0);
+        open.add(start);
+        while(!open.isEmpty()){
+            MapNode current = open.poll();
+            explored.add(current);
+
+            if(current.equals(dest)){
+                break;
+            }
+
+            for (MapNode child : getChildren(current)){
+                child.checkBetter(current, DEFAULT_HV_COST);
+                child.calculateHeuristic(dest);
+                double cost = current.getG() + DEFAULT_HV_COST + child.getH();
+
+                if(explored.contains(child) && cost>=child.getF()) {
+                    continue;
+                }
+                else if(!open.contains(child) || cost < child.getF()){
+                    child.setParent(current, current.getG() + DEFAULT_HV_COST);
+                    if(open.contains(child)){
+                        open.remove(child);
+                    }
+                    open.add(child);
+                }
+            }
+        }
+        return open;
+    }
+
 
     private ArrayList<MapNode> getChildren(MapNode node) {
         ArrayList<Node> neighbors = MapController.getNodesConnectedTo(node.getData());

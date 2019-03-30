@@ -58,7 +58,7 @@ public class MapNode implements Comparable<MapNode>{
         this.h = Math.sqrt(Math.pow(dx, 2.0) + Math.pow(dy, 2.0));
     }
 
-    private void setParent(MapNode n, int cost) {
+    public void setParent(MapNode n, int cost) {
         this.parent = n;
         this.g = n.g + cost;
     }
@@ -71,6 +71,14 @@ public class MapNode implements Comparable<MapNode>{
 
     public int getG(){
         return this.g;
+    }
+
+    public void setG(int g){
+        this.g = g;
+    }
+
+    public double getH(){
+        return this.h;
     }
 
     @Override
