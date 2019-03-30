@@ -25,7 +25,7 @@ public class DatabaseServiceTest {
     private DatabaseService myDBS;
 
     @Before
-    public void setUp() throws SQLException {
+    public void setUp() throws SQLException, MismatchedDatabaseVersionException {
         myDBS = DatabaseService.init("hospital-db-test");
     }
 

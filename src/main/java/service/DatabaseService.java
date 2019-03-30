@@ -9,6 +9,8 @@ import java.util.Collection;
 
 public class DatabaseService {
 
+    private static final int DATABASE_VERSION = 5;
+
     private Connection connection;
 
     private String databaseName;
@@ -17,7 +19,7 @@ public class DatabaseService {
         this.connection = connection;
     }
 
-    public static DatabaseService init(String dbName) throws SQLException{
+    public static DatabaseService init(String dbName) throws SQLException, MismatchedDatabaseVersionException {
         DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
         Connection connection;
         boolean createFlag = false;
@@ -39,11 +41,54 @@ public class DatabaseService {
 
         if(createFlag){
             myDB.createTables();
+        } else {
+            myDB.validateVersion();
         }
+
         return myDB;
     }
 
-    public static DatabaseService init() throws SQLException{
+    /**
+     * Throws an exception if myDB has an invalid version
+     */
+    private void validateVersion() throws MismatchedDatabaseVersionException {
+        String query = "SELECT * FROM META_DB_VER";
+
+        ResultSet rs = null;
+        Statement versionStatement = null;
+        try {
+            versionStatement = connection.createStatement();
+
+            try {
+                rs = versionStatement.executeQuery(query);
+            } catch (SQLSyntaxErrorException e) {
+                closeAll(versionStatement, rs);
+                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + DATABASE_VERSION);
+            }
+
+            boolean hasNext = rs.next();
+
+            // If no version identifier exists, assume bad database
+            if (!hasNext) {
+                closeAll(versionStatement, rs);
+                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + DATABASE_VERSION);
+            }
+
+            int existingVersion = rs.getInt("version");
+
+            if (existingVersion != DATABASE_VERSION) {
+                closeAll(versionStatement, rs);
+                throw new MismatchedDatabaseVersionException("Existing database version: " + existingVersion + ", expected: " + DATABASE_VERSION);
+            }
+
+            rs.close();
+            versionStatement.close();
+        } catch (SQLException e) {
+            closeAll(versionStatement, rs);
+        }
+    }
+
+    public static DatabaseService init() throws SQLException, MismatchedDatabaseVersionException {
         return init("hospital-db");
     }
 
@@ -70,6 +115,10 @@ public class DatabaseService {
             }
             if(!tableExists("RESERVABLESPACE")){
                 statement.execute("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY , spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
+            }
+            if(!tableExists("META_DB_VER")){
+                statement.execute("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
+                statement.execute("INSERT INTO META_DB_VER values(0, " + DATABASE_VERSION + ")");
             }
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
@@ -429,11 +478,12 @@ public class DatabaseService {
         }
     }
 
-    void close(){
+    void close() {
         try {
             connection.close();
-            DriverManager.getConnection(
+            Connection closeConnection = DriverManager.getConnection(
                     "jdbc:derby:" + databaseName + ";shutdown=true");
+            closeConnection.close();
         } catch (SQLNonTransientConnectionException e) {
             System.out.println("Database '" + databaseName + "' shutdown successfully!");
         } catch (SQLException e) {

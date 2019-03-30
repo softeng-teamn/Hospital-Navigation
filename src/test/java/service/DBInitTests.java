@@ -18,7 +18,7 @@ public class DBInitTests {
 
     @Test
     @Category(FastTest.class)
-    public void initBase() {
+    public void initBase() throws MismatchedDatabaseVersionException {
         boolean testor;
         try {
             myDB = DatabaseService.init();
