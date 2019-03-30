@@ -174,7 +174,8 @@ public class CSVController extends Controller {
                     dbs.insertEdge(edge);
                 }
                 else{
-                    System.out.println("Invalid Engine Found: " + line);
+                    //Print out error statement
+                    System.out.println("Invalid Edge Found: " + line);
                 }
             }
 
