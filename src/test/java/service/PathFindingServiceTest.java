@@ -39,9 +39,9 @@ public class PathFindingServiceTest {
     @Test
     public void mockingConnectedTo() {
         ArrayList<Node> neighbors = new ArrayList<>();
-        neighbors.add();
+//        neighbors.add();
         MapController mockMapController = mock(MapController.class);
-        when(mockMapController.getNodesConnectedTo(new Node(1,1)).thenReturn());
+//        when(mockMapController.getNodesConnectedTo(new Node(1,1)).thenReturn());
     }
 
     @Test

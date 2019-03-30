@@ -107,15 +107,15 @@ public class PathFindingService {
             }
 
             for (MapNode child : getChildren(current)){
-                child.checkBetter(current, DEFAULT_HV_COST);
+                child.calculateG(current);
                 child.calculateHeuristic(dest);
-                double cost = current.getG() + DEFAULT_HV_COST + child.getH();
+                double cost = current.getG() + child.getG() + child.getH();
 
                 if(explored.contains(child) && cost>=child.getF()) {
                     continue;
                 }
                 else if(!open.contains(child) || cost < child.getF()){
-                    child.setParent(current, current.getG() + DEFAULT_HV_COST);
+                    child.setParent(current, current.getG() + child.getG());
                     if(open.contains(child)){
                         open.remove(child);
                     }
