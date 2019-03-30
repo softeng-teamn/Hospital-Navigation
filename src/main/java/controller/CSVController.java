@@ -108,20 +108,28 @@ public class CSVController extends Controller {
         BufferedReader reader = null;
 
         try {
+            //load file to be read
             reader = new BufferedReader(new InputStreamReader(ResourceLoader.nodes.openStream(), "UTF-8"));
 
+            //read first line
             reader.readLine();
 
             String line = null;
+            //loop until there is nothing to read
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
+
+                //Create node and populate it with data
                 Node node = new Node(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2]), data[3], data[4], data[5], data[6], data[7]);
 
+                //insert node into database
                 dbs.insertNode(node);
             }
+            //close reader
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
+            //clean up reader
             if(reader != null) {
                 try {
                     reader.close();
@@ -137,6 +145,53 @@ public class CSVController extends Controller {
      */
 
     public static void importEdges() {
+
+        BufferedReader reader = null;
+
+        try {
+            //load file to read
+            reader = new BufferedReader(new InputStreamReader(ResourceLoader.edges.openStream(), "UTF-8"));
+
+            //read first line
+            reader.readLine();
+
+            String line = null;
+
+            //loop until there is nothing to read
+            while((line = reader.readLine()) != null){
+                String[] data = line.split(",");
+
+                //retrieve nodes from database based on ID
+                Node node1 = dbs.getNode(data[1]);
+                Node node2 = dbs.getNode(data[2]);
+
+                //checks to see if nodes are not null before creating and adding an edge
+                if((node1 != null) && (node2 != null)) {
+                    //Create edge and populate it with two nodes
+                    Edge edge = new Edge(node1, node2);
+
+                    //Add edge to the database
+                    dbs.insertEdge(edge);
+                }
+                else{
+                    System.out.println("Invalid Engine Found: " + line);
+                }
+            }
+
+            //close reader
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //clean up reader
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+
     }
 
     /**
