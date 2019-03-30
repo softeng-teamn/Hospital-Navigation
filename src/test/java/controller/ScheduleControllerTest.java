@@ -4,10 +4,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.mockito.Mock;
+import service.DatabaseService;
 import testclassifications.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.*;
@@ -15,10 +18,13 @@ import static org.hamcrest.junit.MatcherAssert.assertThat;
 
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 
+import org.mockito.Mockito;
+
 public class ScheduleControllerTest {
-    private ScheduleController sc;
+    private ScheduleController sc = new ScheduleController();
     private ArrayList<String> rooms = new ArrayList<>();
 
+    @Mock private DatabaseService dbs;
     @Before
     public void initRooms() {
         rooms.add(0, "ROOM1");
@@ -32,14 +38,8 @@ public class ScheduleControllerTest {
 
     @Category(FastTest.class)
     @Test
-    public void testGetMaxPeopleContent(){//has all the right rooms
-        //assertThat(sc.getMaxPeople(20), containsInAnyOrder(rooms));
-    }
-
-    @Category(FastTest.class)
-    @Test
     public void testGetMaxPeopleSize(){//does not have more rooms than expected(test limitation from maxPeopleContent
-        //assertThat(sc.getMaxPeople(20).size(), equalTo(5));
+        //assertThat(sc.getRoomByCap(20).size(), equalTo(5));
     }
 
     @Category(FastTest.class)
@@ -63,8 +63,9 @@ public class ScheduleControllerTest {
     @Category({FastTest.class})
     @Test
     public void bookRoom(){//probs needs more test cases involving the db
-        //assertThat(sc.bookRoom("ROOM1", "12122019", "10:30-12:30"), equalTo(true));
+        assertThat(sc.bookRoom("ROOM1", "12122019", "10:30-12:30"), equalTo(true));
     }
+
 
     @Category(FastTest.class)
     @Test
