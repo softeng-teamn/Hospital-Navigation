@@ -17,8 +17,13 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.mockito.Mockito;
+import service.DatabaseService;
+import org.mockito.Mock;
+
 
 public class ScheduleControllerTest {
     private ScheduleController sc = new ScheduleController();
@@ -26,50 +31,33 @@ public class ScheduleControllerTest {
 
     @Mock private DatabaseService dbs;
     @Before
-    public void initRooms() {
+    public void init() {
         rooms.add(0, "ROOM1");
         rooms.add(1, "ROOM2");
+        DatabaseService dbs = mock(DatabaseService.class);
+        when(dbs.bookRoom("random", "random2", "random3")).thenReturn(true) ;
+        ScheduleController.dbs=dbs ;
     }
 
     @After
-    public void clearRooms(){
+    public void clear(){
         rooms.clear();
     }
 
-    @Category(FastTest.class)
-    @Test
-    public void testGetMaxPeopleSize(){//does not have more rooms than expected(test limitation from maxPeopleContent
-        //assertThat(sc.getRoomByCap(20).size(), equalTo(5));
-    }
 
-    @Category(FastTest.class)
-    @Test
-    public void getDay(){
-        //assertThat(sc.getDay(), equalTo("12122019"));
-    }
-
-    @Category(FastTest.class)
-    @Test
-    public void getRoom() {
-        //assertThat(sc.getRoom(), equalTo("ROOM1"));
-    }
-
-    @Category(FastTest.class)
-    @Test
-    public void getRoomSched(){
-        //assertThat(sc.getRoomSched("ROOM1", "12122019"), equalTo("10:30-13:30;14:30-15:30"));
-    }
 
     @Category({FastTest.class})
     @Test
     public void bookRoom(){//probs needs more test cases involving the db
+        // assert that an available room can be booked
         assertThat(sc.bookRoom("ROOM1", "12122019", "10:30-12:30"), equalTo(true));
+        // assert that a booked room cannot be double-booked
+        assertThat(sc.bookRoom("ROOM1", "12122019", "10:30-12:30"), equalTo(false));
+        // assert that a non-existant room cannot be booked
+        assertThat(sc.bookRoom("ROOM-1", "12122019", "10:30-12:30"), equalTo(false));
+
+
     }
 
 
-    @Category(FastTest.class)
-    @Test
-    public void getWorkStationTest(){
-        //assertThat(sc.getWorkStation(), equalTo("WORK1"));
-    }
 }

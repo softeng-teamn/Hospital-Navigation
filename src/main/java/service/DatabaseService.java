@@ -303,8 +303,10 @@ public class DatabaseService {
 
     }
 
-    public String getRoomSched(String day, String roomID){
-        return "";
+    public Collection<String> getRoomSched(String day, String roomID){
+        Collection<String> x = new ArrayList<String> ();
+        x.add("");
+        return x;
     }
 
     public boolean bookRoom(String day, String roomID, String time){

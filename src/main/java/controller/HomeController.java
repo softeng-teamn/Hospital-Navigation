@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import model.MapNode;
 import model.Node;
 import model.Point;
 import service.ResourceLoader;
@@ -42,7 +43,7 @@ public class HomeController extends MapController {
 
     // Get path from start node to destination node
     private Point requestPath(Node start, Node dest) {
-        Point myPath = new Point(1,1,1,"someID", null);
+        Point myPath = map.findPath(start, dest);
         return myPath;
     }
 

@@ -8,19 +8,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import org.mockito.Mock;
+
 import service.ResourceLoader;
 import service.StageManager;
+
+import java.util.Date;
+
 import service.DatabaseService;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 
 public class ScheduleController extends Controller {
-    DatabaseService dbs;
+
 
     @FXML
     private JFXButton homeBtn;
+    private int timeStep = 30;     // schedule time increment
 
     // switches window to home screen
     public void showHome() throws Exception {
@@ -31,8 +34,29 @@ public class ScheduleController extends Controller {
 
     //asks the database to update a room schedule for a particular room
     //returns true if success
-    public boolean bookRoom(String roomID, String day, String time){
+    // assume booking has proper day & time info (mmddyy, hhmmss)
+    public boolean bookRoom(String roomID, String day, String time) {
         return dbs.bookRoom(roomID, day, time);
+    }
+
+    // pull unavailable times for a room & date
+    public void showAvailableTimes(String roomID, String day) {
+        Collection<String> unavailable = dbs.getRoomSched(day, roomID);    // can change Collection<String> later
+
+        ArrayList<String> allTimes = new ArrayList<>();
+        // available times
+        ArrayList<String> available = new ArrayList<>();
+        // to iterate over all possible times in a day
+        for (int i = 0; i < allTimes.size(); i += timeStep) {
+            // put in available times
+        }
+        available.removeAll(unavailable);
+
+        // UI - display things in available!! thank u :)
+    }
+
+    public void setTimeStep(int timeStep) {
+        this.timeStep = timeStep;
     }
 
 }
