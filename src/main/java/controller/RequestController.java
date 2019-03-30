@@ -17,6 +17,8 @@ public class RequestController extends Controller {
     private JFXButton homeBtn;
 
     private Collection<Request> requests;
+    private Collection<Request> pendingRequests;
+
 
     @FXML
     // switches window to home screen
@@ -26,14 +28,20 @@ public class RequestController extends Controller {
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
-    // adds a request object to local collection
-    private void makeRequest() {
+    // submits request to database
+    // "confirm" button
+    void makeRequest(Request type) {
 
     }
 
-    // removes object from local collection
-    private void fufillRequest() {
+    // removes object from database
+    void fufillRequest(String requestID, String byWho) {
 
+    }
+
+    // getter for pendingRequests
+    public Collection<Request> getPendingRequests () {
+        return null;
     }
 
 }

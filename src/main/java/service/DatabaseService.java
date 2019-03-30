@@ -303,6 +303,20 @@ public class DatabaseService {
 
     }
 
+    public String getRoomSched(String day, String roomID){
+        return "";
+    }
+
+    public boolean bookRoom(String day, String roomID, String time){
+        return false;
+    }
+
+    public void addRequest(String Request){}
+
+    public boolean login(String id, String password){
+        return false;
+    }
+
     // insert an edge. The method will fail and return false if the two nodes it points to
     // do not already exist in the database.
     public boolean insertEdge(Edge e){
