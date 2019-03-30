@@ -2,6 +2,7 @@ package controller;
 
 import model.Edge;
 import model.Node;
+import service.ResourceLoader;
 
 import java.io.*;
 
@@ -32,7 +33,8 @@ public class CSVController extends Controller {
         // Open a file
         Writer writer = null;
         try {
-            writer = new OutputStreamWriter(new FileOutputStream(NODE_EXPORT_PATH), "UTF-8");;
+            writer = new OutputStreamWriter(new FileOutputStream(NODE_EXPORT_PATH), "UTF-8");
+            ;
             writer.write(NODE_HEADER);
 
             // Write out each node
@@ -67,7 +69,8 @@ public class CSVController extends Controller {
         // Open a file
         Writer writer = null;
         try {
-            writer = new OutputStreamWriter(new FileOutputStream(EDGE_EXPORT_PATH), "UTF-8");;
+            writer = new OutputStreamWriter(new FileOutputStream(EDGE_EXPORT_PATH), "UTF-8");
+            ;
             writer.write(EDGES_HEADER);
 
             // Write out each node
@@ -100,11 +103,39 @@ public class CSVController extends Controller {
      * Import the Nodes table
      */
     public static void importNodes() {
+
+
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new InputStreamReader(ResourceLoader.nodes.openStream(), "UTF-8"));
+
+            reader.readLine();
+
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                Node node = new Node(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2]), data[3], data[4], data[5], data[6], data[7]);
+
+                dbs.insertNode(node);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            if(reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
      * Import the Edges table
      */
+
     public static void importEdges() {
     }
 
