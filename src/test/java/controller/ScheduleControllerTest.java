@@ -8,10 +8,11 @@ import org.mockito.Mock;
 import service.DatabaseService;
 import testclassifications.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.sql.SQLOutput;
+import java.util.*;
 
+import static java.util.Calendar.JUNE;
+import static java.util.Calendar.MINUTE;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
@@ -63,6 +64,12 @@ public class ScheduleControllerTest {
         // assert that a non-existant room cannot be booked
         assertThat(sc.bookRoom("ROOM-1", "12122019", "10:30-12:30"), equalTo(false));
 
+
+    }
+
+    @Test
+    @Category({FastTest.class})
+    public void showAvailTimesTest() {
 
     }
 

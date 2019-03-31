@@ -6,6 +6,7 @@ import model.Node;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 
 public class DatabaseService {
 
@@ -303,9 +304,8 @@ public class DatabaseService {
 
     }
 
-    public Collection<String> getRoomSched(String day, String roomID){
-        Collection<String> x = new ArrayList<String> ();
-        x.add("");
+    public Collection<GregorianCalendar> getRoomSched(String day, String roomID){
+        Collection<GregorianCalendar> x = new ArrayList<GregorianCalendar> ();
         return x;
     }
 

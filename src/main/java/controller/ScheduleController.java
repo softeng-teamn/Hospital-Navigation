@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 
 import com.jfoenix.controls.JFXButton;
@@ -12,11 +13,13 @@ import javafx.stage.Stage;
 import service.ResourceLoader;
 import service.StageManager;
 
-import java.util.Date;
+import java.util.GregorianCalendar ;
 
 import service.DatabaseService;
 
 import java.io.IOException;
+
+import static java.util.Calendar.JUNE;
 
 public class ScheduleController extends Controller {
 
@@ -40,17 +43,20 @@ public class ScheduleController extends Controller {
     }
 
     // pull unavailable times for a room & date
-    public void showAvailableTimes(String roomID, String day) {
-        Collection<String> unavailable = dbs.getRoomSched(day, roomID);    // can change Collection<String> later
+    public void showAvailableTimes(GregorianCalendar date) {
+//        Collection<GregorianCalendar> unavailable = dbs.getRoomSched(day, roomID);    // can change Collection<String> later
+
+
 
         ArrayList<String> allTimes = new ArrayList<>();
         // available times
         ArrayList<String> available = new ArrayList<>();
+
         // to iterate over all possible times in a day
         for (int i = 0; i < allTimes.size(); i += timeStep) {
             // put in available times
         }
-        available.removeAll(unavailable);
+   //     available.removeAll(unavailable);
 
         // UI - display things in available!! thank u :)
     }

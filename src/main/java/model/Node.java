@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Node {
 
     private int xcoord, ycoord;
@@ -109,4 +111,23 @@ public class Node {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Node)) return false;
+        Node node = (Node) o;
+        return getXcoord() == node.getXcoord() &&
+                getYcoord() == node.getYcoord() &&
+                getNodeID().equals(node.getNodeID()) &&
+                getFloor().equals(node.getFloor()) &&
+                getBuilding().equals(node.getBuilding()) &&
+                getNodeType().equals(node.getNodeType()) &&
+                getLongName().equals(node.getLongName()) &&
+                getShortName().equals(node.getShortName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getXcoord(), getYcoord(), getNodeID(), getFloor(), getBuilding(), getNodeType(), getLongName(), getShortName());
+    }
 }
