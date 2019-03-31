@@ -10,18 +10,22 @@ import org.junit.Test;
 import java.io.*;
 
 import org.junit.experimental.categories.Category;
+import org.mockito.ArgumentCaptor;
 import service.DatabaseService;
+import service.ResourceLoader;
 import testclassifications.FastTest;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class CSVControllerTest {
 
@@ -36,29 +40,9 @@ public class CSVControllerTest {
         testNodes = new ArrayList<>();
         testEdges = new ArrayList<>();
 
-        Node n1 = new Node(0, 0);
-        n1.setNodeID("ABC123");
-        n1.setFloor("1");
-        n1.setBuilding("Main");
-        n1.setNodeType("ABC");
-        n1.setShortName("T1");
-        n1.setLongName("Test Node 1");
-
-        Node n2 = new Node(50, 50);
-        n2.setNodeID("XYZ4242");
-        n2.setFloor("L1");
-        n2.setBuilding("Aux");
-        n2.setNodeType("XYZ");
-        n2.setShortName("T2");
-        n2.setLongName("Test Node 2");
-
-        Node n3 = new Node(0, 50);
-        n3.setNodeID("LMNO123");
-        n3.setFloor("G");
-        n3.setBuilding("Main");
-        n3.setNodeType("LMNO");
-        n3.setShortName("T3");
-        n3.setLongName("Test Node 3");
+        Node n1 = new Node("ABC123", 0, 0, "1", "Main", "ABC", "Test Node 1", "T1");
+        Node n2 = new Node("XYZ4242", 50, 50, "L1", "Aux", "XYZ", "Test Node 2", "T2");
+        Node n3 = new Node("LMNO123", 0, 50, "G", "Main", "LMNO", "Test Node 3", "T3");
 
         Edge e1 = new Edge(n1, n2);
         Edge e2 = new Edge(n2, n3);
@@ -181,7 +165,30 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void importNodes() {
+    @Category(FastTest.class)
+    // Warning: this test contains large amounts of black magic
+    public void importNodes() throws Exception {
+        URL originalURL = ResourceLoader.nodes;
+        // Override the csv file
+        setFinalStatic(ResourceLoader.class.getDeclaredField("nodes"), service.ResourceLoader.class.getResource("/test_nodes.csv"));
+
+        // Create a class to capture arguments of the type Node
+        ArgumentCaptor<Node> nodeCaptor = ArgumentCaptor.forClass(Node.class);
+
+        // Action being tested
+        CSVController.importNodes();
+
+        // Capture the calls to insert node
+        verify(CSVController.dbs, times(3)).insertNode(nodeCaptor.capture());
+
+        // Check that each node captured is equal to the test nodes
+        List<Node> capturedNodes = nodeCaptor.getAllValues();
+        assertEquals(testNodes.get(0), capturedNodes.get(0));
+        assertEquals(testNodes.get(1), capturedNodes.get(1));
+        assertEquals(testNodes.get(2), capturedNodes.get(2));
+
+        // Reset to original URL
+        setFinalStatic(ResourceLoader.class.getDeclaredField("nodes"), originalURL);
     }
 
     @Test
@@ -190,5 +197,14 @@ public class CSVControllerTest {
 
     @Test
     public void importRequests() {
+    }
+
+    // DANGER! Use wisely!
+    static void setFinalStatic(Field field, Object newValue) throws Exception {
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(null, newValue);
     }
 }
