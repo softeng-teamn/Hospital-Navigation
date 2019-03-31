@@ -254,7 +254,35 @@ public class DatabaseService {
     // EDGE FUNCTIONS
     // returns a list of nodes that are connected to the given node
     public ArrayList<Node> getNodesConnectedTo(Node n) {
-        return new ArrayList<>();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String nodeID = n.getNodeID();
+        String input = "SELECT NODE.NodeID, NODE.xcoord, NODE.ycoord, NODE.floor, NODE.building, NODE.nodeType, NODE.longName, NODE.shortName FROM NODE INNER JOIN EDGE ON (NODE.NodeID = EDGE.node1 AND EDGE.node2 = ?) OR (NODE.NodeID = EDGE.node2 AND EDGE.Node1 = ?)";
+        ArrayList<Node> connectedNodes = new ArrayList<Node>();
+        try {
+            stmt = connection.prepareStatement(input);
+            prepareStatement(stmt,nodeID,nodeID);
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                // extract results from each row of the database.
+                String newNodeID = rs.getString("nodeID");
+                int newxcoord = rs.getInt("xcoord");
+                int newycoord = rs.getInt("ycoord");
+                String newFloor = rs.getString("floor");
+                String newBuilding = rs.getString("building");
+                String newNodeType = rs.getString("nodeType");
+                String newLongName = rs.getString("longName");
+                String newShortName = rs.getString("shortName");
+                // construct the new node and return it
+                Node newNode = new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
+                connectedNodes.add(newNode);;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
+        return connectedNodes;
     }
 
     // get edges from a specific floor
