@@ -22,7 +22,7 @@ import java.util.PriorityQueue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class PathFindingServiceTest {
+public class PathFindingServiceSimpleTest {
 
     final Node n1 = new Node("n1", 0, 0, "f", "f", "f", "f", "f");
     final MapNode mn1 = new MapNode(0,0, n1);
