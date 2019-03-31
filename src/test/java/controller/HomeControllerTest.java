@@ -18,6 +18,7 @@ public class HomeControllerTest extends ApplicationTest {
     final String schbtn = "#schedulerBtn";
     final String mapbtn = "#editBtn";
     final String reqbtn = "#serviceBtn";
+
     @Override
     public void start(Stage stage) throws Exception {
         Parent mainNode = FXMLLoader.load(getClass().getResource("../home.fxml"));
