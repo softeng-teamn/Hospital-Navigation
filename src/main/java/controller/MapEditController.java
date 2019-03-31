@@ -25,21 +25,26 @@ public class MapEditController extends MapController {
     }
 
     // add a new node into map and DB
-    private void insertNode(Node n, Collection<Edge> e) {
-        dbs.insertNode(n);
-        for (Edge edge: e){
-            dbs.insertEdge(edge);
+     boolean insertNode(Node n, Collection<Edge> e) {
+        if(e.isEmpty()){
+            return false;
         }
+        boolean success = dbs.insertNode(n);
+        for (Edge edge: e){
+            success = success && dbs.insertEdge(edge);
+        }
+        return success;
     }
 
     // edit node form map and DB
-    private void editNode(Node n) {
-        dbs.updateNode(n);
+     boolean updateNode(Node n) {
+        return dbs.updateNode(n);
     }
 
     // remove node from Map and DB
-    private void deleteNode(Node n) {
-        dbs.deleteNode(n);
+     boolean deleteNode(Node n) {
+        return dbs.deleteNode(n);
     }
+
 
 }
