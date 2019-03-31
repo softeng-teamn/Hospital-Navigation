@@ -1,11 +1,13 @@
 package service;
 
-import model.Edge;
-import model.Node;
+import model.*;
+import model.request.ITRequest;
+import model.request.MedicineRequest;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class DatabaseService {
 
@@ -310,7 +312,35 @@ public class DatabaseService {
     // EDGE FUNCTIONS
     // returns a list of nodes that are connected to the given node
     public ArrayList<Node> getNodesConnectedTo(Node n) {
-        return new ArrayList<>();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String nodeID = n.getNodeID();
+        String input = "SELECT NODE.NodeID, NODE.xcoord, NODE.ycoord, NODE.floor, NODE.building, NODE.nodeType, NODE.longName, NODE.shortName FROM NODE INNER JOIN EDGE ON (NODE.NodeID = EDGE.node1 AND EDGE.node2 = ?) OR (NODE.NodeID = EDGE.node2 AND EDGE.Node1 = ?)";
+        ArrayList<Node> connectedNodes = new ArrayList<Node>();
+        try {
+            stmt = connection.prepareStatement(input);
+            prepareStatement(stmt,nodeID,nodeID);
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                // extract results from each row of the database.
+                String newNodeID = rs.getString("nodeID");
+                int newxcoord = rs.getInt("xcoord");
+                int newycoord = rs.getInt("ycoord");
+                String newFloor = rs.getString("floor");
+                String newBuilding = rs.getString("building");
+                String newNodeType = rs.getString("nodeType");
+                String newLongName = rs.getString("longName");
+                String newShortName = rs.getString("shortName");
+                // construct the new node and return it
+                Node newNode = new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
+                connectedNodes.add(newNode);;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
+        return connectedNodes;
     }
 
     // get edges from a specific floor
@@ -464,6 +494,123 @@ public class DatabaseService {
     }
 
 
+
+
+    public boolean insertReservation(Reservation reservation) {
+        return false;
+    }
+
+    public Reservation getReservation(int id) {
+        return null;
+    }
+
+    public List<Reservation> getAllReservations() {
+        return null;
+    }
+
+    public boolean updateReservation(Reservation reservation) {
+        return false;
+    }
+
+    public boolean deleteReservation(Reservation reservation) {
+        return false;
+    }
+
+    public List<Reservation> getReservationsBySpaceId(String id) {
+        return null;
+    }
+
+    public List<Reservation> getReservationBySpaceIdBetween(String id, Date from, Date to) {
+        return null;
+    }
+
+    public boolean insertEmployee(Employee employee) {
+        return false;
+    }
+
+    public Employee getEmployee(int id) {
+        return null;
+    }
+
+    public List<Employee> getAllEmployees() {
+        return null;
+    }
+
+    public boolean updateEmployee(Employee employee) {
+        return false;
+    }
+
+    public boolean deleteEmployee(Employee employee) {
+        return false;
+    }
+
+    public boolean insertReservableSpace(ReservableSpace space) {
+        return false;
+    }
+
+    public ReservableSpace getReservation(String id) {
+        return null;
+    }
+
+    public List<ReservableSpace> getAllReservableSpaces() {
+        return null;
+    }
+
+    public boolean updateReservableSpace(ReservableSpace space) {
+        return false;
+    }
+
+    public boolean deleteReservableSpace(ReservableSpace space) {
+        return false;
+    }
+
+    public boolean insertITRequest(ITRequest req) {
+        return false;
+    }
+
+    public ITRequest getITRequest(int id) {
+        return null;
+    }
+
+    public List<ITRequest> getAllITRequests() {
+        return null;
+    }
+
+    public boolean updateITRequest(ITRequest req) {
+        return false;
+    }
+
+    public boolean deleteITRequest(ITRequest req) {
+        return false;
+    }
+
+    public List<ITRequest> getAllIncompleteITRequests() {
+        return null;
+    }
+
+    public boolean insertMedicineRequest(MedicineRequest req) {
+        return false;
+    }
+
+    public MedicineRequest getMedicineRequest(String id) {
+        return null;
+    }
+
+    public List<MedicineRequest> getAllMedicineRequests() {
+        return null;
+    }
+
+    public boolean updateMedicineRequest(MedicineRequest req) {
+        return false;
+    }
+
+    public boolean deleteMedicineRequest(MedicineRequest req) {
+        return false;
+    }
+
+    public List<MedicineRequest> getAllIncompleteMedicineRequests() {
+        return null;
+    }
 
     // CONTROLS
     boolean tableExists(String table){
