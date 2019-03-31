@@ -1,6 +1,7 @@
 package controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +12,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import model.Node;
+import model.request.ITRequest;
+import model.request.MedicineRequest;
 import model.request.Request;
 import service.ResourceLoader;
 import service.StageManager;
@@ -29,6 +32,10 @@ public class RequestController extends Controller implements Initializable {
     private ChoiceBox<String> locationBox;
     @FXML
     private ChoiceBox<String> typeBox;
+    @FXML
+    private JFXTextField locationTextField;
+    @FXML
+    private JFXTextField typeTextField;
 
     @FXML
     private TextArea textArea;
@@ -59,6 +66,23 @@ public class RequestController extends Controller implements Initializable {
     public void makeRequest() {
 
         String descrption = (String) textArea.getText();
+        String requestType = typeBox.getValue();
+        String requestLocation = locationBox.getValue();
+
+        if (requestLocation == null){
+            locationTextField.setText("Request Location: \nPlease select location!");
+        } else if(requestType == null){
+            typeTextField.setText("Request Type: \nPlease select type!");
+        } else if(requestType.contains("Medicine")){
+            MedicineRequest newMedicineRequest = new MedicineRequest("123", descrption, null, false);
+            textArea.setText("Medicine");
+//            insertRequest(newMedicineRequest)
+        } else if(requestType.contains("IT")){
+            ITRequest newITRequest = new ITRequest("234", descrption, null, false);
+            textArea.setText("IT");
+//            insertRequest(newITRequest);
+        }
+
 
 
 
