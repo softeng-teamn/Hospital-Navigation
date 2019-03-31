@@ -42,4 +42,6 @@ public class MapEditController extends MapController {
         dbs.deleteNode(n);
     }
 
+    // random
+
 }
