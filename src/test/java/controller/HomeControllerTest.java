@@ -37,6 +37,6 @@ public class HomeControllerTest {
 
     @Test
     public void displayPath() {
-
+        // pathfinding/UI test
     }
 }
