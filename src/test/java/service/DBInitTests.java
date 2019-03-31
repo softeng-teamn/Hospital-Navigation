@@ -45,7 +45,6 @@ public class DBInitTests {
         try {
             dbs = DatabaseService.init("hospital-db-version-test");
         } catch (MismatchedDatabaseVersionException e) {
-            e.printStackTrace();
             fail("MismatchedDatabaseVersionException when starting from no DB");
         }
         dbs.close();
@@ -53,33 +52,22 @@ public class DBInitTests {
         try {
             dbs = DatabaseService.init("hospital-db-version-test");
         } catch (MismatchedDatabaseVersionException e) {
-            e.printStackTrace();
             fail("MismatchedDatabaseVersionException when starting with correct version");
         }
         dbs.close();
 
-        // Override DB Version to expect a failure
-        setFinalStatic(DatabaseService.class.getField("DATABASE_VERSION"), initialDBVersion + 42);
+
+        DatabaseService.DATABASE_VERSION = initialDBVersion + 42;
 
         try {
             dbs = DatabaseService.init("hospital-db-version-test");
+            fail("Expected MismatchedDatabaseVersionException!");
         } catch (MismatchedDatabaseVersionException e) {
             assertEquals(e.getMessage(), "Existing database version: " + initialDBVersion + ", expected: " + (initialDBVersion + 42));
         }
         dbs.close();
 
         FileUtils.deleteDirectory(new File("hospital-db-version-test"));
-    }
-
-    static void setFinalStatic(Field field, Object newValue) throws Exception {
-        field.setAccessible(true);
-
-        // remove final modifier from field
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-        field.set(null, newValue);
     }
 }
 
