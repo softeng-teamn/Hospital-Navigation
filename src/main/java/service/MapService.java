@@ -7,13 +7,6 @@ import model.Point;
 
 public class MapService {
 
-
-    // find path from start to destination
-    public Point findPath(Node start, Node dest) {
-        Point myPath = new Point(1,1,1, "someID", null);
-        return myPath;
-    }
-
     // add a node to the map
     public boolean addNode(Node n) {
         return true;

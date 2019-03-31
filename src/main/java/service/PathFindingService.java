@@ -14,9 +14,7 @@ public class PathFindingService {
     private static final int DEFAULT_HV_COST = 10;
     private static final int DEFAULT_DIAGONAL_COST = 14;
 
-    public PathFindingService() {
-
-    }
+    public PathFindingService() {}
 
     // Returns null on fail
     public ArrayList<Node> genPath(MapNode start, MapNode dest) {
@@ -38,7 +36,7 @@ public class PathFindingService {
 
     // Will either return the last MapNode with a parent chain back to the start
     // or returns null if we CANT get to the dest node
-    public MapNode aStar(MapNode start, MapNode dest) {
+    private MapNode aStar(MapNode start, MapNode dest) {
         //1.  Initialize queue and set
         PriorityQueue<MapNode> open = new PriorityQueue<>();
         System.out.println("Created open PriorityQueue");
@@ -93,8 +91,8 @@ public class PathFindingService {
         return null;
     }
 
-    // Gets rechable MapNodes from given MapNode
-    public ArrayList<MapNode> getChildren(MapNode node) {
+    // Gets reachable MapNodes from given MapNode
+    private ArrayList<MapNode> getChildren(MapNode node) {
         ArrayList<Node> neighbors = MapController.getNodesConnectedTo(node.getData());
         ArrayList<MapNode> nodeChildren = new ArrayList<>();
         for (Node n : neighbors) {

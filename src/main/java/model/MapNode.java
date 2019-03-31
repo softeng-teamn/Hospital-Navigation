@@ -13,12 +13,6 @@ public class MapNode implements Comparable<MapNode>{
     MapNode parent;
     Node data;
 
-    public MapNode(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.g = 99999999;
-    }
-
     public MapNode(int x, int y, Node data) {
         this.x = x;
         this.y = y;
@@ -35,10 +29,6 @@ public class MapNode implements Comparable<MapNode>{
                 y == mapNode.y);
     }
 
-    public MapNode getParent() {
-        return this.parent;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(x,y,data);
@@ -48,12 +38,20 @@ public class MapNode implements Comparable<MapNode>{
         return this.data;
     }
 
-    public void setF(double f) {
-        this.f = f;
-    }
-
     public double getF() {
         return this.f = this.g + this.h;
+    }
+
+    public MapNode getParent() {
+        return this.parent;
+    }
+
+    public int getG(){
+        return this.g;
+    }
+
+    public double getH(){
+        return this.h;
     }
 
     public void calculateHeuristic(MapNode destination) {
@@ -73,22 +71,8 @@ public class MapNode implements Comparable<MapNode>{
         this.g = n.g + cost;
     }
 
-    public void checkBetter(MapNode n, int cost) {
-        if (this.g > n.g + cost) {
-            setParent(n, cost);
-        }
-    }
-
-    public int getG(){
-        return this.g;
-    }
-
     public void setG(int g){
         this.g = g;
-    }
-
-    public double getH(){
-        return this.h;
     }
 
     @Override

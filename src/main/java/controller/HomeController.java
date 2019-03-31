@@ -6,8 +6,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import model.MapNode;
 import model.Node;
 import model.Point;
+import service.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -40,15 +42,12 @@ public class HomeController extends MapController {
         StageManager.changeExistingWindow(stage, root, "Scheduler");
     }
 
-    // Get path from start node to destination node
-    private Point requestPath(Node start, Node dest) {
-        Point myPath = new Point(1,1,1,"someID", null);
-        return myPath;
-    }
-
-    // Show path to user
-    private void displayPath(Point path) {
-
+    //Pathfind and show path to user
+    private void pathfind(Node start, Node dest) {
+        MapNode pStart = new MapNode(start.getXcoord(), start.getYcoord(), start);
+        MapNode pDest = new MapNode(dest.getXcoord(), dest.getYcoord(), dest);
+        PathFindingService pathFindingService = new PathFindingService();
+        pathFindingService.genPath(pStart, pDest);
     }
 
 
