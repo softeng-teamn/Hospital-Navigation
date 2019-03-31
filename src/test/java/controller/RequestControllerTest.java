@@ -1,26 +1,41 @@
 package controller;
 
 import model.Node;
+import model.request.ITRequest;
+import model.request.MedicineRequest;
 import model.request.Request;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.mockito.Mock;
+import service.DatabaseService;
 import testclassifications.FastTest;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RequestControllerTest {
 
+    @Mock private DatabaseService dbs;
 
     RequestController reqCrl1 ;
-    RequestController reqCrl2 ;
-    Request newReq ;
+    Request request;
+    MedicineRequest mReq;
+    ITRequest itReq;
 
 
     @Before
-    public void setUp() throws Exception { }
+    public void setUp() throws Exception {
+        DatabaseService dbs = mock(DatabaseService.class);
+        when(dbs.insertITRequest(itReq)).thenReturn(true);
+        when(dbs.insertMedicineRequest(mReq)).thenReturn(true);
+        reqCrl1.dbs = dbs;
+    }
 
 
     // test showHome()
@@ -35,8 +50,8 @@ public class RequestControllerTest {
     @Test
     @Category(FastTest.class)
     public void makeRequestTest () {
-//        reqCrl1.makeRequest(newReq);
-//        assertTrue(reqCrl1.getPendingRequests().contains(newReq));
+        reqCrl1.makeRequest(request);
+        assertThat(reqCrl1.getPendingRequests().contains(mReq), equalTo(true));
     }
 
 

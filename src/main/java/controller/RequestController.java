@@ -5,6 +5,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
+import model.RequestType;
+import model.request.ITRequest;
+import model.request.MedicineRequest;
 import model.request.Request;
 import service.ResourceLoader;
 import service.StageManager;
@@ -31,7 +34,19 @@ public class RequestController extends Controller {
     // submits request to database
     // "confirm" button
     void makeRequest(Request type) {
-
+        RequestType rType = type.getRequestType();
+        switch(rType.getrType()){
+            case ITS:
+                ITRequest ITType = (ITRequest) type;
+                dbs.insertITRequest(ITType);
+                break;
+            case MED:
+                MedicineRequest medReq = (MedicineRequest) type;
+                dbs.insertMedicineRequest(medReq);
+                break;
+            case ABS:
+                return;
+        }
     }
 
     // removes object from database
