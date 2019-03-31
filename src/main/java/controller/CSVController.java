@@ -15,18 +15,6 @@ public class CSVController extends Controller {
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
 
     /**
-     * Export the entire database into CSV format
-     */
-    public static void exportDatabase() {
-    }
-
-    /**
-     * Import the entire database from CSVs into the database
-     */
-    public static void importDatabase() {
-    }
-
-    /**
      * Export the Nodes table
      */
     public static void exportNodes() throws IOException {
@@ -94,9 +82,9 @@ public class CSVController extends Controller {
     }
 
     /**
-     * Export the Requests table
+     * Export the ReservableSpace table
      */
-    public static void exportRequests() {
+    public static void exportReservableSpaces() {
     }
 
     /**
@@ -196,8 +184,8 @@ public class CSVController extends Controller {
     }
 
     /**
-     * Import the Requests table
+     * Import the ReservableSpace table
      */
-    public static void importRequests() {
+    public static void importReservableSpaces() {
     }
 }

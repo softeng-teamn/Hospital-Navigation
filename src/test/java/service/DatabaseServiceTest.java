@@ -466,7 +466,43 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void getAllEmployees() {
+        Employee value, expected;
+
+        // First verify that the Employees are null
+        value = myDBS.getEmployee(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getEmployee(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getEmployee(2);
+        assertThat(value, is(nullValue()));
+
+        // Create an employee
+        Employee employee1 = new Employee(0, "Doctor", false);
+        Employee employee2 = new Employee(1, "Nurse", false);
+        Employee employee3 = new Employee(2, "Admin", true);
+
+        // Verify successful insertion
+        boolean insertRes = myDBS.insertEmployee(employee1);
+        assertTrue(insertRes);
+        insertRes = myDBS.insertEmployee(employee2);
+        assertTrue(insertRes);
+
+        // Check that there are two and only two, and that they are the right two
+        List<Employee> employeeList = myDBS.getAllEmployees();
+        assertThat(employeeList.size(), is(2));
+        assertEquals(employee1, employeeList.get(0));
+        assertEquals(employee2, employeeList.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertEmployee(employee3));
+
+        employeeList = myDBS.getAllEmployees();
+        assertThat(employeeList.size(), is(3));
+        assertEquals(employee1, employeeList.get(0));
+        assertEquals(employee2, employeeList.get(1));
+        assertEquals(employee3, employeeList.get(2));
     }
 
     @Test
@@ -478,8 +514,8 @@ public class DatabaseServiceTest {
     }
 
     @Test
-    //@Category(FastTest.class)
-    public void insertAndGetReservableSpace() throws ParseException {
+    @Category(FastTest.class)
+    public void insertAndGetReservableSpace()  {
         // Assume an empty DB (ensured by setUp())
 
         ReservableSpace value, expected;
@@ -509,7 +545,53 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void getAllReservableSpaces() {
+        // Assume an empty DB (ensured by setUp())
+
+        ReservableSpace value, expected;
+
+        // First verify that the ReservableSpace is null
+        value = myDBS.getReservableSpace("ABCD");
+        assertThat(value, is(nullValue()));
+        value = myDBS.getReservableSpace("XYZ");
+        assertThat(value, is(nullValue()));
+        value = myDBS.getReservableSpace("LMNO");
+        assertThat(value, is(nullValue()));
+
+
+        // Create a ReservableSpace
+        GregorianCalendar openTime = new GregorianCalendar();
+        openTime.set(Calendar.HOUR, 7);
+        openTime.set(Calendar.MINUTE, 0);
+        GregorianCalendar closeTime = new GregorianCalendar();
+        closeTime.set(Calendar.HOUR, 17);
+        closeTime.set(Calendar.MINUTE, 30);
+
+        ReservableSpace space1 = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
+        ReservableSpace space2 = new ReservableSpace("XYZ", "Space 2", "WKRS", "XYZ10011", openTime, closeTime);
+        ReservableSpace space3 = new ReservableSpace("LMNO", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+
+        // Verify successful insertion
+        boolean insertRes = myDBS.insertReservableSpace(space1);
+        assertTrue(insertRes);
+        insertRes = myDBS.insertReservableSpace(space2);
+        assertTrue(insertRes);
+
+        // Check that there are two and only two, and that they are the right two
+        List<ReservableSpace> allReservableSpaces = myDBS.getAllReservableSpaces();
+        assertThat(allReservableSpaces.size(), is(2));
+        assertEquals(space1, allReservableSpaces.get(0));
+        assertEquals(space2, allReservableSpaces.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertReservableSpace(space3));
+
+        allReservableSpaces = myDBS.getAllReservableSpaces();
+        assertThat(allReservableSpaces.size(), is(3));
+        assertEquals(space1, allReservableSpaces.get(0));
+        assertEquals(space2, allReservableSpaces.get(1));
+        assertEquals(space3, allReservableSpaces.get(2));
     }
 
     @Test

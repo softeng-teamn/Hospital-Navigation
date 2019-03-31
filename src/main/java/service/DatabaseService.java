@@ -642,7 +642,29 @@ public class DatabaseService {
     }
 
     public List<Employee> getAllEmployees() {
-        return null;
+        ArrayList<Employee> employees = new ArrayList();
+        String query = "Select * FROM EMPLOYEE";
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.createStatement();
+
+            // execute the query
+            rs = stmt.executeQuery(query);
+            while(rs.next()){
+                employees.add(extractEmployee(rs));
+            }
+            stmt.close();
+            rs.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+
+        return employees;
     }
 
     public boolean updateEmployee(Employee employee) {
@@ -654,15 +676,81 @@ public class DatabaseService {
     }
 
     public boolean insertReservableSpace(ReservableSpace space) {
-        return false;
+        String employeeStatement = ("INSERT INTO RESERVABLESPACE VALUES(?, ?, ?, ?, ?, ?)");
+        PreparedStatement insertReservation = null;
+        boolean insertStatus = false;
+        try {
+            insertReservation = connection.prepareStatement(employeeStatement);
+            // set the attributes of the statement for the node
+            prepareStatement(insertReservation, space.getSpaceID(), space.getSpaceName(), space.getSpaceType(), space.getLocationNodeID(), space.getTimeOpen(), space.getTimeClosed());
+            insertReservation.execute();
+            insertStatus = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(insertReservation);
+        }
+        return insertStatus;
     }
 
     public ReservableSpace getReservableSpace(String id) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String input = "SELECT * FROM RESERVABLESPACE WHERE (spaceID = ?)";
+        ReservableSpace space;
+
+        try {
+            stmt = connection.prepareStatement(input);
+
+            prepareStatement(stmt, id);
+
+            // execute the query
+            rs = stmt.executeQuery();
+
+            // extract results, only one record should be found.
+            boolean hasNext = rs.next();
+
+            // If there is no next node, return null
+            if (!hasNext) {
+                return null;
+            }
+
+            space = extractReservableSpace(rs);
+            stmt.close();
+            rs.close();
+            return space;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
         return null;
     }
 
     public List<ReservableSpace> getAllReservableSpaces() {
-        return null;
+        ArrayList<ReservableSpace> spaces = new ArrayList();
+        String query = "Select * FROM RESERVABLESPACE";
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.createStatement();
+
+            // execute the query
+            rs = stmt.executeQuery(query);
+            while(rs.next()){
+                spaces.add(extractReservableSpace(rs));
+            }
+            stmt.close();
+            rs.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+
+        return spaces;
     }
 
     public boolean updateReservableSpace(ReservableSpace space) {
@@ -857,12 +945,7 @@ public class DatabaseService {
      */
     private void prepareStatement(PreparedStatement preparedStatement, Object... values) throws SQLException {
         for (int i = 0; i < values.length; i++) {
-            // Dates must be handles specially
-            if (values[i] instanceof Date) {
-                preparedStatement.setTimestamp(i + 1, new Timestamp(((Date) values[i]).getTime()));
-            } else {
-                preparedStatement.setObject(i + 1, values[i]);
-            }
+            preparedStatement.setObject(i + 1, values[i]);
         }
     }
 
