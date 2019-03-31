@@ -81,8 +81,8 @@ public class RequestControllerTest {
 //        assertFalse(reqCrl2.getPendingRequests().contains(newReq));
     }
 
-    /*
+
     @After
     public void tearDown() throws Exception { }
-    */
+
 }
