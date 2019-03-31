@@ -59,8 +59,6 @@ public class DBInitTests {
 
         setFinalStatic(DatabaseService.class.getDeclaredField("DATABASE_VERSION"), Integer.valueOf(initialDBVersion + 42));
 
-        System.out.println(DatabaseService.getDatabaseVersion());
-
         try {
             dbs = DatabaseService.init("hospital-db-version-test");
             fail("Expected MismatchedDatabaseVersionException!");
@@ -70,6 +68,8 @@ public class DBInitTests {
         dbs.close();
 
         FileUtils.deleteDirectory(new File("hospital-db-version-test"));
+
+        setFinalStatic(DatabaseService.class.getDeclaredField("DATABASE_VERSION"), Integer.valueOf(initialDBVersion));
     }
 
     static void setFinalStatic(Field field, Object newValue) throws Exception {

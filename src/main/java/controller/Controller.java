@@ -14,7 +14,6 @@ public class Controller {
             dbs = DatabaseService.init();
         } catch (SQLException | MismatchedDatabaseVersionException e) {
             e.printStackTrace();
-            System.exit(1);
         }
     }
 
