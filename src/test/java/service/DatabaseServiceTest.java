@@ -145,24 +145,24 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void getNodesConnectedTo(){
         Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode1);
+        myDBS.insertNode(testNode1);
         Node testNode2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode2);
+        myDBS.insertNode(testNode2);
         Node testNode3 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode3);
+        myDBS.insertNode(testNode3);
         Node testNode4 = new Node("ACONF00105", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode4);
+        myDBS.insertNode(testNode4);
         Node testNode5 = new Node("ACONF00106", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDB.insertNode(testNode5);
+        myDBS.insertNode(testNode5);
         Edge testEdge1 = new Edge("ACONF00102-ACONF00103", testNode1,testNode2);
-        myDB.insertEdge(testEdge1);
+        myDBS.insertEdge(testEdge1);
         Edge testEdge2 = new Edge("ACONF00102-ACONF00104", testNode1,testNode3);
-        myDB.insertEdge(testEdge2);
+        myDBS.insertEdge(testEdge2);
         Edge testEdge3 = new Edge("ACONF00105-ACONF00102", testNode4,testNode1);
-        myDB.insertEdge(testEdge3);
+        myDBS.insertEdge(testEdge3);
         Edge testEdge4 = new Edge("ACONF00105-ACONF00106", testNode4,testNode5);
-        myDB.insertEdge(testEdge4);
-        ArrayList<Node> connectedNodes = myDB.getNodesConnectedTo(testNode1);
+        myDBS.insertEdge(testEdge4);
+        ArrayList<Node> connectedNodes = myDBS.getNodesConnectedTo(testNode1);
         assertThat(connectedNodes.get(0).getNodeID(), is(testNode2.getNodeID()));
         assertThat(connectedNodes.get(1).getNodeID(), is(testNode3.getNodeID()));
         assertThat(connectedNodes.get(2).getNodeID(), is(testNode4.getNodeID()));
