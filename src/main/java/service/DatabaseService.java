@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class DatabaseService {
 
-    private static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 1;
 
     private Connection connection;
 
