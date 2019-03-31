@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Employee {
     int ID;
     String job;
@@ -33,5 +35,20 @@ public class Employee {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return ID == employee.ID &&
+                isAdmin == employee.isAdmin &&
+                Objects.equals(job, employee.job);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ID, job, isAdmin);
     }
 }

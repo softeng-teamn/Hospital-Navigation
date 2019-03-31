@@ -1,6 +1,7 @@
 package controller;
 
 import service.DatabaseService;
+import service.MismatchedDatabaseVersionException;
 
 import java.sql.SQLException;
 
@@ -11,7 +12,7 @@ public class Controller {
     static {
         try {
             dbs = DatabaseService.init();
-        } catch (SQLException e) {
+        } catch (SQLException | MismatchedDatabaseVersionException e) {
             e.printStackTrace();
         }
     }

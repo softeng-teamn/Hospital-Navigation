@@ -114,20 +114,20 @@ public class Node {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Node)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Node node = (Node) o;
-        return getXcoord() == node.getXcoord() &&
-                getYcoord() == node.getYcoord() &&
-                getNodeID().equals(node.getNodeID()) &&
-                getFloor().equals(node.getFloor()) &&
-                getBuilding().equals(node.getBuilding()) &&
-                getNodeType().equals(node.getNodeType()) &&
-                getLongName().equals(node.getLongName()) &&
-                getShortName().equals(node.getShortName());
+        return xcoord == node.xcoord &&
+                ycoord == node.ycoord &&
+                Objects.equals(nodeID, node.nodeID) &&
+                Objects.equals(floor, node.floor) &&
+                Objects.equals(building, node.building) &&
+                Objects.equals(nodeType, node.nodeType) &&
+                Objects.equals(longName, node.longName) &&
+                Objects.equals(shortName, node.shortName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getXcoord(), getYcoord(), getNodeID(), getFloor(), getBuilding(), getNodeType(), getLongName(), getShortName());
+        return Objects.hash(xcoord, ycoord, nodeID, floor, building, nodeType, longName, shortName);
     }
 }
