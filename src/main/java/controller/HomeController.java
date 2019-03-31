@@ -48,7 +48,7 @@ public class HomeController extends MapController {
         MapNode pStart = new MapNode(start.getXcoord(), start.getYcoord(), start);
         MapNode pDest = new MapNode(dest.getXcoord(), dest.getYcoord(), dest);
         PathFindingService pathFindingService = new PathFindingService();
-        ArrayList<Node> path = new ArrayList<>();
+        ArrayList<Node> path;
         path = pathFindingService.genPath(pStart, pDest);
         for (int i=0; i<path.size(); i++){
             Line line = new Line(path.get(i).getXcoord(), path.get(i).getYcoord(),
