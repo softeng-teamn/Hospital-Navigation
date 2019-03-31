@@ -9,13 +9,13 @@ import static model.RequestType.RType.ABS;
 import java.util.Objects;
 
 public abstract class Request {
-    int id;
-    String notes;
-    Node location;
-    boolean completed;
+    private int id;
+    private String notes;
+    private Node location;
+    private boolean completed;
     RequestType requestType;
 
-    public Request(String id, String notes, Node location, boolean completed, RequestType requestType) {
+    public Request(int id, String notes, Node location, boolean completed, RequestType requestType) {
         this.id = id;
         this.notes = notes;
         this.location = location;
