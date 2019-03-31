@@ -106,14 +106,16 @@ public class MapNode implements Comparable<MapNode>{
 
     @Override
     public int compareTo(MapNode node) {
-        if(this.getF() > node.getF()) {
+        int comparison = Double.compare(this.getF(), node.getF());
+        // this F is greater than node F
+        if(comparison > 0) {
             return 1;
         }
-        if(this.getF() < node.getF()){
+        // this F is less than node F
+        if(comparison < 0){
             return 1;
         }
-        else {
-            return 0;
-        }
+        // Both are the same!
+        return 0;
     }
 }
