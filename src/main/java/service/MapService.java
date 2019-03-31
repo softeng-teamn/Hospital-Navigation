@@ -1,12 +1,12 @@
 package service;
 
 import model.BuildingMap;
+import model.FloorMap;
 import model.Node;
 import model.Point;
 
 public class MapService {
 
-    private BuildingMap bMap;
 
     // find path from start to destination
     public Point findPath(Node start, Node dest) {

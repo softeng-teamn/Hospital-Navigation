@@ -73,6 +73,13 @@ public class Node {
         return shortName;
     }
 
+    @Override
+    public String toString() {
+        return "Node{" +
+                "nodeID='" + nodeID + '\'' +
+                '}';
+    }
+
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
@@ -81,17 +88,6 @@ public class Node {
         xcoord = x;
         ycoord = y;
         nodeID = "" + x + y;
-    }
-
-    public boolean equals(Node n) {
-        return (this.getNodeID().equals(n.getNodeID()) &&
-                this.getXcoord() == n.getXcoord() &&
-                this.getYcoord() == n.getYcoord() &&
-                this.getFloor().equals(n.getFloor()) &&
-                this.getBuilding().equals(n.getBuilding()) &&
-                this.getLongName().equals(n.getLongName()) &&
-                this.getShortName().equals(n.getShortName())
-                );
     }
 
     public Node( String nodeID, int xcoord, int ycoord, String floor, String building, String nodeType, String longName, String shortName) {
