@@ -26,28 +26,28 @@ public class RequestControllerTest {
 
     @Mock private DatabaseService dbs;
 
-    Node n = new Node(1, 1 , "","","","","","");
+    private Node n = new Node(1, 1 , "","","","","","");
 
-    RequestController reqCrl1 ;
-    Request request;
-    MedicineRequest mReq;
-    MedicineRequest medReqR = new MedicineRequest("A1001","Fast",n,false,"Ritalin");
-    MedicineRequest medReqM = new MedicineRequest("A1002","take your time", n, false, "Morphine");
-    ITRequest ITReqA = new ITRequest("A1001","3/31/2019 1:21 PM",n,false,"Hard Drive Broke When I peed on it");
-    ITRequest ITReqB = new ITRequest("A1002","4/1/2019 2:30 PM", n, false, "Can't wifi");
+    private RequestController reqCrl1 ;
+    private Request request;
+    private MedicineRequest mReq;
+    private MedicineRequest medReqR = new MedicineRequest(1001,"Fast",n,false);
+    private MedicineRequest medReqM = new MedicineRequest(1002,"take your time", n, false, "Morphine", 200.0);
+    private ITRequest ITReqA = new ITRequest(1001,"3/31/2019 1:21 PM",n,false,"Hard Drive Broke When I peed on it");
+    private ITRequest ITReqB = new ITRequest(1002,"4/1/2019 2:30 PM", n, false, "Can't wifi");
 
-    MedicineRequest c;
-    ITRequest itReq;
+    private MedicineRequest c;
+    private ITRequest itReq;
 
-    ArrayList<MedicineRequest> medList = new ArrayList<MedicineRequest>();
-    ArrayList<ITRequest> ITList = new ArrayList<ITRequest>();
+    private ArrayList<MedicineRequest> medList = new ArrayList<>();
+    private ArrayList<ITRequest> ITList = new ArrayList<>();
 
     @Before
     public void setUp() throws Exception {
         DatabaseService dbs = mock(DatabaseService.class);
         when(dbs.getAllIncompleteMedicineRequests()).thenReturn(medList);
         when(dbs.getAllIncompleteITRequests()).thenReturn(ITList);
-        reqCrl1.dbs = dbs;
+        Controller.dbs = dbs;
         medList.add(medReqM);
         medList.add(medReqR);
         ITList.add(ITReqA);
@@ -81,6 +81,8 @@ public class RequestControllerTest {
 //        assertFalse(reqCrl2.getPendingRequests().contains(newReq));
     }
 
+    /*
     @After
     public void tearDown() throws Exception { }
+    */
 }
