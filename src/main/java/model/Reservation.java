@@ -1,20 +1,21 @@
 package model;
 
-import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Objects;
 
 public class Reservation {
     int eventID, privacyLevel, employeeId;
     String eventName, locationID;
-    Date startTime, endTime;
+    GregorianCalendar startTime, endTime;
 
-    public Reservation(int eventID, int privacyLevel, int employeeId, String eventName, String locationID, Date startTime, Date endTime) {
+    public Reservation(int eventID, int privacyLevel, int employeeId, String eventName, String locationID, GregorianCalendar startTime, GregorianCalendar endTime) {
         this.eventID = eventID;
         this.privacyLevel = privacyLevel;
         this.employeeId = employeeId;
         this.eventName = eventName;
         this.locationID = locationID;
-        this.startTime = (Date) startTime.clone();
-        this.endTime = (Date) endTime.clone();
+        this.startTime = (GregorianCalendar) startTime.clone();
+        this.endTime = (GregorianCalendar) endTime.clone();
     }
 
     public int getEventID() {
@@ -57,19 +58,51 @@ public class Reservation {
         this.locationID = locationID;
     }
 
-    public Date getStartTime() {
-        return (Date) startTime.clone();
+    public GregorianCalendar getStartTime() {
+        return (GregorianCalendar) startTime.clone();
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = (Date) startTime.clone();
+    public void setStartTime(GregorianCalendar startTime) {
+        this.startTime = (GregorianCalendar) startTime.clone();
     }
 
-    public Date getEndTime() {
-        return (Date) endTime.clone();
+    public GregorianCalendar getEndTime() {
+        return (GregorianCalendar) endTime.clone();
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = (Date) endTime.clone();
+    public void setEndTime(GregorianCalendar endTime) {
+        this.endTime = (GregorianCalendar) endTime.clone();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return eventID == that.eventID &&
+                privacyLevel == that.privacyLevel &&
+                employeeId == that.employeeId &&
+                Objects.equals(eventName, that.eventName) &&
+                Objects.equals(locationID, that.locationID) &&
+                Objects.equals(startTime.getTime(), that.startTime.getTime()) &&
+                Objects.equals(endTime.getTime(), that.endTime.getTime());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventID, privacyLevel, employeeId, eventName, locationID, startTime, endTime);
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "eventID=" + eventID +
+                ", privacyLevel=" + privacyLevel +
+                ", employeeId=" + employeeId +
+                ", eventName='" + eventName + '\'' +
+                ", locationID='" + locationID + '\'' +
+                ", startTime=" + startTime.getTime() +
+                ", endTime=" + endTime.getTime() +
+                '}';
     }
 }

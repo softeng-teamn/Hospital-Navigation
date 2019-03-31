@@ -1,18 +1,19 @@
 package model;
 
-import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Objects;
 
 public class ReservableSpace {
     String spaceID, spaceName, spaceType, locationNodeID;
-    Date timeOpen, timeClosed;
+    GregorianCalendar timeOpen, timeClosed;
 
-    public ReservableSpace(String spaceID, String spaceName, String spaceType, String locationNodeID, Date timeOpen, Date timeClosed) {
+    public ReservableSpace(String spaceID, String spaceName, String spaceType, String locationNodeID, GregorianCalendar timeOpen, GregorianCalendar timeClosed) {
         this.spaceID = spaceID;
         this.spaceName = spaceName;
         this.spaceType = spaceType;
         this.locationNodeID = locationNodeID;
-        this.timeOpen = (Date) timeOpen.clone();
-        this.timeClosed = (Date) timeClosed.clone();
+        this.timeOpen = (GregorianCalendar) timeOpen.clone();
+        this.timeClosed = (GregorianCalendar) timeClosed.clone();
     }
 
     public String getSpaceID() {
@@ -47,19 +48,37 @@ public class ReservableSpace {
         this.locationNodeID = locationNodeID;
     }
 
-    public Date getTimeOpen() {
-        return (Date) timeOpen.clone();
+    public GregorianCalendar getTimeOpen() {
+        return (GregorianCalendar) timeOpen.clone();
     }
 
-    public void setTimeOpen(Date timeOpen) {
-        this.timeOpen = (Date) timeOpen.clone();
+    public void setTimeOpen(GregorianCalendar timeOpen) {
+        this.timeOpen = (GregorianCalendar) timeOpen.clone();
     }
 
-    public Date getTimeClosed() {
-        return (Date) timeClosed.clone();
+    public GregorianCalendar getTimeClosed() {
+        return (GregorianCalendar) timeClosed.clone();
     }
 
-    public void setTimeClosed(Date timeClosed) {
-        this.timeClosed = (Date) timeClosed.clone();
+    public void setTimeClosed(GregorianCalendar timeClosed) {
+        this.timeClosed = (GregorianCalendar) timeClosed.clone();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReservableSpace that = (ReservableSpace) o;
+        return Objects.equals(spaceID, that.spaceID) &&
+                Objects.equals(spaceName, that.spaceName) &&
+                Objects.equals(spaceType, that.spaceType) &&
+                Objects.equals(locationNodeID, that.locationNodeID) &&
+                Objects.equals(timeOpen.getTime(), that.timeOpen.getTime()) &&
+                Objects.equals(timeClosed.getTime(), that.timeClosed.getTime());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(spaceID, spaceName, spaceType, locationNodeID, timeOpen, timeClosed);
     }
 }
