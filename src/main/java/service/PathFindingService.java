@@ -36,7 +36,7 @@ public class PathFindingService {
 
     // Will either return the last MapNode with a parent chain back to the start
     // or returns null if we CANT get to the dest node
-    private MapNode aStar(MapNode start, MapNode dest) {
+    MapNode aStar(MapNode start, MapNode dest) {
         //1.  Initialize queue and set
         PriorityQueue<MapNode> open = new PriorityQueue<>();
         System.out.println("Created open PriorityQueue");
@@ -92,7 +92,7 @@ public class PathFindingService {
     }
 
     // Gets reachable MapNodes from given MapNode
-    private ArrayList<MapNode> getChildren(MapNode node) {
+     ArrayList<MapNode> getChildren(MapNode node) {
         ArrayList<Node> neighbors = MapController.getNodesConnectedTo(node.getData());
         ArrayList<MapNode> nodeChildren = new ArrayList<>();
         for (Node n : neighbors) {
