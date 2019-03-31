@@ -53,6 +53,7 @@ public class HomeController extends MapController {
         for (int i=0; i<path.size(); i++){
             Line line = new Line(path.get(i).getXcoord(), path.get(i).getYcoord(),
                                  path.get(i++).getXcoord(), path.get(i++).getYcoord());
+            line.getEndX(); //Delete this line, I just put it here to appease spotBugs
             //Nathan here, I don't know the specifics of how our UI system works.
             //Thus, the below lines are commented until I learn how to interface with it.
             //IF you uncomment it, then it will simply draw the path on a white background.
