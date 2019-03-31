@@ -433,7 +433,7 @@ public class DatabaseService {
 
     public List<ITRequest> getAllITRequests() {
         String query = "Select * FROM ITREQUEST";
-        return (List<ITRequest>)(List<?>) executeGetMultiple(query, MedicineRequest.class, new Object[]{});
+        return (List<ITRequest>)(List<?>) executeGetMultiple(query, ITRequest.class, new Object[]{});
     }
 
     public boolean updateITRequest(ITRequest req) {
