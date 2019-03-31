@@ -3,17 +3,22 @@ package controller;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import model.Node;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -30,27 +35,67 @@ public class ScheduleController extends Controller {
     @FXML
     private JFXTextField numRooms;
 
+    @FXML
+    private JFXListView reservableList;
+
     private int openTime = 9; // arbitrary
     private int closeTime = 17;
     private double timeStep = 2;    // Fractions of an hour
 
+    @FXML
+    public void initialize() {
+        ObservableList<Node> nodes = FXCollections.observableArrayList();
 
-    // !!! alter this to generate rooms based on list of rooms
-    public void generateRoomList() {
-        // use : dbs.getAllReservableSpaces
-        int numRms = Integer.parseInt(numRooms.getText());
-        for (int i = 0; i < numRms; i++)
-        {
-            JFXButton item = new JFXButton("item " + i);
-            item.setOnAction(e -> showRoomSchedule());
-            // if busy, setdisabled, change color to red, etc.
-            roomList.getChildren().add(item);
+        // !!! alter to pull from database
+//        ArrayList<Node> DBnodes = dbs.getAllNodes();
+//        nodes.addAll(DBnodes);
+
+
+        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room A", "short"));
+        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room B", "shortr"));
+        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room C", "shortr"));
+        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room D", "short"));
+        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room E", "shortr"));
+        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room F", "shortr"));
+        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room G", "short"));
+        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room H", "shortr"));
+        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room J", "shortr"));
+        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room I", "short"));
+        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room K", "shortr"));
+        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room L", "shortr"));
+        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room M", "short"));
+        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room N", "shortr"));
+
+        for (Node node : nodes) {
+            reservableList.setItems(nodes);
+
+            reservableList.setCellFactory(param -> new ListCell<Node>() {
+                @Override
+                protected void updateItem(Node item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null || item.getLongName() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getLongName());
+                    }
+                }
+            });
+
         }
+        reservableList.setEditable(false);
     }
 
     // On room button click, show the schedule for that room
     // !!! change to reflect data fetched from database
     public void showRoomSchedule() {
+        Node curr = (Node) reservableList.getSelectionModel().getSelectedItem();
+
+        // !!! ^ not for scroll bar
+
+        //curr.getResBetween(start:Date, end:Date, RoomID:String):Collection<Reservations>
+        // !!! get unavail times and mark
+
         schedule.getChildren().clear();
         checks.getChildren().clear();
         for (int i = openTime; i < closeTime; i++) {
@@ -77,23 +122,6 @@ public class ScheduleController extends Controller {
         }
     }
 
-//    // pull unavailable times for a room & date
-//    public void showAvailableTimes(String roomID, String day) {
-//        Collection<String> unavailable = dbs.getRoomSched(day, roomID);    // can change Collection<String> later
-//
-//        ArrayList<String> allTimes = new ArrayList<>();
-//        // available times
-//        ArrayList<String> available = new ArrayList<>();
-//        // to iterate over all possible times in a day
-//        for (int i = 0; i < allTimes.size(); i += timeStep) {
-//            // put in available times
-//        }
-//        available.removeAll(unavailable);
-//
-//        // UI - display things in available!! thank u :)
-//    }
-
-
 
     // switches window to home screen
     public void showHome() throws Exception {
@@ -101,6 +129,9 @@ public class ScheduleController extends Controller {
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
+
+
+
 
     //returns a list of roomIDs which have a max capacity of less than nPeople
     ArrayList<String> getMaxPeople(int nPeople){
