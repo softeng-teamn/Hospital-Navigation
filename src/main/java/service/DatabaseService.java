@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class DatabaseService {
 
-    public static int DATABASE_VERSION = 1;
+    public static final Integer DATABASE_VERSION = 1;
 
     private Connection connection;
 
@@ -63,7 +63,7 @@ public class DatabaseService {
                 rs = versionStatement.executeQuery(query);
             } catch (SQLSyntaxErrorException e) {
                 closeAll(versionStatement, rs);
-                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + DATABASE_VERSION);
+                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + getDatabaseVersion());
             }
 
             boolean hasNext = rs.next();
@@ -71,14 +71,14 @@ public class DatabaseService {
             // If no version identifier exists, assume bad database
             if (!hasNext) {
                 closeAll(versionStatement, rs);
-                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + DATABASE_VERSION);
+                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + getDatabaseVersion());
             }
 
             int existingVersion = rs.getInt("version");
 
-            if (existingVersion != DATABASE_VERSION) {
+            if (existingVersion != getDatabaseVersion()) {
                 closeAll(versionStatement, rs);
-                throw new MismatchedDatabaseVersionException("Existing database version: " + existingVersion + ", expected: " + DATABASE_VERSION);
+                throw new MismatchedDatabaseVersionException("Existing database version: " + existingVersion + ", expected: " + getDatabaseVersion());
             }
 
             rs.close();
@@ -118,7 +118,7 @@ public class DatabaseService {
             }
             if(!tableExists("META_DB_VER")){
                 statement.execute("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
-                statement.execute("INSERT INTO META_DB_VER values(0, " + DATABASE_VERSION + ")");
+                statement.execute("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
             }
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
@@ -545,5 +545,9 @@ public class DatabaseService {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static int getDatabaseVersion() {
+        return DATABASE_VERSION.intValue();
     }
 }

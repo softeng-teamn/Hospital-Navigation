@@ -11,8 +11,11 @@ import java.io.*;
 
 import org.junit.experimental.categories.Category;
 import service.DatabaseService;
+import service.ResourceLoader;
 import testclassifications.FastTest;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -181,7 +184,7 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void importNodes() {
+    public void importNodes() throws NoSuchFieldException {
     }
 
     @Test
@@ -190,5 +193,16 @@ public class CSVControllerTest {
 
     @Test
     public void importRequests() {
+    }
+
+    static void setFinalStatic(Field field, Object newValue) throws Exception {
+        field.setAccessible(true);
+
+        // remove final modifier from field
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+        field.set(null, newValue);
     }
 }

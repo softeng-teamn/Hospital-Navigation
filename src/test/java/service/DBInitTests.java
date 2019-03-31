@@ -57,7 +57,9 @@ public class DBInitTests {
         dbs.close();
 
 
-        DatabaseService.DATABASE_VERSION = initialDBVersion + 42;
+        setFinalStatic(DatabaseService.class.getDeclaredField("DATABASE_VERSION"), Integer.valueOf(initialDBVersion + 42));
+
+        System.out.println(DatabaseService.getDatabaseVersion());
 
         try {
             dbs = DatabaseService.init("hospital-db-version-test");
@@ -68,6 +70,14 @@ public class DBInitTests {
         dbs.close();
 
         FileUtils.deleteDirectory(new File("hospital-db-version-test"));
+    }
+
+    static void setFinalStatic(Field field, Object newValue) throws Exception {
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(null, newValue);
     }
 }
 
