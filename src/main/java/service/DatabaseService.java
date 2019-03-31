@@ -11,7 +11,7 @@ import java.util.Date;
 @SuppressWarnings("ALL")
 public class DatabaseService {
 
-    public static final Integer DATABASE_VERSION = 2;
+    public static final Integer DATABASE_VERSION = 4;
 
     private Connection connection;
 
@@ -109,8 +109,11 @@ public class DatabaseService {
             if(!tableExists("EMPLOYEE")){
                 statement.execute("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean)");
             }
-            if(!tableExists("SERVICEREQUEST")){
-                statement.execute("CREATE TABLE SERVICEREQUEST(serviceID int PRIMARY KEY, serviceType varchar(4), locationNode varchar(10), description varchar(300), requestorID int, fulfillerID int)");
+            if(!tableExists("ITREQUEST")){
+                statement.execute("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY, notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
+            }
+            if(!tableExists("MEDICINEREQUEST")){
+                statement.execute("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY, notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
             }
             if(!tableExists("RESERVATION")){
                 statement.execute("CREATE TABLE RESERVATION(eventID int PRIMARY KEY, eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
@@ -762,15 +765,81 @@ public class DatabaseService {
     }
 
     public boolean insertITRequest(ITRequest req) {
-        return false;
+        String insertQuery = ("INSERT INTO ITREQUEST VALUES(?, ?, ?, ?, ?)");
+        PreparedStatement insertStatement = null;
+        boolean insertStatus = false;
+        try {
+            insertStatement = connection.prepareStatement(insertQuery);
+            // set the attributes of the statement for the node
+            prepareStatement(insertStatement, req.getId(), req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDescription());
+            insertStatement.execute();
+            insertStatus = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(insertStatement);
+        }
+        return insertStatus;
     }
 
     public ITRequest getITRequest(int id) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String input = "SELECT * FROM ITREQUEST WHERE (serviceID = ?)";
+        ITRequest req;
+
+        try {
+            stmt = connection.prepareStatement(input);
+
+            prepareStatement(stmt, id);
+
+            // execute the query
+            rs = stmt.executeQuery();
+
+            // extract results, only one record should be found.
+            boolean hasNext = rs.next();
+
+            // If there is no next node, return null
+            if (!hasNext) {
+                return null;
+            }
+
+            req = extractITRequest(rs);
+            stmt.close();
+            rs.close();
+            return req;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
         return null;
     }
 
     public List<ITRequest> getAllITRequests() {
-        return null;
+        ArrayList<ITRequest> reqs = new ArrayList();
+        String query = "Select * FROM ITREQUEST";
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.createStatement();
+
+            // execute the query
+            rs = stmt.executeQuery(query);
+            while(rs.next()){
+                reqs.add(extractITRequest(rs));
+            }
+            stmt.close();
+            rs.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+
+        return reqs;
     }
 
     public boolean updateITRequest(ITRequest req) {
@@ -782,19 +851,107 @@ public class DatabaseService {
     }
 
     public List<ITRequest> getAllIncompleteITRequests() {
-        return null;
+        ArrayList<ITRequest> reqs = new ArrayList();
+        String query = "Select * FROM ITREQUEST WHERE (completed = false)";
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.createStatement();
+
+            // execute the query
+            rs = stmt.executeQuery(query);
+            while(rs.next()){
+                reqs.add(extractITRequest(rs));
+            }
+            stmt.close();
+            rs.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+
+        return reqs;
     }
 
     public boolean insertMedicineRequest(MedicineRequest req) {
-        return false;
+        String insertQuery = ("INSERT INTO MEDICINEREQUEST VALUES(?, ?, ?, ?, ?, ?)");
+        PreparedStatement insertStatement = null;
+        boolean insertStatus = false;
+        try {
+            insertStatement = connection.prepareStatement(insertQuery);
+            // set the attributes of the statement for the node
+            prepareStatement(insertStatement, req.getId(), req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity());
+            insertStatement.execute();
+            insertStatus = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(insertStatement);
+        }
+        return insertStatus;
     }
 
-    public MedicineRequest getMedicineRequest(String id) {
+    public MedicineRequest getMedicineRequest(int id) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String input = "SELECT * FROM MEDICINEREQUEST WHERE (serviceID = ?)";
+        MedicineRequest req;
+
+        try {
+            stmt = connection.prepareStatement(input);
+
+            prepareStatement(stmt, id);
+
+            // execute the query
+            rs = stmt.executeQuery();
+
+            // extract results, only one record should be found.
+            boolean hasNext = rs.next();
+
+            // If there is no next node, return null
+            if (!hasNext) {
+                return null;
+            }
+
+            req = extractMedicineRequest(rs);
+            stmt.close();
+            rs.close();
+            return req;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
         return null;
     }
 
     public List<MedicineRequest> getAllMedicineRequests() {
-        return null;
+        ArrayList<MedicineRequest> reqs = new ArrayList();
+        String query = "Select * FROM MEDICINEREQUEST";
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.createStatement();
+
+            // execute the query
+            rs = stmt.executeQuery(query);
+            while(rs.next()){
+                reqs.add(extractMedicineRequest(rs));
+            }
+            stmt.close();
+            rs.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+
+        return reqs;
     }
 
     public boolean updateMedicineRequest(MedicineRequest req) {
@@ -806,7 +963,29 @@ public class DatabaseService {
     }
 
     public List<MedicineRequest> getAllIncompleteMedicineRequests() {
-        return null;
+        ArrayList<MedicineRequest> reqs = new ArrayList();
+        String query = "Select * FROM MEDICINEREQUEST where (completed = false)";
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.createStatement();
+
+            // execute the query
+            rs = stmt.executeQuery(query);
+            while(rs.next()){
+                reqs.add(extractMedicineRequest(rs));
+            }
+            stmt.close();
+            rs.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+
+        return reqs;
     }
 
     // CONTROLS
@@ -932,6 +1111,27 @@ public class DatabaseService {
         timeClosedCalendar.setTime(timeClosed);
 
         return new ReservableSpace(spaceID, spaceName, spaceType, locationNodeID, timeOpenCalendar, timeClosedCalendar);
+    }
+
+    private ITRequest extractITRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String description = rs.getString("description");
+
+        return new ITRequest(serviceID, notes, locationNode, completed, description);
+    }
+
+    private MedicineRequest extractMedicineRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String medicineType = rs.getString("medicineType");
+        double qty = rs.getDouble("quantity");
+
+        return new MedicineRequest(serviceID, notes, locationNode, completed, medicineType, qty);
     }
     ////////////////END EXTRACTION METHODS /////////////////////////////////////////////////////////////////////////////
     //</editor-fold>
