@@ -1,5 +1,6 @@
 package controller;
 
+import model.Reservation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,13 +38,18 @@ public class ScheduleControllerTest {
       //  sc = spy(new ScheduleController());
      //   when(sc.bookRoom())
 
+        GregorianCalendar gc = new GregorianCalendar();
+
+        Reservation reserv = new Reservation(23, 0, 1337, "Cancer Seminar",
+                "TFB", gc, gc);
+
 
         rooms.add(0, "ROOM1");
         rooms.add(1, "ROOM2");
         DatabaseService dbs = mock(DatabaseService.class);
-        when(dbs.bookRoom("ROOM2", "12122019", "10:30-12:30")).thenReturn(true) ;
-        when(dbs.bookRoom("ROOM1", "12122019", "10:30-12:30")).thenReturn(false) ;
-        when(dbs.bookRoom("ROOM-1", "12122019", "10:30-12:30")).thenReturn(false) ;
+        when(dbs.insertReservation(reserv)).thenReturn(true) ;
+        when(dbs.insertReservation(reserv)).thenReturn(false) ;
+        when(dbs.insertReservation(reserv)).thenReturn(false) ;
 
         ScheduleController.dbs=dbs ;
     }

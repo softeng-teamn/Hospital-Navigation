@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 
+import model.Reservation;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -38,8 +39,8 @@ public class ScheduleController extends Controller {
     //asks the database to update a room schedule for a particular room
     //returns true if success
     // assume booking has proper day & time info (mmddyy, hhmmss)
-    public boolean bookRoom(String roomID, String day, String time) {
-        return dbs.bookRoom(roomID, day, time);
+    public boolean insertReservation(Reservation reservation) {
+        return dbs.insertReservation(reservation);
     }
 
     // pull unavailable times for a room & date
