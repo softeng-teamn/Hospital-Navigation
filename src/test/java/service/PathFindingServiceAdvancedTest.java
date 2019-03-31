@@ -1,0 +1,182 @@
+package service;
+
+import controller.MapController;
+import model.MapNode;
+import model.Node;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import testclassifications.FastTest;
+
+import java.util.ArrayList;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+public class PathFindingServiceAdvancedTest {
+
+    // MAP (Diaginal testing)
+    //
+    //                  10
+    //                  |
+    //                  9
+    //                  |
+    //  1   -   2   -   3   -   4
+    //          |  \
+    //          5     7
+    //          |       \
+    //          6          8
+
+
+    // ----------------- WARNING -----------------
+    // Running a test will set the parent of the mapNode
+    // This must be reset before every test to ensure
+    // there are no infinite loops when iterating through parents.
+    //
+    // To Be Safe:  Initialize the nodes before
+    //              every test by running "mockingGetChildren()"
+
+    Node n1;
+    MapNode mn1;
+
+    Node n2;
+    MapNode mn2;
+
+    Node n3;
+    MapNode mn3;
+
+    Node n4;
+    MapNode mn4;
+
+    Node n5;
+    MapNode mn5;
+
+    Node n6;
+    MapNode mn6;
+
+    Node n7;
+    MapNode mn7;
+
+    Node n8;
+    MapNode mn8;
+
+    Node n9;
+    MapNode mn9;
+
+    Node n10;
+    MapNode mn10;
+
+    public void createMap() {
+        n1 = new Node("node1",0,2);
+        mn1 = new MapNode(0,2,n1);
+        n2 = new Node("node2",1, 2);
+        mn2 = new MapNode(1,2,n2);
+        n3 = new Node("node3",2, 2);
+        mn3 = new MapNode(2,2,n3);
+        n4 = new Node("node4",3, 2);
+        mn4 = new MapNode(3,2,n4);
+        n5 = new Node("node5",1, 3);
+        mn5 = new MapNode(1,3,n5);
+        n6 = new Node("node6",1, 4);
+        mn6 = new MapNode(1,4,n6);
+        n7 = new Node("node7",2, 3);
+        mn7 = new MapNode(2,3,n7);
+        n8 = new Node("node8",3, 4);
+        mn8 = new MapNode(3,4,n8);
+        n9 = new Node("node9",2, 1);
+        mn9 = new MapNode(2,1,n9);
+        n10 = new Node("node10",2, 0);
+        mn10 = new MapNode(2,0,n10);
+    }
+
+    final PathFindingService mockPF = spy(new PathFindingService());
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+
+    @Before
+    @Test
+    @Category(FastTest.class)
+    public void mockingGetChildren() {
+        createMap();
+        ArrayList<MapNode> list = new ArrayList<MapNode>();
+        list.add(mn2);
+        when(mockPF.getChildren(mn1)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn1);
+        list.add(mn3);
+        list.add(mn5);
+        list.add(mn7);
+        when(mockPF.getChildren(mn2)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn2);
+        list.add(mn4);
+        list.add(mn9);
+        when(mockPF.getChildren(mn3)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn3);
+        when(mockPF.getChildren(mn4)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn2);
+        list.add(mn6);
+        when(mockPF.getChildren(mn5)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn5);
+        when(mockPF.getChildren(mn6)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn2);
+        list.add(mn8);
+        when(mockPF.getChildren(mn7)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn7);
+        when(mockPF.getChildren(mn8)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn3);
+        list.add(mn10);
+        when(mockPF.getChildren(mn9)).thenReturn(list);
+        list = new ArrayList<MapNode>();
+        list.add(mn9);
+        when(mockPF.getChildren(mn10)).thenReturn(list);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void testAStar() {
+        // a path can be found
+        assertThat(mockPF.aStar(mn1, mn6), is(mn6));
+        assertThat(mockPF.aStar(mn10, mn8), is(mn8));
+        assertThat(mockPF.aStar(mn6, mn8), is(mn8));
+        assertThat(mockPF.aStar(mn2, mn10), is(mn10));
+        assertThat(mockPF.aStar(mn1, mn8), is(mn8));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void pathTester() {
+//        createMap();
+        mockingGetChildren();
+        ArrayList<Node> expected = new ArrayList<Node>();
+        expected.add(0, n8);
+        expected.add(0, n7);
+        expected.add(0, n2);
+        expected.add(0, n3);
+        expected.add(0, n9);
+        expected.add(0, n10);
+        assertThat(mockPF.genPath(mn10, mn8), is(expected));
+        mockingGetChildren();
+        expected = new ArrayList<Node>();
+        expected.add(0, n8);
+        expected.add(0, n7);
+        expected.add(0, n2);
+        expected.add(0, n1);
+        assertThat(mockPF.genPath(mn1, mn8), is(expected));
+    }
+
+}
