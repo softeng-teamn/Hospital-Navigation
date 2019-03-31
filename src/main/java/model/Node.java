@@ -90,6 +90,12 @@ public class Node {
         nodeID = "" + x + y;
     }
 
+    public Node(String id, int x, int y) {
+        xcoord = x;
+        ycoord = y;
+        nodeID = id;
+    }
+
     public Node( String nodeID, int xcoord, int ycoord, String floor, String building, String nodeType, String longName, String shortName) {
         this.xcoord = xcoord;
         this.ycoord = ycoord;

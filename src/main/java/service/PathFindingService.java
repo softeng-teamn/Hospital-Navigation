@@ -23,7 +23,9 @@ public class PathFindingService {
         MapNode target = aStar(start, dest);
         if (target != null) {
             ArrayList<Node> path = new ArrayList<Node>();
-            while (target != null) {
+            while (target != null) { // INFINITE LOOP
+                System.out.println("im still in the loop");
+                System.out.println(target.getData().getNodeID());
                 // add every item to beginning of list
                 path.add(0, target.getData());
                 target = target.getParent();
@@ -45,6 +47,7 @@ public class PathFindingService {
         start.setG(0);
         open.add(start);
         while(!open.isEmpty()){
+            System.out.println(open.toString());
             MapNode current = open.poll();
             System.out.println("Current Node: " + current.getData().getNodeID());
             explored.add(current);
@@ -59,6 +62,12 @@ public class PathFindingService {
                 child.calculateG(current);
                 child.calculateHeuristic(dest);
                 double cost = current.getG() + child.getG() + child.getH();
+
+                if (child.equals(dest)) {
+                    System.out.println("This child is our destination node!");
+                    child.setParent(current, current.getG() + child.getG());
+                    return child;
+                }
 
                 if(open.contains(child) && cost>=child.getF()) {
                     System.out.println("skipping this node because it was already seen");
