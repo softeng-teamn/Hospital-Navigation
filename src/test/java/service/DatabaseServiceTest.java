@@ -1,7 +1,6 @@
 package service;
 
-import model.Edge;
-import model.Node;
+import model.*;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -13,7 +12,10 @@ import testclassifications.FastTest;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -260,5 +262,309 @@ public class DatabaseServiceTest {
         assertFalse(myDBS.tableExists("NOTPRESENT"));
 
 
+    }
+
+    @Test
+    public void getAllEdges() {
+    }
+
+    @Test
+    @Category(FastTest.class)
+    // Test both inserting and getting a reservation
+    public void insertAndGetReservation() {
+        // Assume an empty DB (ensured by setUp())
+
+        Reservation value, expected;
+
+        // First verify that these reservations are null
+        value = myDBS.getReservation(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a reservation
+        GregorianCalendar reservationStart = new GregorianCalendar();
+        reservationStart.setTime(new Date());
+        GregorianCalendar reservationEnd = new GregorianCalendar();
+        reservationEnd.setTime(new Date());
+        reservationEnd.add(Calendar.HOUR, 1);
+        Reservation reservation1 = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+
+        // Verify successful insertion
+        boolean insertRes = myDBS.insertReservation(reservation1);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = reservation1;
+        value = myDBS.getReservation(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllReservations() {
+        long now = (new Date()).getTime();
+
+        List<Reservation> reservationList;
+
+        // No reservations should exist yet
+        reservationList = myDBS.getAllReservations();
+        assertThat(reservationList.size(), is(0));
+
+        // Create some reservations
+        GregorianCalendar res1Start = new GregorianCalendar();
+        GregorianCalendar res1End = new GregorianCalendar();
+        GregorianCalendar res2Start = new GregorianCalendar();
+        GregorianCalendar res2End = new GregorianCalendar();
+        GregorianCalendar res3Start = new GregorianCalendar();
+        GregorianCalendar res3End = new GregorianCalendar();
+        res1Start.setTime(new Date(now - 5000));
+        res1End.setTime(new Date(now + 100));
+        res2Start.setTime(new Date(now - 420000));
+        res2End.setTime(new Date(now + 110000));
+        res3Start.setTime(new Date(now));
+        res3End.setTime(new Date(now + 1000));
+        Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
+        Reservation res1 = new Reservation(1, 0, 43, "Event 1", "XYZ", res2Start, res2End);
+        Reservation res2 = new Reservation(2, 2, 12, "Event 2", "LMNO", res3Start, res3End);
+
+        // Insert two
+        assertTrue(myDBS.insertReservation(res0));
+        assertTrue(myDBS.insertReservation(res1));
+
+        // Check that there are two and only two, and that they are the right two
+        reservationList = myDBS.getAllReservations();
+        assertThat(reservationList.size(), is(2));
+        assertEquals(res0, reservationList.get(0));
+        assertEquals(res1, reservationList.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertReservation(res2));
+
+        reservationList = myDBS.getAllReservations();
+        assertThat(reservationList.size(), is(3));
+        assertEquals(res0, reservationList.get(0));
+        assertEquals(res1, reservationList.get(1));
+        assertEquals(res2, reservationList.get(2));
+    }
+
+    @Test
+    public void updateReservation() {
+    }
+
+    @Test
+    public void deleteReservation() {
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getReservationsBySpaceId() {
+        long now = (new Date()).getTime();
+
+        List<Reservation> reservationList;
+
+        // No reservations should exist yet
+        reservationList = myDBS.getAllReservations();
+        assertThat(reservationList.size(), is(0));
+
+        // Create some reservations
+        GregorianCalendar res1Start = new GregorianCalendar();
+        GregorianCalendar res1End = new GregorianCalendar();
+        GregorianCalendar res2Start = new GregorianCalendar();
+        GregorianCalendar res2End = new GregorianCalendar();
+        GregorianCalendar res3Start = new GregorianCalendar();
+        GregorianCalendar res3End = new GregorianCalendar();
+        res1Start.setTime(new Date(now - 5000));
+        res1End.setTime(new Date(now + 100));
+        res2Start.setTime(new Date(now - 420000));
+        res2End.setTime(new Date(now + 110000));
+        res3Start.setTime(new Date(now));
+        res3End.setTime(new Date(now + 1000));
+        Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
+        Reservation res1 = new Reservation(1, 0, 43, "Event 1", "XYZ", res2Start, res2End);
+        Reservation res2 = new Reservation(2, 2, 12, "Event 2", "ABCD", res3Start, res3End);
+
+        // Insert two
+        assertTrue(myDBS.insertReservation(res0));
+        assertTrue(myDBS.insertReservation(res1));
+
+        // Check that only the res with the ABCD location is retrieved
+        reservationList = myDBS.getReservationsBySpaceId("ABCD");
+        assertThat(reservationList.size(), is(1));
+        assertEquals(res0, reservationList.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertReservation(res2));
+
+        reservationList = myDBS.getReservationsBySpaceId("ABCD");
+        assertThat(reservationList.size(), is(2));
+        assertEquals(res0, reservationList.get(0));
+        assertEquals(res2, reservationList.get(1));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getReservationBySpaceIdBetween() {
+        long now = 100000000000l;
+
+        List<Reservation> reservationList;
+
+        // No reservations should exist yet
+        reservationList = myDBS.getAllReservations();
+        assertThat(reservationList.size(), is(0));
+
+
+        // Create some reservations
+        GregorianCalendar res1Start = new GregorianCalendar();
+        GregorianCalendar res1End = new GregorianCalendar();
+        GregorianCalendar res2Start = new GregorianCalendar();
+        GregorianCalendar res2End = new GregorianCalendar();
+        res1Start.setTime(new Date(now - 5000));
+        res1End.setTime(new Date(now + 100));
+        res2Start.setTime(new Date(now - 420000));
+        res2End.setTime(new Date(now + 110000));
+        Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
+        Reservation res1 = new Reservation(1, 0, 43, "Event 1", "ABCD", res2Start, res2End);
+
+        // Insert two
+        assertTrue(myDBS.insertReservation(res0));
+        assertTrue(myDBS.insertReservation(res1));
+
+
+        // Check that only one is retrieved (small time block)
+        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", new Date(now - 6000), new Date(now + 200));
+        assertThat(reservationList.size(), is(1));
+        assertEquals(res0, reservationList.get(0));
+
+        // Check that both are retrieved (large time block)
+        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", new Date(now - 1000000), new Date(now + 1100000));
+        assertThat(reservationList.size(), is(2));
+        assertEquals(res0, reservationList.get(0));
+        assertEquals(res1, reservationList.get(1));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetEmployee() {
+        // Assume an empty DB (ensured by setUp())
+
+        Employee value, expected;
+
+        // First verify that the Employee is null
+        value = myDBS.getEmployee(0);
+        assertThat(value, is(nullValue()));
+
+        // Create an employee
+        Employee employee = new Employee(0, "Doctor", false);
+
+        // Verify successful insertion
+        boolean insertRes = myDBS.insertEmployee(employee);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = employee;
+        value = myDBS.getEmployee(employee.getID());
+        assertEquals(expected, value);
+    }
+
+    @Test
+    public void getAllEmployees() {
+    }
+
+    @Test
+    public void updateEmployee() {
+    }
+
+    @Test
+    public void deleteEmployee() {
+    }
+
+    @Test
+    //@Category(FastTest.class)
+    public void insertAndGetReservableSpace() throws ParseException {
+        // Assume an empty DB (ensured by setUp())
+
+        ReservableSpace value, expected;
+
+        // First verify that the ReservableSpace is null
+        value = myDBS.getReservableSpace("ABCD");
+        assertThat(value, is(nullValue()));
+
+
+        // Create a ReservableSpace
+        GregorianCalendar openTime = new GregorianCalendar();
+        openTime.set(Calendar.HOUR, 7);
+        openTime.set(Calendar.MINUTE, 0);
+        GregorianCalendar closeTime = new GregorianCalendar();
+        closeTime.set(Calendar.HOUR, 17);
+        closeTime.set(Calendar.MINUTE, 30);
+        ReservableSpace space = new ReservableSpace("ABCD", "Space 1", "CONF", "LMNO10011", openTime, closeTime);
+
+        // Verify successful insertion
+        boolean insertRes = myDBS.insertReservableSpace(space);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = space;
+        value = myDBS.getReservableSpace(space.getSpaceID());
+        assertEquals(expected, value);
+    }
+
+    @Test
+    public void getAllReservableSpaces() {
+    }
+
+    @Test
+    public void updateReservableSpace() {
+    }
+
+    @Test
+    public void deleteReservableSpace() {
+    }
+
+    @Test
+    public void insertITRequest() {
+    }
+
+    @Test
+    public void getITRequest() {
+    }
+
+    @Test
+    public void getAllITRequests() {
+    }
+
+    @Test
+    public void updateITRequest() {
+    }
+
+    @Test
+    public void deleteITRequest() {
+    }
+
+    @Test
+    public void getAllIncompleteITRequests() {
+    }
+
+    @Test
+    public void insertMedicineRequest() {
+    }
+
+    @Test
+    public void getMedicineRequest() {
+    }
+
+    @Test
+    public void getAllMedicineRequests() {
+    }
+
+    @Test
+    public void updateMedicineRequest() {
+    }
+
+    @Test
+    public void deleteMedicineRequest() {
+    }
+
+    @Test
+    public void getAllIncompleteMedicineRequests() {
     }
 }

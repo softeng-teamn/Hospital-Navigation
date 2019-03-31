@@ -5,13 +5,13 @@ import model.request.ITRequest;
 import model.request.MedicineRequest;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.Date;
 
+@SuppressWarnings("ALL")
 public class DatabaseService {
 
-    public static final Integer DATABASE_VERSION = 1;
+    public static final Integer DATABASE_VERSION = 2;
 
     private Connection connection;
 
@@ -112,8 +112,8 @@ public class DatabaseService {
             if(!tableExists("SERVICEREQUEST")){
                 statement.execute("CREATE TABLE SERVICEREQUEST(serviceID int PRIMARY KEY, serviceType varchar(4), locationNode varchar(10), description varchar(300), requestorID int, fulfillerID int)");
             }
-            if(!tableExists("RESERVEDEVENT")){
-                statement.execute("CREATE TABLE RESERVEDEVENT(eventID int PRIMARY KEY, eventName varchar(50), locationID varchar(30), startTime int, endTime int, privacyLevel int, employeeID int)");
+            if(!tableExists("RESERVATION")){
+                statement.execute("CREATE TABLE RESERVATION(eventID int PRIMARY KEY, eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
             }
             if(!tableExists("RESERVABLESPACE")){
                 statement.execute("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY , spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
@@ -124,6 +124,7 @@ public class DatabaseService {
             }
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
+            statement.execute("CREATE INDEX LocationIndex ON RESERVATION (locationID)");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -224,8 +225,6 @@ public class DatabaseService {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         String input = "SELECT * FROM NODE WHERE (NODEID = ?)";
-        Node newNode;
-
         try {
             stmt = connection.prepareStatement(input);
 
@@ -242,19 +241,7 @@ public class DatabaseService {
                 return null;
             }
 
-            String newNodeID = rs.getString("nodeID");
-            int newxcoord = rs.getInt("xcoord");
-            int newycoord = rs.getInt("ycoord");
-            String newFloor = rs.getString("floor");
-            String newBuilding = rs.getString("building");
-            String newNodeType = rs.getString("nodeType");
-            String newLongName = rs.getString("longName");
-            String newShortName = rs.getString("shortName");
-            // construct the new node and return it
-            newNode = new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
-            stmt.close();
-            rs.close();
-            return newNode;
+            return extractNode(rs);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -275,18 +262,7 @@ public class DatabaseService {
             // execute the query
             nodes = stmt.executeQuery(query);
             while(nodes.next()){
-                // extract results from each row of the database.
-                String newNodeID = nodes.getString("nodeID");
-                int newxcoord = nodes.getInt("xcoord");
-                int newycoord = nodes.getInt("ycoord");
-                String newFloor = nodes.getString("floor");
-                String newBuilding = nodes.getString("building");
-                String newNodeType = nodes.getString("nodeType");
-                String newLongName = nodes.getString("longName");
-                String newShortName = nodes.getString("shortName");
-                // construct the new node and return it
-                Node newNode = new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
-                allNodes.add(newNode);
+                allNodes.add(extractNode(nodes));
             }
             stmt.close();
             nodes.close();
@@ -322,18 +298,7 @@ public class DatabaseService {
             prepareStatement(stmt,nodeID,nodeID);
             rs = stmt.executeQuery();
             while(rs.next()){
-                // extract results from each row of the database.
-                String newNodeID = rs.getString("nodeID");
-                int newxcoord = rs.getInt("xcoord");
-                int newycoord = rs.getInt("ycoord");
-                String newFloor = rs.getString("floor");
-                String newBuilding = rs.getString("building");
-                String newNodeType = rs.getString("nodeType");
-                String newLongName = rs.getString("longName");
-                String newShortName = rs.getString("shortName");
-                // construct the new node and return it
-                Node newNode = new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
-                connectedNodes.add(newNode);;
+                connectedNodes.add(extractNode(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -364,20 +329,6 @@ public class DatabaseService {
 
         return edges;
 
-    }
-
-    public String getRoomSched(String day, String roomID){
-        return "";
-    }
-
-    public boolean bookRoom(String day, String roomID, String time){
-        return false;
-    }
-
-    public void addRequest(String Request){}
-
-    public boolean login(String id, String password){
-        return false;
     }
 
     // insert an edge. The method will fail and return false if the two nodes it points to
@@ -424,14 +375,8 @@ public class DatabaseService {
             if (!hasNext) {
                 return null;
             }
-            String newEdgeID = rs.getString("edgeID");
-            String node1Name = rs.getString("NODE1");
-            String node2Name = rs.getString("NODE2");
-            Node node1 = getNode(node1Name);
-            Node node2 = getNode(node2Name);
-            newEdge = new Edge (newEdgeID, node1, node2);
-            return newEdge;
 
+            return extractEdge(rs);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -497,15 +442,81 @@ public class DatabaseService {
 
 
     public boolean insertReservation(Reservation reservation) {
-        return false;
+        String nodeStatement = ("INSERT INTO RESERVATION VALUES(?, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement insertReservation = null;
+        boolean insertStatus = false;
+        try {
+            insertReservation = connection.prepareStatement(nodeStatement);
+            // set the attributes of the statement for the node
+            prepareStatement(insertReservation, reservation.getEventID(), reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
+            insertReservation.execute();
+            insertStatus = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(insertReservation);
+        }
+        return insertStatus;
     }
 
     public Reservation getReservation(int id) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String input = "SELECT * FROM RESERVATION WHERE (EVENTID = ?)";
+        Reservation res;
+
+        try {
+            stmt = connection.prepareStatement(input);
+
+            prepareStatement(stmt, id);
+
+            // execute the query
+            rs = stmt.executeQuery();
+
+            // extract results, only one record should be found.
+            boolean hasNext = rs.next();
+
+            // If there is no next node, return null
+            if (!hasNext) {
+                return null;
+            }
+
+            res = extractReservation(rs);
+            stmt.close();
+            rs.close();
+            return res;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
         return null;
     }
 
     public List<Reservation> getAllReservations() {
-        return null;
+        ArrayList<Reservation> reservations = new ArrayList();
+        String query = "Select * FROM RESERVATION";
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.createStatement();
+
+            // execute the query
+            rs = stmt.executeQuery(query);
+            while(rs.next()){
+                reservations.add(extractReservation(rs));
+            }
+            stmt.close();
+            rs.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+
+        return reservations;
     }
 
     public boolean updateReservation(Reservation reservation) {
@@ -516,19 +527,117 @@ public class DatabaseService {
         return false;
     }
 
+    /**
+     * Query all reservations made for a given {@link ReservableSpace}.
+     * @param id the spaceID of the ReservableSpace being requested for
+     * @return a list of the requested reservations
+     */
     public List<Reservation> getReservationsBySpaceId(String id) {
-        return null;
+        ArrayList<Reservation> reservations = new ArrayList();
+        String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ?)";
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.prepareStatement(query);
+
+            prepareStatement(stmt, id);
+
+            // execute the query
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                reservations.add(extractReservation(rs));
+            }
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+        return reservations;
     }
 
+    /**
+     * Get all reservations made for the given space ID that fall entirely within {@param from} and {@param to}.
+     * @param id the spaceID of the reservable space being requested for
+     * @param from start of the window
+     * @param to end of the window
+     * @return a list of the requested reservations
+     */
     public List<Reservation> getReservationBySpaceIdBetween(String id, Date from, Date to) {
-        return null;
+        ArrayList<Reservation> reservations = new ArrayList();
+        String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.prepareStatement(query);
+
+            prepareStatement(stmt, id, from, to, from, to);
+
+            // execute the query
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                reservations.add(extractReservation(rs));
+            }
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+        return reservations;
     }
 
     public boolean insertEmployee(Employee employee) {
-        return false;
+        String employeeStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?)");
+        PreparedStatement insertReservation = null;
+        boolean insertStatus = false;
+        try {
+            insertReservation = connection.prepareStatement(employeeStatement);
+            // set the attributes of the statement for the node
+            prepareStatement(insertReservation, employee.getID(), employee.getJob(), employee.isAdmin());
+            insertReservation.execute();
+            insertStatus = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(insertReservation);
+        }
+        return insertStatus;
     }
 
     public Employee getEmployee(int id) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String input = "SELECT * FROM EMPLOYEE WHERE (EMPLOYEEID = ?)";
+        Employee employee;
+
+        try {
+            stmt = connection.prepareStatement(input);
+
+            prepareStatement(stmt, id);
+
+            // execute the query
+            rs = stmt.executeQuery();
+
+            // extract results, only one record should be found.
+            boolean hasNext = rs.next();
+
+            // If there is no next node, return null
+            if (!hasNext) {
+                return null;
+            }
+
+            employee = extractEmployee(rs);
+            stmt.close();
+            rs.close();
+            return employee;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
         return null;
     }
 
@@ -548,7 +657,7 @@ public class DatabaseService {
         return false;
     }
 
-    public ReservableSpace getReservation(String id) {
+    public ReservableSpace getReservableSpace(String id) {
         return null;
     }
 
@@ -667,6 +776,78 @@ public class DatabaseService {
         prepareStatement(insertNode, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
     }
 
+
+    //<editor-fold desc="Extraction Methods">
+    /////////// EXTRACTION METHODS /////////////////////////////////////////////////////////////////////////////////////
+
+    private Node extractNode(ResultSet rs) throws SQLException {
+        String newNodeID = rs.getString("nodeID");
+        int newxcoord = rs.getInt("xcoord");
+        int newycoord = rs.getInt("ycoord");
+        String newFloor = rs.getString("floor");
+        String newBuilding = rs.getString("building");
+        String newNodeType = rs.getString("nodeType");
+        String newLongName = rs.getString("longName");
+        String newShortName = rs.getString("shortName");
+        // construct the new node and return it
+        return new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
+    }
+
+    private Edge extractEdge(ResultSet rs) throws SQLException {
+        String newEdgeID = rs.getString("edgeID");
+        String node1Name = rs.getString("NODE1");
+        String node2Name = rs.getString("NODE2");
+        Node node1 = getNode(node1Name);
+        Node node2 = getNode(node2Name);
+        return new Edge (newEdgeID, node1, node2);
+    }
+
+    private Reservation extractReservation(ResultSet rs) throws SQLException {
+        // Extract data
+        int eventID = rs.getInt("eventID");
+        String eventName = rs.getString("eventName");
+        String locationID = rs.getString("locationID");
+        Date startTime = new Date(rs.getTimestamp("startTime").getTime());
+        Date endTime = new Date(rs.getTimestamp("endTime").getTime());
+        int privacyLevel = rs.getInt("privacyLevel");
+        int employeeID = rs.getInt("employeeID");
+
+        GregorianCalendar startTimeCalendar = new GregorianCalendar();
+        startTimeCalendar.setTime(startTime);
+        GregorianCalendar endTimeCalendar = new GregorianCalendar();
+        endTimeCalendar.setTime(endTime);
+
+        // construct the new reservation and return it
+        return new Reservation(eventID, privacyLevel, employeeID, eventName, locationID, startTimeCalendar, endTimeCalendar);
+    }
+
+    private Employee extractEmployee(ResultSet rs) throws SQLException {
+        // Extract data
+        int empID = rs.getInt("employeeID");
+        String job = rs.getString("job");
+        boolean isAdmin = rs.getBoolean("isAdmin");
+
+        return new Employee(empID, job, isAdmin);
+    }
+
+    private ReservableSpace extractReservableSpace(ResultSet rs) throws SQLException {
+        String spaceID = rs.getString("spaceID");
+        String spaceName = rs.getString("spaceName");
+        String spaceType = rs.getString("spaceType");
+        String locationNodeID = rs.getString("locationNode");
+        Date timeOpen = new Date(rs.getTimestamp("timeOpen").getTime());
+        Date timeClosed = new Date(rs.getTimestamp("timeClosed").getTime());
+
+        GregorianCalendar timeOpenCalendar = new GregorianCalendar();
+        timeOpenCalendar.setTime(timeOpen);
+        GregorianCalendar timeClosedCalendar = new GregorianCalendar();
+        timeClosedCalendar.setTime(timeClosed);
+
+        return new ReservableSpace(spaceID, spaceName, spaceType, locationNodeID, timeOpenCalendar, timeClosedCalendar);
+    }
+    ////////////////END EXTRACTION METHODS /////////////////////////////////////////////////////////////////////////////
+    //</editor-fold>
+
     /**
      * Set the values of a prepared statement. The number of variables in the prepared statement and the number of
      * values must match.
@@ -676,7 +857,12 @@ public class DatabaseService {
      */
     private void prepareStatement(PreparedStatement preparedStatement, Object... values) throws SQLException {
         for (int i = 0; i < values.length; i++) {
-            preparedStatement.setObject(i + 1, values[i]);
+            // Dates must be handles specially
+            if (values[i] instanceof Date) {
+                preparedStatement.setTimestamp(i + 1, new Timestamp(((Date) values[i]).getTime()));
+            } else {
+                preparedStatement.setObject(i + 1, values[i]);
+            }
         }
     }
 
