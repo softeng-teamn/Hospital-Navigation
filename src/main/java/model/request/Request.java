@@ -6,8 +6,11 @@ import sun.plugin.services.AxBridgeBrowserService;
 
 import static model.RequestType.RType.ABS;
 
+import java.util.Objects;
+
 public abstract class Request {
-    String id, notes;
+    int id;
+    String notes;
     Node location;
     boolean completed;
     RequestType requestType;
@@ -20,7 +23,7 @@ public abstract class Request {
         this.requestType = requestType;
     }
 
-    public Request(String id, String notes, Node location, boolean completed) {
+    public Request(int id, String notes, Node location, boolean completed) {
         this.id = id;
         this.notes = notes;
         this.location = location;
@@ -28,11 +31,11 @@ public abstract class Request {
         this.requestType = new RequestType(ABS);
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -58,6 +61,22 @@ public abstract class Request {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Request request = (Request) o;
+        return completed == request.completed &&
+                Objects.equals(id, request.id) &&
+                Objects.equals(notes, request.notes) &&
+                Objects.equals(location, request.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, notes, location, completed);
     }
 
     public RequestType getRequestType() {
