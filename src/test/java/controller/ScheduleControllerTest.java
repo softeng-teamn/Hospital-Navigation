@@ -1,5 +1,6 @@
 package controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.Reservation;
 import org.junit.After;
 import org.junit.Before;
@@ -47,6 +48,7 @@ public class ScheduleControllerTest {
 
     @Mock private DatabaseService dbs;
     @Before
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
     public void init() {
 
       //  sc = spy(new ScheduleController());

@@ -30,9 +30,12 @@ public class MapEditController extends MapController {
             return false;
         }
         boolean success = dbs.insertNode(n);
+        /*
         for (Edge edge: e){
-            success = success && dbs.insertEdge(edge);
+            if(dbs.getEdge(edge.getEdgeID()) != null){
+                success &&= success && dbs.insertEdge(edge);
         }
+        */
         return success;
     }
 
