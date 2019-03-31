@@ -79,8 +79,6 @@ public class ScheduleControllerTest {
         assertThat(sc.insertReservation(reservA), equalTo(false));
         // assert that a non-existant room cannot be booked
         assertThat(sc.insertReservation(reservC), equalTo(false));
-
-
     }
 
     @Test
