@@ -58,6 +58,10 @@ public class CSVControllerTest {
         when(dbs.getAllNodes()).thenReturn(testNodes);
         when(dbs.getAllEdges()).thenReturn(testEdges);
 
+        when(dbs.getNode(n1.getNodeID())).thenReturn(n1);
+        when(dbs.getNode(n2.getNodeID())).thenReturn(n2);
+        when(dbs.getNode(n3.getNodeID())).thenReturn(n3);
+
         CSVController.dbs = dbs;
     }
 
@@ -192,7 +196,29 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void importEdges() {
+    @Category(FastTest.class)
+    public void importEdges() throws Exception {
+        URL originalURL = ResourceLoader.edges;
+        // Override the csv file
+        setFinalStatic(ResourceLoader.class.getDeclaredField("edges"), service.ResourceLoader.class.getResource("/test_edges.csv"));
+
+        // Create a class to capture arguments of the type Edge
+        ArgumentCaptor<Edge> edgeCaptor = ArgumentCaptor.forClass(Edge.class);
+
+        // Action being tested
+        CSVController.importEdges();
+
+        // Capture the calls to insert edge
+        verify(CSVController.dbs, times(3)).insertEdge(edgeCaptor.capture());
+
+        // Check that each edge captured is equal to the test edge
+        List<Edge> capturedEdges = edgeCaptor.getAllValues();
+        assertEquals(testEdges.get(0), capturedEdges.get(0));
+        assertEquals(testEdges.get(1), capturedEdges.get(1));
+        assertEquals(testEdges.get(2), capturedEdges.get(2));
+
+        // Reset to original URL
+        setFinalStatic(ResourceLoader.class.getDeclaredField("edges"), originalURL);
     }
 
     @Test
