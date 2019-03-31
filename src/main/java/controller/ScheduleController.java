@@ -1,5 +1,8 @@
 package controller;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,10 +22,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Node;
+import model.Reservation;
 import service.ResourceLoader;
 import service.StageManager;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class ScheduleController extends Controller {
 
@@ -38,37 +43,31 @@ public class ScheduleController extends Controller {
     @FXML
     private JFXListView reservableList;
 
-    private int openTime = 9; // arbitrary
-    private int closeTime = 17;
+    @FXML
+    private JFXDatePicker datePicker;
+
+    private int openTime = 9;   // hour to start schedule dislay
+    private int closeTime = 20;    // 24-hours hour to end schedule display
     private double timeStep = 2;    // Fractions of an hour
 
+    /**
+     * Set up room list.
+     */
     @FXML
     public void initialize() {
         ObservableList<Node> nodes = FXCollections.observableArrayList();
 
-        // !!! alter to pull from database
-//        ArrayList<Node> DBnodes = dbs.getAllNodes();
-//        nodes.addAll(DBnodes);
+        //  Pull nodes from database
+        // Note: when I run this with nodes I make, it works
+        // Currently, I get nothing - is getAllNodes functional?
+        ArrayList<Node> DBnodes = dbs.getAllNodes();
+        nodes.addAll(DBnodes);
 
-
-        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room A", "short"));
-        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room B", "shortr"));
-        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room C", "shortr"));
-        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room D", "short"));
-        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room E", "shortr"));
-        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room F", "shortr"));
-        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room G", "short"));
-        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room H", "shortr"));
-        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room J", "shortr"));
-        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room I", "short"));
-        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room K", "shortr"));
-        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room L", "shortr"));
-        nodes.add(new Node("nid", 20, 40, "1", "bdg", "nType", "Room M", "short"));
-        nodes.add(new Node("nid2",10, 4, "2", "bldg", "nTypes", "Room N", "shortr"));
-
+        // Add the node to the listview
         for (Node node : nodes) {
             reservableList.setItems(nodes);
 
+            // Set the cell to display only the long name of the room
             reservableList.setCellFactory(param -> new ListCell<Node>() {
                 @Override
                 protected void updateItem(Node item, boolean empty) {
@@ -86,25 +85,38 @@ public class ScheduleController extends Controller {
         reservableList.setEditable(false);
     }
 
-    // On room button click, show the schedule for that room
-    // !!! change to reflect data fetched from database
+    /**
+     *   On room button click, show the schedule for that room
+      */
     public void showRoomSchedule() {
         Node curr = (Node) reservableList.getSelectionModel().getSelectedItem();
+        // TODO make it so that the below doesn't happen for scroll bar selection
 
-        // !!! ^ not for scroll bar
+        // TODO get date from DatePicker
+        // Note: Data seems like not a very functional class.
+        // Is there a better class we can use, or just use strings?
 
-        //curr.getResBetween(start:Date, end:Date, RoomID:String):Collection<Reservations>
-        // !!! get unavail times and mark
+        // curr.getResBetween(start:Date, end:Date, RoomID:String):Collection<Reservations>
+        // TODO get unavail times - based on chosen node, date, and end of that date
+        // TODO generate end date
 
+        // clear the previous schedule
+        // Note: there is a better way to display this info,
+        // This is just what I have working for now.
         schedule.getChildren().clear();
         checks.getChildren().clear();
+
+        // For every hour between open and close, or startDate/endDate
+        // Create a button (can change this to label) and checkbox for that time
         for (int i = openTime; i < closeTime; i++) {
             int time = i % 12;
             if (time == 0) {
                 time = 12;
             }
 
+            // For every time incremenb in that hour
             for (int j = 0; j < timeStep; j++) {
+                JFXCheckBox check = new JFXCheckBox("Reserve Time");
                 String minutes = "00";
                 if (j > 0) {
                     minutes = String.format("%.0f",(60/timeStep));
@@ -113,10 +125,15 @@ public class ScheduleController extends Controller {
                 hBox.setAlignment(Pos.BASELINE_RIGHT);
                 JFXButton timeInc = new JFXButton(time + ":" + minutes);
                 timeInc.setStyle("-fx-background-color: #4BC06E; ");
+
+                // Some kind of check for reservations -> turn the button red
+                // And disable checkbox
+//                if (... this time is already reserved...) {
+//                    timeInc.setStyle("-fx-background-color: #CA3637; ");
+//                    check.setDisable(true);
+//                }
                 hBox.getChildren().add(timeInc);
-                // item.setOnAction(...);
                 schedule.getChildren().add(hBox);
-                JFXCheckBox check = new JFXCheckBox("Reserve Time");
                 checks.getChildren().add(check);
             }
         }
