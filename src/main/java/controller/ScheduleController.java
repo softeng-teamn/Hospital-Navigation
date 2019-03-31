@@ -30,7 +30,7 @@ public class ScheduleController extends Controller {
     @FXML
     private JFXTextField numRooms;
 
-    private int openTime = 9;
+    private int openTime = 9; // arbitrary
     private int closeTime = 17;
     private double timeStep = 2;    // Fractions of an hour
 
