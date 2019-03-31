@@ -1,8 +1,6 @@
 package controller;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
+import java.util.*;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
@@ -13,8 +11,6 @@ import javafx.stage.Stage;
 import model.Reservation;
 import service.ResourceLoader;
 import service.StageManager;
-
-import java.util.GregorianCalendar ;
 
 import service.DatabaseService;
 
@@ -43,23 +39,46 @@ public class ScheduleController extends Controller {
         return dbs.insertReservation(reservation);
     }
 
+
+
     // pull unavailable times for a room & date
-    public void showAvailableTimes(GregorianCalendar date) {
-//        Collection<GregorianCalendar> unavailable = dbs.getRoomSched(day, roomID);    // can change Collection<String> later
+    // i think we might need to pass a room id in
+    public void showAvailableTimes(String id, GregorianCalendar date) {
 
+        //Collection<GregorianCalendar> unavailable = dbs.getRoomSched(day, roomID);
 
+        // String, Date, Date
+        // where do i get the room id??
+        List<Reservation> unavailable = dbs.getReservationsBySpaceId(id) ;
 
-        ArrayList<String> allTimes = new ArrayList<>();
-        // available times
-        ArrayList<String> available = new ArrayList<>();
+        // all possible time slots in a day (assuming room is always open, 30 minute booking periods)
+        ArrayList<GregorianCalendar> allTimes = new ArrayList<>();
+        GregorianCalendar first = new GregorianCalendar(date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), 0, 0, 0) ;
+        allTimes.add(first) ;
+
+        // available times - UI can work off this list
+        ArrayList<GregorianCalendar> available = new ArrayList<>();
 
         // to iterate over all possible times in a day
-        for (int i = 0; i < allTimes.size(); i += timeStep) {
+        for (int i = 0; i < allTimes.size() /* can i just set this to loop 48 - 1 times? (for 30 min slots over 24 hrs)*/; i += timeStep) {
             // put in available times
-        }
-   //     available.removeAll(unavailable);
 
-        // UI - display things in available!! thank u :)
+            // new GregorianCalendar(year, month, day, second, increment hour/minute based off of previous list item)
+            int year = first.get(Calendar.YEAR) ;
+            int month = first.get(Calendar.MONTH) ;
+            int day = first.get(Calendar.DAY_OF_MONTH) ;
+            int hour = allTimes.get(i).get(Calendar.HOUR) ;
+            int minute = allTimes.get(i).get(Calendar.MINUTE + 30) ;
+            int second = allTimes.get(i).get(Calendar.SECOND) ;
+            GregorianCalendar next = new GregorianCalendar(year, month, day, hour, minute, second);
+            // i think when i set hour it will stay the same and not update as the minute would - check
+            allTimes.add(next) ;
+
+        }
+        available.removeAll(unavailable);
+
+
+        // UI - display things in available list of calendar dates!! thank u :)
     }
 
     public void setTimeStep(int timeStep) {

@@ -26,30 +26,38 @@ import service.DatabaseService;
 import org.mockito.Mock;
 
 
+
+
 public class ScheduleControllerTest {
     private ScheduleController sc = new ScheduleController();
     private ArrayList<String> rooms = new ArrayList<>();
+
+    private GregorianCalendar gc = new GregorianCalendar();
+
+    private Reservation reservA = new Reservation(23, 0, 1337, "Cancer Seminar",
+            "TFB", gc, gc);
+
+    private Reservation reservB = new Reservation(24, 0, 1337, "HIV Seminar",
+            "FFD", gc, gc);
+
+    private Reservation reservC = new Reservation(25, 0, 1337, "Alzheimer's Seminar",
+            "SFF", gc, gc);
+
+
 
     @Mock private DatabaseService dbs;
     @Before
     public void init() {
 
-
       //  sc = spy(new ScheduleController());
      //   when(sc.bookRoom())
-
-        GregorianCalendar gc = new GregorianCalendar();
-
-        Reservation reserv = new Reservation(23, 0, 1337, "Cancer Seminar",
-                "TFB", gc, gc);
-
 
         rooms.add(0, "ROOM1");
         rooms.add(1, "ROOM2");
         DatabaseService dbs = mock(DatabaseService.class);
-        when(dbs.insertReservation(reserv)).thenReturn(true) ;
-        when(dbs.insertReservation(reserv)).thenReturn(false) ;
-        when(dbs.insertReservation(reserv)).thenReturn(false) ;
+        when(dbs.insertReservation(reservA)).thenReturn(true).thenReturn(false) ;
+        when(dbs.insertReservation(reservB)).thenReturn(false) ;
+        when(dbs.insertReservation(reservC)).thenReturn(false) ;
 
         ScheduleController.dbs=dbs ;
     }
@@ -62,13 +70,13 @@ public class ScheduleControllerTest {
 
     @Test
     @Category({FastTest.class})
-    public void bookRoom(){//probs needs more test cases involving the db
+    public void insertReservationTest(){//probs needs more test cases involving the db
         // assert that an available room can be booked
-        assertThat(sc.bookRoom("ROOM2", "12122019", "10:30-12:30"), equalTo(true));
+        assertThat(sc.insertReservation(reservA), equalTo(true));
         // assert that a booked room cannot be double-booked
-        assertThat(sc.bookRoom("ROOM1", "12122019", "10:30-12:30"), equalTo(false));
+        assertThat(sc.insertReservation(reservA), equalTo(false));
         // assert that a non-existant room cannot be booked
-        assertThat(sc.bookRoom("ROOM-1", "12122019", "10:30-12:30"), equalTo(false));
+        assertThat(sc.insertReservation(reservC), equalTo(false));
 
 
     }
