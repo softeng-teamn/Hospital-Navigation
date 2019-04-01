@@ -1,15 +1,11 @@
 package controller;
 
-import model.Node;
 import model.request.Request;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.FastTest;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 public class RequestControllerTest {
 
@@ -18,9 +14,17 @@ public class RequestControllerTest {
     RequestController reqCrl2 ;
     Request newReq ;
 
+//    RequestController mockRequestController = spy(new RequestController());
 
     @Before
-    public void setUp() throws Exception { }
+    public void mockMethod() {
+//        when(mockRequestController.initialize()).thenReturn();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+
+    }
 
 
     // test showHome()

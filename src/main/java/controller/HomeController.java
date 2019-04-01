@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 import model.MapNode;
