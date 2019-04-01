@@ -55,13 +55,52 @@ public class HomeController extends MapController {
     @FXML
     void initialize() {
 
-
         // THIS IS ONLY FOR MOCKING THE DATABASE "getAllNodes" METHOD
 //        ArrayList<Node> nodes = dbs.getAllNodes();
         allNodes.add(n1);
         allNodes.add(n2);
         allNodes.add(n3);
         allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+
+
 
         // Create NodeList
         allNodesObservable = FXCollections.observableArrayList();
