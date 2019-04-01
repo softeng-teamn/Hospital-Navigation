@@ -8,8 +8,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import service.DatabaseService;
+import service.MismatchedDatabaseVersionException;
 import testclassifications.*;
 
+import java.sql.SQLException;
 import java.sql.SQLOutput;
 import java.util.*;
 
@@ -47,10 +49,11 @@ public class ScheduleControllerTest {
 
     @Before
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
-    public void init() {
+    public void init() throws SQLException, MismatchedDatabaseVersionException {
 
       //  sc = spy(new ScheduleController());
      //   when(sc.bookRoom())
+        sc.dbs = DatabaseService.init("hospital-db-test");
 
         rooms.add(0, "ROOM1");
         rooms.add(1, "ROOM2");
