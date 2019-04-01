@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
    <children>
       <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="311.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Book a Room" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <font>
@@ -29,7 +29,7 @@
                         </AnchorPane>
                     </content>
                   </TitledPane>
-                  <JFXListView fx:id="reservableList" onMouseClicked="#showRoomSchedule" />
+                  <JFXListView fx:id="reservableList" />
                </children>
                <padding>
                   <Insets top="1.0" />
@@ -42,9 +42,9 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                  <HBox prefWidth="200.0" spacing="5.0">
                      <children>
-                        <VBox fx:id="schedule" prefHeight="353.0" prefWidth="150.0" HBox.hgrow="ALWAYS">
+                        <VBox fx:id="schedule" prefHeight="353.0" prefWidth="150.0" spacing="9.0" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
