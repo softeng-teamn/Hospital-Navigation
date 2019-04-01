@@ -31,12 +31,15 @@ public class DatabaseService {
         try {
             connection = DriverManager.getConnection("jdbc:derby:"+dbName+";");
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.print("No existing database found, creating database...");
-            System.out.flush();
-            connection = DriverManager.getConnection("jdbc:derby:"+dbName+";create=true");
-            System.out.println("Database created");
-            createFlag = true;
+            if (e.getMessage().contains("Database '" + dbName + "' not found")) {
+                System.out.print("No existing database found, creating database...");
+                System.out.flush();
+                connection = DriverManager.getConnection("jdbc:derby:" + dbName + ";create=true");
+                System.out.println("Database created");
+                createFlag = true;
+            } else {
+                throw e;
+            }
         }
 
         DatabaseService myDB = new DatabaseService(connection);
@@ -461,7 +464,7 @@ public class DatabaseService {
             statement.execute("DELETE FROM ITREQUEST");
             statement.execute("DELETE FROM MEDICINEREQUEST");
             statement.execute("DELETE FROM RESERVATION");
-            statement.execute("DELETE FROM RESERVABLEROOM");
+            statement.execute("DELETE FROM RESERVABLESPACE");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
