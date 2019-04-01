@@ -39,8 +39,6 @@ public class ScheduleController extends Controller {
         return dbs.insertReservation(reservation);
     }
 
-
-
     // pull unavailable times for a room & date
     // i think we might need to pass a room id in
     public void showAvailableTimes(String id, GregorianCalendar date) {
@@ -79,8 +77,16 @@ public class ScheduleController extends Controller {
 
 
         // UI - display things in available list of calendar dates!! thank u :)
-
     }
+
+     //returns the roomID of the room asked for by the user
+    String getRoom(){
+        return "";
+    }
+    //returns the roomID of the workstations asked for by the user
+    String getWorkStation(){
+        return "";
+    }  
 
     public void setTimeStep(int timeStep) {
         this.timeStep = timeStep;
