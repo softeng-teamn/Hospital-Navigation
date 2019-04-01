@@ -1,6 +1,7 @@
 package service;
 
 import controller.CSVController;
+import controller.Controller;
 import model.MapNode;
 import model.Node;
 import org.junit.Before;
@@ -28,7 +29,9 @@ public class PathFindingServiceIntegrationTest {
     private DatabaseService myDBS;
 
     @Before
+    @Category(FastTest.class)
     public void setUp() throws SQLException, MismatchedDatabaseVersionException {
+
         CSVController.importNodes();
         CSVController.importEdges();
     }
