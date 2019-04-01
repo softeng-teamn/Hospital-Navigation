@@ -51,6 +51,11 @@ public class CSVControllerTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm");
 
         Date date1 = sdf.parse("2019-03-31 12:00");
+        Date date2 = sdf.parse("2019-03-31 12:30");
+        Date date3 = sdf.parse("2019-03-25 14:00");
+        Date date4 = sdf.parse("2019-03-25 15:30");
+        Date date5 = sdf.parse("2019-04-20 00:00");
+        Date date6 = sdf.parse("2019-04-20 23:59");
 
         GregorianCalendar calendar1 = new GregorianCalendar();
         GregorianCalendar calendar2 = new GregorianCalendar();
@@ -60,6 +65,11 @@ public class CSVControllerTest {
         GregorianCalendar calendar6 = new GregorianCalendar();
 
         calendar1.setTime(date1);
+        calendar2.setTime(date2);
+        calendar3.setTime(date3);
+        calendar4.setTime(date4);
+        calendar5.setTime(date5);
+        calendar6.setTime(date6);
 
         Node n1 = new Node("ABC123", 0, 0, "1", "Main", "ABC", "Test Node 1", "T1");
         Node n2 = new Node("XYZ4242", 50, 50, "L1", "Aux", "XYZ", "Test Node 2", "T2");
@@ -68,6 +78,10 @@ public class CSVControllerTest {
         Edge e1 = new Edge(n1, n2);
         Edge e2 = new Edge(n2, n3);
         Edge e3 = new Edge(n1, n3);
+
+        ReservableSpace space1 = new ReservableSpace("AAAAA00101","Bob","Computer","BBBBB00101", calendar1, calendar2);
+        ReservableSpace space2 = new ReservableSpace("AAAAA00102","Alice","Conference","BBBBB00102",calendar3, calendar4);
+        ReservableSpace space3 = new ReservableSpace("AAAAA00103","John","Computer","BBBBB00103",calendar5,calendar6);
 
         testNodes.add(n1);
         testNodes.add(n2);
