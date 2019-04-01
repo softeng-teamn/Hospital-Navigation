@@ -1,6 +1,9 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +16,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
 import model.MapNode;
 import model.Node;
 import service.PathFindingService;
@@ -40,7 +44,7 @@ public class HomeController extends MapController {
 
     Node n1 = new Node("n1",0,1);
     Node n2 = new Node("n2",0,1);
-    Node n3 = new Node("n3",0,1);
+    Node n3 = new Node("n3",20,200);
     Node n4 = new Node("n4",0,1);
     Node n5 = new Node("n5",0,1);
     Node n6 = new Node("n6",0,1);
@@ -157,9 +161,24 @@ public class HomeController extends MapController {
     @FXML
     public void listViewClicked(MouseEvent e) {
         // SHOW THE X & Y COORDS of the selected node on the map!
-        String nodeID = list_view.getSelectionModel().getSelectedItem().getNodeID();
-        System.out.println("You clicked on: " + nodeID);
-        // TODO: 2019-04-01 TAKE THIS NODE'S xcoord & ycoord and move the map to that location. Use the Sample youtube video as help
+        Node selectedNode = list_view.getSelectionModel().getSelectedItem();
+        System.out.println("You clicked on: " + selectedNode.getNodeID());
+
+        // animation scroll to new position
+        double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
+        double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
+        double scrollH = (Double) (selectedNode.getXcoord() / mapWidth);
+        double scrollV = (Double) (selectedNode.getYcoord() / mapHeight);
+        final Timeline timeline = new Timeline();
+        final KeyValue kv1 = new KeyValue(map_scrollpane.hvalueProperty(), scrollH);
+        final KeyValue kv2 = new KeyValue(map_scrollpane.vvalueProperty(), scrollV);
+        final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+
+    private void drawNode(Node n) {
+
     }
 
     // Later Todos :
