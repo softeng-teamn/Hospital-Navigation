@@ -21,6 +21,7 @@ public class MapController extends Controller {
 
     }
 
+
     public static ArrayList<Node> getNodesConnectedTo(Node n) {
         return Controller.dbs.getNodesConnectedTo(n);
     }
