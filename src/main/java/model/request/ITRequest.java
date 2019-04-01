@@ -1,6 +1,9 @@
 package model.request;
 
 import model.Node;
+import model.RequestType;
+
+import static model.RequestType.RType.ITS;
 
 import java.util.Objects;
 
@@ -11,11 +14,13 @@ public class ITRequest extends Request {
     public ITRequest(int id, String notes, Node location, boolean completed) {
         super(id, notes, location, completed);
         this.description = "";
+        this.requestType = new RequestType(ITS);
     }
 
     public ITRequest(int id, String notes, Node location, boolean completed, String description) {
         super(id, notes, location, completed);
         this.description = description;
+        this.requestType = new RequestType(ITS);
     }
 
     public String getDescription() {

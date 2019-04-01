@@ -1,6 +1,12 @@
 package model.request;
 
 import model.Node;
+import model.RequestType;
+
+import static model.RequestType.RType.ITS;
+import static model.RequestType.RType.MED;
+
+import java.util.Objects;
 
 import java.util.Objects;
 
@@ -11,13 +17,14 @@ public class MedicineRequest extends Request {
 
     public MedicineRequest(int id, String notes, Node location, boolean completed) {
         super(id, notes, location, completed);
+        this.requestType = new RequestType(MED);
         this.medicineType = "";
         this.quantity = 0;
     }
 
     public MedicineRequest(int id, String notes, Node location, boolean completed, String medicineType, double quantity) {
         super(id, notes, location, completed);
-        this.medicineType = medicineType;
+        this.requestType = new RequestType(MED);
         this.quantity = quantity;
     }
 
