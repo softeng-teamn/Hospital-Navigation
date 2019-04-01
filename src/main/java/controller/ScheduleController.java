@@ -22,12 +22,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Node;
+import model.ReservableSpace;
 import model.Reservation;
 import service.ResourceLoader;
 import service.StageManager;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 public class ScheduleController extends Controller {
 
@@ -55,33 +57,32 @@ public class ScheduleController extends Controller {
      */
     @FXML
     public void initialize() {
-        ObservableList<Node> nodes = FXCollections.observableArrayList();
+        ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
 
-        //  Pull nodes from database
-        // Note: when I run this with nodes I make, it works
-        // Currently, I get nothing - is getAllNodes functional?
-        ArrayList<Node> DBnodes = dbs.getAllNodes();
-        nodes.addAll(DBnodes);
+        //  Pull spaces from database
+        // Note: when I run this with spaces I make, it works
+        // Currently, I get nothing - is getAllResSpaces functional? are we loading data?
+        // ?? Do we have data for the reservable spaces??
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) dbs.getAllReservableSpaces();
+        resSpaces.addAll(dbResSpaces);
 
         // Add the node to the listview
-        for (Node node : nodes) {
-            reservableList.setItems(nodes);
 
-            // Set the cell to display only the long name of the room
-            reservableList.setCellFactory(param -> new ListCell<Node>() {
-                @Override
-                protected void updateItem(Node item, boolean empty) {
-                    super.updateItem(item, empty);
+        reservableList.setItems(resSpaces);
 
-                    if (empty || item == null || item.getLongName() == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getLongName());
-                    }
+        // Set the cell to display only the name of the reservableSpace
+        reservableList.setCellFactory(param -> new ListCell<ReservableSpace>() {
+            @Override
+            protected void updateItem(ReservableSpace item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null || item.getSpaceName() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getSpaceName());
                 }
-            });
-
-        }
+            }
+        });
         reservableList.setEditable(false);
     }
 

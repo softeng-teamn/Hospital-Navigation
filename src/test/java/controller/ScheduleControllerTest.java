@@ -1,5 +1,6 @@
 package controller;
 
+import model.ReservableSpace;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +9,7 @@ import testclassifications.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.*;
@@ -17,12 +19,12 @@ import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 
 public class ScheduleControllerTest {
     private ScheduleController sc;
-    private ArrayList<String> rooms = new ArrayList<>();
+    private ArrayList<ReservableSpace> rooms = new ArrayList<ReservableSpace>();
 
     @Before
     public void initRooms() {
-        rooms.add(0, "ROOM1");
-        rooms.add(1, "ROOM2");
+      //  rooms.add("R1", "Conf Room 1", "CONF", "locationID", 9, 17);
+      //  rooms.add(1, "ROOM2");
     }
 
     @After
