@@ -41,7 +41,6 @@ public class ScheduleController extends Controller {
     String getRoom(){
         return "";
     }
-
     //returns the roomID of the workstations asked for by the user
     String getWorkStation(){
         return "";
