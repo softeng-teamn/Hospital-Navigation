@@ -3,6 +3,7 @@ package controller;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.Node;
 import model.Edge;
+import model.ReservableSpace;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +22,11 @@ import java.net.URL;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
@@ -33,6 +37,7 @@ public class CSVControllerTest {
 
     private ArrayList<Node> testNodes;
     private ArrayList<Edge> testEdges;
+    private ArrayList<ReservableSpace> testSpaces;
 
     @Before
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
@@ -41,6 +46,20 @@ public class CSVControllerTest {
 
         testNodes = new ArrayList<>();
         testEdges = new ArrayList<>();
+        testSpaces = new ArrayList<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm");
+
+        Date date1 = sdf.parse("2019-03-31 12:00");
+
+        GregorianCalendar calendar1 = new GregorianCalendar();
+        GregorianCalendar calendar2 = new GregorianCalendar();
+        GregorianCalendar calendar3 = new GregorianCalendar();
+        GregorianCalendar calendar4 = new GregorianCalendar();
+        GregorianCalendar calendar5 = new GregorianCalendar();
+        GregorianCalendar calendar6 = new GregorianCalendar();
+
+        calendar1.setTime(date1);
 
         Node n1 = new Node("ABC123", 0, 0, "1", "Main", "ABC", "Test Node 1", "T1");
         Node n2 = new Node("XYZ4242", 50, 50, "L1", "Aux", "XYZ", "Test Node 2", "T2");
@@ -167,7 +186,7 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void exportRequests() {
+    public void exportReservableSpaces() {
     }
 
     @Test
@@ -224,7 +243,7 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void importRequests() {
+    public void importReservableSpaces() {
     }
 
     // DANGER! Use wisely!

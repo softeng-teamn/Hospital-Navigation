@@ -20,6 +20,7 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.edges, is(notNullValue()));
         assertThat(ResourceLoader.request, is(notNullValue()));
         assertThat(ResourceLoader.scheduler, is(notNullValue()));
+        assertThat(ResourceLoader.reservablespaces, is(notNullValue()));
     }
 
 }
