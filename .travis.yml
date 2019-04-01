@@ -17,11 +17,11 @@ jobs:
               script: ./gradlew clean check spotbugsMain spotbugsTest jar
             - if: branch = dev
               script: ./gradlew clean check spotbugsMain spotbugsTest jar
-            - if: branch =~ /^testing\-.*$/
+            - if: branch =~ /^testing.*$/
               script: ./gradlew clean check spotbugsMain spotbugsTest
             - if: branch = ui
               script: ./gradlew clean fastTest uiFastTest uiSlowTest spotbugsMain spotbugsTest
-            - if: branch != master AND branch != dev AND branch != ui AND branch !=~ branch =~ /^testing\-.*$/
+            - if: branch != master AND branch != dev AND branch != ui AND NOT(branch =~ /^testing.*$/)
               script: ./gradlew clean fastTest uiFastTest spotbugsMain spotbugsTest
 
 env:
