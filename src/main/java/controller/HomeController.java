@@ -37,11 +37,17 @@ public class HomeController extends MapController {
     @FXML
     void initialize() {
 
-        ArrayList<Node> nodes = dbs.getAllNodes();
+        /*ArrayList<Node> nodes = dbs.getAllNodes();
         for (Node n : nodes) {
             System.out.println(n.getNodeID());
             JFXListCell<String> cell = new JFXListCell<>();
             cell.setText(n.getShortName());
+            list_view.getItems().add(cell);
+        }*/
+
+        for (int i=0; i<6; i++){
+            JFXListCell<String> cell = new JFXListCell<>();
+            cell.setText("Node" + i);
             list_view.getItems().add(cell);
         }
 
