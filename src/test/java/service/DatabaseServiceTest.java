@@ -35,8 +35,13 @@ public class DatabaseServiceTest {
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() {
+        myDBS.wipeTables();
         myDBS.close();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws IOException {
         FileUtils.deleteDirectory(new File("hospital-db-test"));
     }
 
