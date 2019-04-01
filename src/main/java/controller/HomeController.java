@@ -120,19 +120,19 @@ public class HomeController extends MapController {
             }
         });
 
-
-        System.out.println("We are running our init");
-        zoom_slider.setMin(0.3);
-        zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.3);
-        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
-
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
         Group contentGroup = new Group();
         zoomGroup = new Group();
         contentGroup.getChildren().add(zoomGroup);
         zoomGroup.getChildren().add(map_scrollpane.getContent());
         map_scrollpane.setContent(contentGroup);
+
+        // Setting View Scrolling
+        zoom_slider.setMin(0.3);
+        zoom_slider.setMax(0.9);
+        zoom_slider.setValue(0.3);
+        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
+        zoom(0.3);
     }
 
     // Filters the ListView based on the string
@@ -149,7 +149,6 @@ public class HomeController extends MapController {
             }
             // NO ITEMS TO SHOW
             if (filtered.size() < 1) {
-                System.out.println("do we get here?");
                 list_view.getItems().clear();
             } else {
                 list_view.getItems().clear();
@@ -245,14 +244,12 @@ public class HomeController extends MapController {
 
     @FXML
     void zoomIn(ActionEvent event) {
-    System.out.println("airportapp.Controller.zoomIn");
         double sliderVal = zoom_slider.getValue();
         zoom_slider.setValue(sliderVal += 0.05);
     }
 
     @FXML
     void zoomOut(ActionEvent event) {
-    System.out.println("airportapp.Controller.zoomOut");
         double sliderVal = zoom_slider.getValue();
         zoom_slider.setValue(sliderVal + -0.05);
     }
