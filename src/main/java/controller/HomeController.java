@@ -4,14 +4,13 @@ import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import model.Node;
 import model.Point;
 import service.ResourceLoader;
 import service.StageManager;
 
-public class HomeController extends controller.MapController {
+public class HomeController extends MapController {
 
     @FXML
     private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl;
