@@ -29,7 +29,7 @@ public class MainTest {
             try {
                 Main.main(new String[]{});
             } catch (Exception e) {
-                // This is to catch InterruptedExceptions, which it doesn't technically throw
+                e.printStackTrace();
             }
         });
         thread.start();

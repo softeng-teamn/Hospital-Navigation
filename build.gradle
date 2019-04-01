@@ -95,6 +95,7 @@ task localTest(type: Test) {
         includeCategories 'testclassifications.LocalTest'
     }
     outputs.upToDateWhen { false }
+    forkEvery = 1
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -123,6 +124,7 @@ test {
         excludeCategories 'testclassifications.SpecialTest'
     }
     outputs.upToDateWhen { false }
+    forkEvery = 1
 }
 
 repositories {

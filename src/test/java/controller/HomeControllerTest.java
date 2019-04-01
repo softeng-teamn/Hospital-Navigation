@@ -46,7 +46,7 @@ public class HomeControllerTest extends ApplicationTest {
     }
 
     @Test
-    @Category(UiTest.class)
+    @Category({FastTest.class, UiTest.class})
     public void scheduleSceneTest() throws InterruptedException {
         clickOn(schbtn);
         Thread.sleep(200);
@@ -55,7 +55,7 @@ public class HomeControllerTest extends ApplicationTest {
     }
 
     @Test
-    @Category(UiTest.class)
+    @Category({FastTest.class, UiTest.class})
     public void mapEditSceneTest() throws InterruptedException {
         clickOn(mapbtn);
         Thread.sleep(200);
@@ -64,7 +64,7 @@ public class HomeControllerTest extends ApplicationTest {
     }
 
     @Test
-    @Category(UiTest.class)
+    @Category({FastTest.class, UiTest.class})
     public void requestSceneTest() throws InterruptedException {
         clickOn(reqbtn);
         Thread.sleep(200);
