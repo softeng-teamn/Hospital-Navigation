@@ -14,7 +14,7 @@ import service.ResourceLoader;
 import service.StageManager;
 import java.util.ArrayList;
 
-public class HomeController extends controller.MapController {
+public class HomeController extends MapController {
 
     @FXML
     private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl;
