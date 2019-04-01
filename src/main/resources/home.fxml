@@ -39,7 +39,7 @@
       </HBox>
       <SplitPane dividerPositions="0.2140468227424749" VBox.vgrow="ALWAYS">
          <items>
-            <JFXListView />
+            <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" />
             <ScrollPane fx:id="map_scrollpane" prefHeight="200.0" prefWidth="200.0">
                <content>
                   <Pane>

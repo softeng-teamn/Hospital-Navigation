@@ -1,6 +1,8 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +10,7 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 import model.MapNode;
@@ -18,6 +21,7 @@ import service.StageManager;
 import java.util.ArrayList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class HomeController extends MapController {
 
@@ -30,20 +34,49 @@ public class HomeController extends MapController {
     @FXML
     private JFXTextField search_bar;
     @FXML
-    private JFXListView list_view;
+    private JFXListView<Node> list_view;
 
     public Group zoomGroup;
+
+    Node n1 = new Node("n1",0,1);
+    Node n2 = new Node("n2",0,1);
+    Node n3 = new Node("n3",0,1);
+    Node n4 = new Node("n4",0,1);
+    Node n5 = new Node("n5",0,1);
+    Node n6 = new Node("n6",0,1);
+    Node n7 = new Node("n7",0,1);
+    ArrayList<Node> allNodes = new ArrayList<>();
+    ObservableList<Node> allNodesObservable;
 
     @FXML
     void initialize() {
 
-        ArrayList<Node> nodes = dbs.getAllNodes();
-        for (Node n : nodes) {
-            System.out.println(n.getNodeID());
-            JFXListCell<String> cell = new JFXListCell<>();
-            cell.setText(n.getShortName());
-            list_view.getItems().add(cell);
-        }
+
+        // THIS IS ONLY FOR MOCKING THE DATABASE "getAllNodes" METHOD
+//        ArrayList<Node> nodes = dbs.getAllNodes();
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+
+        // Create NodeList
+        allNodesObservable = FXCollections.observableArrayList();
+        allNodesObservable.addAll(allNodes);
+
+        // Initialize list_view
+        list_view.getItems().addAll(allNodesObservable);
+        list_view.setCellFactory(param -> new JFXListCell<Node>() {
+            @Override
+            protected  void updateItem(Node item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNodeID() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNodeID());
+                }
+            }
+        });
+
 
         System.out.println("We are running our init");
         zoom_slider.setMin(0.3);
@@ -59,15 +92,50 @@ public class HomeController extends MapController {
         map_scrollpane.setContent(contentGroup);
     }
 
+    // Filters the ListView based on the string
+    private void filterList(String findStr) {
+        if (findStr.equals("")) {
+            list_view.getItems().addAll(allNodesObservable);
+        } else {
+            ObservableList<Node> original = list_view.getItems();
+            ObservableList<Node> filtered = FXCollections.observableArrayList();
+            for (Node n : original) {
+                if (n.getNodeID().contains(findStr)) {
+                    filtered.add(n);
+                }
+            }
+            // NO ITEMS TO SHOW
+            if (filtered.size() < 1) {
+                System.out.println("do we get here?");
+                list_view.getItems().clear();
+            } else {
+                list_view.getItems().clear();
+                list_view.getItems().addAll(filtered);
+            }
+        }
+    }
 
+    @FXML
+    public void listViewClicked(MouseEvent e) {
+        // SHOW THE X & Y COORDS of the selected node on the map!
+        String nodeID = list_view.getSelectionModel().getSelectedItem().getNodeID();
+        System.out.println("You clicked on: " + nodeID);
+        // TODO: 2019-04-01 TAKE THIS NODE'S xcoord & ycoord and move the map to that location. Use the Sample youtube video as help
+    }
 
-    //
+    // Later Todos :
+    //      Generate Fixed x,y position that the kiosk is at
+    //      Copy google maps in Finding path
+    //      Call Find path and Draw Line
+    //      Clear Screen
 
     @FXML
     // searches for Room
     public void searchBarEnter(ActionEvent e) {
-        String text = search_bar.getText();
-        System.out.println(text);
+        String search = search_bar.getText();
+        System.out.println(search);
+        filterList(search);
+
     }
 
     @FXML
