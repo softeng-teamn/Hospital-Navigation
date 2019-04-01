@@ -1,70 +1,211 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTimePicker?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
+<StackPane fx:id="stackP" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
    <children>
-      <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="311.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Book a Room" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <font>
-            <Font size="30.0" />
-         </font>
-         <content>
-            <VBox alignment="TOP_CENTER" prefWidth="100.0">
-               <children>
-                  <TitledPane animated="false" collapsible="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="89.0" prefWidth="232.0" text="Select Date:" VBox.vgrow="ALWAYS">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="55.0" prefWidth="218.0">
-                           <children>
-                              <JFXDatePicker fx:id="datePicker" minHeight="37.0" prefHeight="37.0" promptText="Choose Booking Date" />
-                           </children>
-                        </AnchorPane>
-                    </content>
-                  </TitledPane>
-                  <JFXListView fx:id="reservableList" />
-               </children>
-               <padding>
-                  <Insets top="1.0" />
-               </padding>
-            </VBox>
-         </content>
-      </TitledPane>
-      <JFXButton fx:id="homeBtn" layoutX="14.0" layoutY="361.0" onAction="#showHome" style="-fx-background-color: #E06479;" text="Cancel" />
-      <ScrollPane layoutX="159.0" prefWidth="200.0" AnchorPane.rightAnchor="240.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0">
-               <children>
-                  <HBox prefWidth="200.0" spacing="5.0">
+      <AnchorPane minHeight="-Infinity" prefWidth="600.0">
+         <children>
+            <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="311.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Book a Room" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+               <content>
+                  <VBox alignment="TOP_CENTER" prefWidth="100.0" spacing="2.0">
                      <children>
-                        <VBox fx:id="schedule" prefHeight="353.0" prefWidth="150.0" spacing="9.0" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
+                        <TitledPane animated="false" collapsible="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="89.0" prefWidth="232.0" text="Select Date:" VBox.vgrow="ALWAYS">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="55.0" prefWidth="218.0">
+                                 <children>
+                                    <JFXDatePicker fx:id="datePicker" minHeight="37.0" prefHeight="37.0" promptText="Choose Booking Date" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                        <TitledPane animated="false" collapsible="false" layoutX="10.0" layoutY="11.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="89.0" prefWidth="232.0" text="Select Reservation Start Time:">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="55.0" prefWidth="218.0">
+                                 <children>
+                                    <JFXTimePicker fx:id="startTimePicker" layoutY="6.0" promptText="Select Start Time" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                        <TitledPane animated="false" collapsible="false" layoutX="10.0" layoutY="100.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="89.0" prefWidth="232.0" text="Select Reservation End Time:">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="55.0" prefWidth="218.0">
+                                 <children>
+                                    <JFXTimePicker fx:id="endTimePicker" layoutY="6.0" promptText="Select End Time" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                        <JFXButton fx:id="makeReservationBtn" onAction="#makeReservation" style="-fx-background-color: #61BFE0;" text="Make Reservation">
+                           <VBox.margin>
                               <Insets />
-                           </HBox.margin>
-                           <padding>
-                              <Insets right="1.0" />
-                           </padding>
-                        </VBox>
-                        <VBox fx:id="checks" prefHeight="200.0" prefWidth="200.0" spacing="8.0">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                        </VBox>
+                           </VBox.margin>
+                        </JFXButton>
                      </children>
                      <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        <Insets top="1.0" />
                      </padding>
-                  </HBox>
+                  </VBox>
+               </content>
+            </TitledPane>
+            <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="321.0" layoutY="10.0" prefWidth="266.0" style="-fx-background-color: #40B0D2;" text="Room Schedule" AnchorPane.leftAnchor="515.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+               <graphic>
+                  <ScrollPane prefWidth="200.0">
+                     <content>
+                        <AnchorPane maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                           <children>
+                              <HBox maxWidth="-Infinity" prefWidth="200.0" spacing="5.0">
+                                 <children>
+                                    <VBox fx:id="schedule" prefWidth="150.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                       <padding>
+                                          <Insets right="1.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox fx:id="checks" prefHeight="200.0" prefWidth="200.0" spacing="5.0">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+               </graphic>
+            </TitledPane>
+            <JFXButton fx:id="homeBtn" layoutX="478.0" layoutY="464.0" maxHeight="-Infinity" minHeight="-Infinity" onAction="#showHome" prefHeight="40.0" style="-fx-background-color: #E06479;" text="Return to Home Screen" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+            <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="15.0" layoutY="10.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Available Rooms" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="245.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+               <content>
+                  <VBox alignment="TOP_CENTER" prefWidth="100.0" spacing="2.0">
+                     <children>
+                        <JFXButton fx:id="filterRoomBtn" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" onAction="#filterRooms" style="-fx-background-color: #61BFE0;" text="Filter Rooms by Selected Time" wrapText="true" />
+                        <TitledPane animated="false" collapsible="false" text="Select Location:">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0">
+                                 <children>
+                                    <JFXListView fx:id="reservableList" prefHeight="100.0" prefWidth="260.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                     </children>
+                     <padding>
+                        <Insets top="1.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </TitledPane>
+            <JFXButton fx:id="instructionsBtn" maxWidth="-Infinity" onAction="#showInstructions" prefWidth="37.0" style="-fx-background-color: #61BFE0;" text="?" textFill="WHITE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </JFXButton>
+            <Label fx:id="instructionsLbl" style="-fx-background-color: white;" text="Label" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="450.0" />
+            <AnchorPane fx:id="errorDlg" prefWidth="200.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="245.0" AnchorPane.topAnchor="170.0">
+               <children>
+                  <AnchorPane prefWidth="200.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="ERROR" textFill="#d21212" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                        <JFXButton fx:id="errorBtn" onAction="#closeError" style="-fx-background-color: #E06479;" text="X" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+                  <Label fx:id="errorLbl" prefWidth="200.0" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="25.0" />
                </children>
             </AnchorPane>
-        </content>
-      </ScrollPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="confirmationPane" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <TitledPane animated="false" collapsible="false" text="Confirm Reservation" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0">
+                     <children>
+                        <JFXButton fx:id="exitConfBtn" layoutX="166.0" layoutY="234.0" onAction="#closeConf" style="-fx-background-color: #E06479;" text="Cancel" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                        <JFXButton fx:id="submitBtn" layoutX="257.0" layoutY="228.0" onAction="#submit" style="-fx-background-color: #61BFE0;" text="Submit" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+                        <HBox alignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <VBox spacing="10.0">
+                                 <children>
+                                    <Label fx:id="timeLbl" alignment="CENTER" minHeight="25.0" minWidth="25.0" wrapText="true">
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <HBox alignment="TOP_CENTER" prefHeight="25.0">
+                                       <children>
+                                          <Label fx:id="confErrorLbl" style="-fx-text-fill: red;" textAlignment="CENTER" wrapText="true">
+                                             <HBox.margin>
+                                                <Insets top="5.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                    <HBox spacing="20.0">
+                                       <children>
+                                          <VBox alignment="TOP_RIGHT" spacing="20.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" text="Enter Event Name:" />
+                                                <Label alignment="CENTER" text="Enter Reserver ID:" />
+                                                <Label alignment="CENTER" layoutX="10.0" layoutY="27.0" text="Select Privacy Level" />
+                                             </children>
+                                             <padding>
+                                                <Insets top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                          <VBox>
+                                             <children>
+                                                <JFXTextField fx:id="eventName" promptText="Event Name" />
+                                                <JFXTextField fx:id="employeeID" promptText="Employee ID" />
+                                                <JFXComboBox fx:id="privacyLvlBox" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children></AnchorPane>
+               </content>
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </TitledPane>
+         </children>
+         <StackPane.margin>
+            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+         </StackPane.margin>
+      </AnchorPane>
    </children>
-</AnchorPane>
+</StackPane>
