@@ -4,7 +4,6 @@
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXSlider?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -14,13 +13,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="101.0" prefWidth="1385.0" spacing="5.0">
          <children>
-            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2" />
+            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" text="Asd" unFocusColor="#b2b2b2" />
             <Region HBox.hgrow="ALWAYS" />
             <Label text="Zoom" />
             <JFXButton onAction="#zoomOut" text="+" />
@@ -29,9 +29,10 @@
                <HBox.margin>
                   <Insets right="40.0" />
                </HBox.margin></JFXButton>
+            <JFXButton contentDisplay="CENTER" text="Edit Map" />
+            <JFXButton text="Book Room" />
+            <JFXButton text="Service Request" />
             <Label text="Visuals" />
-            <JFXToggleButton text="Hi Contrast" />
-            <JFXToggleButton text="Large UI" />
          </children>
          <VBox.margin>
             <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
@@ -39,20 +40,25 @@
       </HBox>
       <SplitPane dividerPositions="0.2140468227424749" VBox.vgrow="ALWAYS">
          <items>
-            <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" />
-            <ScrollPane fx:id="map_scrollpane" prefHeight="200.0" prefWidth="200.0">
-               <content>
-                  <Pane>
-                     <children>
-                        <ImageView>
-                           <image>
-                              <Image url="Images/1_NoIcons.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </Pane>
-               </content>
-            </ScrollPane>
+            <JFXListView fx:id="list_view" />
+            <StackPane>
+               <children>
+                  <ScrollPane fx:id="map_scrollpane" prefHeight="200.0" prefWidth="200.0">
+                     <content>
+                        <Pane>
+                           <children>
+                              <ImageView>
+                                 <image>
+                                    <Image url="Images/1_NoIcons.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                     </content>
+                  </ScrollPane>
+                  <JFXButton />
+               </children>
+            </StackPane>
          </items>
       </SplitPane>
    </children>

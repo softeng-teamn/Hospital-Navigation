@@ -57,6 +57,46 @@ public class HomeController extends MapController {
         allNodes.add(n2);
         allNodes.add(n3);
         allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+        allNodes.add(n1);
+        allNodes.add(n2);
+        allNodes.add(n3);
+        allNodes.add(n4);
+        allNodes.add(n5);
+        allNodes.add(n6);
+        allNodes.add(n7);
+
+
 
         // Create NodeList
         allNodesObservable = FXCollections.observableArrayList();
