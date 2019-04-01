@@ -1,40 +1,100 @@
 package service;
 
-import model.Edge;
-import model.Node;
+import model.*;
+import model.request.ITRequest;
+import model.request.MedicineRequest;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
+import java.util.Date;
 
+@SuppressWarnings("ALL")
 public class DatabaseService {
 
+    public static final Integer DATABASE_VERSION = 4;
+
     private Connection connection;
+
+    private String databaseName;
+
+    private boolean newlyCreated;
 
     private DatabaseService(Connection connection) {
         this.connection = connection;
     }
 
-    public static DatabaseService init(String DBName) throws SQLException{
+    public static DatabaseService init(String dbName) throws SQLException, MismatchedDatabaseVersionException {
         DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
         Connection connection;
         boolean createFlag = false;
+
         try {
-            connection = DriverManager.getConnection("jdbc:derby:"+DBName+";");
+            connection = DriverManager.getConnection("jdbc:derby:"+dbName+";");
         } catch (SQLException e) {
             e.printStackTrace();
-            connection = DriverManager.getConnection("jdbc:derby:"+DBName+";create=true");
+            System.out.print("No existing database found, creating database...");
+            System.out.flush();
+            connection = DriverManager.getConnection("jdbc:derby:"+dbName+";create=true");
+            System.out.println("Database created");
             createFlag = true;
         }
 
         DatabaseService myDB = new DatabaseService(connection);
+
+        myDB.databaseName = dbName;
+
         if(createFlag){
             myDB.createTables();
+        } else {
+            myDB.validateVersion();
         }
+
+        myDB.newlyCreated = createFlag;
+
         return myDB;
     }
 
-    public static DatabaseService init() throws SQLException{
+    /**
+     * Throws an exception if myDB has an invalid version
+     */
+    private void validateVersion() throws MismatchedDatabaseVersionException {
+        String query = "SELECT * FROM META_DB_VER";
+
+        ResultSet rs = null;
+        Statement versionStatement = null;
+        try {
+            versionStatement = connection.createStatement();
+
+            try {
+                rs = versionStatement.executeQuery(query);
+            } catch (SQLSyntaxErrorException e) {
+                closeAll(versionStatement, rs);
+                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + getDatabaseVersion());
+            }
+
+            boolean hasNext = rs.next();
+
+            // If no version identifier exists, assume bad database
+            if (!hasNext) {
+                closeAll(versionStatement, rs);
+                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + getDatabaseVersion());
+            }
+
+            int existingVersion = rs.getInt("version");
+
+            if (existingVersion != getDatabaseVersion()) {
+                closeAll(versionStatement, rs);
+                throw new MismatchedDatabaseVersionException("Existing database version: " + existingVersion + ", expected: " + getDatabaseVersion());
+            }
+
+            rs.close();
+            versionStatement.close();
+        } catch (SQLException e) {
+            closeAll(versionStatement, rs);
+        }
+    }
+
+    public static DatabaseService init() throws SQLException, MismatchedDatabaseVersionException {
         return init("hospital-db");
     }
 
@@ -53,217 +113,76 @@ public class DatabaseService {
             if(!tableExists("EMPLOYEE")){
                 statement.execute("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean)");
             }
-            if(!tableExists("SERVICEREQUEST")){
-                statement.execute("CREATE TABLE SERVICEREQUEST(serviceID int PRIMARY KEY, serviceType varchar(4), locationNode varchar(10), description varchar(300), requestorID int, fulfillerID int)");
+            if(!tableExists("ITREQUEST")){
+                statement.execute("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY, notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
             }
-            if(!tableExists("RESERVEDEVENT")){
-                statement.execute("CREATE TABLE RESERVEDEVENT(eventID int PRIMARY KEY, eventName varchar(50), locationID varchar(30), startTime int, endTime int, privacyLevel int, employeeID int)");
+            if(!tableExists("MEDICINEREQUEST")){
+                statement.execute("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY, notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
+            }
+            if(!tableExists("RESERVATION")){
+                statement.execute("CREATE TABLE RESERVATION(eventID int PRIMARY KEY, eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
             }
             if(!tableExists("RESERVABLESPACE")){
                 statement.execute("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY , spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
             }
+            if(!tableExists("META_DB_VER")){
+                statement.execute("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
+                statement.execute("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
+            }
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
+            statement.execute("CREATE INDEX LocationIndex ON RESERVATION (locationID)");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if(statement != null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            closeStatement(statement);
         }
-
-
-
-
-
     }
 
 
 
     // NODE FUNCTIONS
 
-    // insert a new node into the database without any edges
+    /**
+     * Attempt to insert a node into the database. Will not succeed if n.nodeID is not unique
+     * @param n A {@link Node} to insert into the database
+     * @return true if the node is successfully inserted, false otherwise.
+     */
     public boolean insertNode(Node n){
         String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-        PreparedStatement insertNode = null;
-        boolean insertStatus = false;
-        try {
-            insertNode = connection.prepareStatement(nodeStatement);
-            // set the attributes of the statement for the node
-            prepareNodeStatement(n, insertNode);
-            insertNode.execute();
-            insertStatus = true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if(insertNode != null){
-                try {
-                    insertNode.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-        return insertStatus;
+        return executeInsert(nodeStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
     }
 
-    // edit existing node in database
+    /**
+     * Update the database entry for a given node
+     * @param n A {@link Node} to update. The node must have a valid ID
+     * @return true if the update is successful, false otherwise
+     */
     public boolean updateNode(Node n) {
-        boolean updateResult = false;
-        String nodeID = n.getNodeID();
-        String floor = n.getFloor();
-        String building = n.getBuilding();
-        String nodeType = n.getNodeType();
-        String longName = n.getLongName();
-        String shortName = n.getShortName();
-        int xcoord = n.getXcoord();
-        int ycoord = n.getYcoord();
-        String insertStatement = "UPDATE NODE SET xcoord=?, ycoord=?, floor=?, building=?, nodeType=?, longName=?, shortName=? WHERE (nodeID = ?)";
-        PreparedStatement stmt = null;
-        try {
-            stmt = connection.prepareStatement(insertStatement);
-            stmt.setInt(1, xcoord);
-            stmt.setInt(2, ycoord);
-            stmt.setString(3, floor);
-            stmt.setString(4, building);
-            stmt.setString(5, nodeType);
-            stmt.setString(6, longName);
-            stmt.setString(7, shortName);
-            stmt.setString(8, nodeID);
-            try {
-                stmt.executeUpdate();
-                updateResult = true;
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-            stmt.close();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-        return updateResult;
+        String query = "UPDATE NODE SET xcoord=?, ycoord=?, floor=?, building=?, nodeType=?, longName=?, shortName=? WHERE (nodeID = ?)";
+        return executeUpdate(query, n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(),
+                n.getLongName(), n.getShortName(), n.getNodeID());
     }
 
-        // delete existing node in database
+    /**
+     * Delete a node if it exists
+     * @param n A {@link Node} to delete. n.nodeId must not be null
+     * @return true if a record is deleted, false otherwise
+     */
     public boolean deleteNode(Node n) {
-        PreparedStatement stmt = null;
-        String nodeID = n.getNodeID();
         String query = "DELETE FROM NODE WHERE (nodeID = ?)";
-        boolean deleteStatus = false;
-        try {
-            stmt = connection.prepareStatement(query);
-            stmt.setString(1,nodeID);
-            stmt.executeUpdate();
-            deleteStatus = true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if(stmt != null){
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-        return deleteStatus;
+        return executeUpdate(query, n.getNodeID());
     }
 
     // retrieves the given node from the database
     public Node getNode(String nodeID){
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        String input = "SELECT * FROM NODE WHERE (NODEID = ?)";
-        Node newNode;
-
-        try {
-            stmt = connection.prepareStatement(input);
-            stmt.setString(1,nodeID);
-            // execute the query
-            rs = stmt.executeQuery();
-
-            // extract results, only one record should be found.
-            boolean hasNext = rs.next();
-
-            // If there is no next node, return null
-            if (!hasNext) {
-                return null;
-            }
-
-            String newNodeID = rs.getString("nodeID");
-            int newxcoord = rs.getInt("xcoord");
-            int newycoord = rs.getInt("ycoord");
-            String newFloor = rs.getString("floor");
-            String newBuilding = rs.getString("building");
-            String newNodeType = rs.getString("nodeType");
-            String newLongName = rs.getString("longName");
-            String newShortName = rs.getString("shortName");
-            // construct the new node and return it
-            newNode = new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
-            stmt.close();
-            rs.close();
-            return newNode;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeAll(stmt, rs);
-        }
-        return null;
+        String query = "SELECT * FROM NODE WHERE (NODEID = ?)";
+        return (Node) executeGetById(query, Node.class, nodeID);
     }
 
     public ArrayList<Node> getAllNodes() {
-        ArrayList<Node> allNodes = new ArrayList<Node>();
         String query = "Select * FROM NODE";
-        Statement stmt = null;
-        ResultSet nodes = null;
-        try{
-            stmt = connection.createStatement();
-
-            // execute the query
-            nodes = stmt.executeQuery(query);
-            while(nodes.next()){
-                // extract results from each row of the database.
-                String newNodeID = nodes.getString("nodeID");
-                int newxcoord = nodes.getInt("xcoord");
-                int newycoord = nodes.getInt("ycoord");
-                String newFloor = nodes.getString("floor");
-                String newBuilding = nodes.getString("building");
-                String newNodeType = nodes.getString("nodeType");
-                String newLongName = nodes.getString("longName");
-                String newShortName = nodes.getString("shortName");
-                // construct the new node and return it
-                Node newNode = new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
-                allNodes.add(newNode);
-            }
-            stmt.close();
-            nodes.close();
-        }
-        catch(SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return null;
-        } finally {
-            closeAll(stmt, nodes);
-        }
-
-        return allNodes;
+        return (ArrayList<Node>)(List<?>) executeGetMultiple(query, Node.class, new Object[]{});
     }
 
 
@@ -277,7 +196,10 @@ public class DatabaseService {
     // EDGE FUNCTIONS
     // returns a list of nodes that are connected to the given node
     public ArrayList<Node> getNodesConnectedTo(Node n) {
-        return new ArrayList<>();
+        String nodeID = n.getNodeID();
+        String query = "SELECT NODE.NodeID, NODE.xcoord, NODE.ycoord, NODE.floor, NODE.building, NODE.nodeType, NODE.longName, NODE.shortName FROM NODE INNER JOIN EDGE ON (NODE.NodeID = EDGE.node1 AND EDGE.node2 = ?) OR (NODE.NodeID = EDGE.node2 AND EDGE.Node1 = ?)";
+
+        return (ArrayList<Node>)(List<?>) executeGetMultiple(query, Node.class, nodeID, nodeID);
     }
 
     // get edges from a specific floor
@@ -303,152 +225,193 @@ public class DatabaseService {
 
     }
 
-    public String getRoomSched(String day, String roomID){
-        return "";
-    }
-
-    public boolean bookRoom(String day, String roomID, String time){
-        return false;
-    }
-
-    public void addRequest(String Request){}
-
-    public boolean login(String id, String password){
-        return false;
-    }
-
     // insert an edge. The method will fail and return false if the two nodes it points to
     // do not already exist in the database.
     public boolean insertEdge(Edge e){
         String insertStatement = ("INSERT INTO EDGE VALUES(?,?,?)");
-        PreparedStatement statement = null;
         String node1ID = e.getNode1().getNodeID();
         String node2ID = e.getNode2().getNodeID();
-        boolean returnValue = false;
-        try {
-            statement = connection.prepareStatement(insertStatement);
-            statement.setString(1,e.getEdgeID());
-            statement.setString(2,node1ID);
-            statement.setString(3,node2ID);
-            statement.execute();
-            returnValue = true;
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        } finally {
-            if(statement != null){
-                try {
-                    statement.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
 
-        }
-
-        return returnValue;
+        return executeInsert(insertStatement, e.getEdgeID(), node1ID, node2ID);
     }
 
     // get an edge. This also pulls out the nodes that edge connects.
-    public Edge getEdge(String EdgeID){
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        String input = "SELECT * FROM EDGE WHERE (EDGEID = ?)";
-        Edge newEdge;
-        try {
-            stmt = connection.prepareStatement(input);
-            stmt.setString(1,EdgeID);
-            rs = stmt.executeQuery();
-
-            // extract results, only one record should be found.
-            boolean hasNext = rs.next();
-
-            // If there is no next node, return null
-            if (!hasNext) {
-                return null;
-            }
-            String newEdgeID = rs.getString("edgeID");
-            String node1Name = rs.getString("NODE1");
-            String node2Name = rs.getString("NODE2");
-            Node node1 = getNode(node1Name);
-            Node node2 = getNode(node2Name);
-            newEdge = new Edge (newEdgeID, node1, node2);
-            return newEdge;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeAll(stmt, rs);
-        }
-        return null;
-
+    public Edge getEdge(String edgeID){
+        String query = "SELECT * FROM EDGE WHERE (EDGEID = ?)";
+        return (Edge) executeGetById(query, Edge.class, edgeID);
     }
 
     public boolean updateEdge(Edge e){
-        boolean updateResult = false;
-        String edgeID = e.getEdgeID();
-        String node1 = e.getNode1().getNodeID();
-        String node2 = e.getNode2().getNodeID();
-        String updateStatement = "UPDATE EDGE SET edgeID=?, NODE1=?, NODE2=? WHERE(EDGEID = ?)";
-        PreparedStatement stmt = null;
-        try {
-            stmt = connection.prepareStatement(updateStatement);
-            stmt.setString(1,edgeID);
-            stmt.setString(2,node1);
-            stmt.setString(3,node2);
-            stmt.setString(4,edgeID);
-            try {
-                stmt.executeUpdate();
-                updateResult = true;
-            } catch (SQLException e1) {
-                System.out.println(e1.getMessage());
-                e1.printStackTrace();
-            }
-            stmt.close();
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
-        }
-        return updateResult;
+        String query = "UPDATE EDGE SET edgeID=?, NODE1=?, NODE2=? WHERE(EDGEID = ?)";
+        return executeUpdate(query, e.getEdgeID(), e.getNode1().getNodeID(), e.getNode2().getNodeID(), e.getEdgeID());
     }
 
     public boolean deleteEdge(Edge e){
-        PreparedStatement stmt = null;
-        String edgeID = e.getEdgeID();
         String query = "DELETE FROM EDGE WHERE (edgeID = ?)";
-        boolean deleteStatus = false;
-        try {
-            stmt = connection.prepareStatement(query);
-            stmt.setString(1,edgeID);
-            stmt.executeUpdate();
-            deleteStatus = true;
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        } finally {
-            if(stmt != null){
-                try {
-                    stmt.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
-        }
-        return deleteStatus;
+        return executeUpdate(query, e.getEdgeID());
     }
 
     public ArrayList<Edge> getAllEdges(){
         return new ArrayList<Edge>();
     }
 
+    public boolean insertReservation(Reservation reservation) {
+        String insertStatement = ("INSERT INTO RESERVATION VALUES(?, ?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertStatement, reservation.getEventID(), reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
+    }
 
+    public Reservation getReservation(int id) {
+        String query = "SELECT * FROM RESERVATION WHERE (EVENTID = ?)";
+        return (Reservation) executeGetById(query, Reservation.class, id);
+    }
+
+    public List<Reservation> getAllReservations() {
+        String query = "Select * FROM RESERVATION";
+        return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, new Object[]{});
+    }
+
+    public boolean updateReservation(Reservation reservation) {
+        String query = "UPDATE RESERVATION SET eventName=?, locationID=?, startTime=?, endTime=?, privacyLevel=?, employeeID=? WHERE (eventID = ?)";
+        return executeUpdate(query, reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(),
+                reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId(), reservation.getEventID());
+    }
+
+    public boolean deleteReservation(Reservation reservation) {
+        String query = "DELETE FROM RESERVATION WHERE (eventID = ?)";
+        return executeUpdate(query, reservation.getEventID());
+    }
+
+    /**
+     * Query all reservations made for a given {@link ReservableSpace}.
+     * @param id the spaceID of the ReservableSpace being requested for
+     * @return a list of the requested reservations
+     */
+    public List<Reservation> getReservationsBySpaceId(String id) {
+        String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ?)";
+        return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, id);
+    }
+
+    /**
+     * Get all reservations made for the given space ID that fall entirely within {@param from} and {@param to}.
+     * @param id the spaceID of the reservable space being requested for
+     * @param from start of the window
+     * @param to end of the window
+     * @return a list of the requested reservations
+     */
+    public List<Reservation> getReservationBySpaceIdBetween(String id, Date from, Date to) {
+        String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
+        return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, id, from, to, from, to);
+    }
+
+    public boolean insertEmployee(Employee employee) {
+        String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?)");
+        return executeInsert(insertStatement, employee.getID(), employee.getJob(), employee.isAdmin());
+    }
+
+    public Employee getEmployee(int id) {
+        String query = "SELECT * FROM EMPLOYEE WHERE (EMPLOYEEID = ?)";
+        return (Employee) executeGetById(query, Employee.class, id);
+    }
+
+    public List<Employee> getAllEmployees() {
+        String query = "Select * FROM EMPLOYEE";
+        return (List<Employee>)(List<?>) executeGetMultiple(query, Employee.class, new Object[]{});
+    }
+
+    public boolean updateEmployee(Employee employee) {
+        String query = "UPDATE EMPLOYEE SET job=?, isAdmin=? WHERE (employeeID = ?)";
+        return executeUpdate(query, employee.getJob(), employee.isAdmin(), employee.getID());
+    }
+
+    public boolean deleteEmployee(Employee employee) {
+        String query = "DELETE FROM EMPLOYEE WHERE (employeeID = ?)";
+        return executeUpdate(query, employee.getID());
+    }
+
+    public boolean insertReservableSpace(ReservableSpace space) {
+        String insertQuery = ("INSERT INTO RESERVABLESPACE VALUES(?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, space.getSpaceID(), space.getSpaceName(), space.getSpaceType(), space.getLocationNodeID(), space.getTimeOpen(), space.getTimeClosed());
+    }
+
+    public ReservableSpace getReservableSpace(String id) {
+        String query = "SELECT * FROM RESERVABLESPACE WHERE (spaceID = ?)";
+        return (ReservableSpace) executeGetById(query, ReservableSpace.class, id);
+    }
+
+    public List<ReservableSpace> getAllReservableSpaces() {
+        String query = "Select * FROM RESERVABLESPACE";
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, new Object[]{});
+    }
+
+    public boolean updateReservableSpace(ReservableSpace space) {
+        String query = "UPDATE RESERVABLESPACE SET spaceName=?, spaceType=?, locationNode=?, timeOpen=?, timeClosed=? WHERE (spaceID = ?)";
+        return executeUpdate(query, space.getSpaceName(), space.getSpaceType(), space.getLocationNodeID(), space.getTimeOpen(), space.getTimeClosed(), space.getSpaceID());
+    }
+
+    public boolean deleteReservableSpace(ReservableSpace space) {
+        String query = "DELETE FROM RESERVABLESPACE WHERE (spaceID = ?)";
+        return executeUpdate(query, space.getSpaceID());
+    }
+
+    public boolean insertITRequest(ITRequest req) {
+        String insertQuery = ("INSERT INTO ITREQUEST VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getId(), req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDescription());
+    }
+
+    public ITRequest getITRequest(int id) {
+        String query = "SELECT * FROM ITREQUEST WHERE (serviceID = ?)";
+        return (ITRequest) executeGetById(query, ITRequest.class, id);
+    }
+
+    public List<ITRequest> getAllITRequests() {
+        String query = "Select * FROM ITREQUEST";
+        return (List<ITRequest>)(List<?>) executeGetMultiple(query, ITRequest.class, new Object[]{});
+    }
+
+    public boolean updateITRequest(ITRequest req) {
+        String query = "UPDATE ITREQUEST SET notes=?, locationNodeID=?, completed=?, description=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDescription(), req.getId());
+    }
+
+    public boolean deleteITRequest(ITRequest req) {
+        String query = "DELETE FROM ITREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
+
+    public List<ITRequest> getAllIncompleteITRequests() {
+        String query = "Select * FROM ITREQUEST WHERE (completed = ?)";
+        return (List<ITRequest>)(List<?>) executeGetMultiple(query, ITRequest.class, false);
+    }
+
+    public boolean insertMedicineRequest(MedicineRequest req) {
+        String insertQuery = ("INSERT INTO MEDICINEREQUEST VALUES(?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getId(), req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity());
+    }
+
+    public MedicineRequest getMedicineRequest(int id) {
+        String query = "SELECT * FROM MEDICINEREQUEST WHERE (serviceID = ?)";
+        return (MedicineRequest) executeGetById(query, MedicineRequest.class, id);
+    }
+
+    public List<MedicineRequest> getAllMedicineRequests() {
+        String query = "Select * FROM MEDICINEREQUEST";
+        return (List<MedicineRequest>)(List<?>) executeGetMultiple(query, MedicineRequest.class, new Object[]{});
+    }
+
+    public boolean updateMedicineRequest(MedicineRequest req) {
+        String query = "UPDATE MEDICINEREQUEST SET notes=?, locationNodeID=?, completed=?, medicineType=?, quantity=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity(), req.getId());
+    }
+
+    public boolean deleteMedicineRequest(MedicineRequest req) {
+        String query = "DELETE FROM MEDICINEREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
+
+    public List<MedicineRequest> getAllIncompleteMedicineRequests() {
+        String query = "Select * FROM MEDICINEREQUEST where (completed = ?)";
+        return (List<MedicineRequest>)(List<?>) executeGetMultiple(query, MedicineRequest.class, false);
+    }
 
     // CONTROLS
     boolean tableExists(String table){
@@ -463,9 +426,14 @@ public class DatabaseService {
         }
     }
 
-     void close(){
+    void close() {
         try {
             connection.close();
+            Connection closeConnection = DriverManager.getConnection(
+                    "jdbc:derby:" + databaseName + ";shutdown=true");
+            closeConnection.close();
+        } catch (SQLNonTransientConnectionException e) {
+            System.out.println("Database '" + databaseName + "' shutdown successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -479,13 +447,7 @@ public class DatabaseService {
                 e.printStackTrace();
             }
         }
-        if(stmt != null){
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        closeStatement(stmt);
     }
 
     // delete all from each table. Almost exclusively used for testing.
@@ -495,32 +457,280 @@ public class DatabaseService {
             statement = connection.createStatement();
             statement.execute("DELETE FROM EDGE");
             statement.execute("DELETE FROM NODE");
-
-            statement.close();
+            statement.execute("DELETE FROM EMPLOYEE");
+            statement.execute("DELETE FROM ITREQUEST");
+            statement.execute("DELETE FROM MEDICINEREQUEST");
+            statement.execute("DELETE FROM RESERVATION");
+            statement.execute("DELETE FROM RESERVABLEROOM");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if(statement != null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            closeStatement(statement);
         }
-
-
     }
 
-    private void prepareNodeStatement(Node n, PreparedStatement insertNode) throws SQLException {
-        insertNode.setString(1,n.getNodeID());
-        insertNode.setInt(2,n.getXcoord());
-        insertNode.setInt(3,n.getYcoord());
-        insertNode.setString(4,n.getFloor());
-        insertNode.setString(5,n.getBuilding());
-        insertNode.setString(6,n.getNodeType());
-        insertNode.setString(7,n.getLongName());
-        insertNode.setString(8,n.getShortName());
+
+    //<editor-fold desc="Generic Execution Methods">
+
+    private <T> List<Object> executeGetMultiple(String query, Class<T> cls, Object... parameters) {
+        ArrayList<Object> reqs = new ArrayList();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try{
+            stmt = connection.prepareStatement(query);
+
+            prepareStatement(stmt, parameters);
+
+            // execute the query
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                reqs.add(extractGeneric(rs, cls));
+            }
+            stmt.close();
+            rs.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, rs);
+        }
+
+        return reqs;
+    }
+
+    /**
+     * Run an executeUpdate query - for UPDATE AND DELETE
+     * @param query
+     * @param parameters
+     * @return a boolean indicating success
+     */
+    private boolean executeUpdate(String query, Object... parameters) {
+        boolean modifyResult = false;
+        PreparedStatement stmt = null;
+        try {
+            stmt = connection.prepareStatement(query);
+            prepareStatement(stmt, parameters);
+
+            stmt.executeUpdate();
+            modifyResult = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(stmt);
+        }
+        return modifyResult;
+    }
+
+    private boolean executeInsert(String insertQuery, Object... values) {
+        PreparedStatement insertStatement = null;
+
+        // Track the status of the insert
+        boolean insertStatus = false;
+
+        try {
+            // Prep the statement
+            insertStatement = connection.prepareStatement(insertQuery);
+            prepareStatement(insertStatement, values);
+
+            // Execute
+            insertStatement.execute();
+
+            // If we made it this far, we're successful!
+            insertStatus = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(insertStatement);
+        }
+        return insertStatus;
+    }
+
+    private <T> Object executeGetById(String query, Class<T> cls, Object id) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Object result;
+
+        try {
+            stmt = connection.prepareStatement(query);
+
+            prepareStatement(stmt, id);
+
+            // execute the query
+            rs = stmt.executeQuery();
+
+            // extract results, only one record should be found.
+            boolean hasNext = rs.next();
+
+            // If there is no next node, return null
+            if (!hasNext) {
+                return null;
+            }
+
+            result = extractGeneric(rs, cls);
+
+            stmt.close();
+            rs.close();
+
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeAll(stmt, rs);
+        }
+        return null;
+    }
+
+    //</editor-fold>
+
+
+    //<editor-fold desc="Extraction Methods">
+    /////////// EXTRACTION METHODS /////////////////////////////////////////////////////////////////////////////////////
+
+    private <T> Object extractGeneric(ResultSet rs, Class<T> cls) throws SQLException {
+        Object result;
+
+        if (cls.equals(Node.class)) {
+            result = extractNode(rs);
+        } else if (cls.equals(Edge.class)) {
+            result = extractEdge(rs);
+        } else if (cls.equals(ReservableSpace.class)) {
+            result = extractReservableSpace(rs);
+        } else if (cls.equals(Reservation.class)) {
+            result = extractReservation(rs);
+        } else if (cls.equals(ITRequest.class)) {
+            result = extractITRequest(rs);
+        } else if (cls.equals(MedicineRequest.class)) {
+            result = extractMedicineRequest(rs);
+        } else if (cls.equals(Employee.class)) {
+            result = extractEmployee(rs);
+        } else {
+            return null;
+        }
+        return result;
+    }
+
+    private Node extractNode(ResultSet rs) throws SQLException {
+        String newNodeID = rs.getString("nodeID");
+        int newxcoord = rs.getInt("xcoord");
+        int newycoord = rs.getInt("ycoord");
+        String newFloor = rs.getString("floor");
+        String newBuilding = rs.getString("building");
+        String newNodeType = rs.getString("nodeType");
+        String newLongName = rs.getString("longName");
+        String newShortName = rs.getString("shortName");
+        // construct the new node and return it
+        return new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
+    }
+
+    private Edge extractEdge(ResultSet rs) throws SQLException {
+        String newEdgeID = rs.getString("edgeID");
+        String node1Name = rs.getString("NODE1");
+        String node2Name = rs.getString("NODE2");
+        Node node1 = getNode(node1Name);
+        Node node2 = getNode(node2Name);
+        return new Edge (newEdgeID, node1, node2);
+    }
+
+    private Reservation extractReservation(ResultSet rs) throws SQLException {
+        // Extract data
+        int eventID = rs.getInt("eventID");
+        String eventName = rs.getString("eventName");
+        String locationID = rs.getString("locationID");
+        Date startTime = new Date(rs.getTimestamp("startTime").getTime());
+        Date endTime = new Date(rs.getTimestamp("endTime").getTime());
+        int privacyLevel = rs.getInt("privacyLevel");
+        int employeeID = rs.getInt("employeeID");
+
+        GregorianCalendar startTimeCalendar = new GregorianCalendar();
+        startTimeCalendar.setTime(startTime);
+        GregorianCalendar endTimeCalendar = new GregorianCalendar();
+        endTimeCalendar.setTime(endTime);
+
+        // construct the new reservation and return it
+        return new Reservation(eventID, privacyLevel, employeeID, eventName, locationID, startTimeCalendar, endTimeCalendar);
+    }
+
+    private Employee extractEmployee(ResultSet rs) throws SQLException {
+        // Extract data
+        int empID = rs.getInt("employeeID");
+        String job = rs.getString("job");
+        boolean isAdmin = rs.getBoolean("isAdmin");
+
+        return new Employee(empID, job, isAdmin);
+    }
+
+    private ReservableSpace extractReservableSpace(ResultSet rs) throws SQLException {
+        String spaceID = rs.getString("spaceID");
+        String spaceName = rs.getString("spaceName");
+        String spaceType = rs.getString("spaceType");
+        String locationNodeID = rs.getString("locationNode");
+        Date timeOpen = new Date(rs.getTimestamp("timeOpen").getTime());
+        Date timeClosed = new Date(rs.getTimestamp("timeClosed").getTime());
+
+        GregorianCalendar timeOpenCalendar = new GregorianCalendar();
+        timeOpenCalendar.setTime(timeOpen);
+        GregorianCalendar timeClosedCalendar = new GregorianCalendar();
+        timeClosedCalendar.setTime(timeClosed);
+
+        return new ReservableSpace(spaceID, spaceName, spaceType, locationNodeID, timeOpenCalendar, timeClosedCalendar);
+    }
+
+    private ITRequest extractITRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String description = rs.getString("description");
+
+        return new ITRequest(serviceID, notes, locationNode, completed, description);
+    }
+
+    private MedicineRequest extractMedicineRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String medicineType = rs.getString("medicineType");
+        double qty = rs.getDouble("quantity");
+
+        return new MedicineRequest(serviceID, notes, locationNode, completed, medicineType, qty);
+    }
+    ////////////////END EXTRACTION METHODS /////////////////////////////////////////////////////////////////////////////
+    //</editor-fold>
+
+    /**
+     * Set the values of a prepared statement. The number of variables in the prepared statement and the number of
+     * values must match.
+     * @param preparedStatement the prepared statement to prepare
+     * @param values the values to insert
+     * @throws SQLException there is a mismatch in number of variables or there is a database access error
+     */
+    private void prepareStatement(PreparedStatement preparedStatement, Object... values) throws SQLException {
+        for (int i = 0; i < values.length; i++) {
+            preparedStatement.setObject(i + 1, values[i]);
+        }
+    }
+
+    /**
+     * Attempt to close a statement
+     * @param statement the statement to close. Null is handled
+     */
+    private void closeStatement(Statement statement) {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static int getDatabaseVersion() {
+        return DATABASE_VERSION.intValue();
+    }
+
+    public boolean isNewlyCreated() {
+        return newlyCreated;
     }
 }
