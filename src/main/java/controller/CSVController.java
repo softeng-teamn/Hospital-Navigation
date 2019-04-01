@@ -2,6 +2,7 @@ package controller;
 
 import model.Edge;
 import model.Node;
+import service.ResourceLoader;
 
 import java.io.*;
 
@@ -13,16 +14,11 @@ public class CSVController extends Controller {
     private static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
 
-    /**
-     * Export the entire database into CSV format
-     */
-    public static void exportDatabase() {
-    }
-
-    /**
-     * Import the entire database from CSVs into the database
-     */
-    public static void importDatabase() {
+    static {
+        if (dbs.isNewlyCreated()) {
+            CSVController.importNodes();
+            CSVController.importEdges();
+        }
     }
 
     /**
@@ -32,7 +28,8 @@ public class CSVController extends Controller {
         // Open a file
         Writer writer = null;
         try {
-            writer = new OutputStreamWriter(new FileOutputStream(NODE_EXPORT_PATH), "UTF-8");;
+            writer = new OutputStreamWriter(new FileOutputStream(NODE_EXPORT_PATH), "UTF-8");
+            ;
             writer.write(NODE_HEADER);
 
             // Write out each node
@@ -67,7 +64,8 @@ public class CSVController extends Controller {
         // Open a file
         Writer writer = null;
         try {
-            writer = new OutputStreamWriter(new FileOutputStream(EDGE_EXPORT_PATH), "UTF-8");;
+            writer = new OutputStreamWriter(new FileOutputStream(EDGE_EXPORT_PATH), "UTF-8");
+            ;
             writer.write(EDGES_HEADER);
 
             // Write out each node
@@ -91,26 +89,110 @@ public class CSVController extends Controller {
     }
 
     /**
-     * Export the Requests table
+     * Export the ReservableSpace table
      */
-    public static void exportRequests() {
+    public static void exportReservableSpaces() {
     }
 
     /**
      * Import the Nodes table
      */
     public static void importNodes() {
+
+
+        BufferedReader reader = null;
+
+        try {
+            //load file to be read
+            reader = new BufferedReader(new InputStreamReader(ResourceLoader.nodes.openStream(), "UTF-8"));
+
+            //read first line
+            reader.readLine();
+
+            String line = null;
+            //loop until there is nothing to read
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                //Create node and populate it with data
+                Node node = new Node(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2]), data[3], data[4], data[5], data[6], data[7]);
+
+                //insert node into database
+                dbs.insertNode(node);
+            }
+            //close reader
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //clean up reader
+            if(reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
      * Import the Edges table
      */
+
     public static void importEdges() {
+
+        BufferedReader reader = null;
+
+        try {
+            //load file to read
+            reader = new BufferedReader(new InputStreamReader(ResourceLoader.edges.openStream(), "UTF-8"));
+
+            //read first line
+            reader.readLine();
+
+            String line = null;
+
+            //loop until there is nothing to read
+            while((line = reader.readLine()) != null){
+                String[] data = line.split(",");
+
+                //retrieve nodes from database based on ID
+                Node node1 = dbs.getNode(data[1]);
+                Node node2 = dbs.getNode(data[2]);
+
+                //checks to see if nodes are not null before creating and adding an edge
+                if((node1 != null) && (node2 != null)) {
+                    //Create edge and populate it with two nodes
+                    Edge edge = new Edge(node1, node2);
+
+                    //Add edge to the database
+                    dbs.insertEdge(edge);
+                }
+                else{
+                    //Print out error statement
+                    System.out.println("Invalid Edge Found: " + line);
+                }
+            }
+
+            //close reader
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //clean up reader
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+
     }
 
     /**
-     * Import the Requests table
+     * Import the ReservableSpace table
      */
-    public static void importRequests() {
+    public static void importReservableSpaces() {
     }
 }

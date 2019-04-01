@@ -1,0 +1,4 @@
+nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName
+ABC123,0,0,1,Main,ABC,Test Node 1,T1
+XYZ4242,50,50,L1,Aux,XYZ,Test Node 2,T2
+LMNO123,0,50,G,Main,LMNO,Test Node 3,T3

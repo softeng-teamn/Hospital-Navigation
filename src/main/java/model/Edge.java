@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Edge {
 
     private String edgeID;
@@ -41,4 +43,18 @@ public class Edge {
         this.node2 = node2;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Edge edge = (Edge) o;
+        return Objects.equals(edgeID, edge.edgeID) &&
+                Objects.equals(node1, edge.node1) &&
+                Objects.equals(node2, edge.node2);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(edgeID, node1, node2);
+    }
 }
