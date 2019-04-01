@@ -30,9 +30,13 @@ public class PathFindingServiceIntegrationTest {
     private DatabaseService myDBS;
 
     @Before
+    @Category(FastTest.class)
     public void setUp() throws SQLException, MismatchedDatabaseVersionException {
         Controller.initializeDatabase();
         CSVController.importIfNecessary();
+
+        CSVController.importNodes();
+        CSVController.importEdges();
     }
 
     @Test
