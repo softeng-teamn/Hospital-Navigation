@@ -24,6 +24,7 @@ public class MapEditController extends MapController {
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
+    //comment
     // add a new node into map and DB
      boolean insertNode(Node n, Collection<Edge> e) {
         if(e.isEmpty()){
