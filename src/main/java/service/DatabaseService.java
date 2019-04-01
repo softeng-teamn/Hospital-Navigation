@@ -17,6 +17,8 @@ public class DatabaseService {
 
     private String databaseName;
 
+    private boolean newlyCreated;
+
     private DatabaseService(Connection connection) {
         this.connection = connection;
     }
@@ -46,6 +48,8 @@ public class DatabaseService {
         } else {
             myDB.validateVersion();
         }
+
+        myDB.newlyCreated = createFlag;
 
         return myDB;
     }
@@ -724,5 +728,9 @@ public class DatabaseService {
 
     public static int getDatabaseVersion() {
         return DATABASE_VERSION.intValue();
+    }
+
+    public boolean isNewlyCreated() {
+        return newlyCreated;
     }
 }
