@@ -461,7 +461,7 @@ public class DatabaseService {
             statement.execute("DELETE FROM ITREQUEST");
             statement.execute("DELETE FROM MEDICINEREQUEST");
             statement.execute("DELETE FROM RESERVATION");
-            statement.execute("DELETE FROM RESERVABLEROOM");
+            statement.execute("DELETE FROM RESERVABLESPACE");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
