@@ -678,19 +678,6 @@ public class DatabaseServiceTest {
         GregorianCalendar closeTime = new GregorianCalendar();
         closeTime.set(Calendar.HOUR, 17);
         closeTime.set(Calendar.MINUTE, 30);
-
-    @Test
-    @Category(FastTest.class)
-    public void insertAndGetITRequest() {
-        // Assume an empty DB (ensured by setUp())
-
-        ReservableSpace space = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
-
-        assertTrue(myDBS.insertReservableSpace(space));
-        assertEquals(space, myDBS.getReservableSpace("ABCD"));
-
-        assertTrue(myDBS.deleteReservableSpace(space));
-        assertNull(myDBS.getReservableSpace("ABCD"));
     }
 
     @Test

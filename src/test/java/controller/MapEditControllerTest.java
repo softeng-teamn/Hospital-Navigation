@@ -1,6 +1,7 @@
 package controller;
 
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.Edge;
 import model.Node;
 import org.junit.After;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import service.DatabaseService;
+import service.MismatchedDatabaseVersionException;
 import testclassifications.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.*;
@@ -22,6 +24,8 @@ import org.mockito.Mockito;
 import service.DatabaseService;
 import org.mockito.Mock;
 
+import javax.xml.crypto.Data;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MapEditControllerTest {
@@ -29,8 +33,9 @@ public class MapEditControllerTest {
     private MapEditController mec = new MapEditController();
 
     @Before
-    public void setup() {
-
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
+    public void setup() throws SQLException, MismatchedDatabaseVersionException {
+        mec.dbs = DatabaseService.init("hospital-db-test");
     }
 
 
@@ -38,11 +43,11 @@ public class MapEditControllerTest {
     @Test
     @Category(FastTest.class)
     public void insertNodeTest(){
-        Node testNode1 = new Node("ACONF00102", 1510, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        Node testNode2 = new Node("ACONF00109", 1580, 2538, "3", "BTM", "HALL", "Hall", "Hall");
-        Node testNode3 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        Edge testEdge1 = new Edge("ACONF00102-ACONF00103", testNode1,testNode2);
-        Edge testEdge2 = new Edge("ACONF00102-ACONF00104", testNode1,testNode3);
+        Node testNode1 = new Node("ABCD", 1510, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node testNode2 = new Node("EFG", 1580, 2538, "3", "BTM", "HALL", "Hall", "Hall");
+        Node testNode3 = new Node("XYZ", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Edge testEdge1 = new Edge("ABCD-LMNO", testNode1,testNode2);
+        Edge testEdge2 = new Edge("XYZ-EFG", testNode1,testNode3);
 
         ArrayList<Edge> empty = new ArrayList<>();
         ArrayList<Edge> edges = new ArrayList<>();

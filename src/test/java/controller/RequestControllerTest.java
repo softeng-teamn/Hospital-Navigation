@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import service.DatabaseService;
 import testclassifications.FastTest;
 
 import java.util.ArrayList;
@@ -41,6 +42,11 @@ public class RequestControllerTest {
         medList.add(medReqR);
         ITList.add(ITReqA);
         ITList.add(ITReqB);
+
+        RequestController.dbs.insertMedicineRequest(medReqM);
+        RequestController.dbs.insertMedicineRequest(medReqR);
+        RequestController.dbs.insertITRequest(ITReqA);
+        RequestController.dbs.insertITRequest(ITReqB);
     }
 
 

@@ -522,33 +522,6 @@ public class DatabaseService {
         return modifyResult;
     }
 
-    private <T> List<Object> executeGetMultiple(String query, Class<T> cls, Object... parameters) {
-        ArrayList<Object> reqs = new ArrayList();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try{
-            stmt = connection.prepareStatement(query);
-
-            prepareStatement(stmt, parameters);
-
-            // execute the query
-            rs = stmt.executeQuery();
-            while(rs.next()){
-                reqs.add(extractGeneric(rs, cls));
-            }
-            stmt.close();
-            rs.close();
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            closeAll(stmt, rs);
-        }
-
-        return reqs;
-    }
-
     private boolean executeInsert(String insertQuery, Object... values) {
         PreparedStatement insertStatement = null;
 
