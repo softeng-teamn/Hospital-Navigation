@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Node {
 
     private int xcoord, ycoord;
@@ -73,6 +75,13 @@ public class Node {
         return shortName;
     }
 
+    @Override
+    public String toString() {
+        return "Node{" +
+                "nodeID='" + nodeID + '\'' +
+                '}';
+    }
+
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
@@ -83,15 +92,10 @@ public class Node {
         nodeID = "" + x + y;
     }
 
-    public boolean equals(Node n) {
-        return (this.getNodeID().equals(n.getNodeID()) &&
-                this.getXcoord() == n.getXcoord() &&
-                this.getYcoord() == n.getYcoord() &&
-                this.getFloor().equals(n.getFloor()) &&
-                this.getBuilding().equals(n.getBuilding()) &&
-                this.getLongName().equals(n.getLongName()) &&
-                this.getShortName().equals(n.getShortName())
-                );
+    public Node(String id, int x, int y) {
+        xcoord = x;
+        ycoord = y;
+        nodeID = id;
     }
 
     public Node( String nodeID, int xcoord, int ycoord, String floor, String building, String nodeType, String longName, String shortName) {
@@ -120,4 +124,23 @@ public class Node {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return xcoord == node.xcoord &&
+                ycoord == node.ycoord &&
+                Objects.equals(nodeID, node.nodeID) &&
+                Objects.equals(floor, node.floor) &&
+                Objects.equals(building, node.building) &&
+                Objects.equals(nodeType, node.nodeType) &&
+                Objects.equals(longName, node.longName) &&
+                Objects.equals(shortName, node.shortName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(xcoord, ycoord, nodeID, floor, building, nodeType, longName, shortName);
+    }
 }
