@@ -13,12 +13,6 @@ public class MapNode implements Comparable<MapNode>{
     MapNode parent;
     Node data;
 
-    public MapNode(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.g = 99999999;
-    }
-
     public MapNode(int x, int y, Node data) {
         this.x = x;
         this.y = y;
@@ -37,19 +31,27 @@ public class MapNode implements Comparable<MapNode>{
 
     @Override
     public int hashCode() {
-        return Objects.hash(g, x, y, h, f, parent, data);
+        return Objects.hash(x,y,data);
     }
 
     public Node getData() {
         return this.data;
     }
 
-    public void setF(double f) {
-        this.f = f;
-    }
-
     public double getF() {
         return this.f = this.g + this.h;
+    }
+
+    public MapNode getParent() {
+        return this.parent;
+    }
+
+    public int getG(){
+        return this.g;
+    }
+
+    public double getH(){
+        return this.h;
     }
 
     public void calculateHeuristic(MapNode destination) {
@@ -58,27 +60,19 @@ public class MapNode implements Comparable<MapNode>{
         this.h = Math.sqrt(Math.pow(dx, 2.0) + Math.pow(dy, 2.0));
     }
 
+    public void calculateG(MapNode nextNode) {
+        int dx = nextNode.x - this.x;
+        int dy = nextNode.y - this.y;
+        this.g = (int) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    }
+
     public void setParent(MapNode n, int cost) {
         this.parent = n;
         this.g = n.g + cost;
     }
 
-    public void checkBetter(MapNode n, int cost) {
-        if (this.g > n.g + cost) {
-            setParent(n, cost);
-        }
-    }
-
-    public int getG(){
-        return this.g;
-    }
-
     public void setG(int g){
         this.g = g;
-    }
-
-    public double getH(){
-        return this.h;
     }
 
     @Override
@@ -89,21 +83,24 @@ public class MapNode implements Comparable<MapNode>{
                 ", y=" + y +
                 ", h=" + h +
                 ", f=" + f +
-                ", parent=" + parent +
-                ", data=" + data +
+//                ", parent=" + parent +
+                ", data=" + data.getNodeID() +
                 '}';
     }
 
     @Override
     public int compareTo(MapNode node) {
-        if(this.getF() > node.getF()) {
-            return 1;
-        }
-        if(this.getF() < node.getF()){
-            return 1;
-        }
-        else {
-            return 0;
-        }
+        int comparison = Double.compare(this.getF(), node.getF());
+//        // this F is greater than node F
+//        if(comparison > 0) {
+//            return 1;
+//        }
+//        // this F is less than node F
+//        if(comparison < 0){
+//            return 1;
+//        }
+//        // Both are the same!
+//        return 0;
+        return comparison; // experimental to find
     }
 }

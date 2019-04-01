@@ -1,16 +1,11 @@
 package service;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.FastTest;
-import testclassifications.SlowTest;
 
-import javax.xml.crypto.Data;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.SQLException;
@@ -28,10 +23,11 @@ public class DBInitTests {
         boolean testor;
         try {
             myDB = DatabaseService.init();
+            assertTrue(myDB.tableExists("NODE"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        assertTrue(myDB.tableExists("NODE"));
+
     }
 
     @Test

@@ -75,6 +75,13 @@ public class Node {
         return shortName;
     }
 
+    @Override
+    public String toString() {
+        return "Node{" +
+                "nodeID='" + nodeID + '\'' +
+                '}';
+    }
+
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
@@ -83,6 +90,12 @@ public class Node {
         xcoord = x;
         ycoord = y;
         nodeID = "" + x + y;
+    }
+
+    public Node(String id, int x, int y) {
+        xcoord = x;
+        ycoord = y;
+        nodeID = id;
     }
 
     public Node( String nodeID, int xcoord, int ycoord, String floor, String building, String nodeType, String longName, String shortName) {

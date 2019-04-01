@@ -2,8 +2,9 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="394.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
@@ -11,19 +12,23 @@
         <JFXTextField layoutX="14.0" layoutY="13.0" prefHeight="26.0" prefWidth="168.0" promptText="Search This Hospital" style="-fx-background-color: white;" />
         <AnchorPane layoutX="432.0" prefHeight="394.0" prefWidth="168.0" style="-fx-background-color: white;">
             <children>
-                <AnchorPane prefHeight="88.0" prefWidth="168.0" style="-fx-background-color: green;">
+                <AnchorPane layoutX="4.0" prefHeight="68.0" prefWidth="168.0" style="-fx-background-color: green;">
                     <children>
-                        <JFXTextField alignment="CENTER" layoutX="9.0" layoutY="14.0" text="Service Request" />
-                        <TextField layoutX="31.0" layoutY="48.0" prefHeight="5.0" prefWidth="107.0" style="-fx-background-color: white;" />
+                        <JFXTextField id="SceneID" alignment="CENTER" layoutX="9.0" layoutY="21.0" text="Service Request" />
                     </children>
                 </AnchorPane>
-                <TextField alignment="CENTER" layoutY="88.0" prefHeight="26.0" prefWidth="168.0" text="Maintenance" />
-                <TextArea layoutY="114.0" prefHeight="123.0" prefWidth="168.0" text="Enter Request Details:" />
-                <TextField alignment="CENTER" layoutY="237.0" prefHeight="26.0" prefWidth="168.0" text="Item Delivery" />
-                <TextField alignment="CENTER" layoutY="263.0" prefHeight="26.0" prefWidth="168.0" text="IT" />
-                <TextArea layoutX="16.0" layoutY="146.0" prefHeight="77.0" prefWidth="130.0" promptText="Enter details" />
-                <JFXButton fx:id="homeBtn" layoutY="374.0" onAction="#showHome" style="-fx-background-color: red;" text="Cancel" />
-                <JFXButton layoutX="109.0" layoutY="374.0" style="-fx-background-color: green;" text="Confirm" />
+                <TextArea layoutX="4.0" layoutY="215.0" prefHeight="134.0" prefWidth="168.0" text="Enter Request Details:" />
+                <TextArea fx:id="textArea" layoutX="19.0" layoutY="246.0" prefHeight="77.0" prefWidth="130.0" promptText="Enter details" />
+                <JFXButton fx:id="cancelBtn" layoutX="4.0" layoutY="374.0" onAction="#showHome" style="-fx-background-color: red;" text="Cancel" />
+                <JFXButton fx:id="confirmBtn" layoutX="105.0" layoutY="374.0" onAction="#makeRequest" style="-fx-background-color: green;" text="Confirm" />
+            <JFXTextField fx:id="locationTextField" layoutX="9.0" layoutY="68.0" text="Request Location:">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </JFXTextField>
+            <ChoiceBox fx:id="locationBox" layoutX="6.0" layoutY="95.0" prefHeight="27.0" prefWidth="158.0" />
+            <ChoiceBox fx:id="typeBox" layoutX="6.0" layoutY="166.0" prefHeight="27.0" prefWidth="158.0" />
+            <JFXTextField fx:id="typeTextField" layoutX="8.0" layoutY="138.0" text="Request Type:" />
             </children>
         </AnchorPane>
     </children>

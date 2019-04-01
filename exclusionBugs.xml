@@ -3,14 +3,5 @@
   <Match>
     <Bug code="UuF,UrF" />
   </Match>
-  <Match>
-    <Class name="model.MapNode" />
-  </Match>
-  <Match>
-    <Class name="service.MapService" />
-  </Match>
-  <Match>
-    <Class name="service.PathFindingService" />
-  </Match>
 </FindBugsFilter>
 
