@@ -8,8 +8,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.mockito.Mock;
-import service.DatabaseService;
 import testclassifications.FastTest;
 
 import java.util.ArrayList;
@@ -17,20 +15,20 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class RequestControllerTest {
     private Node n = new Node(1, 1 , "","","","","","");
-    private RequestController reqCrl1 ;
+    private RequestController RC = new RequestController();
     private Request request;
     private MedicineRequest mReq;
     private MedicineRequest medReqR = new MedicineRequest(1001,"Fast",n,false);
     private MedicineRequest medReqM = new MedicineRequest(1002,"take your time", n, false, "Morphine", 200.0);
-    private ITRequest ITReqA = new ITRequest(1001,"3/31/2019 1:21 PM",n,false,"Hard Drive Broke When I peed on it");
-    private ITRequest ITReqB = new ITRequest(1002,"4/1/2019 2:30 PM", n, false, "Can't wifi");
+    private ITRequest ITReqA = new ITRequest(1003,"3/31/2019 1:21 PM",n,false,"Hard Drive Broke When I peed on it");
+    private ITRequest ITReqB = new ITRequest(1005,"4/1/2019 2:30 PM", n, false, "Can't wifi");
     private MedicineRequest c;
     private ITRequest itReq;
 
@@ -57,22 +55,76 @@ public class RequestControllerTest {
     // test makeRequest()
     @Test
     @Category(FastTest.class)
-    public void makeRequestTest () {
-        //reqCrl1.makeRequest(request);
-        //assertThat(reqCrl1.getPendingRequests().contains(mReq), equalTo(false));
+    public void makeITRequestTest () {
+        List<ITRequest> requests = RC.dbs.getAllIncompleteITRequests();
+        requests.add(ITReqA);
+        RC.makeRequest(ITReqA);
+        List<ITRequest> requests1 = RC.dbs.getAllIncompleteITRequests();
+        assertThat(requests.containsAll(requests1), equalTo(true));
+        requests = requests1;
+        //don't make two of the same exact req
+        RC.makeRequest(ITReqA);
+        requests1 = RC.dbs.getAllIncompleteITRequests();
+        assertThat(requests.size() == requests1.size(), equalTo(true));
     }
 
-
-    // test fufillRequest ()
     @Test
     @Category(FastTest.class)
-    public void fufillRequestTest () {
-//        reqCrl2.getPendingRequests().add(newReq) ;
-//        reqCrl2.fufillRequest("ID", "Someone");
-//        assertFalse(reqCrl2.getPendingRequests().contains(newReq));
+    public void makeMedRequestTest () {
+        List<MedicineRequest> requests = RC.dbs.getAllIncompleteMedicineRequests();
+        requests.add(medReqM);
+        RC.makeRequest(medReqM);
+        List<MedicineRequest> requests1 = RC.dbs.getAllIncompleteMedicineRequests();
+        assertThat(requests.containsAll(requests1), equalTo(true));
+
+        requests = requests1;
+        //don't make two of the same exact req
+        RC.makeRequest(ITReqA);
+        requests1 = RC.dbs.getAllIncompleteMedicineRequests();
+        assertThat(requests.size() == requests1.size(), equalTo(true));
+
     }
 
+/*
+    @Test
+    @Category(FastTest.class)
+    public void fulfillITRequestTest () {
+        RC.makeRequest(ITReqB);
+        //make sure it's not still on the incomplete list
+        List<ITRequest> unfilledRequests = RC.dbs.getAllIncompleteITRequests();
+        //make sure in unfilled reqs
+        assertThat(unfilledRequests.contains(ITReqB), equalTo(true));
+        //after filled, not in unfilled reqs, but still in all
+        RC.fufillRequest(ITReqB, "Jane");
+        ITRequest filledITReqR = ITReqB;
+        filledITReqR.setCompleted(true);
+        filledITReqR.setCompletedBy("Jane");
+        unfilledRequests = RC.dbs.getAllIncompleteITRequests();
+        assertThat(unfilledRequests.contains(ITReqB), equalTo(false));
+        assertThat(unfilledRequests.contains(filledITReqR), equalTo(false));
+        assertThat(RC.dbs.getAllMedicineRequests().contains(filledITReqR), equalTo(true));
+    }
 
+    @Test
+    @Category(FastTest.class)
+    public void fulfillMedicineRequestTest () {
+        RC.makeRequest(medReqR);
+        //make sure it's not still on the incomplete list
+        List<MedicineRequest> unfilledRequests = RC.dbs.getAllIncompleteMedicineRequests();
+        //make sure in unfilled reqs
+        assertThat(unfilledRequests.contains(medReqR), equalTo(true));
+        //after filled, not in unfilled reqs, but still in all
+        RC.fufillRequest(medReqR, "Shawn");
+        MedicineRequest filledMedReqR = medReqR;
+        filledMedReqR.setCompleted(true);
+        filledMedReqR.setCompletedBy("Shawn");
+        unfilledRequests = RC.dbs.getAllIncompleteMedicineRequests();
+        assertThat(unfilledRequests.contains(medReqR), equalTo(false));
+        assertThat(unfilledRequests.contains(filledMedReqR), equalTo(false));
+        assertThat(RC.dbs.getAllMedicineRequests().contains(filledMedReqR), equalTo(true));
+    }
+
+*/
     @After
     public void tearDown() throws Exception { }
 

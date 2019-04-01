@@ -34,12 +34,12 @@ public class MapEditControllerTest {
     }
 
 
-/*
+
     @Test
     @Category(FastTest.class)
     public void insertNodeTest(){
         Node testNode1 = new Node("ACONF00102", 1510, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        Node testNode2 = new Node("ACONF00105", 1580, 2538, "3", "BTM", "HALL", "Hall", "Hall");
+        Node testNode2 = new Node("ACONF00109", 1580, 2538, "3", "BTM", "HALL", "Hall", "Hall");
         Node testNode3 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Edge testEdge1 = new Edge("ACONF00102-ACONF00103", testNode1,testNode2);
         Edge testEdge2 = new Edge("ACONF00102-ACONF00104", testNode1,testNode3);
@@ -58,7 +58,7 @@ public class MapEditControllerTest {
         mec.deleteNode(testNode1);
         mec.deleteNode(testNode2);
     }
-    */
+
 
 
 
