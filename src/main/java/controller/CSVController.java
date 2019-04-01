@@ -14,6 +14,13 @@ public class CSVController extends Controller {
     private static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
 
+    static {
+        if (dbs.isNewlyCreated()) {
+            CSVController.importNodes();
+            CSVController.importEdges();
+        }
+    }
+
     /**
      * Export the Nodes table
      */
