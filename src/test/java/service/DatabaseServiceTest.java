@@ -1,6 +1,8 @@
 package service;
 
 import model.*;
+import model.request.ITRequest;
+import model.request.MedicineRequest;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -347,11 +349,42 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateReservation() {
+        GregorianCalendar reservationStart = new GregorianCalendar();
+        reservationStart.setTime(new Date());
+        GregorianCalendar reservationEnd = new GregorianCalendar();
+        reservationEnd.setTime(new Date());
+        reservationEnd.add(Calendar.HOUR, 1);
+        Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+
+        assertTrue(myDBS.insertReservation(reservation));
+        assertEquals(reservation, myDBS.getReservation(0));
+
+        reservation.setPrivacyLevel(1);
+        reservation.setLocationID("ABCD");
+        reservationEnd.add(Calendar.MINUTE, 30);
+        reservation.setEndTime(reservationEnd);
+
+        assertTrue(myDBS.updateReservation(reservation));
+        assertEquals(reservation, myDBS.getReservation(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteReservation() {
+        GregorianCalendar reservationStart = new GregorianCalendar();
+        reservationStart.setTime(new Date());
+        GregorianCalendar reservationEnd = new GregorianCalendar();
+        reservationEnd.setTime(new Date());
+        reservationEnd.add(Calendar.HOUR, 1);
+        Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+
+        assertTrue(myDBS.insertReservation(reservation));
+        assertEquals(reservation, myDBS.getReservation(0));
+
+        assertTrue(myDBS.deleteReservation(reservation));
+        assertNull(myDBS.getReservation(0));
     }
 
     @Test
@@ -506,11 +539,30 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateEmployee() {
+        Employee employee = new Employee(0, "Doctor", false);
+
+        assertTrue(myDBS.insertEmployee(employee));
+        assertEquals(employee, myDBS.getEmployee(0));
+
+        employee.setAdmin(true);
+        employee.setJob("Department head");
+
+        assertTrue(myDBS.updateEmployee(employee));
+        assertEquals(employee, myDBS.getEmployee(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteEmployee() {
+        Employee employee = new Employee(0, "Doctor", false);
+
+        assertTrue(myDBS.insertEmployee(employee));
+        assertEquals(employee, myDBS.getEmployee(0));
+
+        assertTrue(myDBS.deleteEmployee(employee));
+        assertNull(myDBS.getEmployee(0));
     }
 
     @Test
@@ -595,58 +647,326 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateReservableSpace() {
+        GregorianCalendar openTime = new GregorianCalendar();
+        openTime.set(Calendar.HOUR, 7);
+        openTime.set(Calendar.MINUTE, 0);
+        GregorianCalendar closeTime = new GregorianCalendar();
+        closeTime.set(Calendar.HOUR, 17);
+        closeTime.set(Calendar.MINUTE, 30);
+
+        ReservableSpace space = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
+
+        assertTrue(myDBS.insertReservableSpace(space));
+        assertEquals(space, myDBS.getReservableSpace("ABCD"));
+
+        space.setSpaceName("Named Room");
+        openTime.add(Calendar.MINUTE, -30);
+        space.setTimeOpen(openTime);
+
+        assertTrue(myDBS.updateReservableSpace(space));
+        assertEquals(space, myDBS.getReservableSpace("ABCD"));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteReservableSpace() {
+        GregorianCalendar openTime = new GregorianCalendar();
+        openTime.set(Calendar.HOUR, 7);
+        openTime.set(Calendar.MINUTE, 0);
+        GregorianCalendar closeTime = new GregorianCalendar();
+        closeTime.set(Calendar.HOUR, 17);
+        closeTime.set(Calendar.MINUTE, 30);
+
+        ReservableSpace space = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
+
+        assertTrue(myDBS.insertReservableSpace(space));
+        assertEquals(space, myDBS.getReservableSpace("ABCD"));
+
+        assertTrue(myDBS.deleteReservableSpace(space));
+        assertNull(myDBS.getReservableSpace("ABCD"));
     }
 
     @Test
-    public void insertITRequest() {
+    @Category(FastTest.class)
+    public void insertAndGetITRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        ITRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getITRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertITRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getITRequest(0);
+        assertEquals(expected, value);
     }
 
     @Test
-    public void getITRequest() {
-    }
-
-    @Test
+    @Category(FastTest.class)
     public void getAllITRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        ITRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getITRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getITRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getITRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ITRequest req1 = new ITRequest(0, "No notes", node, false, "New mouse required");
+        ITRequest req2 = new ITRequest(1, "Priority", node, true, "No internet");
+        ITRequest req3 = new ITRequest(2, "Notes go here", node, false, "Help me");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertITRequest(req1));
+        assertTrue(myDBS.insertITRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<ITRequest> allITRequests = myDBS.getAllITRequests();
+        assertThat(allITRequests.size(), is(2));
+        assertEquals(req1, allITRequests.get(0));
+        assertEquals(req2, allITRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertITRequest(req3));
+
+        allITRequests = myDBS.getAllITRequests();
+        assertThat(allITRequests.size(), is(3));
+        assertEquals(req1, allITRequests.get(0));
+        assertEquals(req2, allITRequests.get(1));
+        assertEquals(req3, allITRequests.get(2));
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateITRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertITRequest(req));
+        assertEquals(req, myDBS.getITRequest(0));
+
+        req.setDescription("Two new mouses needed");
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updateITRequest(req));
+        assertEquals(req, myDBS.getITRequest(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteITRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertITRequest(req));
+        assertEquals(req, myDBS.getITRequest(0));
+
+        assertTrue(myDBS.deleteITRequest(req));
+        assertNull(myDBS.getITRequest(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void getAllIncompleteITRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        ITRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getITRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getITRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getITRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ITRequest req1 = new ITRequest(0, "No notes", node, false, "New mouse required");
+        ITRequest req2 = new ITRequest(1, "Priority", node, true, "No internet");
+        ITRequest req3 = new ITRequest(2, "Notes go here", node, false, "Help me");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertITRequest(req1));
+        assertTrue(myDBS.insertITRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<ITRequest> allITRequests = myDBS.getAllIncompleteITRequests();
+        assertThat(allITRequests.size(), is(1));
+        assertEquals(req1, allITRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertITRequest(req3));
+
+        allITRequests = myDBS.getAllIncompleteITRequests();
+        assertThat(allITRequests.size(), is(2));
+        assertEquals(req1, allITRequests.get(0));
+        assertEquals(req3, allITRequests.get(1));
     }
 
     @Test
-    public void insertMedicineRequest() {
+    @Category(FastTest.class)
+    public void insertAndGetMedicineRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        MedicineRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getMedicineRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MedicineRequest req = new MedicineRequest(0, "Quickly please", node, false, "Ibuprofen", 2.5);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertMedicineRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getMedicineRequest(0);
+        assertEquals(expected, value);
     }
 
     @Test
-    public void getMedicineRequest() {
-    }
-
-    @Test
+    @Category(FastTest.class)
     public void getAllMedicineRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        MedicineRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getMedicineRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getMedicineRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getMedicineRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MedicineRequest req1 = new MedicineRequest(0, "No notes", node, false, "Ibuprofen", 3.75);
+        MedicineRequest req2 = new MedicineRequest(1, "Priority", node, true, "Asprin", 10);
+        MedicineRequest req3 = new MedicineRequest(2, "Notes go here", node, false, "Some other medicine", 1);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMedicineRequest(req1));
+        assertTrue(myDBS.insertMedicineRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<MedicineRequest> allMedicineRequests = myDBS.getAllMedicineRequests();
+        assertThat(allMedicineRequests.size(), is(2));
+        assertEquals(req1, allMedicineRequests.get(0));
+        assertEquals(req2, allMedicineRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertMedicineRequest(req3));
+
+        allMedicineRequests = myDBS.getAllMedicineRequests();
+        assertThat(allMedicineRequests.size(), is(3));
+        assertEquals(req1, allMedicineRequests.get(0));
+        assertEquals(req2, allMedicineRequests.get(1));
+        assertEquals(req3, allMedicineRequests.get(2));
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateMedicineRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MedicineRequest req = new MedicineRequest(0, "No notes", node, false, "Ibuprofen", 3.75);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMedicineRequest(req));
+        assertEquals(req, myDBS.getMedicineRequest(0));
+
+        req.setNotes("Capsules");
+        req.setQuantity(5.333);
+
+        assertTrue(myDBS.updateMedicineRequest(req));
+        assertEquals(req, myDBS.getMedicineRequest(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteMedicineRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MedicineRequest req = new MedicineRequest(0, "No notes", node, false, "Ibuprofen", 3.75);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMedicineRequest(req));
+        assertEquals(req, myDBS.getMedicineRequest(0));
+
+        assertTrue(myDBS.deleteMedicineRequest(req));
+        assertNull(myDBS.getMedicineRequest(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void getAllIncompleteMedicineRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        MedicineRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getMedicineRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getMedicineRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getMedicineRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MedicineRequest req1 = new MedicineRequest(0, "No notes", node, false, "Ibuprofen", 3.75);
+        MedicineRequest req2 = new MedicineRequest(1, "Priority", node, true, "Asprin", 10);
+        MedicineRequest req3 = new MedicineRequest(2, "Notes go here", node, false, "Some other medicine", 1);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMedicineRequest(req1));
+        assertTrue(myDBS.insertMedicineRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<MedicineRequest> allMedicineRequests = myDBS.getAllIncompleteMedicineRequests();
+        assertThat(allMedicineRequests.size(), is(1));
+        assertEquals(req1, allMedicineRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertMedicineRequest(req3));
+
+        allMedicineRequests = myDBS.getAllIncompleteMedicineRequests();
+        assertThat(allMedicineRequests.size(), is(2));
+        assertEquals(req1, allMedicineRequests.get(0));
+        assertEquals(req3, allMedicineRequests.get(1));
     }
 }
