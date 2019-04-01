@@ -472,29 +472,6 @@ public class DatabaseService {
 
     //<editor-fold desc="Generic Execution Methods">
 
-    /**
-     * Run an executeUpdate query - for UPDATE AND DELETE
-     * @param query
-     * @param parameters
-     * @return a boolean indicating success
-     */
-    private boolean executeUpdate(String query, Object... parameters) {
-        boolean modifyResult = false;
-        PreparedStatement stmt = null;
-        try {
-            stmt = connection.prepareStatement(query);
-            prepareStatement(stmt, parameters);
-
-            stmt.executeUpdate();
-            modifyResult = true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeStatement(stmt);
-        }
-        return modifyResult;
-    }
-
     private <T> List<Object> executeGetMultiple(String query, Class<T> cls, Object... parameters) {
         ArrayList<Object> reqs = new ArrayList();
         PreparedStatement stmt = null;
@@ -520,6 +497,29 @@ public class DatabaseService {
         }
 
         return reqs;
+    }
+
+    /**
+     * Run an executeUpdate query - for UPDATE AND DELETE
+     * @param query
+     * @param parameters
+     * @return a boolean indicating success
+     */
+    private boolean executeUpdate(String query, Object... parameters) {
+        boolean modifyResult = false;
+        PreparedStatement stmt = null;
+        try {
+            stmt = connection.prepareStatement(query);
+            prepareStatement(stmt, parameters);
+
+            stmt.executeUpdate();
+            modifyResult = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(stmt);
+        }
+        return modifyResult;
     }
 
     private boolean executeInsert(String insertQuery, Object... values) {

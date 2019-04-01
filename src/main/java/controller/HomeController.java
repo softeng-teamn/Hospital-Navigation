@@ -41,7 +41,7 @@ public class HomeController extends MapController {
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
     }
-
+  
     //Pathfind and show path to user
     public void pathfind(Node start, Node dest) {
         MapNode pStart = new MapNode(start.getXcoord(), start.getYcoord(), start);
@@ -62,7 +62,6 @@ public class HomeController extends MapController {
             //root.getChildren.add(line);
             //stage.setScene(scene);
             //stage.show();
-
         }
     }
 

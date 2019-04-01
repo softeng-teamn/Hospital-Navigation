@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import model.RequestType;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
@@ -18,6 +19,8 @@ import service.ResourceLoader;
 import service.StageManager;
 
 import java.net.URL;
+import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.ResourceBundle;
 
@@ -67,31 +70,67 @@ public class RequestController extends Controller implements Initializable {
         String requestType = typeBox.getValue();
         String requestLocation = locationBox.getValue();
 
-        if (requestLocation == null){
+        if (requestLocation == null) {
             locationTextField.setText("Request Location: \nPlease select location!");
-        } else if(requestType == null){
+        } else if (requestType == null) {
             typeTextField.setText("Request Type: \nPlease select type!");
-        } else if(requestType.contains("Medicine")){
+        } else if (requestType.contains("Medicine")) {
             MedicineRequest newMedicineRequest = new MedicineRequest(-1, descrption, null, false);
             dbs.insertMedicineRequest(newMedicineRequest);
-        } else if(requestType.contains("IT")){
+        } else if (requestType.contains("IT")) {
             ITRequest newITRequest = new ITRequest(-1, descrption, null, false);
             dbs.insertITRequest(newITRequest);
         }
+    }
 
 
-
-
+    void makeRequest(Request type) {
+        RequestType rType = type.getRequestType();
+        switch(rType.getrType()){
+            case ITS:
+                ITRequest ITType = (ITRequest) type;
+                if(dbs.getITRequest(ITType.getId())==null) {
+                    dbs.insertITRequest(ITType);
+                }
+                break;
+            case MED:
+                MedicineRequest medReq = (MedicineRequest) type;
+                if(dbs.getMedicineRequest(medReq.getId())==null) {
+                    dbs.insertMedicineRequest(medReq);
+                }
+                break;
+            case ABS:
+                //dont make a request if its not a real type
+        }
     }
 
     // removes object from database
-    void fufillRequest(String requestID, String byWho) {
-
+    void fufillRequest(Request type, String byWho) {
+        RequestType rType = type.getRequestType();
+        switch(rType.getrType()){
+            case ITS:
+                ITRequest ITReq = (ITRequest) type;
+                ITReq.setCompleted(true);
+                ITReq.setCompletedBy(byWho);
+                dbs.updateITRequest(ITReq);
+                break;
+            case MED:
+                MedicineRequest MedReq = (MedicineRequest) type;
+                MedReq.setCompleted(true);
+                MedReq.setCompletedBy(byWho);
+                dbs.updateMedicineRequest(MedReq);
+                break;
+            case ABS:
+                //do nothing
+        }
     }
 
     // getter for pendingRequests
     public Collection<Request> getPendingRequests () {
-        return null;
+        ArrayList<Request> requests = new ArrayList<>();
+        requests.addAll(this.dbs.getAllIncompleteITRequests());
+        requests.addAll(this.dbs.getAllIncompleteMedicineRequests());
+        return requests;
     }
 
 
