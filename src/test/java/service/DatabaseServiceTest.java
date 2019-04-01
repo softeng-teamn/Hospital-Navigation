@@ -139,7 +139,19 @@ public class DatabaseServiceTest {
     }
 
     @Test
-    public void getNodes() {
+    @Category(FastTest.class)
+    public void getNodesByFloor() {
+        Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        myDBS.insertNode(testNode1);
+        Node testNode2 = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        myDBS.insertNode(testNode2);
+        Node testNode3 = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        myDBS.insertNode(testNode3);
+        ArrayList<Node> getByFloor = myDBS.getNodesByFloor("3");
+        assertThat(getByFloor.size(), is(2));
+        assertEquals(getByFloor.get(0),testNode2);
+        assertEquals(getByFloor.get(1),testNode3);
+
 
     }
 
@@ -277,7 +289,7 @@ public class DatabaseServiceTest {
         Reservation value, expected;
 
         // First verify that these reservations are null
-        value = myDBS.getReservation(0);
+        value = myDBS.getReservation(23);
         assertThat(value, is(nullValue()));
 
         // Create a reservation
@@ -286,11 +298,22 @@ public class DatabaseServiceTest {
         GregorianCalendar reservationEnd = new GregorianCalendar();
         reservationEnd.setTime(new Date());
         reservationEnd.add(Calendar.HOUR, 1);
-        Reservation reservation1 = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+        Reservation reservation1 = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
 
-        // Verify successful insertion
+        // This insertion will fail because there exists no employee zero in the system to make the reservation
+       // boolean insertRes = myDBS.insertReservation(reservation1);
+       // assertFalse(insertRes);
+
+        // Insert Employee in to make sure the reservation will work
+        //Employee employee = new Employee(23, "Doctor", false);
+        //myDBS.insertEmployee(employee);
+
+        // successful insert because of constraints
         boolean insertRes = myDBS.insertReservation(reservation1);
         assertTrue(insertRes);
+
+
+
 
         // Verify successful get
         expected = reservation1;
@@ -302,7 +325,6 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void getAllReservations() {
         long now = (new Date()).getTime();
-
         List<Reservation> reservationList;
 
         // No reservations should exist yet

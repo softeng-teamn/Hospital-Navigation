@@ -109,14 +109,17 @@ public class DatabaseService {
             if(!tableExists("EMPLOYEE")){
                 statement.execute("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean)");
             }
-            if(!tableExists("SERVICEREQUEST")){
-                statement.execute("CREATE TABLE SERVICEREQUEST(serviceID int PRIMARY KEY, serviceType varchar(4), locationNode varchar(10), description varchar(300), requestorID int, fulfillerID int)");
+            if(!tableExists("MEDICINEREQUEST")){
+                statement.execute("CREATE TABLE MEDICINEREQUEST(medRequestID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), locationNode varchar(255), description varchar(300), requestorID int, fulfillerID int)");
+            }
+            if(!tableExists("ITREQUEST")){
+                statement.execute("CREATE TABLE ITREQUEST(ITRequestID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), locationNode varchar(255), description varchar(300), requestorID int, fulfillerID int)");
             }
             if(!tableExists("RESERVATION")){
-                statement.execute("CREATE TABLE RESERVATION(eventID int PRIMARY KEY, eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
+                statement.execute("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
             }
             if(!tableExists("RESERVABLESPACE")){
-                statement.execute("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY , spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
+                statement.execute("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
             }
             if(!tableExists("META_DB_VER")){
                 statement.execute("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
@@ -124,6 +127,11 @@ public class DatabaseService {
             }
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
+            // constraints that matter less but will be fully implemented later
+            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (LOCATIONID) REFERENCES RESERVABLESPACE(SPACEID)");
+            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
+
+
             statement.execute("CREATE INDEX LocationIndex ON RESERVATION (locationID)");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -280,9 +288,31 @@ public class DatabaseService {
 
 
     // get all nodes from the specified floor
-    public Collection<Node> getNodes(String floor) {
-        ArrayList<Node> n = new ArrayList<>();
-        return n;
+    public ArrayList<Node> getNodesByFloor(String floor) {
+        ArrayList<Node> floorNodes = new ArrayList<Node>();
+        String query = "Select * FROM NODE WHERE NODE.FLOOR = ?";
+        PreparedStatement stmt = null;
+        ResultSet nodes = null;
+        try{
+            stmt = connection.prepareStatement(query);
+            prepareStatement(stmt, floor);
+
+            // execute the query
+            nodes = stmt.executeQuery();
+            while(nodes.next()){
+                floorNodes.add(extractNode(nodes));
+            }
+            stmt.close();
+            nodes.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, nodes);
+        }
+
+        return floorNodes;
     }
 
     // EDGE FUNCTIONS
@@ -442,13 +472,13 @@ public class DatabaseService {
 
 
     public boolean insertReservation(Reservation reservation) {
-        String nodeStatement = ("INSERT INTO RESERVATION VALUES(?, ?, ?, ?, ?, ?, ?)");
+        String nodeStatement = ("INSERT INTO RESERVATION(EVENTNAME, LOCATIONID, STARTTIME, ENDTIME, PRIVACYLEVEL, EMPLOYEEID) VALUES(?, ?, ?, ?, ?, ?)");
         PreparedStatement insertReservation = null;
         boolean insertStatus = false;
         try {
             insertReservation = connection.prepareStatement(nodeStatement);
             // set the attributes of the statement for the node
-            prepareStatement(insertReservation, reservation.getEventID(), reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
+            prepareStatement(insertReservation, reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
             insertReservation.execute();
             insertStatus = true;
         } catch (SQLException e) {
