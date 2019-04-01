@@ -11,7 +11,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
-import model.Node;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
@@ -19,7 +18,6 @@ import service.ResourceLoader;
 import service.StageManager;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
@@ -99,9 +97,9 @@ public class RequestController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ArrayList<Node> everyNode =  dbs.getAllNodes();
-        System.out.println(everyNode.size());
-        int length = everyNode.size();
+//        ArrayList<Node> everyNode =  dbs.getAllNodes();
+//        System.out.println(everyNode.size());
+//        int length = everyNode.size();
         ObservableList<String> locationList = FXCollections.observableArrayList("1","2","3");
         ObservableList<String> typeList = FXCollections.observableArrayList("Medicine Request", "IT Request");
 
