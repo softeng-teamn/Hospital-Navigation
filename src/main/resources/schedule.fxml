@@ -18,6 +18,68 @@
 
 <StackPane fx:id="stackP" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
    <children>
+      <AnchorPane fx:id="confirmationPane" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <TitledPane animated="false" collapsible="false" text="Confirm Reservation" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0">
+                     <children>
+                        <JFXButton fx:id="exitConfBtn" layoutX="166.0" layoutY="234.0" onAction="#closeConf" style="-fx-background-color: #E06479;" text="Cancel" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                        <JFXButton fx:id="submitBtn" layoutX="257.0" layoutY="228.0" onAction="#submit" style="-fx-background-color: #61BFE0;" text="Submit" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+                        <HBox alignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <VBox spacing="10.0">
+                                 <children>
+                                    <Label fx:id="timeLbl" alignment="CENTER" minHeight="25.0" minWidth="25.0" wrapText="true">
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <HBox alignment="TOP_CENTER" prefHeight="25.0">
+                                       <children>
+                                          <Label fx:id="confErrorLbl" style="-fx-text-fill: red;" textAlignment="CENTER" wrapText="true">
+                                             <HBox.margin>
+                                                <Insets top="5.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                    <HBox spacing="20.0">
+                                       <children>
+                                          <VBox alignment="TOP_RIGHT" spacing="20.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" text="Enter Event Name:" />
+                                                <Label alignment="CENTER" text="Enter Reserver ID:" />
+                                                <Label alignment="CENTER" layoutX="10.0" layoutY="27.0" text="Select Privacy Level" />
+                                             </children>
+                                             <padding>
+                                                <Insets top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                          <VBox>
+                                             <children>
+                                                <JFXTextField fx:id="eventName" promptText="Event Name" />
+                                                <JFXTextField fx:id="employeeID" promptText="Employee ID" />
+                                                <JFXComboBox fx:id="privacyLvlBox" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children></AnchorPane>
+               </content>
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </TitledPane>
+         </children>
+         <StackPane.margin>
+            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+         </StackPane.margin>
+      </AnchorPane>
       <AnchorPane minHeight="-Infinity" prefWidth="600.0">
          <children>
             <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="311.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Book a Room" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
@@ -131,7 +193,20 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </JFXButton>
-            <Label fx:id="instructionsLbl" style="-fx-background-color: white;" text="Label" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="450.0" />
+            <TitledPane fx:id="instructionsPane" animated="false" collapsible="false" contentDisplay="BOTTOM" text="How to Make a Room Reservation" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="250.0">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                           <children>
+                              <Label fx:id="instructionsLbl" style="-fx-background-color: white;" text="Label" />
+                              <JFXButton fx:id="closeInstuctionsBtn" onAction="#closeInstructions" style="-fx-background-color: #61BFE0;" text="Close Instructions" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
             <AnchorPane fx:id="errorDlg" prefWidth="200.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="245.0" AnchorPane.topAnchor="170.0">
                <children>
                   <AnchorPane prefWidth="200.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -144,68 +219,6 @@
                </children>
             </AnchorPane>
          </children>
-      </AnchorPane>
-      <AnchorPane fx:id="confirmationPane" prefHeight="200.0" prefWidth="200.0">
-         <children>
-            <TitledPane animated="false" collapsible="false" text="Confirm Reservation" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0">
-                     <children>
-                        <JFXButton fx:id="exitConfBtn" layoutX="166.0" layoutY="234.0" onAction="#closeConf" style="-fx-background-color: #E06479;" text="Cancel" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-                        <JFXButton fx:id="submitBtn" layoutX="257.0" layoutY="228.0" onAction="#submit" style="-fx-background-color: #61BFE0;" text="Submit" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
-                        <HBox alignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                           <children>
-                              <VBox spacing="10.0">
-                                 <children>
-                                    <Label fx:id="timeLbl" alignment="CENTER" minHeight="25.0" minWidth="25.0" wrapText="true">
-                                       <VBox.margin>
-                                          <Insets top="10.0" />
-                                       </VBox.margin>
-                                    </Label>
-                                    <HBox alignment="TOP_CENTER" prefHeight="25.0">
-                                       <children>
-                                          <Label fx:id="confErrorLbl" style="-fx-text-fill: red;" textAlignment="CENTER" wrapText="true">
-                                             <HBox.margin>
-                                                <Insets top="5.0" />
-                                             </HBox.margin>
-                                          </Label>
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="20.0">
-                                       <children>
-                                          <VBox alignment="TOP_RIGHT" spacing="20.0" HBox.hgrow="ALWAYS">
-                                             <children>
-                                                <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" text="Enter Event Name:" />
-                                                <Label alignment="CENTER" text="Enter Reserver ID:" />
-                                                <Label alignment="CENTER" layoutX="10.0" layoutY="27.0" text="Select Privacy Level" />
-                                             </children>
-                                             <padding>
-                                                <Insets top="10.0" />
-                                             </padding>
-                                          </VBox>
-                                          <VBox>
-                                             <children>
-                                                <JFXTextField fx:id="eventName" promptText="Event Name" />
-                                                <JFXTextField fx:id="employeeID" promptText="Employee ID" />
-                                                <JFXComboBox fx:id="privacyLvlBox" />
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                     </children></AnchorPane>
-               </content>
-               <font>
-                  <Font size="30.0" />
-               </font>
-            </TitledPane>
-         </children>
-         <StackPane.margin>
-            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
-         </StackPane.margin>
       </AnchorPane>
    </children>
 </StackPane>

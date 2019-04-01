@@ -20,7 +20,9 @@ public class RequestControllerTest {
 
 
     @Before
-    public void setUp() throws Exception { }
+    public void setUp() throws Exception {
+
+    }
 
 
     // test showHome()
