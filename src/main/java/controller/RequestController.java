@@ -74,13 +74,11 @@ public class RequestController extends Controller implements Initializable {
         } else if(requestType == null){
             typeTextField.setText("Request Type: \nPlease select type!");
         } else if(requestType.contains("Medicine")){
-            MedicineRequest newMedicineRequest = new MedicineRequest("123", descrption, null, false);
-            textArea.setText("Medicine");
-//            insertRequest(newMedicineRequest)
+            MedicineRequest newMedicineRequest = new MedicineRequest(null, descrption, null, false);
+            dbs.insertMedicineRequest(newMedicineRequest);
         } else if(requestType.contains("IT")){
-            ITRequest newITRequest = new ITRequest("234", descrption, null, false);
-            textArea.setText("IT");
-//            insertRequest(newITRequest);
+            ITRequest newITRequest = new ITRequest(null, descrption, null, false);
+            dbs.insertITRequest(newITRequest);
         }
 
 
@@ -102,6 +100,7 @@ public class RequestController extends Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ArrayList<Node> everyNode =  dbs.getAllNodes();
+        System.out.println(everyNode.size());
         int length = everyNode.size();
         ObservableList<String> locationList = FXCollections.observableArrayList("1","2","3");
         ObservableList<String> typeList = FXCollections.observableArrayList("Medicine Request", "IT Request");

@@ -15,9 +15,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class HomeControllerTest extends ApplicationTest {
-    final String schbtn = "#schedulerBtn";
-    final String mapbtn = "#editBtn";
-    final String reqbtn = "#serviceBtn";
+    final static String schbtn = "#schedulerBtn";
+    final static String mapbtn = "#editBtn";
+    final static String reqbtn = "#serviceBtn";
 
     @Override
     public void start(Stage stage) throws Exception {
