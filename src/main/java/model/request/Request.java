@@ -8,6 +8,8 @@ import static model.RequestType.RType.ABS;
 
 import java.util.Objects;
 
+import java.util.Objects;
+
 public abstract class Request {
     private int id;
     private String notes;
