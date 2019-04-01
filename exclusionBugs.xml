@@ -3,5 +3,9 @@
   <Match>
     <Bug code="UuF,UrF" />
   </Match>
+  <Match>
+    <Bug code="DLS" />
+    <Class name="controller.HomeController" />
+  </Match>
 </FindBugsFilter>
 
