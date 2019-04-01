@@ -8,6 +8,8 @@ import static model.RequestType.RType.MED;
 
 import java.util.Objects;
 
+import java.util.Objects;
+
 public class MedicineRequest extends Request {
 
     String medicineType;

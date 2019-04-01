@@ -4,12 +4,18 @@ package model;
 
 public class RequestType {
     public enum RType{
-        ITS, MED, ABS;
+        ITS, MED, ABS
     }
 
-    RType rType;
+    private RType rType;
+    private int size;
+
+    public int getSize() {
+        return size;
+    }
 
     public RequestType() {
+        this.size = RType.values().length;
     }
 
     public RequestType(RType rType) {

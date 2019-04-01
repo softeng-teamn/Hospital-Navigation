@@ -349,11 +349,42 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateReservation() {
+        GregorianCalendar reservationStart = new GregorianCalendar();
+        reservationStart.setTime(new Date());
+        GregorianCalendar reservationEnd = new GregorianCalendar();
+        reservationEnd.setTime(new Date());
+        reservationEnd.add(Calendar.HOUR, 1);
+        Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+
+        assertTrue(myDBS.insertReservation(reservation));
+        assertEquals(reservation, myDBS.getReservation(0));
+
+        reservation.setPrivacyLevel(1);
+        reservation.setLocationID("ABCD");
+        reservationEnd.add(Calendar.MINUTE, 30);
+        reservation.setEndTime(reservationEnd);
+
+        assertTrue(myDBS.updateReservation(reservation));
+        assertEquals(reservation, myDBS.getReservation(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteReservation() {
+        GregorianCalendar reservationStart = new GregorianCalendar();
+        reservationStart.setTime(new Date());
+        GregorianCalendar reservationEnd = new GregorianCalendar();
+        reservationEnd.setTime(new Date());
+        reservationEnd.add(Calendar.HOUR, 1);
+        Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+
+        assertTrue(myDBS.insertReservation(reservation));
+        assertEquals(reservation, myDBS.getReservation(0));
+
+        assertTrue(myDBS.deleteReservation(reservation));
+        assertNull(myDBS.getReservation(0));
     }
 
     @Test
@@ -508,11 +539,30 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateEmployee() {
+        Employee employee = new Employee(0, "Doctor", false);
+
+        assertTrue(myDBS.insertEmployee(employee));
+        assertEquals(employee, myDBS.getEmployee(0));
+
+        employee.setAdmin(true);
+        employee.setJob("Department head");
+
+        assertTrue(myDBS.updateEmployee(employee));
+        assertEquals(employee, myDBS.getEmployee(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteEmployee() {
+        Employee employee = new Employee(0, "Doctor", false);
+
+        assertTrue(myDBS.insertEmployee(employee));
+        assertEquals(employee, myDBS.getEmployee(0));
+
+        assertTrue(myDBS.deleteEmployee(employee));
+        assertNull(myDBS.getEmployee(0));
     }
 
     @Test
@@ -597,11 +647,37 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateReservableSpace() {
+        GregorianCalendar openTime = new GregorianCalendar();
+        openTime.set(Calendar.HOUR, 7);
+        openTime.set(Calendar.MINUTE, 0);
+        GregorianCalendar closeTime = new GregorianCalendar();
+        closeTime.set(Calendar.HOUR, 17);
+        closeTime.set(Calendar.MINUTE, 30);
+
+        ReservableSpace space = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
+
+        assertTrue(myDBS.insertReservableSpace(space));
+        assertEquals(space, myDBS.getReservableSpace("ABCD"));
+
+        space.setSpaceName("Named Room");
+        openTime.add(Calendar.MINUTE, -30);
+        space.setTimeOpen(openTime);
+
+        assertTrue(myDBS.updateReservableSpace(space));
+        assertEquals(space, myDBS.getReservableSpace("ABCD"));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteReservableSpace() {
+        GregorianCalendar openTime = new GregorianCalendar();
+        openTime.set(Calendar.HOUR, 7);
+        openTime.set(Calendar.MINUTE, 0);
+        GregorianCalendar closeTime = new GregorianCalendar();
+        closeTime.set(Calendar.HOUR, 17);
+        closeTime.set(Calendar.MINUTE, 30);
     }
 
     @Test
@@ -674,11 +750,34 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateITRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertITRequest(req));
+        assertEquals(req, myDBS.getITRequest(0));
+
+        req.setDescription("Two new mouses needed");
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updateITRequest(req));
+        assertEquals(req, myDBS.getITRequest(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteITRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertITRequest(req));
+        assertEquals(req, myDBS.getITRequest(0));
+
+        assertTrue(myDBS.deleteITRequest(req));
+        assertNull(myDBS.getITRequest(0));
     }
 
     @Test
@@ -792,11 +891,34 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void updateMedicineRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MedicineRequest req = new MedicineRequest(0, "No notes", node, false, "Ibuprofen", 3.75);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMedicineRequest(req));
+        assertEquals(req, myDBS.getMedicineRequest(0));
+
+        req.setNotes("Capsules");
+        req.setQuantity(5.333);
+
+        assertTrue(myDBS.updateMedicineRequest(req));
+        assertEquals(req, myDBS.getMedicineRequest(0));
     }
 
     @Test
+    @Category(FastTest.class)
     public void deleteMedicineRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MedicineRequest req = new MedicineRequest(0, "No notes", node, false, "Ibuprofen", 3.75);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMedicineRequest(req));
+        assertEquals(req, myDBS.getMedicineRequest(0));
+
+        assertTrue(myDBS.deleteMedicineRequest(req));
+        assertNull(myDBS.getMedicineRequest(0));
     }
 
     @Test

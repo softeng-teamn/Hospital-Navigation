@@ -24,18 +24,20 @@ public class MapEditController extends MapController {
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
+    //comment
     // add a new node into map and DB
      boolean insertNode(Node n, Collection<Edge> e) {
         if(e.isEmpty()){
             return false;
         }
         boolean success = dbs.insertNode(n);
-        /*
+
         for (Edge edge: e){
-            if(dbs.getEdge(edge.getEdgeID()) != null){
-                success &&= success && dbs.insertEdge(edge);
+            if(dbs.getEdge(edge.getEdgeID()) != null) {
+                success = success && dbs.insertEdge(edge);
+            }
         }
-        */
+
         return success;
     }
 
