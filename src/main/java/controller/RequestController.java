@@ -12,6 +12,7 @@ import model.request.Request;
 import service.ResourceLoader;
 import service.StageManager;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class RequestController extends Controller {
@@ -38,25 +39,48 @@ public class RequestController extends Controller {
         switch(rType.getrType()){
             case ITS:
                 ITRequest ITType = (ITRequest) type;
-                dbs.insertITRequest(ITType);
+                if(dbs.getITRequest(ITType.getId())==null) {
+                    dbs.insertITRequest(ITType);
+                }
                 break;
             case MED:
                 MedicineRequest medReq = (MedicineRequest) type;
-                dbs.insertMedicineRequest(medReq);
+                if(dbs.getMedicineRequest(medReq.getId())==null) {
+                    dbs.insertMedicineRequest(medReq);
+                }
                 break;
             case ABS:
-                return;
+                //dont make a request if its not a real type
         }
     }
 
     // removes object from database
-    void fufillRequest(String requestID, String byWho) {
-
+    void fufillRequest(Request type, String byWho) {
+        RequestType rType = type.getRequestType();
+        switch(rType.getrType()){
+            case ITS:
+                ITRequest ITReq = (ITRequest) type;
+                ITReq.setCompleted(true);
+                ITReq.setCompletedBy(byWho);
+                dbs.updateITRequest(ITReq);
+                break;
+            case MED:
+                MedicineRequest MedReq = (MedicineRequest) type;
+                MedReq.setCompleted(true);
+                MedReq.setCompletedBy(byWho);
+                dbs.updateMedicineRequest(MedReq);
+                break;
+            case ABS:
+                //do nothing
+        }
     }
 
     // getter for pendingRequests
     public Collection<Request> getPendingRequests () {
-        return null;
+        ArrayList<Request> requests = new ArrayList<>();
+        requests.addAll(this.dbs.getAllIncompleteITRequests());
+        requests.addAll(this.dbs.getAllIncompleteMedicineRequests());
+        return requests;
     }
 
 }
