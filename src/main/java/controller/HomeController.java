@@ -59,7 +59,7 @@ public class HomeController extends MapController {
     @FXML
     private JFXTextField search_bar, edit_x, edit_y, edit_floor, edit_building, edit_type, edit_long, edit_short;
     @FXML
-    private Label edit_id;
+    private Label edit_id, new_room1, new_room2;
     @FXML
     private JFXListView<Node> list_view;
 
@@ -73,6 +73,7 @@ public class HomeController extends MapController {
     private Node destNode;
     private Circle destCircle = new Circle();
     private Circle kioskCircle = new Circle();
+    private int addNodeState = 0;
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
@@ -362,8 +363,11 @@ public class HomeController extends MapController {
     }
 
     @FXML
-    void newRoomAction(ActionEvent e) {
-        System.out.println("time to create a new node!");
+    void newRoomAction(ActionEvent e) throws Exception {
+        // open the new editor window
+        Parent root = FXMLLoader.load(ResourceLoader.createNode);
+        Stage mainStage = (Stage) search_bar.getScene().getWindow();
+        StageManager.changeExistingWindow(mainStage, root, "Create New Room");
     }
 
     @FXML
@@ -458,6 +462,9 @@ public class HomeController extends MapController {
         // repopulate
         allNodesObservable.addAll(allNodes);
         // clear listVIEW
+        if (list_view == null) {
+            System.out.println("LIST VIEW IS NULL");
+        }
         list_view.getItems().clear();
         // add to listView
         list_view.getItems().addAll(allNodesObservable);
