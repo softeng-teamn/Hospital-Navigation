@@ -19,10 +19,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
+<BorderPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
    <center>
-      <StackPane fx:id="stackP" alignment="TOP_LEFT" minHeight="-Infinity" minWidth="-Infinity">
+      <StackPane fx:id="stackP" alignment="TOP_LEFT" maxHeight="600.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="870.0">
          <children>
             <AnchorPane fx:id="confirmationPane" prefHeight="200.0" prefWidth="200.0">
                <children>
@@ -31,7 +30,7 @@
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
                               <JFXButton fx:id="exitConfBtn" layoutX="166.0" layoutY="234.0" onAction="#closeConf" style="-fx-background-color: #E06479;" text="Cancel" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-                              <JFXButton fx:id="submitBtn" layoutX="257.0" layoutY="228.0" onAction="#submit" style="-fx-background-color: #61BFE0;" text="Submit" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+                              <JFXButton fx:id="submitBtn" layoutX="257.0" layoutY="228.0" onAction="#submit" style="-fx-background-color: #003DA6;" text="Submit" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
                               <HBox alignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <children>
                                     <VBox spacing="10.0">
@@ -87,9 +86,9 @@
                   <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
                </StackPane.margin>
             </AnchorPane>
-            <AnchorPane fx:id="homePane" minHeight="-Infinity" prefWidth="600.0">
+            <AnchorPane fx:id="homePane" minHeight="-Infinity" prefHeight="500.0" prefWidth="970.0">
                <children>
-                  <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="311.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Reservation Details" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
+                  <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="311.0" prefHeight="500.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Reservation Details" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="30.0" />
                      </font>
@@ -123,7 +122,7 @@
                                     </AnchorPane>
                                  </content>
                               </TitledPane>
-                              <JFXButton fx:id="makeReservationBtn" onAction="#makeReservation" style="-fx-background-color: #61BFE0;" text="Make Reservation">
+                              <JFXButton fx:id="makeReservationBtn" onAction="#makeReservation" style="-fx-background-color: #003DA6;" text="Make Reservation" textFill="WHITE">
                                  <VBox.margin>
                                     <Insets />
                                  </VBox.margin>
@@ -135,16 +134,16 @@
                         </VBox>
                      </content>
                   </TitledPane>
-                  <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="321.0" layoutY="10.0" prefWidth="266.0" style="-fx-background-color: #40B0D2;" text="Room Schedule" AnchorPane.leftAnchor="580.0" AnchorPane.topAnchor="0.0">
+                  <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="321.0" layoutY="10.0" prefHeight="500.0" prefWidth="266.0" style="-fx-background-color: #40B0D2;" text="Room Schedule" AnchorPane.leftAnchor="580.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="30.0" />
                      </font>
                      <graphic>
-                        <ScrollPane prefWidth="200.0">
-                           <content>
-                              <AnchorPane maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                        <ScrollPane prefHeight="475.0" prefWidth="200.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
                                  <children>
-                                    <HBox maxWidth="-Infinity" prefWidth="200.0" spacing="5.0">
+                                    <HBox prefWidth="200.0" spacing="5.0">
                                        <children>
                                           <VBox fx:id="schedule" prefWidth="150.0" spacing="5.0" HBox.hgrow="ALWAYS">
                                              <HBox.margin>
@@ -154,7 +153,7 @@
                                                 <Insets right="1.0" />
                                              </padding>
                                           </VBox>
-                                          <VBox fx:id="checks" prefHeight="200.0" prefWidth="200.0" spacing="5.0">
+                                          <VBox fx:id="checks" prefWidth="200.0" spacing="5.0">
                                              <HBox.margin>
                                                 <Insets />
                                              </HBox.margin>
@@ -166,18 +165,18 @@
                                     </HBox>
                                  </children>
                               </AnchorPane>
-                           </content>
+                          </content>
                         </ScrollPane>
                      </graphic>
                   </TitledPane>
-                  <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="15.0" layoutY="10.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Available Rooms" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="310.0" AnchorPane.topAnchor="0.0">
+                  <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="15.0" layoutY="10.0" prefHeight="500.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Available Rooms" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="310.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="30.0" />
                      </font>
                      <content>
                         <VBox alignment="TOP_CENTER" prefWidth="100.0" spacing="2.0">
                            <children>
-                              <JFXButton fx:id="filterRoomBtn" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" onAction="#filterRooms" style="-fx-background-color: #61BFE0;" text="Filter Rooms by Selected Time" wrapText="true" />
+                              <JFXButton fx:id="filterRoomBtn" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" onAction="#filterRooms" style="-fx-background-color: #003DA6;" text="Filter Rooms by Selected Time" textFill="WHITE" wrapText="true" />
                               <TitledPane animated="false" collapsible="false" text="Select Location:">
                                  <content>
                                     <AnchorPane minHeight="0.0" minWidth="0.0">
@@ -214,34 +213,32 @@
       </StackPane>
    </center>
    <right>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="500.0" prefWidth="210.0" BorderPane.alignment="CENTER">
          <children>
-            <TitledPane fx:id="instructionsPane" animated="false" collapsible="false" contentDisplay="BOTTOM" text="How to Make a Room Reservation" AnchorPane.bottomAnchor="5.0">
+            <TitledPane fx:id="instructionsPane" animated="false" collapsible="false" contentDisplay="BOTTOM" prefHeight="300.0" prefWidth="275.0" text="How to Make a Room Reservation">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
                         <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                            <children>
-                              <Label fx:id="instructionsLbl" style="-fx-background-color: white;" text="Label" />
-                              <JFXButton fx:id="closeInstructionsBtn" onAction="#closeInstructions" style="-fx-background-color: #61BFE0;" text="Close Instructions" />
+                              <Label fx:id="instructionsLbl" style="-fx-background-color: white;" text="Label" wrapText="true" />
+                              <JFXButton fx:id="closeInstructionsBtn" onAction="#closeInstructions" style="-fx-background-color: #003DA6;" text="Close Instructions" textFill="WHITE" />
                            </children>
                         </VBox>
                      </children>
                   </AnchorPane>
               </content>
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
             </TitledPane>
-            <JFXButton fx:id="instructionsBtn" maxWidth="-Infinity" onAction="#showInstructions" prefWidth="37.0" style="-fx-background-color: #61BFE0;" text="?" textFill="WHITE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </JFXButton>
          </children>
       </AnchorPane>
    </right>
    <top>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #61BFE0;" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #003DA6;" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" text="Reserve a Room" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+            <Label alignment="CENTER" text="Reserve a Room" textAlignment="CENTER" textFill="WHITE" HBox.hgrow="ALWAYS">
                <font>
                   <Font name="System Bold" size="40.0" />
                </font>
@@ -252,37 +249,65 @@
    <left>
       <VBox alignment="CENTER" prefHeight="406.0" prefWidth="128.0" spacing="15.0" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton fx:id="homeBtn" contentDisplay="TOP" maxHeight="-Infinity" onAction="#showHome" prefHeight="120.0" prefWidth="120.0" style="-fx-background-color: #61BFE0;" text="Return to Home Screen" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+            <JFXButton fx:id="homeBtn" contentDisplay="TOP" maxHeight="-Infinity" onAction="#showHome" prefHeight="120.0" prefWidth="120.0" style="-fx-background-color: #003DA6;" text="Return Home " textAlignment="CENTER" textFill="WHITE" wrapText="true" VBox.vgrow="ALWAYS">
                <graphic>
                   <ImageView fitHeight="71.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@Images/home2.png" />
+                        <Image url="/Images/home2.png" />
                      </image>
                   </ImageView>
                </graphic>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
             </JFXButton>
-            <JFXButton fx:id="serviceBtn" contentDisplay="TOP" layoutX="15.0" layoutY="202.0" maxHeight="-Infinity" onAction="#showService" prefHeight="120.0" prefWidth="120.0" style="-fx-background-color: #61BFE0;" text="Service Request" textAlignment="CENTER" wrapText="true">
+            <JFXButton fx:id="serviceBtn" contentDisplay="TOP" layoutX="15.0" layoutY="202.0" maxHeight="-Infinity" onAction="#showService" prefHeight="120.0" prefWidth="120.0" style="-fx-background-color: #003DA6;" text="Service Request" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <graphic>
                   <ImageView fitHeight="71.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@Images/wrench-512.png" />
+                        <Image url="/Images/wrench.png" />
                      </image>
                   </ImageView>
                </graphic>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
             </JFXButton>
-            <JFXButton fx:id="homeBtn11" contentDisplay="TOP" layoutX="15.0" layoutY="233.0" maxHeight="-Infinity" onAction="#showHome" prefHeight="120.0" prefWidth="120.0" style="-fx-background-color: #61BFE0;" text="Admin Services" textAlignment="CENTER" wrapText="true">
+            <JFXButton fx:id="adminBtn" contentDisplay="TOP" layoutX="15.0" layoutY="233.0" maxHeight="-Infinity" onAction="#showLogin" prefHeight="120.0" prefWidth="120.0" style="-fx-background-color: #003DA6;" text="Admin Services" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <graphic>
-                  <ImageView fx:id="adminBtn" fitHeight="63.0" fitWidth="65.0" onDragDetected="#showLogin" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="63.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@Images/gear-308-741812.png" />
+                        <Image url="/Images/gear.png" />
                      </image>
                   </ImageView>
                </graphic>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="instructionsBtn" onAction="#showInstructions" prefHeight="120.0" prefWidth="120.0" style="-fx-background-color: #003DA6;" text="?" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
             </JFXButton>
          </children>
          <padding>
-            <Insets left="5.0" right="5.0" top="5.0" />
+            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
          </padding>
       </VBox>
    </left>
+   <bottom>
+      <AnchorPane minHeight="50.0" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #003DA6;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="27.0" prefWidth="1154.0" spacing="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label text="Brigham and Women's Hospital" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children></AnchorPane>
+   </bottom>
 </BorderPane>

@@ -61,12 +61,15 @@ public class ScheduleController extends Controller {
     private AnchorPane confirmationPane, homePane;
 
     @FXML
+    private VBox leftPane;
+
+    @FXML
     private StackPane stackP;
 
     @FXML
     private JFXComboBox<String> privacyLvlBox;
 
-    private int openTime = 9;   // hour to start schedule dislay TODO: change these depending on the room
+    private int openTime = 9;   // hour to start schedule dislay
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private int timeStep = 2;    // Fractions of an hour
     private int timeStepMinutes = 60/timeStep;    // In Minutes
@@ -76,41 +79,23 @@ public class ScheduleController extends Controller {
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
 
-    // TODO: cut
-    private HashMap<ReservableSpace, ArrayList<Reservation>> resMap = new HashMap<ReservableSpace, ArrayList<Reservation>>();
-    private ArrayList<ReservableSpace> fakeSpaces = new ArrayList<>();
-    private ArrayList<Reservation> reservationsA = new ArrayList<Reservation>();
-    private ArrayList<Reservation> reservationsB = new ArrayList<Reservation>();
-
     /**
      * Set up scheduler page.
      */
     @FXML
     public void initialize() {
-        // TODO: cut
-        ReservableSpace resA = new ReservableSpace("ID A", "Conf room A", "CONF", "location A", new GregorianCalendar(), new GregorianCalendar());
-        ReservableSpace resB = new ReservableSpace("ID B", "Conf room B", "CONF", "location B", new GregorianCalendar(), new GregorianCalendar());
-        fakeSpaces.add(resA);
-        fakeSpaces.add(resB);
-        reservationsA.add(new Reservation(123,0,456, "Party A", "Room A",
-                new GregorianCalendar(2019, 4, 1, 10, 0),
-                new GregorianCalendar(2019,4,1,15,0)));
-        reservationsB.add(new Reservation(41,1,13, "ER Meeting", "Room B",
-                new GregorianCalendar(2019, 4, 1, 18, 0),
-                new GregorianCalendar(2019,4,1,19,0)));
-        resMap.put(resA, reservationsA);
-        resMap.put(resB, reservationsB);
-
+        // Read in reservable Spaces
+        CSVController csvC = new CSVController();
+        csvC.importReservableSpaces();
 
         // Create the instructions and error message
         instructionsPane.setVisible(false);
-        instructionsLbl.setText("Instructions for Making a Reservation:\n" +
-                "1. Select desired date of reservation on the left.\n" +
-                "2. Select a location in the middle menu to view its schedule\n" +
-                "   on that date. \n" +
+        instructionsLbl.setText("1. Select desired date of reservation on the left.\n" +
+                "2. Select a location in the middle menu to view its schedule " +
+                "on that date. \n" +
                 "3. Select the start and end times for your reservation on the left.\n" +
-                "4. Select \"Make Reservation\" at bottom left (you must have selected\n" +
-                "   a location in order to make a reservation).\n" +
+                "4. Select \"Make Reservation\" at bottom left (you must have selected" +
+                " a location in order to make a reservation).\n" +
                 "5. Confirm your reservation and complete the required information.");
 
         // Disable things that can't be used yet
@@ -147,9 +132,10 @@ public class ScheduleController extends Controller {
 
         //  Pull spaces from database
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) dbs.getAllReservableSpaces();
-        // TODO: switch
-        //resSpaces.addAll(dbResSpaces);
-        resSpaces.addAll(fakeSpaces);
+        resSpaces.addAll(dbResSpaces);
+
+        // TODO: cut
+        System.out.println(dbResSpaces);
 
         // Add the nodes to the listview
         reservableList.setItems(resSpaces);
@@ -198,9 +184,8 @@ public class ScheduleController extends Controller {
         GregorianCalendar gcalStart = GregorianCalendar.from(chosenDate.atStartOfDay(ZoneId.systemDefault()));
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
 
-        // TODO: switch
-       // ArrayList<Reservation> resMap = (ArrayList<Reservation>) dbs.getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
-        ArrayList<Reservation> reservations = resMap.get(curr);
+        // Get reservations for this space and these times
+        ArrayList<Reservation> reservations = (ArrayList<Reservation>) dbs.getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
 
         // clear the previous schedule
         schedule.getChildren().clear();
@@ -332,8 +317,7 @@ public class ScheduleController extends Controller {
         }
 
         // If the ID number is bad, display an error message.
-        // TODO: comment back in
-        else if (badId /* || dbs.getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
+        else if (badId /*|| dbs.getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
             confErrorLbl.setText("Error: Please provide a valid employee ID number.");
             confErrorLbl.setVisible(true);
         }
@@ -356,17 +340,13 @@ public class ScheduleController extends Controller {
 
         // Get the privacy level
         int privacy = 0;
-        if (privacyLvlBox.getValue().equals("Private")) {   // !!! dub check this still works
+        if (privacyLvlBox.getValue().equals("Private")) {
             privacy = 1;
         }
 
         // Create the new reservation
         Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getLocationNodeID(),gcalStart,gcalEnd);
         dbs.insertReservation(newRes);
-
-        // TODO: cut
-        resMap.get(currentSelection).add(newRes);
-
         showRoomSchedule();
         closeConf();
     }
@@ -402,17 +382,6 @@ public class ScheduleController extends Controller {
         // Get the times to display
         LocalTime start = startTimePicker.getValue();
         LocalTime end = endTimePicker.getValue();
-
-        // TODO: hospitals use 24 hour time
-        /*// Display am/pm labels
-        String startAmPm = " AM";
-        String endAmPm = " PM";
-        if (start.getHour() >= 12) {
-            startAmPm = " PM";
-        }
-        if (end.getHour() >= 12) {
-            endAmPm = " PM";
-        }*/
 
         // Display the current information
         timeLbl.setText("Reservation Location:      " + currentSelection.getSpaceName()
