@@ -107,10 +107,7 @@ public class PathFindingServiceAdvancedTest {
 
     @Before
     public void mockingGetChildren() throws IOException {
-        System.out.println("Start mocking get children...");
-        CSVController.closeDatabase();
-        FileUtils.forceDelete(new File("hospital-db"));
-        CSVController.initializeDatabase();
+        CSVController.wipeTables();
         CSVController.importNodes();
         CSVController.importEdges();
 

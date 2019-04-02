@@ -25,4 +25,9 @@ public class Controller {
         dbs.close();
     }
 
+
+    public static void wipeTables() {
+        dbs.wipeTables();
+    }
+
 }

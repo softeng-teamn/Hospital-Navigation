@@ -32,6 +32,7 @@ public class DatabaseServiceTest {
     @Before
     public void setUp() throws SQLException, MismatchedDatabaseVersionException {
         myDBS = DatabaseService.init("hospital-db-test");
+        myDBS.wipeTables();
     }
 
     @After
@@ -284,7 +285,6 @@ public class DatabaseServiceTest {
         myDBS.insertNode(testNode);
         myDBS.insertNode(otherNode);
         myDBS.insertEdge(newEdge);
-        myDBS.insertNode(testNode);
         Edge gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         // delete it
@@ -324,7 +324,7 @@ public class DatabaseServiceTest {
         Reservation value, expected;
 
         // First verify that these reservations are null
-        value = myDBS.getReservation(23);
+        value = myDBS.getReservation(1);
         assertThat(value, is(nullValue()));
 
         // Create a reservation
@@ -335,20 +335,9 @@ public class DatabaseServiceTest {
         reservationEnd.add(Calendar.HOUR, 1);
         Reservation reservation1 = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
 
-        // This insertion will fail because there exists no employee zero in the system to make the reservation
-       // boolean insertRes = myDBS.insertReservation(reservation1);
-       // assertFalse(insertRes);
-
-        // Insert Employee in to make sure the reservation will work
-        //Employee employee = new Employee(23, "Doctor", false);
-        //myDBS.insertEmployee(employee);
-
         // successful insert because of constraints
         boolean insertRes = myDBS.insertReservation(reservation1);
         assertTrue(insertRes);
-
-
-
 
         // Verify successful get
         expected = reservation1;
@@ -596,7 +585,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void updateEmployee() {
-        Employee employee = new Employee(0, "Doctor", false);
+        Employee employee = new Employee(0, "Doctor", false, "123456");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
@@ -611,7 +600,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void deleteEmployee() {
-        Employee employee = new Employee(0, "Doctor", false);
+        Employee employee = new Employee(0, "Doctor", false, "password");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
@@ -788,6 +777,9 @@ public class DatabaseServiceTest {
         assertTrue(myDBS.insertITRequest(req1));
         assertTrue(myDBS.insertITRequest(req2));
 
+        req1.setId(0);
+        req2.setId(1);
+
         // Check that there are two and only two, and that they are the right two
         List<ITRequest> allITRequests = myDBS.getAllITRequests();
         assertThat(allITRequests.size(), is(2));
@@ -796,6 +788,8 @@ public class DatabaseServiceTest {
 
         // Insert #3, and rerun checks
         assertTrue(myDBS.insertITRequest(req3));
+
+        req3.setId(2);
 
         allITRequests = myDBS.getAllITRequests();
         assertThat(allITRequests.size(), is(3));
