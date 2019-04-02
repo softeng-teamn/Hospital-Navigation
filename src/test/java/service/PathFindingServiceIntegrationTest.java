@@ -35,17 +35,18 @@ public class PathFindingServiceIntegrationTest {
     @Before
     public void setUp() throws IOException {
 
-        CSVController.closeDatabase();
-        FileUtils.forceDelete(new File("hospital-db"));
-        CSVController.initializeDatabase();
-        CSVController.importNodes();
-        CSVController.importEdges();
+//        CSVController.closeDatabase();
+//        FileUtils.forceDelete(new File("hospital-db"));
+//        CSVController.initializeDatabase();
+//        CSVController.importNodes();
+//        CSVController.importEdges();
+
     }
 
-    @Test
-    @Category(FastTest.class)
-    public void testGetChildren(){
-        assertThat(pathFindingService.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
-    }
+//    @Test
+//    @Category(FastTest.class)
+//    public void testGetChildren(){
+//        assertThat(pathFindingService.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
+//    }
 
 }
