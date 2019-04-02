@@ -17,6 +17,5 @@ public class ResourceLoader {
     public static final URL calendarIcon = service.ResourceLoader.class.getResource("/Images/calendar.png");
     public static final URL pencilIcon = service.ResourceLoader.class.getResource("/Images/pencil.jpg");
     public static final URL wrenchICon = service.ResourceLoader.class.getResource("/Images/wrench.jpg");
-//        service.ResourceLoader.class.getResource("/nodes.csv");
-
+    public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
 }
