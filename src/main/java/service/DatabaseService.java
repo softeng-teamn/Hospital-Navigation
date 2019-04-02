@@ -528,8 +528,8 @@ public class DatabaseService {
             stmt = connection.prepareStatement(query);
             prepareStatement(stmt, parameters);
 
-            stmt.executeUpdate();
-            modifyResult = true;
+            int res = stmt.executeUpdate();
+            modifyResult = res > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
