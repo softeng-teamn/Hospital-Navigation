@@ -256,12 +256,35 @@ public class HomeController extends MapController {
         MapNode pStart = new MapNode(start.getXcoord(), start.getYcoord(), start);
         MapNode pDest = new MapNode(dest.getXcoord(), dest.getYcoord(), dest);
         PathFindingService pathFindingService = new PathFindingService();
-        ArrayList<Node> path;
-        path = pathFindingService.genPath(pStart, pDest);
-        for (int i=0; i<path.size(); i++){
-            Line line = new Line(path.get(i).getXcoord(), path.get(i).getYcoord(),
-                                 path.get(i++).getXcoord(), path.get(i++).getYcoord());
-            line.getEndX(); //Delete this line, I just put it here to appease spotBugs
+        ArrayList<Node> path = pathFindingService.genPath(pStart, pDest);
+        if (path != null && path.size() > 1) {
+            Node last = path.get(0);
+            Node current;
+            for (int i = 1; i < path.size(); i++) {
+                current = path.get(i);
+                Line line = new Line();
+
+                line.setStartX(current.getXcoord());
+                line.setStartY(current.getYcoord());
+
+                line.setEndX(last.getXcoord());
+                line.setEndY(last.getYcoord());
+
+                line.setFill(Color.BLACK);
+                line.setStrokeWidth(10.0);
+                zoomGroup.getChildren().add(line);
+                last = current;
+            }
+        } else {
+            // draw NOTHING
+            System.out.println("we have a path with 1 node. Is the destination & start the same???");
+        }
+//        for (int i=0; i<path.size(); i++){
+//            Line line = new Line(path.get(i).getXcoord(), path.get(i).getYcoord(),
+//                                 path.get(i++).getXcoord(), path.get(i++).getYcoord());
+//            line.getEndX();
+//            zoomGroup.getChildren().add(line);
+            //Delete this line, I just put it here to appease spotBugs
             //Nathan here, I don't know the specifics of how our UI system works.
             //Thus, the below lines are commented until I learn how to interface with it.
             //IF you uncomment it, then it will simply draw the path on a white background.
@@ -271,16 +294,24 @@ public class HomeController extends MapController {
             //root.getChildren.add(line);
             //stage.setScene(scene);
             //stage.show();
-        }
+//        }
     }
 
     @FXML
     void startNavigation(ActionEvent event) {
-          ArrayList<Node> connectedNodes = dbs.getNodesConnectedTo(destNode);
-        System.out.println(connectedNodes);
-        System.out.println(dbs.getAllEdges());
-        System.out.println(dbs.getAllNodes());
-//        pathfind(kioskNode, destNode);
+//          ArrayList<Node> connectedNodes = dbs.getNodesConnectedTo(destNode);
+//        System.out.println(connectedNodes);
+//        System.out.println(dbs.getAllEdges());
+//        System.out.println(dbs.getAllNodes());
+//            Line line = new Line();
+//            line.setStartX(kioskCircle.getCenterX());
+//            line.setEndX(destCircle.getCenterX());
+//            line.setStartY(kioskCircle.getCenterY());
+//            line.setEndY(destCircle.getCenterY());
+//            line.setFill(Color.BLACK);
+//            line.setStrokeWidth(10.0);
+//            zoomGroup.getChildren().add(line);
+        pathfind(kioskNode, destNode);
     }
 
     @FXML
