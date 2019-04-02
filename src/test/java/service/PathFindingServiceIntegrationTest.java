@@ -37,12 +37,13 @@ public class PathFindingServiceIntegrationTest {
         CSVController.wipeTables();
         CSVController.importNodes();
         CSVController.importEdges();
+
     }
 
-    @Test
-    @Category(FastTest.class)
-    public void testGetChildren(){
-        assertThat(pathFindingService.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
-    }
+//    @Test
+//    @Category(FastTest.class)
+//    public void testGetChildren(){
+//        assertThat(pathFindingService.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
+//    }
 
 }

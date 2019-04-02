@@ -344,7 +344,7 @@ public class DatabaseService {
      * @param to end of the window
      * @return a list of the requested reservations
      */
-    public List<Reservation> getReservationBySpaceIdBetween(String id, Date from, Date to) {
+    public List<Reservation> getReservationBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
         String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
         return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, id, from, to, from, to);
     }
