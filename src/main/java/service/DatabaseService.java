@@ -12,7 +12,7 @@ import java.util.Date;
 @SuppressWarnings("ALL")
 public class DatabaseService {
 
-    public static final Integer DATABASE_VERSION = 4;
+    public static final Integer DATABASE_VERSION = 6;
 
     private Connection connection;
 
@@ -109,33 +109,41 @@ public class DatabaseService {
             statement = connection.createStatement();
             // Check to see if the tables have already been created, if they have, do not create them a second time.
             if(!tableExists("NODE")){
-                statement.execute("CREATE TABLE NODE (nodeID varchar(255) PRIMARY KEY, xcoord int, ycoord int, floor varchar(255), building varchar(255), nodeType varchar(255), longName varchar(255), shortName varchar(255))");
+                statement.addBatch("CREATE TABLE NODE (nodeID varchar(255) PRIMARY KEY, xcoord int, ycoord int, floor varchar(255), building varchar(255), nodeType varchar(255), longName varchar(255), shortName varchar(255))");
             }
             if(!tableExists("EDGE")){
-                statement.execute("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
+                statement.addBatch("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
             }
             if(!tableExists("EMPLOYEE")){
-                statement.execute("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean)");
+                statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean, password varchar(50))");
             }
             if(!tableExists("ITREQUEST")){
-                statement.execute("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY, notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
+                statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
             }
             if(!tableExists("MEDICINEREQUEST")){
-                statement.execute("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY, notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
+                statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
             }
             if(!tableExists("RESERVATION")){
-                statement.execute("CREATE TABLE RESERVATION(eventID int PRIMARY KEY, eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
+                statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
             }
             if(!tableExists("RESERVABLESPACE")){
-                statement.execute("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY , spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
+                statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
             }
             if(!tableExists("META_DB_VER")){
-                statement.execute("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
-                statement.execute("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
+                statement.addBatch("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
+                statement.addBatch("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
             }
-            statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
-            statement.execute("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
-            statement.execute("CREATE INDEX LocationIndex ON RESERVATION (locationID)");
+            statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
+            statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
+            // constraints that matter less but will be fully implemented later
+            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (LOCATIONID) REFERENCES RESERVABLESPACE(SPACEID)");
+            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
+
+
+            statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (locationID)");
+
+
+            statement.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -204,9 +212,31 @@ public class DatabaseService {
     }
 
     // get all nodes from the specified floor
-    public Collection<Node> getNodes(String floor) {
-        ArrayList<Node> n = new ArrayList<>();
-        return n;
+    public ArrayList<Node> getNodesByFloor(String floor) {
+        ArrayList<Node> floorNodes = new ArrayList<Node>();
+        String query = "Select * FROM NODE WHERE NODE.FLOOR = ?";
+        PreparedStatement stmt = null;
+        ResultSet nodes = null;
+        try{
+            stmt = connection.prepareStatement(query);
+            prepareStatement(stmt, floor);
+
+            // execute the query
+            nodes = stmt.executeQuery();
+            while(nodes.next()){
+                floorNodes.add(extractNode(nodes));
+            }
+            stmt.close();
+            nodes.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeAll(stmt, nodes);
+        }
+
+        return floorNodes;
     }
 
     // EDGE FUNCTIONS
@@ -272,8 +302,8 @@ public class DatabaseService {
     }
 
     public boolean insertReservation(Reservation reservation) {
-        String insertStatement = ("INSERT INTO RESERVATION VALUES(?, ?, ?, ?, ?, ?, ?)");
-        return executeInsert(insertStatement, reservation.getEventID(), reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
+        String insertStatement = ("INSERT INTO RESERVATION(EVENTNAME, LOCATIONID, STARTTIME, ENDTIME, PRIVACYLEVEL, EMPLOYEEID) VALUES(?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertStatement, reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
     }
 
     public Reservation getReservation(int id) {
@@ -320,8 +350,8 @@ public class DatabaseService {
     }
 
     public boolean insertEmployee(Employee employee) {
-        String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?)");
-        return executeInsert(insertStatement, employee.getID(), employee.getJob(), employee.isAdmin());
+        String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?)");
+        return executeInsert(insertStatement, employee.getID(), employee.getJob(), employee.isAdmin(), employee.getPassword());
     }
 
     public Employee getEmployee(int id) {
@@ -370,8 +400,8 @@ public class DatabaseService {
     }
 
     public boolean insertITRequest(ITRequest req) {
-        String insertQuery = ("INSERT INTO ITREQUEST VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getId(), req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDescription());
+        String insertQuery = ("INSERT INTO ITREQUEST(notes, locationNodeID, completed, description) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDescription());
     }
 
     public ITRequest getITRequest(int id) {
@@ -400,8 +430,8 @@ public class DatabaseService {
     }
 
     public boolean insertMedicineRequest(MedicineRequest req) {
-        String insertQuery = ("INSERT INTO MEDICINEREQUEST VALUES(?, ?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getId(), req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity());
+        String insertQuery = ("INSERT INTO MEDICINEREQUEST(notes, locationNodeID, completed, medicineType, quantity) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity());
     }
 
     public MedicineRequest getMedicineRequest(int id) {
@@ -471,13 +501,16 @@ public class DatabaseService {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.execute("DELETE FROM EDGE");
-            statement.execute("DELETE FROM NODE");
-            statement.execute("DELETE FROM EMPLOYEE");
-            statement.execute("DELETE FROM ITREQUEST");
-            statement.execute("DELETE FROM MEDICINEREQUEST");
-            statement.execute("DELETE FROM RESERVATION");
-            statement.execute("DELETE FROM RESERVABLESPACE");
+            statement.addBatch("DROP TABLE EDGE");
+            statement.addBatch("DROP TABLE NODE");
+            statement.addBatch("DROP TABLE EMPLOYEE");
+            statement.addBatch("DROP TABLE ITREQUEST");
+            statement.addBatch("DROP TABLE MEDICINEREQUEST");
+            statement.addBatch("DROP TABLE RESERVATION");
+            statement.addBatch("DROP TABLE RESERVABLESPACE");
+            statement.executeBatch();
+
+            this.createTables();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -672,8 +705,9 @@ public class DatabaseService {
         int empID = rs.getInt("employeeID");
         String job = rs.getString("job");
         boolean isAdmin = rs.getBoolean("isAdmin");
+        String password = rs.getString("password");
 
-        return new Employee(empID, job, isAdmin);
+        return new Employee(empID, job, isAdmin, password);
     }
 
     private ReservableSpace extractReservableSpace(ResultSet rs) throws SQLException {

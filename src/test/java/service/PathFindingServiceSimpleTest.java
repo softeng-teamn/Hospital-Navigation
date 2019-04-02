@@ -61,14 +61,10 @@ public class PathFindingServiceSimpleTest {
     //      3 - 4 - 5
     //
     @Before
-    public void mockingGetChildren() throws IOException {
-
-
-//        CSVController.closeDatabase();
-//        FileUtils.forceDelete(new File("hospital-db"));
-//        CSVController.initializeDatabase();
-//        CSVController.importNodes();
-//        CSVController.importEdges();
+    public void mockingGetChildren() {
+        CSVController.wipeTables();
+        CSVController.importNodes();
+        CSVController.importEdges();
 
         ArrayList<MapNode> list = new ArrayList<MapNode>();
         list.add(mn2);
@@ -106,13 +102,6 @@ public class PathFindingServiceSimpleTest {
     @Test
     @Category(FastTest.class)
     public void testMocking() throws IOException {
-
-        CSVController.closeDatabase();
-        FileUtils.forceDelete(new File("hospital-db"));
-        CSVController.initializeDatabase();
-        CSVController.importNodes();
-        CSVController.importEdges();
-
         ArrayList<MapNode> expected = new ArrayList<MapNode>();
         expected.add(mn1);
         expected.add(mn6);
