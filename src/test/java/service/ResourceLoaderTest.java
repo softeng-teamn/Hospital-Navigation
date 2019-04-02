@@ -15,7 +15,6 @@ public class ResourceLoaderTest {
     public void resourcesNotNull() {
         assertThat(ResourceLoader.edges, is(notNullValue()));
         assertThat(ResourceLoader.home, is(notNullValue()));
-        assertThat(ResourceLoader.mapEdit, is(notNullValue()));
         assertThat(ResourceLoader.nodes, is(notNullValue()));
         assertThat(ResourceLoader.edges, is(notNullValue()));
         assertThat(ResourceLoader.request, is(notNullValue()));
