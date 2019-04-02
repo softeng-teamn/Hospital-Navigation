@@ -46,13 +46,6 @@ public class HomeController extends MapController {
 
     public Group zoomGroup;
     Node restRoom = new Node("BREST00102",2177,1010,"2","45 Francis","REST","Restroom 1 Level 2","REST B0102");
-    Node n1 = new Node("n1",0,1);
-    Node n2 = new Node("n2",0,1);
-    Node n3 = new Node("n3",20,200);
-    Node n4 = new Node("n4",0,1);
-    Node n5 = new Node("n5",0,1);
-    Node n6 = new Node("n6",0,1);
-    Node n7 = new Node("n7",0,1);
     ArrayList<Node> allNodes = new ArrayList<>();
     ObservableList<Node> allNodesObservable;
 
@@ -66,50 +59,7 @@ public class HomeController extends MapController {
 
         // THIS IS ONLY FOR MOCKING THE DATABASE "getAllNodes" METHOD
 //        ArrayList<Node> nodes = dbs.getAllNodes();
-        allNodes.add(n1);
         allNodes.add(restRoom);
-        allNodes.add(n1);
-        allNodes.add(n2);
-        allNodes.add(n3);
-        allNodes.add(n4);
-        allNodes.add(n5);
-        allNodes.add(n6);
-        allNodes.add(n7);
-        allNodes.add(n1);
-        allNodes.add(n2);
-        allNodes.add(n3);
-        allNodes.add(n4);
-        allNodes.add(n5);
-        allNodes.add(n6);
-        allNodes.add(n7);
-        allNodes.add(n1);
-        allNodes.add(n2);
-        allNodes.add(n3);
-        allNodes.add(n4);
-        allNodes.add(n5);
-        allNodes.add(n6);
-        allNodes.add(n7);
-        allNodes.add(n1);
-        allNodes.add(n2);
-        allNodes.add(n3);
-        allNodes.add(n4);
-        allNodes.add(n5);
-        allNodes.add(n6);
-        allNodes.add(n7);
-        allNodes.add(n1);
-        allNodes.add(n2);
-        allNodes.add(n3);
-        allNodes.add(n4);
-        allNodes.add(n5);
-        allNodes.add(n6);
-        allNodes.add(n7);
-        allNodes.add(n1);
-        allNodes.add(n2);
-        allNodes.add(n3);
-        allNodes.add(n4);
-        allNodes.add(n5);
-        allNodes.add(n6);
-        allNodes.add(n7);
 
 
         // Create NodeList
