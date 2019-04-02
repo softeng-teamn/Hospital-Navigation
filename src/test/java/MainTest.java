@@ -1,12 +1,9 @@
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.testfx.api.FxRobot;
-import testclassifications.FastTest;
+import testclassifications.*;
 
 import javafx.stage.Window;
-import testclassifications.LocalTest;
-import testclassifications.SpecialTest;
-import testclassifications.UiTest;
 
 import java.util.List;
 
@@ -17,10 +14,10 @@ import static org.junit.Assert.*;
 public class MainTest {
 
     private static final int EXPECTED_INITIAL_WINDOWS = 1;
-    private static final int ALLOWABLE_STARTUP_DELAY = 1000; // milliseconds
+    private static final int ALLOWABLE_STARTUP_DELAY = 10000; // milliseconds
 
     @Test
-    @Category({FastTest.class, SpecialTest.class})
+    @Category({SlowTest.class})
     public void testMain() {
 
         // This test serves two purposes:
@@ -32,7 +29,7 @@ public class MainTest {
             try {
                 Main.main(new String[]{});
             } catch (Exception e) {
-                // This is to catch InterruptedExceptions, which it doesn't technically throw
+                e.printStackTrace();
             }
         });
         thread.start();

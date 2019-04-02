@@ -1,6 +1,7 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -11,13 +12,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
@@ -33,18 +38,28 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class HomeController extends MapController {
 
     @FXML
-    private VBox root;
+    private VBox root, edit_VBox, edit_btn_container;
     @FXML
-    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn;
+    private HBox top_nav, hbox_container;
+    @FXML
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn;
     @FXML
     private JFXSlider zoom_slider;
     @FXML
     private ScrollPane map_scrollpane;
     @FXML
-    private JFXTextField search_bar;
+    private JFXTextField search_bar, edit_x, edit_y, edit_floor, edit_building, edit_type, edit_long, edit_short;
+    @FXML
+    private Label edit_id;
     @FXML
     private JFXListView<Node> list_view;
 
@@ -61,28 +76,44 @@ public class HomeController extends MapController {
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
+
+    void showEditor() {
+        if (top_nav.getChildren().contains(edit_btn)) {
+            top_nav.getChildren().remove(edit_btn);
+        }
+        if (!hbox_container.getChildren().contains(edit_VBox)) {
+            edit_id.setText("Node: " + destNode.getNodeID());
+            edit_x.setText(String.valueOf(destNode.getXcoord()));
+            edit_y.setText(String.valueOf(destNode.getYcoord()));
+            edit_floor.setText(destNode.getFloor());
+            edit_building.setText(destNode.getBuilding());
+            edit_type.setText(destNode.getNodeType());
+            edit_long.setText(destNode.getLongName());
+            edit_short.setText(destNode.getShortName());
+            hbox_container.getChildren().add(1, edit_VBox);
+        }
+    }
+
+    void hideEditor() {
+        if (!top_nav.getChildren().contains(edit_btn)) {
+            top_nav.getChildren().add(top_nav.getChildren().indexOf(navigate_btn)+1, edit_btn);
+        }
+        if (hbox_container.getChildren().contains(edit_VBox)) {
+            hbox_container.getChildren().remove(edit_VBox);
+        }
+    }
+
+
     @FXML
     void initialize() {
 
-        allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
+        // Hide the edit window
+        hideEditor();
 
-        // Create NodeList
-        allNodesObservable = FXCollections.observableArrayList();
-        allNodesObservable.addAll(allNodes);
+        authCheck();
 
-        // Initialize list_view
-        list_view.getItems().addAll(allNodesObservable);
-        list_view.setCellFactory(param -> new JFXListCell<Node>() {
-            @Override
-            protected  void updateItem(Node item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNodeID() == null ) {
-                    setText(null);
-                } else {
-                    setText(item.getLongName());
-                }
-            }
-        });
+
+        repopulateList();
 
         // MAKE NAVIGATION BUTTON INVISIBLE
         navigate_btn.setVisible(false);
@@ -111,6 +142,31 @@ public class HomeController extends MapController {
         zoom_slider.setValue(0.3);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.3);
+    }
+
+    void authCheck() {
+        if (isAdmin) {
+            auth_btn.setText("Logout");
+            edit_btn.setVisible(true);
+            newRoom_btn.setVisible(true);
+            if (!top_nav.getChildren().contains(edit_btn)) {
+                edit_btn.setVisible(false);
+                top_nav.getChildren().add(top_nav.getChildren().indexOf(navigate_btn)+1, edit_btn);
+                top_nav.getChildren().add(1, newRoom_btn);
+            }
+        } else {
+            System.out.println("not an admin anymore");
+            auth_btn.setText("Log In");
+            if (top_nav.getChildren().contains(edit_btn)) {
+                top_nav.getChildren().remove(edit_btn);
+            }
+            if (hbox_container.getChildren().contains(edit_VBox)) {
+                hbox_container.getChildren().remove(edit_VBox);
+            }
+            if (top_nav.getChildren().contains(newRoom_btn)) {
+                top_nav.getChildren().remove(newRoom_btn);
+            }
+        }
     }
 
     public void removeLines() {
@@ -152,6 +208,19 @@ public class HomeController extends MapController {
 
     @FXML
     public void listViewClicked(MouseEvent e) {
+
+//        if (isAdmin) {
+//            edit_id.setText("Node: " + destNode.getNodeID());
+//            edit_x.setText(String.valueOf(destNode.getXcoord()));
+//            edit_y.setText(String.valueOf(destNode.getYcoord()));
+//            edit_floor.setText(destNode.getFloor());
+//            edit_building.setText(destNode.getBuilding());
+//            edit_type.setText(destNode.getNodeType());
+//            edit_long.setText(destNode.getLongName());
+//            edit_short.setText(destNode.getShortName());
+//        }
+
+
         Node selectedNode = list_view.getSelectionModel().getSelectedItem();
         System.out.println("You clicked on: " + selectedNode.getNodeID());
 
@@ -161,6 +230,15 @@ public class HomeController extends MapController {
         drawnLines = new ArrayList<Line>();
         // Un-hide Navigation button
         navigate_btn.setVisible(true);
+        if (isAdmin) {
+            edit_btn.setVisible(true);
+        } else {
+            edit_btn.setVisible(false);
+        }
+        // hide editor
+        if (isAdmin) {
+            hideEditor();
+        }
         // set destination node
         destNode = selectedNode;
 
@@ -254,38 +332,10 @@ public class HomeController extends MapController {
             // draw NOTHING
             System.out.println("we have a path with 1 node. Is the destination & start the same???");
         }
-//        for (int i=0; i<path.size(); i++){
-//            Line line = new Line(path.get(i).getXcoord(), path.get(i).getYcoord(),
-//                                 path.get(i++).getXcoord(), path.get(i++).getYcoord());
-//            line.getEndX();
-//            zoomGroup.getChildren().add(line);
-            //Delete this line, I just put it here to appease spotBugs
-            //Nathan here, I don't know the specifics of how our UI system works.
-            //Thus, the below lines are commented until I learn how to interface with it.
-            //IF you uncomment it, then it will simply draw the path on a white background.
-            //NOTE: THIS DOES NOT SUPPORT A DYNAMICALLY MOVING PATH (yet)
-            //Group root = new Group();
-            //Scene scene = new Scene(root, 1920, 1080, Color.WHITE);
-            //root.getChildren.add(line);
-            //stage.setScene(scene);
-            //stage.show();
-//        }
     }
 
     @FXML
     void startNavigation(ActionEvent event) {
-//          ArrayList<Node> connectedNodes = dbs.getNodesConnectedTo(destNode);
-//        System.out.println(connectedNodes);
-//        System.out.println(dbs.getAllEdges());
-//        System.out.println(dbs.getAllNodes());
-//            Line line = new Line();
-//            line.setStartX(kioskCircle.getCenterX());
-//            line.setEndX(destCircle.getCenterX());
-//            line.setStartY(kioskCircle.getCenterY());
-//            line.setEndY(destCircle.getCenterY());
-//            line.setFill(Color.BLACK);
-//            line.setStrokeWidth(10.0);
-//            zoomGroup.getChildren().add(line);
         pathfind(kioskNode, destNode);
     }
 
@@ -309,6 +359,148 @@ public class HomeController extends MapController {
         zoomGroup.setScaleY(scaleValue);
         map_scrollpane.setHvalue(scrollH);
         map_scrollpane.setVvalue(scrollV);
+    }
+
+    @FXML
+    void newRoomAction(ActionEvent e) {
+        System.out.println("time to create a new node!");
+    }
+
+    @FXML
+    void editAction(ActionEvent e) throws IOException {
+            showEditor();
+    }
+
+    @FXML
+    // clicking cancel button in node editor
+    void cancelEditAction(ActionEvent e) {
+        System.out.println("Lets hide it!");
+        edit_btn.setVisible(false);
+        hideEditor();
+    }
+
+    @FXML
+    // clicking the save button (after editing)
+    void editSaveAction(ActionEvent e) {
+        System.out.println(edit_short.getText());
+        // validation
+        if (validateEditNode(edit_id.getText()) &&
+        validateEditNode(edit_x.getText()) &&
+        validateNumber(edit_x.getText()) &&
+        validateEditNode(edit_y.getText()) &&
+        validateNumber(edit_y.getText()) &&
+        validateEditNode(edit_floor.getText()) &&
+        validateEditNode(edit_type.getText()) &&
+        validateEditNode(edit_long.getText()) &&
+        validateEditNode(edit_short.getText())) {
+            // save to send to DB
+            sendEditToDB();
+        }
+    }
+
+    void sendEditToDB() {
+        Node oldNode = destNode;
+        Node myNode = new Node(
+                destNode.getNodeID(),
+                Integer.parseInt(edit_x.getText()),
+                Integer.parseInt(edit_y.getText()),
+                edit_floor.getText(),
+                edit_building.getText(),
+                edit_type.getText(),
+                edit_long.getText(),
+                edit_short.getText()
+        );
+        if (dbs.updateNode(myNode)) {
+            System.out.println("Here is the Old Node");
+            System.out.println(oldNode);
+            System.out.println("NEW NODE");
+            System.out.println(myNode);
+            System.out.println("Lets repopulate the list");
+            insertNodeIntoList(oldNode, myNode);
+        }
+    }
+
+    @FXML
+    // probs not needed
+    void editNodeTextAction(ActionEvent e) {
+
+    }
+
+    @FXML
+    void nodeTextChanged(ActionEvent e) {
+        System.out.println("SHIT WAS CHANGED    ");
+    }
+
+    @FXML
+    void authAction(ActionEvent e) {
+        isAdmin = !isAdmin;
+        authCheck();
+        repopulateList();
+    }
+
+    boolean validateEditNode(String str) {
+        return !str.isEmpty();
+    }
+
+    boolean validateNumber(String num) {
+        return num.matches("[0-9]+");
+    }
+
+    void repopulateList() {
+        System.out.println("Repopulation of listView");
+        if (isAdmin) {
+            allNodes = dbs.getAllNodes();
+        } else {
+            allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
+        }
+        // wipe old observable
+        allNodesObservable = FXCollections.observableArrayList();
+        // repopulate
+        allNodesObservable.addAll(allNodes);
+        // clear listVIEW
+        list_view.getItems().clear();
+        // add to listView
+        list_view.getItems().addAll(allNodesObservable);
+
+        list_view.setCellFactory(param -> new JFXListCell<Node>() {
+            @Override
+            protected  void updateItem(Node item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNodeID() == null ) {
+                    setText(null);
+                } else {
+                    setText(item.getLongName());
+                }
+            }
+        });
+    }
+
+    void insertNodeIntoList(Node oldN, Node newN) {
+//        ArrayList<Node> repop;
+        int indxOfModified = allNodes.indexOf(oldN);
+
+        System.out.println("Removing old Node: " + allNodes.remove(oldN));
+        allNodes.add(indxOfModified, newN);
+        // wipe old observable
+        allNodesObservable = FXCollections.observableArrayList();
+        // repopulate
+        allNodesObservable.addAll(allNodes);
+        // clear listVIEW
+        list_view.getItems().clear();
+        // add to listView
+        list_view.getItems().addAll(allNodesObservable);
+
+        list_view.setCellFactory(param -> new JFXListCell<Node>() {
+            @Override
+            protected  void updateItem(Node item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNodeID() == null ) {
+                    setText(null);
+                } else {
+                    setText(item.getLongName());
+                }
+            }
+        });
     }
 
 }
