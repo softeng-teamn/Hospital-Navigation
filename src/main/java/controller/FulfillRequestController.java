@@ -79,13 +79,6 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
     @FXML
-    public void showAdmin() throws Exception{
-        Stage stage = (Stage) adminBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.adminPage);
-        StageManager.changeExistingWindow(stage, root, "Admin Page");
-    }
-
-    @FXML
     public void radioChanged(ActionEvent event){
         reloadList();
 

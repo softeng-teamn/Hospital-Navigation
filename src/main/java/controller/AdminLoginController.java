@@ -46,12 +46,12 @@ public class AdminLoginController extends Controller implements Initializable {
 
 
 
-    @FXML
-    public void showDecision() throws Exception {
-        Stage stage = (Stage) loginBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.adminPage);
-        StageManager.changeExistingWindow(stage, root, "Admin Page");
-    }
+//    @FXML
+//    public void showDecision() throws Exception {
+//        Stage stage = (Stage) loginBtn.getScene().getWindow();
+//        Parent root = FXMLLoader.load(ResourceLoader.adminPage);
+//        StageManager.changeExistingWindow(stage, root, "Admin Page");
+//    }
 
 
 
@@ -65,8 +65,8 @@ public class AdminLoginController extends Controller implements Initializable {
 //        if(user.isAdmin() && user != null){
         if (intID == 1234){
             if(password.equals("kimi")){
-                showDecision();
                 isAdmin = true;
+                showHome();
             } else {
                 passwordPrompt.setText("Invalid Password");
             }

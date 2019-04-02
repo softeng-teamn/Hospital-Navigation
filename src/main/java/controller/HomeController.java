@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static controller.Controller.isAdmin;
+
 public class HomeController extends MapController {
 
     @FXML
@@ -51,7 +53,7 @@ public class HomeController extends MapController {
     @FXML
     private HBox top_nav, hbox_container;
     @FXML
-    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn;
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn, bookBtn, fulfillBtn;
     @FXML
     private JFXSlider zoom_slider;
     @FXML
@@ -103,6 +105,14 @@ public class HomeController extends MapController {
         }
     }
 
+    @FXML
+    // switches window to map editor screen.
+    public void showFulfillRequest() throws Exception {
+        Stage stage = (Stage) auth_btn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
+        StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
+    }
+
 
     @FXML
     void initialize() {
@@ -149,10 +159,12 @@ public class HomeController extends MapController {
             auth_btn.setText("Logout");
             edit_btn.setVisible(true);
             newRoom_btn.setVisible(true);
+
             if (!top_nav.getChildren().contains(edit_btn)) {
                 edit_btn.setVisible(false);
                 top_nav.getChildren().add(top_nav.getChildren().indexOf(navigate_btn)+1, edit_btn);
                 top_nav.getChildren().add(1, newRoom_btn);
+                top_nav.getChildren().add(top_nav.getChildren().indexOf(bookBtn)-1, fulfillBtn);
             }
         } else {
             System.out.println("not an admin anymore");
@@ -165,6 +177,9 @@ public class HomeController extends MapController {
             }
             if (top_nav.getChildren().contains(newRoom_btn)) {
                 top_nav.getChildren().remove(newRoom_btn);
+            }
+            if (top_nav.getChildren().contains(fulfillBtn)) {
+                top_nav.getChildren().remove(fulfillBtn);
             }
         }
     }
@@ -282,14 +297,16 @@ public class HomeController extends MapController {
     @FXML
     // switches window to map editor screen.
     public void showAdminLogin() throws Exception {
-        Parent root;
-        Stage stage = (Stage) navigate_btn.getScene().getWindow();
         if (isAdmin){
-            root = FXMLLoader.load(ResourceLoader.adminPage);
+            isAdmin = false;
+            authCheck();
+            repopulateList();
         } else {
-            root = FXMLLoader.load(ResourceLoader.adminLogin);
+            Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
+            Stage stage = (Stage) navigate_btn.getScene().getWindow();
+            StageManager.changeExistingWindow(stage, root, "Admin Login");
         }
-        StageManager.changeExistingWindow(stage, root, "Admin Login");
+
     }
 
     @FXML
@@ -436,12 +453,6 @@ public class HomeController extends MapController {
         System.out.println("SHIT WAS CHANGED    ");
     }
 
-    @FXML
-    void authAction(ActionEvent e) {
-        isAdmin = !isAdmin;
-        authCheck();
-        repopulateList();
-    }
 
     boolean validateEditNode(String str) {
         return !str.isEmpty();

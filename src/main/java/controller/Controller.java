@@ -9,8 +9,6 @@ public class Controller {
 
     static DatabaseService dbs;
 
-    public static boolean isAdmin = false;
-
     static {
         initializeDatabase();
     }
