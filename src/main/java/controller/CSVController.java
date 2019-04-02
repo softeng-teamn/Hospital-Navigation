@@ -2,17 +2,24 @@ package controller;
 
 import model.Edge;
 import model.Node;
+import model.ReservableSpace;
 import service.ResourceLoader;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+import java.util.Date;
 
 public class CSVController extends Controller {
 
     public static final String NODE_EXPORT_PATH = "nodes.csv";
     public static final String EDGE_EXPORT_PATH = "edges.csv";
+    public static final String SPACE_EXPORT_PATH = "reservablespaces.csv";
 
     private static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
+    private static final String SPACE_HEADER = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n";
 
     /**
      * Export the Nodes table
@@ -22,7 +29,7 @@ public class CSVController extends Controller {
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(NODE_EXPORT_PATH), "UTF-8");
-            ;
+
             writer.write(NODE_HEADER);
 
             // Write out each node
@@ -85,6 +92,37 @@ public class CSVController extends Controller {
      * Export the ReservableSpace table
      */
     public static void exportReservableSpaces() {
+        // Open a file
+        Writer writer = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(SPACE_EXPORT_PATH), "UTF-8");
+            //Write header
+            writer.write(SPACE_HEADER);
+
+            // Write out each space
+            for (ReservableSpace space : dbs.getAllReservableSpaces()) {
+                writer.write(space.getSpaceID() + ",");
+                writer.write(space.getSpaceName() + ",");
+                writer.write(space.getSpaceType() + ",");
+                writer.write(space.getLocationNodeID() + ",");
+                writer.write(sdf.format(space.getTimeOpen().getTime())+ ",");
+                writer.write(sdf.format(space.getTimeClosed().getTime()) + "\n");
+            }
+
+            // Close the writer
+            writer.close();
+        } catch (IOException e) {
+            // Cleanup the writer if possible
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }
     }
 
     /**
@@ -118,7 +156,7 @@ public class CSVController extends Controller {
         } catch (IOException e) {
             e.printStackTrace();
             //clean up reader
-            if(reader != null) {
+            if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e1) {
@@ -131,7 +169,6 @@ public class CSVController extends Controller {
     /**
      * Import the Edges table
      */
-
     public static void importEdges() {
 
         BufferedReader reader = null;
@@ -146,7 +183,7 @@ public class CSVController extends Controller {
             String line = null;
 
             //loop until there is nothing to read
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
                 //retrieve nodes from database based on ID
@@ -154,14 +191,13 @@ public class CSVController extends Controller {
                 Node node2 = dbs.getNode(data[2]);
 
                 //checks to see if nodes are not null before creating and adding an edge
-                if((node1 != null) && (node2 != null)) {
+                if ((node1 != null) && (node2 != null)) {
                     //Create edge and populate it with two nodes
                     Edge edge = new Edge(node1, node2);
 
                     //Add edge to the database
                     dbs.insertEdge(edge);
-                }
-                else{
+                } else {
                     //Print out error statement
                     System.out.println("Invalid Edge Found: " + line);
                 }
@@ -187,5 +223,78 @@ public class CSVController extends Controller {
      * Import the ReservableSpace table
      */
     public static void importReservableSpaces() {
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new InputStreamReader(ResourceLoader.reservablespaces.openStream(), "UTF-8"));
+
+            //read first line
+            reader.readLine();
+
+            String line = null;
+            //loop until there is nothing to read
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                //create calendars for ReservableSpace object
+                GregorianCalendar openCalender = new GregorianCalendar();
+                GregorianCalendar closedCalender = new GregorianCalendar();
+
+                //create date to later add to a calender
+                Date openDate = null;
+                Date closedDate = null;
+
+                //create simpledateformat to be used for parsing
+                //If date format changes, change pattern
+                SimpleDateFormat simpleDateFormatOpen = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                SimpleDateFormat simpleDateFormatClosed = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+                try {
+                    //set parse string from csv and set the date
+                    openDate = simpleDateFormatOpen.parse(data[4]);
+                    closedDate = simpleDateFormatClosed.parse(data[5]);
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (openDate != null && closedDate != null) {
+                    //set time(date) for calendars
+                    openCalender.setTime(openDate);
+                    closedCalender.setTime(closedDate);
+
+
+                    //Create space and populate it with data
+                    ReservableSpace space = new ReservableSpace(data[0], data[1], data[2], data[3], openCalender, closedCalender);
+
+                    //insert space into database
+                    dbs.insertReservableSpace(space);
+                } else {
+                    System.out.println("Invalid Time Found: " + line);
+                }
+
+            }
+            //close reader
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //clean up reader
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Import CSVs if dbs was just created.
+     */
+    public static void importIfNecessary() {
+        if (dbs.isNewlyCreated()) {
+            importNodes();
+            importEdges();
+        }
     }
 }

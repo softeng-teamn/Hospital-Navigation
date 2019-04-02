@@ -6,7 +6,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MapEditController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MapEditController">
 
     <children>
         <JFXTextArea layoutX="205.0" layoutY="32.0" prefHeight="276.0" prefWidth="191.0" style="-fx-background-color: white; -fx-border-color: black;" text="Edit:" />
@@ -16,7 +16,7 @@
         <JFXButton layoutX="255.0" layoutY="235.0" prefHeight="32.0" prefWidth="91.0" style="-fx-background-color: red;" text="Delete" />
         <CheckBox layoutX="213.0" layoutY="157.0" mnemonicParsing="false" text="Open" />
         <CheckBox layoutX="322.0" layoutY="157.0" mnemonicParsing="false" text="Close" />
-        <JFXTextField layoutX="209.0" layoutY="76.0" prefHeight="26.0" prefWidth="184.0" promptText="Name:" style="-fx-background-color: white;" />
+        <JFXTextField id="SceneID" layoutX="209.0" layoutY="76.0" prefHeight="26.0" prefWidth="184.0" promptText="Name:" style="-fx-background-color: white;" />
         <JFXTextField layoutX="209.0" layoutY="118.0" prefHeight="26.0" prefWidth="184.0" promptText="Capacity:" style="-fx-background-color: white;" />
     </children>
 
