@@ -215,11 +215,11 @@
    <right>
       <AnchorPane prefHeight="500.0" prefWidth="210.0" BorderPane.alignment="CENTER">
          <children>
-            <TitledPane fx:id="instructionsPane" animated="false" collapsible="false" contentDisplay="BOTTOM" prefHeight="300.0" prefWidth="275.0" text="How to Make a Room Reservation">
+            <TitledPane fx:id="instructionsPane" animated="false" collapsible="false" contentDisplay="BOTTOM" prefHeight="300.0" prefWidth="275.0" text="How to Make a Room Reservation" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0">
                      <children>
-                        <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                        <VBox alignment="TOP_CENTER" prefHeight="300.0" spacing="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                            <children>
                               <Label fx:id="instructionsLbl" style="-fx-background-color: white;" text="Label" wrapText="true" />
                               <JFXButton fx:id="closeInstructionsBtn" onAction="#closeInstructions" style="-fx-background-color: #003DA6;" text="Close Instructions" textFill="WHITE" />
