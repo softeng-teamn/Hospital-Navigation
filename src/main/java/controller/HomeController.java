@@ -14,6 +14,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
@@ -30,7 +34,9 @@ import java.util.Collection;
 public class HomeController extends MapController {
 
     @FXML
-    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl;
+    private VBox root;
+    @FXML
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn;
     @FXML
     private JFXSlider zoom_slider;
     @FXML
@@ -40,22 +46,23 @@ public class HomeController extends MapController {
     @FXML
     private JFXListView<Node> list_view;
 
-    public Group zoomGroup;
 
-    Node n1 = new Node("n1",0,1);
-    Node n2 = new Node("n2",0,1);
-    Node n3 = new Node("n3",20,200);
-    Node n4 = new Node("n4",0,1);
-    Node n5 = new Node("n5",0,1);
-    Node n6 = new Node("n6",0,1);
-    Node n7 = new Node("n7",0,1);
-    ArrayList<Node> allNodes = new ArrayList<>();
+    public Group zoomGroup;
+    Node restRoom = new Node("BREST00102",2177,1010,"2","45 Francis","REST","Restroom 1 Level 2","REST B0102");
+    ArrayList<Node> allNodes;
     ObservableList<Node> allNodesObservable;
+
+    private Node kioskNode = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
+    private Node destNode;
+    private Circle destCircle = new Circle();
+    private Circle kioskCircle = new Circle();
+
+    private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
     @FXML
     void initialize() {
 
-        ArrayList<Node> allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
+        allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
 
         // Create NodeList
         allNodesObservable = FXCollections.observableArrayList();
@@ -75,12 +82,8 @@ public class HomeController extends MapController {
             }
         });
 
-
-        System.out.println("We are running our init");
-        zoom_slider.setMin(0.3);
-        zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.3);
-        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
+        // MAKE NAVIGATION BUTTON INVISIBLE
+        navigate_btn.setVisible(false);
 
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
         Group contentGroup = new Group();
@@ -88,6 +91,28 @@ public class HomeController extends MapController {
         contentGroup.getChildren().add(zoomGroup);
         zoomGroup.getChildren().add(map_scrollpane.getContent());
         map_scrollpane.setContent(contentGroup);
+
+        // Setting Up Circle Destination Point
+        kioskCircle.setCenterX(kioskNode.getXcoord());
+        kioskCircle.setCenterY(kioskNode.getYcoord());
+        destCircle.setRadius(20);
+        kioskCircle.setRadius(20);
+        destCircle.setFill(Color.TRANSPARENT);
+        kioskCircle.setFill(Color.BLUE);
+        zoomGroup.getChildren().add(destCircle);
+        zoomGroup.getChildren().add(kioskCircle);
+
+
+        // Setting View Scrolling
+        zoom_slider.setMin(0.3);
+        zoom_slider.setMax(0.9);
+        zoom_slider.setValue(0.3);
+        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
+        zoom(0.3);
+    }
+
+    public void removeLines() {
+        zoomGroup.getChildren().removeAll(drawnLines);
     }
 
     // Filters the ListView based on the string
@@ -98,13 +123,12 @@ public class HomeController extends MapController {
             ObservableList<Node> original = list_view.getItems();
             ObservableList<Node> filtered = FXCollections.observableArrayList();
             for (Node n : original) {
-                if (n.getNodeID().contains(findStr)) {
+                if (n.getLongName().contains(findStr)) {
                     filtered.add(n);
                 }
             }
             // NO ITEMS TO SHOW
             if (filtered.size() < 1) {
-                System.out.println("do we get here?");
                 list_view.getItems().clear();
             } else {
                 list_view.getItems().clear();
@@ -115,9 +139,20 @@ public class HomeController extends MapController {
 
     @FXML
     public void listViewClicked(MouseEvent e) {
-        // SHOW THE X & Y COORDS of the selected node on the map!
         Node selectedNode = list_view.getSelectionModel().getSelectedItem();
         System.out.println("You clicked on: " + selectedNode.getNodeID());
+
+        // Remove last path from screen
+        removeLines();
+        // clear lines cash
+        drawnLines = new ArrayList<Line>();
+        // Un-hide Navigation button
+        navigate_btn.setVisible(true);
+        // set destination node
+        destNode = selectedNode;
+
+        // Draw Circle on Map
+        showDestination(selectedNode);
 
         // animation scroll to new position
         double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
@@ -132,8 +167,10 @@ public class HomeController extends MapController {
         timeline.play();
     }
 
-    private void drawNode(Node n) {
-
+    private void showDestination(Node n) {
+        destCircle.setCenterX(n.getXcoord());
+        destCircle.setCenterY(n.getYcoord());
+        destCircle.setFill(Color.GREEN);
     }
 
     // Later Todos :
@@ -180,12 +217,36 @@ public class HomeController extends MapController {
         MapNode pStart = new MapNode(start.getXcoord(), start.getYcoord(), start);
         MapNode pDest = new MapNode(dest.getXcoord(), dest.getYcoord(), dest);
         PathFindingService pathFindingService = new PathFindingService();
-        ArrayList<Node> path;
-        path = pathFindingService.genPath(pStart, pDest);
-        for (int i=0; i<path.size(); i++){
-            Line line = new Line(path.get(i).getXcoord(), path.get(i).getYcoord(),
-                                 path.get(i++).getXcoord(), path.get(i++).getYcoord());
-            line.getEndX(); //Delete this line, I just put it here to appease spotBugs
+        ArrayList<Node> path = pathFindingService.genPath(pStart, pDest);
+        if (path != null && path.size() > 1) {
+            Node last = path.get(0);
+            Node current;
+            for (int i = 1; i < path.size(); i++) {
+                current = path.get(i);
+                Line line = new Line();
+
+                line.setStartX(current.getXcoord());
+                line.setStartY(current.getYcoord());
+
+                line.setEndX(last.getXcoord());
+                line.setEndY(last.getYcoord());
+
+                line.setFill(Color.BLACK);
+                line.setStrokeWidth(10.0);
+                zoomGroup.getChildren().add(line);
+                drawnLines.add(line);
+                last = current;
+            }
+        } else {
+            // draw NOTHING
+            System.out.println("we have a path with 1 node. Is the destination & start the same???");
+        }
+//        for (int i=0; i<path.size(); i++){
+//            Line line = new Line(path.get(i).getXcoord(), path.get(i).getYcoord(),
+//                                 path.get(i++).getXcoord(), path.get(i++).getYcoord());
+//            line.getEndX();
+//            zoomGroup.getChildren().add(line);
+            //Delete this line, I just put it here to appease spotBugs
             //Nathan here, I don't know the specifics of how our UI system works.
             //Thus, the below lines are commented until I learn how to interface with it.
             //IF you uncomment it, then it will simply draw the path on a white background.
@@ -195,19 +256,34 @@ public class HomeController extends MapController {
             //root.getChildren.add(line);
             //stage.setScene(scene);
             //stage.show();
-        }
+//        }
+    }
+
+    @FXML
+    void startNavigation(ActionEvent event) {
+//          ArrayList<Node> connectedNodes = dbs.getNodesConnectedTo(destNode);
+//        System.out.println(connectedNodes);
+//        System.out.println(dbs.getAllEdges());
+//        System.out.println(dbs.getAllNodes());
+//            Line line = new Line();
+//            line.setStartX(kioskCircle.getCenterX());
+//            line.setEndX(destCircle.getCenterX());
+//            line.setStartY(kioskCircle.getCenterY());
+//            line.setEndY(destCircle.getCenterY());
+//            line.setFill(Color.BLACK);
+//            line.setStrokeWidth(10.0);
+//            zoomGroup.getChildren().add(line);
+        pathfind(kioskNode, destNode);
     }
 
     @FXML
     void zoomIn(ActionEvent event) {
-    System.out.println("airportapp.Controller.zoomIn");
         double sliderVal = zoom_slider.getValue();
         zoom_slider.setValue(sliderVal += 0.05);
     }
 
     @FXML
     void zoomOut(ActionEvent event) {
-    System.out.println("airportapp.Controller.zoomOut");
         double sliderVal = zoom_slider.getValue();
         zoom_slider.setValue(sliderVal + -0.05);
     }
