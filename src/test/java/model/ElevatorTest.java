@@ -2,10 +2,12 @@ package model;
 
 import model.Elevator;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.FastTest;
+import static org.junit.Assert.assertEquals;
 
 public class ElevatorTest {
 
@@ -23,6 +25,7 @@ public class ElevatorTest {
     public void shutdown(){
         e.disconnect();
     }
+
     @Test
     @Category(FastTest.class)
     public void connectionTest() throws Exception {
@@ -30,5 +33,6 @@ public class ElevatorTest {
         System.out.println(d[0]);
         Thread.sleep(100);
         System.out.println(d[0]);
+        assertEquals(37.0, d[0], 0.1);
     }
 }
