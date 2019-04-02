@@ -1,6 +1,7 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -14,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -36,7 +38,9 @@ public class HomeController extends MapController {
     @FXML
     private VBox root;
     @FXML
-    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn;
+    private HBox top_nav;
+    @FXML
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn;
     @FXML
     private JFXSlider zoom_slider;
     @FXML
@@ -61,6 +65,7 @@ public class HomeController extends MapController {
 
     @FXML
     void initialize() {
+        authCheck();
 
         allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
 
@@ -111,6 +116,23 @@ public class HomeController extends MapController {
         zoom(0.3);
     }
 
+    void authCheck() {
+        if (isAdmin) {
+            auth_btn.setText("Logout");
+            edit_btn.setVisible(true);
+            newRoom_btn.setVisible(true);
+            if (!top_nav.getChildren().contains(edit_btn)) {
+                edit_btn.setVisible(false);
+                top_nav.getChildren().add(top_nav.getChildren().indexOf(navigate_btn)+1, edit_btn);
+                top_nav.getChildren().add(1, newRoom_btn);
+            }
+        } else {
+            auth_btn.setText("Log In");
+            top_nav.getChildren().remove(edit_btn);
+            top_nav.getChildren().remove(newRoom_btn);
+        }
+    }
+
     public void removeLines() {
         zoomGroup.getChildren().removeAll(drawnLines);
     }
@@ -148,6 +170,11 @@ public class HomeController extends MapController {
         drawnLines = new ArrayList<Line>();
         // Un-hide Navigation button
         navigate_btn.setVisible(true);
+        if (isAdmin) {
+            edit_btn.setVisible(true);
+        } else {
+            edit_btn.setVisible(false);
+        }
         // set destination node
         destNode = selectedNode;
 
@@ -241,38 +268,10 @@ public class HomeController extends MapController {
             // draw NOTHING
             System.out.println("we have a path with 1 node. Is the destination & start the same???");
         }
-//        for (int i=0; i<path.size(); i++){
-//            Line line = new Line(path.get(i).getXcoord(), path.get(i).getYcoord(),
-//                                 path.get(i++).getXcoord(), path.get(i++).getYcoord());
-//            line.getEndX();
-//            zoomGroup.getChildren().add(line);
-            //Delete this line, I just put it here to appease spotBugs
-            //Nathan here, I don't know the specifics of how our UI system works.
-            //Thus, the below lines are commented until I learn how to interface with it.
-            //IF you uncomment it, then it will simply draw the path on a white background.
-            //NOTE: THIS DOES NOT SUPPORT A DYNAMICALLY MOVING PATH (yet)
-            //Group root = new Group();
-            //Scene scene = new Scene(root, 1920, 1080, Color.WHITE);
-            //root.getChildren.add(line);
-            //stage.setScene(scene);
-            //stage.show();
-//        }
     }
 
     @FXML
     void startNavigation(ActionEvent event) {
-//          ArrayList<Node> connectedNodes = dbs.getNodesConnectedTo(destNode);
-//        System.out.println(connectedNodes);
-//        System.out.println(dbs.getAllEdges());
-//        System.out.println(dbs.getAllNodes());
-//            Line line = new Line();
-//            line.setStartX(kioskCircle.getCenterX());
-//            line.setEndX(destCircle.getCenterX());
-//            line.setStartY(kioskCircle.getCenterY());
-//            line.setEndY(destCircle.getCenterY());
-//            line.setFill(Color.BLACK);
-//            line.setStrokeWidth(10.0);
-//            zoomGroup.getChildren().add(line);
         pathfind(kioskNode, destNode);
     }
 
@@ -296,6 +295,27 @@ public class HomeController extends MapController {
         zoomGroup.setScaleY(scaleValue);
         map_scrollpane.setHvalue(scrollH);
         map_scrollpane.setVvalue(scrollV);
+    }
+
+    @FXML
+    void newRoomAction(ActionEvent e) {
+        System.out.println("time to create a new node!");
+    }
+
+    @FXML
+    void editAction(ActionEvent e) {
+        System.out.println("Lets edit a node!");
+    }
+
+    @FXML
+    void authAction(ActionEvent e) {
+        isAdmin = !isAdmin;
+        authCheck();
+        if (isAdmin) {
+            System.out.println("Lets logout!");
+        } else {
+            System.out.println("Lets login!");
+        }
     }
 
 }
