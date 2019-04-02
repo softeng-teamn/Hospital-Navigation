@@ -243,7 +243,7 @@ public class ScheduleControllerTest extends ApplicationTest {
     @Category({UiTest.class, FastTest.class})
     public void showInstructions() throws InterruptedException {
         clickOn(instrBtn);
-        Thread.sleep(200);
+        Thread.sleep(500);
         TitledPane pane = (TitledPane) GuiTest.find(instrP);
         assertTrue(pane.isVisible());
     }
@@ -252,9 +252,9 @@ public class ScheduleControllerTest extends ApplicationTest {
     @Category({UiTest.class, FastTest.class})
     public void closeInstructions() throws InterruptedException {
         clickOn(instrBtn);
-        Thread.sleep(200);
+        Thread.sleep(500);
         clickOn(closeInstrBrn);
-        Thread.sleep(200);
+        Thread.sleep(500);
         boolean vis = true;
         try {
             GuiTest.exists(instrP);
