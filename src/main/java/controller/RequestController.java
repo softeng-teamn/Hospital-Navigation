@@ -1,6 +1,7 @@
 package controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,8 +30,9 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     private JFXButton cancelBtn;
 
+
     @FXML
-    private ChoiceBox<String> locationBox;
+    private JFXListView locationNodeList;
     @FXML
     private ChoiceBox<String> typeBox;
     @FXML
@@ -66,9 +68,9 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     public void makeRequest() {
 
-        String descrption = (String) textArea.getText();
+        String descrption = textArea.getText();
         String requestType = typeBox.getValue();
-        String requestLocation = locationBox.getValue();
+        Node requestLocation = (Node) locationNodeList.getSelectionModel().getSelectedItems();
 
         if (requestLocation == null) {
             locationTextField.setText("Request Location: \nPlease select location!");
@@ -138,19 +140,15 @@ public class RequestController extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         ArrayList<Node> everyNode =  dbs.getAllNodes();
         System.out.println(everyNode.size());
-//        int length = everyNode.size();
         ObservableList<String> locationList = FXCollections.observableArrayList("1","2","3");
         ObservableList<String> typeList = FXCollections.observableArrayList("Medicine Request", "IT Request");
 
 
-//        for (int i = 0; i < length; i++){
-//
-//            listview.add(everyNode.get(i).getLongName());
-//
-//
-//        }
+//        ObservableList<Node> nodeList = FXCollections.observableArrayList(dbs.getAllNodes());
+//        locationNodeList.setItems(nodeList);
 
-        locationBox.getItems().addAll(locationList);
+
+        locationNodeList.getItems().addAll(locationList);
         typeBox.getItems().addAll(typeList);
 
     }
