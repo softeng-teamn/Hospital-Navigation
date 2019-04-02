@@ -249,7 +249,7 @@ public class DatabaseServiceTest {
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newEdge.getNode1().getNodeID()));
         assertThat(gotEdge.getNode2().getNodeID(), is(newEdge.getNode2().getNodeID()));
-        Edge newerEdge = new Edge("ACONF00102-ACONF00104", testNode, anotherNode);
+        Edge newerEdge = new Edge("ACONF00102-ACONF00103", testNode, anotherNode);
         // update the values and confirm that they were changed
         assertTrue(myDBS.updateEdge(newerEdge));
         gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
