@@ -99,4 +99,16 @@ public abstract class Request {
     public void setRequestType(RequestType requestType) {
         this.requestType = requestType;
     }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "id=" + id +
+                ", notes='" + notes + '\'' +
+                ", location=" + location +
+                ", completed=" + completed +
+                ", requestType=" + requestType +
+                ", completedBy='" + completedBy + '\'' +
+                '}';
+    }
 }
