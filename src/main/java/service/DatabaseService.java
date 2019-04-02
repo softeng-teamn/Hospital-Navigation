@@ -107,7 +107,7 @@ public class DatabaseService {
                 statement.execute("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
             }
             if(!tableExists("EMPLOYEE")){
-                statement.execute("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean)");
+                statement.execute("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean, password varchar(50))");
             }
             if(!tableExists("MEDICINEREQUEST")){
                 statement.execute("CREATE TABLE MEDICINEREQUEST(medRequestID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), locationNode varchar(255), description varchar(300), requestorID int, fulfillerID int)");
@@ -620,13 +620,13 @@ public class DatabaseService {
     }
 
     public boolean insertEmployee(Employee employee) {
-        String employeeStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?)");
+        String employeeStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?)");
         PreparedStatement insertReservation = null;
         boolean insertStatus = false;
         try {
             insertReservation = connection.prepareStatement(employeeStatement);
             // set the attributes of the statement for the node
-            prepareStatement(insertReservation, employee.getID(), employee.getJob(), employee.isAdmin());
+            prepareStatement(insertReservation, employee.getID(), employee.getJob(), employee.isAdmin(), employee.getPassword());
             insertReservation.execute();
             insertStatus = true;
         } catch (SQLException e) {
@@ -944,8 +944,9 @@ public class DatabaseService {
         int empID = rs.getInt("employeeID");
         String job = rs.getString("job");
         boolean isAdmin = rs.getBoolean("isAdmin");
+        String password = rs.getString("password");
 
-        return new Employee(empID, job, isAdmin);
+        return new Employee(empID, job, isAdmin, password);
     }
 
     private ReservableSpace extractReservableSpace(ResultSet rs) throws SQLException {

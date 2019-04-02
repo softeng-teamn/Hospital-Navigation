@@ -176,10 +176,17 @@ public class DatabaseServiceTest {
         myDBS.insertEdge(testEdge3);
         Edge testEdge4 = new Edge("ACONF00105-ACONF00106", testNode4,testNode5);
         myDBS.insertEdge(testEdge4);
+        Edge testEdge5 = new Edge("ACONF00106-ACONF00102", testNode5,testNode1);
+        myDBS.insertEdge(testEdge5);
         ArrayList<Node> connectedNodes = myDBS.getNodesConnectedTo(testNode1);
         assertThat(connectedNodes.get(0).getNodeID(), is(testNode2.getNodeID()));
         assertThat(connectedNodes.get(1).getNodeID(), is(testNode3.getNodeID()));
         assertThat(connectedNodes.get(2).getNodeID(), is(testNode4.getNodeID()));
+
+        assertTrue(connectedNodes.get(0).equals(testNode2));
+        assertTrue(connectedNodes.get(1).equals(testNode3));
+        assertTrue(connectedNodes.get(2).equals(testNode4));
+        assertTrue(connectedNodes.get(3).equals(testNode5));
     }
 
 
@@ -475,7 +482,7 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee = new Employee(0, "Doctor", false);
+        Employee employee = new Employee(0, "Doctor", false, "douglas");
 
         // Verify successful insertion
         boolean insertRes = myDBS.insertEmployee(employee);
@@ -501,9 +508,9 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee1 = new Employee(0, "Doctor", false);
-        Employee employee2 = new Employee(1, "Nurse", false);
-        Employee employee3 = new Employee(2, "Admin", true);
+        Employee employee1 = new Employee(0, "Doctor", false, "douglas");
+        Employee employee2 = new Employee(1, "Nurse", false, "tyler");
+        Employee employee3 = new Employee(2, "Admin", true, "joshua");
 
         // Verify successful insertion
         boolean insertRes = myDBS.insertEmployee(employee1);
