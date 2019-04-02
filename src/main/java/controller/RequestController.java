@@ -140,16 +140,33 @@ public class RequestController extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         ArrayList<Node> everyNode =  dbs.getAllNodes();
         System.out.println(everyNode.size());
-        ObservableList<String> locationList = FXCollections.observableArrayList("1","2","3");
-        ObservableList<String> typeList = FXCollections.observableArrayList("Medicine Request", "IT Request");
-
 
 //        ObservableList<Node> nodeList = FXCollections.observableArrayList(dbs.getAllNodes());
+//
+//        locationNodeList.getItems().clear();
 //        locationNodeList.setItems(nodeList);
+//
+//        // Set the cell to display only the name of the reservableSpace
+//        locationNodeList.setCellFactory(param -> new ListCell<Node>() {
+//            @Override
+//            protected void updateItem(Node item, boolean empty) {
+//                super.updateItem(item, empty);
+//
+//                if (empty || item == null || item.getLongName() == null) {
+//                    setText(null);
+//                } else {
+//                    setText(item.getLongName());
+//                }
+//            }
+//        });
+//        locationNodeList.setEditable(false);
 
-
+        ObservableList<String> locationList = FXCollections.observableArrayList("1","2","3");
+        ObservableList<String> typeList = FXCollections.observableArrayList("Medicine Request", "IT Request");
         locationNodeList.getItems().addAll(locationList);
         typeBox.getItems().addAll(typeList);
 
     }
+
+
 }
