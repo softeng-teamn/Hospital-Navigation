@@ -21,4 +21,8 @@ public class Controller {
         }
     }
 
+    public static void closeDatabase() {
+        dbs.close();
+    }
+
 }

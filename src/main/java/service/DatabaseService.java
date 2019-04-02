@@ -442,7 +442,7 @@ public class DatabaseService {
         }
     }
 
-    void close() {
+    public void close() {
         try {
             connection.close();
             Connection closeConnection = DriverManager.getConnection(

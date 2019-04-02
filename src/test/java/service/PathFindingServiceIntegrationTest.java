@@ -4,6 +4,7 @@ import controller.CSVController;
 import controller.Controller;
 import model.MapNode;
 import model.Node;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -12,6 +13,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -30,11 +33,11 @@ public class PathFindingServiceIntegrationTest {
     private DatabaseService myDBS;
 
     @Before
-    @Category(FastTest.class)
-    public void setUp() throws SQLException, MismatchedDatabaseVersionException {
-        Controller.initializeDatabase();
-        CSVController.importIfNecessary();
+    public void setUp() throws IOException {
 
+        CSVController.closeDatabase();
+        FileUtils.forceDelete(new File("hospital-db"));
+        CSVController.initializeDatabase();
         CSVController.importNodes();
         CSVController.importEdges();
     }
@@ -42,11 +45,7 @@ public class PathFindingServiceIntegrationTest {
     @Test
     @Category(FastTest.class)
     public void testGetChildren(){
-        ArrayList<MapNode> expected = new ArrayList<>();
-        expected.add(testMapNodeChild1);
-        expected.add(testMapNodeChild2);
-        expected.add(testMapNodeChild3);
-        assertThat(pathFindingService.getChildren(testMapNode), containsInAnyOrder(expected));
+        assertThat(pathFindingService.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
     }
 
 }
