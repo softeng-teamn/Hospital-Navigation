@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import javafx.stage.Stage;
+import model.RequestType;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
@@ -51,8 +52,25 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     public  void fulfillRequest(){
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
+        MedicineRequest medupdate;
+        ITRequest ITupdate;
 
         selected.setCompleted(true);
+
+        RequestType rType = selected.getRequestType();
+
+        switch(rType.getrType()){
+            case ITS:
+                ITupdate = (ITRequest) selected;
+                dbs.updateITRequest(ITupdate);
+                break;
+            case MED:
+                medupdate = (MedicineRequest) selected;
+                dbs.updateMedicineRequest(medupdate);
+                break;
+            case ABS:
+                //do nothing
+        }
 
         reloadList();
 
