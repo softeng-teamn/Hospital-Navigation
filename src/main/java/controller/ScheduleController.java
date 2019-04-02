@@ -153,7 +153,10 @@ public class ScheduleController extends Controller {
     }
 
 
-    // switches window to home screen
+    /**
+     * switches window to home screen
+     * @throws Exception
+     */
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
@@ -226,7 +229,9 @@ public class ScheduleController extends Controller {
             }
         }
 
-        // For each of this location's reservations, mark it booked on the schedule
+        /**
+         * For each of this location's reservations, mark it booked on the schedule
+         */
         for (Reservation res : reservations) {
             // Get the start time
             int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
@@ -472,27 +477,40 @@ public class ScheduleController extends Controller {
     }
 
 
-
-    // Currently unused:
-    //returns a list of roomIDs which have a max capacity of less than nPeople
+    /**
+     * Currently unused:
+     * returns a list of roomIDs which have a max capacity of less than nPeople
+     * @param nPeople
+     * @return
+     */
     ArrayList<String> getMaxPeople(int nPeople){
         ArrayList<String> a = new ArrayList<>();
         return a;
     }
 
-    //returns the roomID of the room asked for by the user
+    /**
+     * returns the roomID of the room asked for by the user
+     * @return
+     */
     String getRoom(){
         return "";
     }
 
-    //returns the roomID of the workstations asked for by the user
+    /**
+     * returns the roomID of the workstations asked for by the user
+     * @return
+     */
     String getWorkStation() {
         return "";
     }
 
 
-
-    // pull unavailable times for a room & date from database, return available times
+    /**
+     * pull unavailable times for a room & date from database, return available times
+     * @param id
+     * @param date
+     * @return
+     */
     ArrayList<GregorianCalendar> getAvailableTimes(String id, GregorianCalendar date) {
 
         // correct time zone to set
