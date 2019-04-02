@@ -12,6 +12,8 @@ public class ResourceLoader {
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");
     public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
+    public static final URL adminLogin = service.ResourceLoader.class.getResource("/administratorLogin.fxml");
+
 
     // Images
     public static final URL firstFloor = service.ResourceLoader.class.getResource("/Images/01_thefirstfloor.png");
