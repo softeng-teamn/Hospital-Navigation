@@ -11,7 +11,7 @@ public class ResourceLoader {
     public static final URL edges = service.ResourceLoader.class.getResource("/edges.csv");
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");
-
+    public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
 //        service.ResourceLoader.class.getResource("/nodes.csv");
 
 }
