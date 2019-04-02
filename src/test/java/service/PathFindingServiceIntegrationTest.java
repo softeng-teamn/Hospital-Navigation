@@ -35,11 +35,12 @@ public class PathFindingServiceIntegrationTest {
     @Before
     public void setUp() throws IOException {
 
-        CSVController.closeDatabase();
-        FileUtils.forceDelete(new File("hospital-db"));
-        CSVController.initializeDatabase();
-        CSVController.importNodes();
-        CSVController.importEdges();
+//        CSVController.closeDatabase();
+//        FileUtils.forceDelete(new File("hospital-db"));
+//        CSVController.initializeDatabase();
+//        CSVController.importNodes();
+//        CSVController.importEdges();
+
     }
 
     @Test
