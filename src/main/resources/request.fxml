@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -17,18 +18,18 @@
                         <JFXTextField id="SceneID" alignment="CENTER" layoutX="9.0" layoutY="21.0" text="Service Request" />
                     </children>
                 </AnchorPane>
-                <TextArea layoutX="4.0" layoutY="215.0" prefHeight="134.0" prefWidth="168.0" text="Enter Request Details:" />
-                <TextArea fx:id="textArea" layoutX="19.0" layoutY="246.0" prefHeight="77.0" prefWidth="130.0" promptText="Enter details" />
+                <TextArea layoutX="4.0" layoutY="240.0" prefHeight="134.0" prefWidth="168.0" text="Enter Request Details:" />
+                <TextArea fx:id="textArea" layoutX="19.0" layoutY="271.0" prefHeight="77.0" prefWidth="130.0" promptText="Enter details" />
                 <JFXButton fx:id="cancelBtn" layoutX="4.0" layoutY="374.0" onAction="#showHome" style="-fx-background-color: red;" text="Cancel" />
                 <JFXButton fx:id="confirmBtn" layoutX="105.0" layoutY="374.0" onAction="#makeRequest" style="-fx-background-color: green;" text="Confirm" />
-            <JFXTextField fx:id="locationTextField" layoutX="9.0" layoutY="68.0" text="Request Location:">
+            <ChoiceBox fx:id="typeBox" layoutX="7.0" layoutY="98.0" prefHeight="27.0" prefWidth="158.0" />
+            <JFXTextField fx:id="typeTextField" layoutX="9.0" layoutY="70.0" text="Request Type:" />
+            <JFXTextField fx:id="locationTextField" layoutX="9.0" layoutY="124.0" text="Request Location:">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
             </JFXTextField>
-            <ChoiceBox fx:id="locationBox" layoutX="6.0" layoutY="95.0" prefHeight="27.0" prefWidth="158.0" />
-            <ChoiceBox fx:id="typeBox" layoutX="6.0" layoutY="166.0" prefHeight="27.0" prefWidth="158.0" />
-            <JFXTextField fx:id="typeTextField" layoutX="8.0" layoutY="138.0" text="Request Type:" />
+            <JFXListView fx:id="locationNodeList" layoutX="8.0" layoutY="145.0" prefHeight="95.0" prefWidth="158.0" />
             </children>
         </AnchorPane>
     </children>

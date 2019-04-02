@@ -1,3 +1,4 @@
+import controller.CSVController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,6 +19,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeWindow(primaryStage, root, "Home");
+
+        CSVController.importIfNecessary();
     }
 
 }
