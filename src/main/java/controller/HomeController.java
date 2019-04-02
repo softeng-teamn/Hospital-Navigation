@@ -21,15 +21,17 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import model.MapNode;
 import model.Node;
 import service.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
-import java.util.ArrayList;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class HomeController extends MapController {
 
@@ -115,25 +117,36 @@ public class HomeController extends MapController {
         zoomGroup.getChildren().removeAll(drawnLines);
     }
 
+    //for lists
+    private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
+        return from.stream().map(func).collect(Collectors.toList());
+    }
+
     // Filters the ListView based on the string
     private void filterList(String findStr) {
         if (findStr.equals("")) {
+            list_view.getItems().clear();
             list_view.getItems().addAll(allNodesObservable);
-        } else {
-            ObservableList<Node> original = list_view.getItems();
-            ObservableList<Node> filtered = FXCollections.observableArrayList();
-            for (Node n : original) {
-                if (n.getLongName().contains(findStr)) {
-                    filtered.add(n);
-                }
-            }
-            // NO ITEMS TO SHOW
-            if (filtered.size() < 1) {
-                list_view.getItems().clear();
-            } else {
-                list_view.getItems().clear();
-                list_view.getItems().addAll(filtered);
-            }
+        }
+        else {
+            //Get List of all nodes
+            ObservableList<Node> original = allNodesObservable;
+
+            //Get Sorted list of nodes based on search value
+            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, Node::getLongName),75);
+
+            // Map to nodes based on index
+            Stream<Node> stream = filtered.stream().map(er -> {
+               return original.get(er.getIndex());
+            });
+
+            // Convert to list and then to observable list
+            List<Node> filteredNodes = stream.collect(Collectors.toList());
+            ObservableList<Node> toShow = FXCollections.observableList(filteredNodes);
+
+            // Add to view
+            list_view.getItems().clear();
+            list_view.getItems().addAll(toShow);
         }
     }
 

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXSlider?>
@@ -16,7 +22,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
+
+<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="101.0" prefWidth="1385.0" spacing="5.0">
          <children>
@@ -24,9 +31,9 @@
             <JFXButton fx:id="navigate_btn" onAction="#startNavigation" text="Navigate Here" />
             <Region HBox.hgrow="ALWAYS" />
             <Label text="Zoom" />
-            <JFXButton onAction="#zoomOut" text="+" />
+            <JFXButton onAction="#zoomOut" text="-" />
             <JFXSlider fx:id="zoom_slider" />
-            <JFXButton onAction="#zoomIn" text="-">
+            <JFXButton onAction="#zoomIn" text="+">
                <HBox.margin>
                   <Insets right="40.0" />
                </HBox.margin></JFXButton>
