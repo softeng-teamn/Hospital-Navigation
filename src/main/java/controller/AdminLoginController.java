@@ -60,11 +60,11 @@ public class AdminLoginController extends Controller implements Initializable {
         String id = idText.getText();
         String password = passwordField.getText();
         int intID = Integer.parseInt(id);
-//        Employee user = dbs.getEmployee(intID);
+        Employee user = dbs.getEmployee(intID);
 
-//        if(user.isAdmin() && user != null){
-        if (intID == 1234){
-            if(password.equals("kimi")){
+        if(user.isAdmin() && user != null){
+//        if (intID == 1234){
+            if(password.equals(user.getPassword())){
                 isAdmin = true;
                 showHome();
             } else {
