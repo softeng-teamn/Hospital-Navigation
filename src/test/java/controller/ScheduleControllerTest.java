@@ -148,7 +148,7 @@ public class ScheduleControllerTest extends ApplicationTest {
     @Category({UiTest.class, FastTest.class})
     public void closeInstructions() throws InterruptedException {
         clickOn(instrBtn);
-        Thread.sleep(20000);
+        Thread.sleep(200);
         clickOn(closeInstrBrn);
         Thread.sleep(200);
         boolean vis = true;
