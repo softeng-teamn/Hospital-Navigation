@@ -64,15 +64,12 @@ public class HomeController extends MapController {
     ObservableList<Node> allNodesObservable;
 
     private Node kioskNode = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
-    private static Node destNode;
+    private Node destNode;
     private Circle destCircle = new Circle();
     private Circle kioskCircle = new Circle();
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
-    public static Node getSelectedNode() {
-        return destNode;
-    }
 
     void showEditor() {
         if (top_nav.getChildren().contains(edit_btn)) {
@@ -99,6 +96,7 @@ public class HomeController extends MapController {
             hbox_container.getChildren().remove(edit_VBox);
         }
     }
+
 
     @FXML
     void initialize() {
@@ -151,9 +149,17 @@ public class HomeController extends MapController {
                 top_nav.getChildren().add(1, newRoom_btn);
             }
         } else {
+            System.out.println("not an admin anymore");
             auth_btn.setText("Log In");
-            top_nav.getChildren().remove(edit_btn);
-            top_nav.getChildren().remove(newRoom_btn);
+            if (top_nav.getChildren().contains(edit_btn)) {
+                top_nav.getChildren().remove(edit_btn);
+            }
+            if (hbox_container.getChildren().contains(edit_VBox)) {
+                hbox_container.getChildren().remove(edit_VBox);
+            }
+            if (top_nav.getChildren().contains(newRoom_btn)) {
+                top_nav.getChildren().remove(newRoom_btn);
+            }
         }
     }
 
@@ -213,7 +219,9 @@ public class HomeController extends MapController {
             edit_btn.setVisible(false);
         }
         // hide editor
-        hideEditor();
+        if (isAdmin) {
+            hideEditor();
+        }
         // set destination node
         destNode = selectedNode;
 
@@ -410,11 +418,6 @@ public class HomeController extends MapController {
     void authAction(ActionEvent e) {
         isAdmin = !isAdmin;
         authCheck();
-        if (isAdmin) {
-
-        } else {
-            hideEditor();
-        }
         repopulateList();
     }
 

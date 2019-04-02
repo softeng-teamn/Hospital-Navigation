@@ -21,7 +21,7 @@ public class Controller {
         }
     }
 
-    public static boolean isAdmin = false;
+    static boolean isAdmin = false;
 
     public static void closeDatabase() {
         dbs.close();
