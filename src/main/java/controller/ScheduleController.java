@@ -25,8 +25,6 @@ import model.ReservableSpace;
 import model.Reservation;
 import service.ResourceLoader;
 import service.StageManager;
-import java.util.HashMap;
-
 
 public class ScheduleController extends Controller {
 
@@ -133,9 +131,6 @@ public class ScheduleController extends Controller {
         //  Pull spaces from database
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) dbs.getAllReservableSpaces();
         resSpaces.addAll(dbResSpaces);
-
-        // TODO: cut
-        System.out.println(dbResSpaces);
 
         // Add the nodes to the listview
         reservableList.setItems(resSpaces);
@@ -394,7 +389,7 @@ public class ScheduleController extends Controller {
      * Close the reservation confirmation dialog.
      */
     public void closeConf() {
-        confirmationPane.toFront();    // TODO ???
+        confirmationPane.toFront();
         confirmationPane.setVisible(false);
         homePane.setDisable(false);
         confErrorLbl.setVisible(false);

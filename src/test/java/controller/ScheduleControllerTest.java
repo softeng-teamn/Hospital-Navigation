@@ -293,17 +293,17 @@ public class ScheduleControllerTest extends ApplicationTest {
         // TODO need database
     }
 
-    @Test
-    @Category({FastTest.class})
-    public void validTimes() {
-        // TODO need database
-    }
-
-    @Test
-    @Category({FastTest.class})
-    public void makeTimesValid() {
-        // TODO need database
-    }
+//    @Test
+//    @Category({FastTest.class})
+//    public void validTimes() {
+//        // TODO need database
+//    }
+//
+//    @Test
+//    @Category({FastTest.class})
+//    public void makeTimesValid() {
+//        // TODO need database
+//    }
 
     @After
     public void clear(){
