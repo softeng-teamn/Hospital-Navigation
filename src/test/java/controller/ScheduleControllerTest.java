@@ -8,29 +8,22 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import service.DatabaseService;
-import testclassifications.*;
+import testclassifications.FastTest;
 
-import java.sql.SQLOutput;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
-import static java.util.Calendar.JUNE;
-import static java.util.Calendar.MINUTE;
+import static javafx.beans.binding.Bindings.when;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.junit.MatcherAssert.assertThat;
-
-import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.mockito.Mockito.*;
-
-import org.mockito.Mockito;
-import service.DatabaseService;
-import org.mockito.Mock;
 
 
 
 
 public class ScheduleControllerTest {
-    private ScheduleController sc = new ScheduleController();
+    private controller.ScheduleController sc = new controller.ScheduleController();
     private ArrayList<String> rooms = new ArrayList<>();
 
     private GregorianCalendar gc = new GregorianCalendar();
@@ -61,7 +54,7 @@ public class ScheduleControllerTest {
         when(dbs.insertReservation(reservB)).thenReturn(false) ;
         when(dbs.insertReservation(reservC)).thenReturn(false) ;
 
-        ScheduleController.dbs=dbs ;
+        controller.ScheduleController.dbs=dbs ;
     }
 
     @After

@@ -1,5 +1,6 @@
 package service;
 
+import javafx.beans.value.ObservableBooleanValue;
 import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
@@ -255,7 +256,7 @@ public class DatabaseService {
         return new ArrayList<Edge>();
     }
 
-    public boolean insertReservation(Reservation reservation) {
+    public ObservableBooleanValue insertReservation(Reservation reservation) {
         String insertStatement = ("INSERT INTO RESERVATION VALUES(?, ?, ?, ?, ?, ?, ?)");
         return executeInsert(insertStatement, reservation.getEventID(), reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
     }
