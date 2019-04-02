@@ -15,6 +15,8 @@ public class AdminServiceController extends Controller {
     private JFXButton fulfillBtn;
     @FXML
     private JFXButton homeBtn;
+    @FXML
+    private JFXButton logoutBtn;
 
     @FXML
     public void showadminHome() throws Exception {
@@ -37,5 +39,13 @@ public class AdminServiceController extends Controller {
         Stage stage = (Stage) fulfillBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
         StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
+    }
+
+    @FXML
+    public void logOut() throws Exception{
+        isAdmin = false;
+        Stage stage = (Stage) logoutBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.home);
+        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 }

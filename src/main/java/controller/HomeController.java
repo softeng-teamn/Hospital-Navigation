@@ -191,8 +191,13 @@ public class HomeController extends MapController {
     @FXML
     // switches window to map editor screen.
     public void showAdminLogin() throws Exception {
+        Parent root;
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
+        if (isAdmin){
+            root = FXMLLoader.load(ResourceLoader.adminPage);
+        } else {
+            root = FXMLLoader.load(ResourceLoader.adminLogin);
+        }
         StageManager.changeExistingWindow(stage, root, "Admin Login");
     }
 

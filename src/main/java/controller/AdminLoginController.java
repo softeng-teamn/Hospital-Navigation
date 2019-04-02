@@ -66,6 +66,7 @@ public class AdminLoginController extends Controller implements Initializable {
         if (intID == 1234){
             if(password.equals("kimi")){
                 showDecision();
+                isAdmin = true;
             } else {
                 passwordPrompt.setText("Invalid Password");
             }

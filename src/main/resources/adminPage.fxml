@@ -14,6 +14,7 @@
             <Font size="26.0" />
          </font>
       </Text>
-      <JFXButton fx:id="homeBtn" layoutX="273.0" layoutY="339.0" onAction="#showadminHome" text="Home" />
+      <JFXButton fx:id="homeBtn" layoutX="273.0" layoutY="288.0" onAction="#showadminHome" text="Home" />
+      <JFXButton fx:id="logoutBtn" layoutX="267.0" layoutY="333.0" onAction="#logOut" text="Log Out" />
     </children>
 </AnchorPane>
