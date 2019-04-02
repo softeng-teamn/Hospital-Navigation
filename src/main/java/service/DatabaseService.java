@@ -1,5 +1,6 @@
 package service;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
@@ -188,7 +189,19 @@ public class DatabaseService {
         return (ArrayList<Node>)(List<?>) executeGetMultiple(query, Node.class, new Object[]{});
     }
 
+    @SuppressFBWarnings(value="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING", justification="Not a security issue - just add question marks based on number of types to filter out.")
+    public ArrayList<Node> getNodesFilteredByType(String... filterOut) {
+        String query = "Select * from NODE where NODETYPE not in (";
+        StringBuilder builtQuery = new StringBuilder();
+        builtQuery.append(query);
+        for (int i = 0; i < filterOut.length; i++) {
+            builtQuery.append("?,");
+        }
+        builtQuery.deleteCharAt(builtQuery.lastIndexOf(","));
+        builtQuery.append(")");
 
+        return (ArrayList<Node>)(List<?>) executeGetMultiple(builtQuery.toString(), Node.class, (Object[]) filterOut);
+    }
 
     // get all nodes from the specified floor
     public Collection<Node> getNodes(String floor) {
@@ -429,7 +442,7 @@ public class DatabaseService {
         }
     }
 
-    void close() {
+    public void close() {
         try {
             connection.close();
             Connection closeConnection = DriverManager.getConnection(
