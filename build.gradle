@@ -108,6 +108,7 @@ task elevatorTest(type: Test) {
         includeCategories 'testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
+    forkEvery = 1
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -139,6 +140,7 @@ test {
         excludeCategories 'testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
+    forkEvery = 1
 }
 
 repositories {

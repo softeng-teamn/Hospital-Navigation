@@ -21,8 +21,15 @@ public class Controller {
         }
     }
 
+    static boolean isAdmin = false;
+
     public static void closeDatabase() {
         dbs.close();
+    }
+
+
+    public static void wipeTables() {
+        dbs.wipeTables();
     }
 
 }
