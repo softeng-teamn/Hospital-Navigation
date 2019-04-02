@@ -12,7 +12,7 @@ import java.util.Date;
 @SuppressWarnings("ALL")
 public class DatabaseService {
 
-    public static final Integer DATABASE_VERSION = 5;
+    public static final Integer DATABASE_VERSION = 6;
 
     private Connection connection;
 

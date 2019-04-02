@@ -102,13 +102,6 @@ public class PathFindingServiceSimpleTest {
     @Test
     @Category(FastTest.class)
     public void testMocking() throws IOException {
-
-        CSVController.closeDatabase();
-        FileUtils.forceDelete(new File("hospital-db"));
-        CSVController.initializeDatabase();
-        CSVController.importNodes();
-        CSVController.importEdges();
-
         ArrayList<MapNode> expected = new ArrayList<MapNode>();
         expected.add(mn1);
         expected.add(mn6);
