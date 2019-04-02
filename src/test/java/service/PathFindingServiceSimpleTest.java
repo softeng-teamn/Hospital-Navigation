@@ -1,8 +1,10 @@
 package service;
 
+import controller.CSVController;
 import controller.MapController;
 import model.MapNode;
 import model.Node;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,6 +18,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
@@ -57,8 +61,6 @@ public class PathFindingServiceSimpleTest {
     //      3 - 4 - 5
     //
     @Before
-    @Test
-    @Category(FastTest.class)
     public void mockingGetChildren() {
         ArrayList<MapNode> list = new ArrayList<MapNode>();
         list.add(mn2);
@@ -89,7 +91,14 @@ public class PathFindingServiceSimpleTest {
     // make sure I built the sinerio correctly
     @Test
     @Category(FastTest.class)
-    public void testMocking() {
+    public void testMocking() throws IOException {
+
+        CSVController.closeDatabase();
+        FileUtils.forceDelete(new File("hospital-db"));
+        CSVController.initializeDatabase();
+        CSVController.importNodes();
+        CSVController.importEdges();
+
         ArrayList<MapNode> expected = new ArrayList<MapNode>();
         expected.add(mn1);
         expected.add(mn6);
@@ -137,9 +146,9 @@ public class PathFindingServiceSimpleTest {
         ArrayList<Node> expected = new ArrayList<Node>();
         expected.add(0, n1);
         expected.add(0, n2);
-        expected.add(0, n6);
-        expected.add(0, n5);
-        assertThat(mockPF.genPath(mn5, mn1), is(expected));
+        expected.add(0, n3);
+        expected.add(0, n4);
+        assertThat(mockPF.genPath(mn4, mn1), is(expected));
     }
 
 }

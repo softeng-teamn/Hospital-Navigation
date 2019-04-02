@@ -55,13 +55,7 @@ public class HomeController extends MapController {
     @FXML
     void initialize() {
 
-
-        // THIS IS ONLY FOR MOCKING THE DATABASE "getAllNodes" METHOD
-//        ArrayList<Node> nodes = dbs.getAllNodes();
-        allNodes.add(n1);
-        allNodes.add(n2);
-        allNodes.add(n3);
-        allNodes.add(n4);
+        ArrayList<Node> allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
 
         // Create NodeList
         allNodesObservable = FXCollections.observableArrayList();
@@ -73,10 +67,10 @@ public class HomeController extends MapController {
             @Override
             protected  void updateItem(Node item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null || item.getNodeID() == null) {
+                if (empty || item == null || item.getNodeID() == null ) {
                     setText(null);
                 } else {
-                    setText(item.getNodeID());
+                    setText(item.getLongName());
                 }
             }
         });
