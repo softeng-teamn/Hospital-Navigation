@@ -5,6 +5,7 @@ import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,6 +34,8 @@ import model.Node;
 import service.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
+
+import javax.swing.event.ChangeListener;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -300,7 +303,14 @@ public class HomeController extends MapController {
     public void showSchedule() throws Exception {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
-        StageManager.changeExistingWindow(stage, root, "Scheduler");
+        stage.setTitle("Scheduler");
+        Scene scene = new Scene(new Group(root));
+        stage.setScene(scene);
+        stage.show();
+        stage.sizeToScene();
+        stage.setResizable(false);
+
+
     }
   
     //Pathfind and show path to user

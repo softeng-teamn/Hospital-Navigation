@@ -151,6 +151,10 @@ public class ScheduleController extends Controller {
         });
         reservableList.setEditable(false);
 
+//        primaryStage.setFullScreen(true);
+//
+//        letterbox(scene, root);
+
     }
 
 
