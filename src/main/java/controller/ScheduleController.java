@@ -1,5 +1,6 @@
 package controller;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import com.jfoenix.controls.JFXButton;
@@ -13,10 +14,11 @@ import service.ResourceLoader;
 import service.StageManager;
 
 import service.DatabaseService;
+//import sun.util.calendar.Gregorian;
 
 import java.io.IOException;
 
-import static java.util.Calendar.JUNE;
+import static java.util.Calendar.*;
 
 public class ScheduleController extends Controller {
 
@@ -39,54 +41,116 @@ public class ScheduleController extends Controller {
         return dbs.insertReservation(reservation);
     }
 
-    // pull unavailable times for a room & date
-    // i think we might need to pass a room id in
-    public void showAvailableTimes(String id, GregorianCalendar date) {
 
-        //Collection<GregorianCalendar> unavailable = dbs.getRoomSched(day, roomID);
 
-        // String, Date, Date
-        // where do i get the room id??
-        //List<Reservation> unavailable = dbs.getReservationsBySpaceId(id) ;
+    // pull unavailable times for a room & date from database, return available times
+     ArrayList<GregorianCalendar> getAvailableTimes(String id, GregorianCalendar date) {
 
-        // all possible time slots in a day (assuming room is always open, 30 minute booking periods)
-//        ArrayList<GregorianCalendar> allTimes = new ArrayList<>();
-//        GregorianCalendar first = new GregorianCalendar(date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), 0, 0, 0) ;
-//        allTimes.add(first) ;
+        // correct time zone to set
+        TimeZone tz = TimeZone.getTimeZone("GMT");
 
-        // available times - UI can work off this list
-        //ArrayList<GregorianCalendar> available = new ArrayList<>();
+        // set date
+        date.setTimeZone(tz) ;
 
-        // to iterate over all possible times in a day
-//        for (int i = 0; i < allTimes.size() /* can i just set this to loop 48 - 1 times? (for 30 min slots over 24 hrs)*/; i += timeStep) {
-//            // put in available times
-//
-//            // new GregorianCalendar(year, month, day, second, increment hour/minute based off of previous list item)
-//            int year = first.get(Calendar.YEAR) ;
-//            int month = first.get(Calendar.MONTH) ;
-//            int day = first.get(Calendar.DAY_OF_MONTH) ;
-//            int hour = allTimes.get(i).get(Calendar.HOUR) ;
-//            int minute = allTimes.get(i).get(Calendar.MINUTE + 30) ;
-//            int second = allTimes.get(i).get(Calendar.SECOND) ;
-//            GregorianCalendar next = new GregorianCalendar(year, month, day, hour, minute, second);
-//            // i think when i set hour it will stay the same and not update as the minute would - check
-//            allTimes.add(next) ;
+        // get unavailable reservations from database
+        List<Reservation> unavailableReservations = dbs.getReservationsBySpaceId(id);
 
- //       }
-        //available.removeAll(unavailable);
 
+        // fields that will be incremented to generate all possible times
+        int hour = 0;
+        int minute = 0;
+
+        // list of all possible times, will be filtered out to contain only available times
+        ArrayList<GregorianCalendar> allPossTimes = new ArrayList<>();
+
+        // make all available times by time step increment
+        // loop 48 times (30 minute increments over 24 hours)
+        System.out.println("LIST OF ALL POSS TIMES");
+        for (int i = 0; i < 48; i++) {
+
+            // create new GC object
+            GregorianCalendar addGC = new GregorianCalendar(date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), hour, minute, date.get(Calendar.SECOND));
+            // set the time zone
+            addGC.setTimeZone(tz) ;
+            // add to list
+            allPossTimes.add(addGC);
+
+            // if time is at the half hour mark, reset minutes to 0, increment hour
+            if (minute == timeStep) {
+                minute = 0;
+                hour += 1;
+
+            } else {
+                minute += timeStep;
+
+            }
+            System.out.println(allPossTimes.get(i).toInstant());
+        }
+
+        // remove unavailable times in for loop over unavailable reservations
+        for (int i = 0; i < unavailableReservations.size(); i++) {
+
+            // Create a new Reservation object with SET TIMES (so i can retrieve from this object and not keep referencing the incorrect time (zone) of the original)
+            Reservation newRes = new Reservation(unavailableReservations.get(i).getEventID(),
+                    unavailableReservations.get(i).getPrivacyLevel(),
+                    unavailableReservations.get(i).getEmployeeId(),
+                    unavailableReservations.get(i).getEventName(),
+                    unavailableReservations.get(i).getLocationID(),
+                    unavailableReservations.get(i).getStartTime(),
+                    unavailableReservations.get(i).getEndTime() );
+            // create new GC objects for same purpose as above
+            //GregorianCalendar start = (unavailableReservations.get(i).getStartTime()) ;
+            //GregorianCalendar end = (unavailableReservations.get(i).getEndTime()) ;
+            GregorianCalendar start = (newRes.getStartTime()) ;
+            GregorianCalendar end = (newRes.getEndTime()) ;
+            // set to correct time zone
+            start.setTimeZone(tz);
+            end.setTimeZone(tz);
+
+            System.out.println("Times for reservations");
+            System.out.println(start.toInstant());
+            System.out.println(end.toInstant()) ;
+
+            // set the hour and the minute for start
+            int hour2 = start.get(HOUR);
+            int minute2 = start.get(MINUTE);
+
+            // while the start time is less than the end time
+            while (start.compareTo(end) < 0) {
+
+                // remove start time from list
+                allPossTimes.remove(start);
+
+                // increment hour and reset minutes if at 30 minute slot
+                if (minute2 == timeStep) {
+                    minute2 = 0;
+                    hour2 += 1;
+                    start.set(MINUTE, minute2);
+                    start.set(HOUR, hour2);
+
+                } else {
+                    minute2 = 30;
+                    start.set(MINUTE, minute2);
+                }
+            }
+        }
+
+        // at this point allPossTimes is filtered to only available times - ready to use!
+        return allPossTimes;
 
         // UI - display things in available list of calendar dates!! thank u :)
     }
 
-     //returns the roomID of the room asked for by the user
-    String getRoom(){
+
+    //returns the roomID of the room asked for by the user
+    String getRoom() {
         return "";
     }
+
     //returns the roomID of the workstations asked for by the user
-    String getWorkStation(){
+    String getWorkStation() {
         return "";
-    }  
+    }
 
     public void setTimeStep(int timeStep) {
         this.timeStep = timeStep;
