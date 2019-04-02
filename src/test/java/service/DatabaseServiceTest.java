@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
@@ -143,6 +144,30 @@ public class DatabaseServiceTest {
         assertThat(allNodes.get(0).getNodeID(),is("ACONF00102"));
         assertThat(allNodes.get(1).getNodeID(),is("ACONF00103"));
         assertThat(allNodes.get(2).getNodeID(),is("ACONF00104"));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getNodesFilteredByType() {
+        Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        myDBS.insertNode(testNode1);
+        Node testNode2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "STAI", "Hall", "Hall");
+        myDBS.insertNode(testNode2);
+        Node testNode3 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "CONF", "Hall", "Hall");
+        myDBS.insertNode(testNode3);
+        Node testNode4 = new Node("ACONF00105", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        myDBS.insertNode(testNode4);
+        Node testNode5 = new Node("ACONF00106", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        myDBS.insertNode(testNode5);
+
+        Node[] nodes0 = {testNode2, testNode3};
+        assertThat(myDBS.getNodesFilteredByType("HALL"), containsInAnyOrder(nodes0));
+
+        Node[] nodes1 = {testNode1, testNode2, testNode4, testNode5};
+        assertThat(myDBS.getNodesFilteredByType("CONF"), containsInAnyOrder(nodes1));
+
+        Node[] nodes2 = {testNode3};
+        assertThat(myDBS.getNodesFilteredByType("HALL", "STAI"), containsInAnyOrder(nodes2));
     }
 
     @Test

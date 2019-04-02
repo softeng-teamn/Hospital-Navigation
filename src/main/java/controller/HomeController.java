@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -33,6 +34,8 @@ import java.util.Collection;
 public class HomeController extends MapController {
 
     @FXML
+    private VBox root;
+    @FXML
     private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn;
     @FXML
     private JFXSlider zoom_slider;
@@ -46,21 +49,20 @@ public class HomeController extends MapController {
 
     public Group zoomGroup;
     Node restRoom = new Node("BREST00102",2177,1010,"2","45 Francis","REST","Restroom 1 Level 2","REST B0102");
-    ArrayList<Node> allNodes = new ArrayList<>();
+    ArrayList<Node> allNodes;
     ObservableList<Node> allNodesObservable;
 
-    private Node kioskNode = new Node("BHALL04302",2782,1067,"2","45 Francis","HALL","Hallway Intersection 43 level 2","Hallway B04302");
+    private Node kioskNode = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
     private Node destNode;
     private Circle destCircle = new Circle();
     private Circle kioskCircle = new Circle();
 
+    private ArrayList<Line> drawnLines = new ArrayList<Line>();
+
     @FXML
     void initialize() {
 
-        // THIS IS ONLY FOR MOCKING THE DATABASE "getAllNodes" METHOD
-//        ArrayList<Node> nodes = dbs.getAllNodes();
-        allNodes.add(restRoom);
-
+        allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
 
         // Create NodeList
         allNodesObservable = FXCollections.observableArrayList();
@@ -72,10 +74,10 @@ public class HomeController extends MapController {
             @Override
             protected  void updateItem(Node item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null || item.getNodeID() == null) {
+                if (empty || item == null || item.getNodeID() == null ) {
                     setText(null);
                 } else {
-                    setText(item.getNodeID());
+                    setText(item.getLongName());
                 }
             }
         });
@@ -100,12 +102,17 @@ public class HomeController extends MapController {
         zoomGroup.getChildren().add(destCircle);
         zoomGroup.getChildren().add(kioskCircle);
 
+
         // Setting View Scrolling
         zoom_slider.setMin(0.3);
         zoom_slider.setMax(0.9);
         zoom_slider.setValue(0.3);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.3);
+    }
+
+    public void removeLines() {
+        zoomGroup.getChildren().removeAll(drawnLines);
     }
 
     // Filters the ListView based on the string
@@ -116,7 +123,7 @@ public class HomeController extends MapController {
             ObservableList<Node> original = list_view.getItems();
             ObservableList<Node> filtered = FXCollections.observableArrayList();
             for (Node n : original) {
-                if (n.getNodeID().contains(findStr)) {
+                if (n.getLongName().contains(findStr)) {
                     filtered.add(n);
                 }
             }
@@ -135,6 +142,10 @@ public class HomeController extends MapController {
         Node selectedNode = list_view.getSelectionModel().getSelectedItem();
         System.out.println("You clicked on: " + selectedNode.getNodeID());
 
+        // Remove last path from screen
+        removeLines();
+        // clear lines cash
+        drawnLines = new ArrayList<Line>();
         // Un-hide Navigation button
         navigate_btn.setVisible(true);
         // set destination node
@@ -223,6 +234,7 @@ public class HomeController extends MapController {
                 line.setFill(Color.BLACK);
                 line.setStrokeWidth(10.0);
                 zoomGroup.getChildren().add(line);
+                drawnLines.add(line);
                 last = current;
             }
         } else {

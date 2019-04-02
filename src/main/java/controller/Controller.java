@@ -10,11 +10,19 @@ public class Controller {
     static DatabaseService dbs;
 
     static {
+        initializeDatabase();
+    }
+
+    public static void initializeDatabase() {
         try {
             dbs = DatabaseService.init();
         } catch (SQLException | MismatchedDatabaseVersionException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void closeDatabase() {
+        dbs.close();
     }
 
 }
