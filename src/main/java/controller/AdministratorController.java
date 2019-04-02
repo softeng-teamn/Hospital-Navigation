@@ -37,18 +37,27 @@ public class AdministratorController extends Controller {
 
     @FXML
     public void showDecision() throws Exception {
-        Stage stage = (Stage) cancelBtn.getScene().getWindow();
+        Stage stage = (Stage) loginBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
-    public void login() {
+    @FXML
+    public void login() throws Exception{
         String id = idText.getText();
         String password = passwordField.getText();
 
+        if(id == "kimi"){
+            if(password == "kimi"){
+                showDecision();
+            } else {
+                passwordPrompt.setText("Invalid Password");
+            }
+        } else {
+            idPrompt.setText("Invalid ID");
+        }
 
-        idPrompt.setText(id);
-        passwordPrompt.setText(password);
+
 
     }
 
