@@ -27,6 +27,7 @@
       <HBox alignment="CENTER_LEFT" prefHeight="101.0" prefWidth="1385.0" spacing="5.0">
          <children>
             <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" text="Asd" unFocusColor="#b2b2b2" />
+            <JFXButton fx:id="navigate_btn" onAction="#startNavigation" text="Navigate Here" />
             <Region HBox.hgrow="ALWAYS" />
             <Label text="Zoom" />
             <JFXButton onAction="#zoomOut" text="+" />

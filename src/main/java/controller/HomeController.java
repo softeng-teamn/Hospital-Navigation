@@ -14,6 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
@@ -31,7 +33,7 @@ import java.util.Collection;
 public class HomeController extends MapController {
 
     @FXML
-    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl;
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn;
     @FXML
     private JFXSlider zoom_slider;
     @FXML
@@ -53,6 +55,11 @@ public class HomeController extends MapController {
     Node n7 = new Node("n7",0,1);
     ArrayList<Node> allNodes = new ArrayList<>();
     ObservableList<Node> allNodesObservable;
+
+    private Node kioskNode = new Node("BHALL04302",2782,1067,"2","45 Francis","HALL","Hallway Intersection 43 level 2","Hallway B04302");
+    private Node destNode;
+    private Circle destCircle = new Circle();
+    private Circle kioskCircle = new Circle();
 
     @FXML
     void initialize() {
@@ -105,7 +112,6 @@ public class HomeController extends MapController {
         allNodes.add(n7);
 
 
-
         // Create NodeList
         allNodesObservable = FXCollections.observableArrayList();
         allNodesObservable.addAll(allNodes);
@@ -124,12 +130,25 @@ public class HomeController extends MapController {
             }
         });
 
+        // MAKE NAVIGATION BUTTON INVISIBLE
+        navigate_btn.setVisible(false);
+
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
         Group contentGroup = new Group();
         zoomGroup = new Group();
         contentGroup.getChildren().add(zoomGroup);
         zoomGroup.getChildren().add(map_scrollpane.getContent());
         map_scrollpane.setContent(contentGroup);
+
+        // Setting Up Circle Destination Point
+        kioskCircle.setCenterX(kioskNode.getXcoord());
+        kioskCircle.setCenterY(kioskNode.getYcoord());
+        destCircle.setRadius(20);
+        kioskCircle.setRadius(20);
+        destCircle.setFill(Color.TRANSPARENT);
+        kioskCircle.setFill(Color.BLUE);
+        zoomGroup.getChildren().add(destCircle);
+        zoomGroup.getChildren().add(kioskCircle);
 
         // Setting View Scrolling
         zoom_slider.setMin(0.3);
@@ -163,12 +182,16 @@ public class HomeController extends MapController {
 
     @FXML
     public void listViewClicked(MouseEvent e) {
-        // SHOW THE X & Y COORDS of the selected node on the map!
         Node selectedNode = list_view.getSelectionModel().getSelectedItem();
         System.out.println("You clicked on: " + selectedNode.getNodeID());
 
+        // Un-hide Navigation button
+        navigate_btn.setVisible(true);
+        // set destination node
+        destNode = selectedNode;
+
         // Draw Circle on Map
-        drawNode(selectedNode);
+        showDestination(selectedNode);
 
         // animation scroll to new position
         double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
@@ -183,8 +206,10 @@ public class HomeController extends MapController {
         timeline.play();
     }
 
-    private void drawNode(Node n) {
-        zoomGroup.getChildren().add(new Circle(n.getXcoord(), n.getYcoord(), 20));
+    private void showDestination(Node n) {
+        destCircle.setCenterX(n.getXcoord());
+        destCircle.setCenterY(n.getYcoord());
+        destCircle.setFill(Color.GREEN);
     }
 
     // Later Todos :
@@ -247,6 +272,15 @@ public class HomeController extends MapController {
             //stage.setScene(scene);
             //stage.show();
         }
+    }
+
+    @FXML
+    void startNavigation(ActionEvent event) {
+          ArrayList<Node> connectedNodes = dbs.getNodesConnectedTo(destNode);
+        System.out.println(connectedNodes);
+        System.out.println(dbs.getAllEdges());
+        System.out.println(dbs.getAllNodes());
+//        pathfind(kioskNode, destNode);
     }
 
     @FXML
