@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
@@ -40,8 +41,9 @@ public class HomeController extends MapController {
     @FXML
     private JFXListView<Node> list_view;
 
-    public Group zoomGroup;
 
+    public Group zoomGroup;
+    Node restRoom = new Node("BREST00102",2177,1010,"2","45 Francis","REST","Restroom 1 Level 2","REST B0102");
     Node n1 = new Node("n1",0,1);
     Node n2 = new Node("n2",0,1);
     Node n3 = new Node("n3",20,200);
@@ -57,6 +59,8 @@ public class HomeController extends MapController {
 
         // THIS IS ONLY FOR MOCKING THE DATABASE "getAllNodes" METHOD
 //        ArrayList<Node> nodes = dbs.getAllNodes();
+        allNodes.add(n1);
+        allNodes.add(restRoom);
         allNodes.add(n1);
         allNodes.add(n2);
         allNodes.add(n3);
@@ -163,6 +167,9 @@ public class HomeController extends MapController {
         Node selectedNode = list_view.getSelectionModel().getSelectedItem();
         System.out.println("You clicked on: " + selectedNode.getNodeID());
 
+        // Draw Circle on Map
+        drawNode(selectedNode);
+
         // animation scroll to new position
         double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
         double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
@@ -177,7 +184,7 @@ public class HomeController extends MapController {
     }
 
     private void drawNode(Node n) {
-
+        zoomGroup.getChildren().add(new Circle(n.getXcoord(), n.getYcoord(), 8));
     }
 
     // Later Todos :
