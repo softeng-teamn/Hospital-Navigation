@@ -309,7 +309,7 @@ public class CSVControllerTest {
 
         URL originalURL = ResourceLoader.nodes;
         // Override the csv file
-        setFinalStatic(ResourceLoader.class.getDeclaredField("reservablespaces"), service.ResourceLoader.class.getResource("/test_nreservablespaces.csv"));
+        setFinalStatic(ResourceLoader.class.getDeclaredField("reservablespaces"), service.ResourceLoader.class.getResource("/test_reservablespaces.csv"));
 
         // Create a class to capture arguments of the type Node
         ArgumentCaptor<ReservableSpace> spaceCaptor = ArgumentCaptor.forClass(ReservableSpace.class);
