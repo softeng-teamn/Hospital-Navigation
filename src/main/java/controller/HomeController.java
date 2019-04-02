@@ -410,11 +410,11 @@ public class HomeController extends MapController {
     void authAction(ActionEvent e) {
         isAdmin = !isAdmin;
         authCheck();
-//        if (isAdmin) {
-//
-//        } else {
-//
-//        }
+        if (isAdmin) {
+
+        } else {
+            hideEditor();
+        }
         repopulateList();
     }
 
