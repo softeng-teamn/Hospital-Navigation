@@ -21,13 +21,6 @@ public class CSVController extends Controller {
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
     private static final String SPACE_HEADER = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n";
 
-    static {
-        if (dbs.isNewlyCreated()) {
-            CSVController.importNodes();
-            CSVController.importEdges();
-        }
-    }
-
     /**
      * Export the Nodes table
      */
@@ -176,7 +169,6 @@ public class CSVController extends Controller {
     /**
      * Import the Edges table
      */
-
     public static void importEdges() {
 
         BufferedReader reader = null;
@@ -293,6 +285,16 @@ public class CSVController extends Controller {
                     e1.printStackTrace();
                 }
             }
+        }
+    }
+
+    /**
+     * Import CSVs if dbs was just created.
+     */
+    public static void importIfNecessary() {
+        if (dbs.isNewlyCreated()) {
+            importNodes();
+            importEdges();
         }
     }
 }
