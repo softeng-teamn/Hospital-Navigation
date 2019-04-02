@@ -26,54 +26,7 @@ import java.util.ArrayList;
 import static junit.framework.TestCase.assertEquals;
 
 
-public class HomeControllerTest extends ApplicationTest {
-    final static String schbtn = "#schedulerBtn";
-    final static String mapbtn = "#editBtn";
-    final static String reqbtn = "#serviceBtn";
+public class HomeControllerTest {
 
 
-        @Override
-    public void start(Stage stage) throws Exception {
-        Parent mainNode = FXMLLoader.load(getClass().getResource("../home.fxml"));
-        stage.setScene(new Scene(mainNode));
-        stage.show();
-        stage.toFront();
-    }
-
-    @Test
-    public void showMapEditor() {
-        //ui do stuff!
-    }
-
-    @Test
-    @Category({FastTest.class, UiTest.class})
-    public void scheduleSceneTest() throws InterruptedException {
-        clickOn(schbtn);
-        Thread.sleep(200);
-        JFXTextField text = (JFXTextField) GuiTest.find("#SceneID");
-        assertThat(text.getText(), is("Book a Room"));
-    }
-
-    @Test
-    @Category({FastTest.class, UiTest.class})
-    public void mapEditSceneTest() throws InterruptedException {
-        clickOn(mapbtn);
-        Thread.sleep(200);
-        JFXTextField text = (JFXTextField) GuiTest.find("#SceneID");
-        assertThat(text.getPromptText(), is("Name:"));
-    }
-
-    @Test
-    @Category({FastTest.class, UiTest.class})
-    public void requestSceneTest() throws InterruptedException {
-        clickOn(reqbtn);
-        Thread.sleep(200);
-        JFXTextField text = (JFXTextField) GuiTest.find("#SceneID");
-        assertThat(text.getText(), is("Service Request"));
-    }
-
-    @Test
-    public void displayPath() {
-        // pathfinding/UI test
-    }
 }
