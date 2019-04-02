@@ -1,7 +1,6 @@
 package controller;
 
 import com.jfoenix.controls.*;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -12,17 +11,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
@@ -40,11 +35,6 @@ import java.util.stream.Stream;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
-import static controller.Controller.isAdmin;
 
 public class HomeController extends MapController {
 
@@ -155,7 +145,7 @@ public class HomeController extends MapController {
     }
 
     void authCheck() {
-        if (isAdmin) {
+        if (Controller.getIsAdmin()) {
             auth_btn.setText("Logout");
             edit_btn.setVisible(true);
             newRoom_btn.setVisible(true);
@@ -245,13 +235,13 @@ public class HomeController extends MapController {
         drawnLines = new ArrayList<Line>();
         // Un-hide Navigation button
         navigate_btn.setVisible(true);
-        if (isAdmin) {
+        if (Controller.getIsAdmin()) {
             edit_btn.setVisible(true);
         } else {
             edit_btn.setVisible(false);
         }
         // hide editor
-        if (isAdmin) {
+        if (Controller.getIsAdmin()) {
             hideEditor();
         }
         // set destination node
@@ -297,8 +287,8 @@ public class HomeController extends MapController {
     @FXML
     // switches window to map editor screen.
     public void showAdminLogin() throws Exception {
-        if (isAdmin){
-            isAdmin = false;
+        if (Controller.getIsAdmin()){
+            Controller.setIsAdmin(false);
             authCheck();
             repopulateList();
         } else {
@@ -464,7 +454,7 @@ public class HomeController extends MapController {
 
     void repopulateList() {
         System.out.println("Repopulation of listView");
-        if (isAdmin) {
+        if (Controller.getIsAdmin()) {
             allNodes = dbs.getAllNodes();
         } else {
             allNodes = dbs.getNodesFilteredByType("STAI", "HALL");

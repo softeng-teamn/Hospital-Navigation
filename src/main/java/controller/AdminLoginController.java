@@ -62,10 +62,10 @@ public class AdminLoginController extends Controller implements Initializable {
         int intID = Integer.parseInt(id);
         Employee user = dbs.getEmployee(intID);
 
-        if(user.isAdmin() && user != null){
+        if(user.isAdmin()){
 //        if (intID == 1234){
             if(password.equals(user.getPassword())){
-                isAdmin = true;
+                Controller.setIsAdmin(true);
                 showHome();
             } else {
                 passwordPrompt.setText("Invalid Password");

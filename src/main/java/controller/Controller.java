@@ -21,7 +21,15 @@ public class Controller {
         }
     }
 
-    static boolean isAdmin = false;
+    public static boolean isAdmin = false;
+
+    public static boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    public static void setIsAdmin(boolean isAdmin) {
+        Controller.isAdmin = isAdmin;
+    }
 
     public static void closeDatabase() {
         dbs.close();
