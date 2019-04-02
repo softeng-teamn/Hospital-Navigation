@@ -106,12 +106,9 @@ public class PathFindingServiceAdvancedTest {
 
     @Before
     public void mockingGetChildren() throws IOException {
-        System.out.println("Start mocking get children...");
-//        CSVController.closeDatabase();
-//        FileUtils.forceDelete(new File("hospital-db"));
-//        CSVController.initializeDatabase();
-//        CSVController.importNodes();
-//        CSVController.importEdges();
+        CSVController.wipeTables();
+        CSVController.importNodes();
+        CSVController.importEdges();
 
         createMap();
         ArrayList<MapNode> list = new ArrayList<MapNode>();
