@@ -184,7 +184,7 @@ public class HomeController extends MapController {
     }
 
     private void drawNode(Node n) {
-        zoomGroup.getChildren().add(new Circle(n.getXcoord(), n.getYcoord(), 8));
+        zoomGroup.getChildren().add(new Circle(n.getXcoord(), n.getYcoord(), 20));
     }
 
     // Later Todos :
