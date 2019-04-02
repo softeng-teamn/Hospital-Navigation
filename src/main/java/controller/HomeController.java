@@ -12,14 +12,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
@@ -28,6 +31,8 @@ import model.Node;
 import service.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.ArrayList;
@@ -36,17 +41,19 @@ import java.util.Collection;
 public class HomeController extends MapController {
 
     @FXML
-    private VBox root;
+    private VBox root, edit_VBox, edit_btn_container;
     @FXML
-    private HBox top_nav;
+    private HBox top_nav, hbox_container;
     @FXML
-    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn;
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn;
     @FXML
     private JFXSlider zoom_slider;
     @FXML
     private ScrollPane map_scrollpane;
     @FXML
-    private JFXTextField search_bar;
+    private JFXTextField search_bar, edit_x, edit_y, edit_floor, edit_building, edit_type, edit_long, edit_short;
+    @FXML
+    private Label edit_id;
     @FXML
     private JFXListView<Node> list_view;
 
@@ -57,35 +64,52 @@ public class HomeController extends MapController {
     ObservableList<Node> allNodesObservable;
 
     private Node kioskNode = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
-    private Node destNode;
+    private static Node destNode;
     private Circle destCircle = new Circle();
     private Circle kioskCircle = new Circle();
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
+    public static Node getSelectedNode() {
+        return destNode;
+    }
+
+    void showEditor() {
+        if (top_nav.getChildren().contains(edit_btn)) {
+            top_nav.getChildren().remove(edit_btn);
+        }
+        if (!hbox_container.getChildren().contains(edit_VBox)) {
+            edit_id.setText("Node: " + destNode.getNodeID());
+            edit_x.setText(String.valueOf(destNode.getXcoord()));
+            edit_y.setText(String.valueOf(destNode.getYcoord()));
+            edit_floor.setText(destNode.getFloor());
+            edit_building.setText(destNode.getBuilding());
+            edit_type.setText(destNode.getNodeType());
+            edit_long.setText(destNode.getLongName());
+            edit_short.setText(destNode.getShortName());
+            hbox_container.getChildren().add(1, edit_VBox);
+        }
+    }
+
+    void hideEditor() {
+        if (!top_nav.getChildren().contains(edit_btn)) {
+            top_nav.getChildren().add(top_nav.getChildren().indexOf(navigate_btn)+1, edit_btn);
+        }
+        if (hbox_container.getChildren().contains(edit_VBox)) {
+            hbox_container.getChildren().remove(edit_VBox);
+        }
+    }
+
     @FXML
     void initialize() {
+
+        // Hide the edit window
+        hideEditor();
+
         authCheck();
 
-        allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
 
-        // Create NodeList
-        allNodesObservable = FXCollections.observableArrayList();
-        allNodesObservable.addAll(allNodes);
-
-        // Initialize list_view
-        list_view.getItems().addAll(allNodesObservable);
-        list_view.setCellFactory(param -> new JFXListCell<Node>() {
-            @Override
-            protected  void updateItem(Node item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNodeID() == null ) {
-                    setText(null);
-                } else {
-                    setText(item.getLongName());
-                }
-            }
-        });
+        repopulateList();
 
         // MAKE NAVIGATION BUTTON INVISIBLE
         navigate_btn.setVisible(false);
@@ -161,6 +185,19 @@ public class HomeController extends MapController {
 
     @FXML
     public void listViewClicked(MouseEvent e) {
+
+//        if (isAdmin) {
+//            edit_id.setText("Node: " + destNode.getNodeID());
+//            edit_x.setText(String.valueOf(destNode.getXcoord()));
+//            edit_y.setText(String.valueOf(destNode.getYcoord()));
+//            edit_floor.setText(destNode.getFloor());
+//            edit_building.setText(destNode.getBuilding());
+//            edit_type.setText(destNode.getNodeType());
+//            edit_long.setText(destNode.getLongName());
+//            edit_short.setText(destNode.getShortName());
+//        }
+
+
         Node selectedNode = list_view.getSelectionModel().getSelectedItem();
         System.out.println("You clicked on: " + selectedNode.getNodeID());
 
@@ -175,6 +212,8 @@ public class HomeController extends MapController {
         } else {
             edit_btn.setVisible(false);
         }
+        // hide editor
+        hideEditor();
         // set destination node
         destNode = selectedNode;
 
@@ -303,19 +342,113 @@ public class HomeController extends MapController {
     }
 
     @FXML
-    void editAction(ActionEvent e) {
-        System.out.println("Lets edit a node!");
+    void editAction(ActionEvent e) throws IOException {
+            showEditor();
+    }
+
+    @FXML
+    // clicking cancel button in node editor
+    void cancelEditAction(ActionEvent e) {
+        System.out.println("Lets hide it!");
+        edit_btn.setVisible(false);
+        hideEditor();
+    }
+
+    @FXML
+    // clicking the save button (after editing)
+    void editSaveAction(ActionEvent e) {
+        System.out.println(edit_short.getText());
+        // validation
+        if (validateEditNode(edit_id.getText()) &&
+        validateEditNode(edit_x.getText()) &&
+        validateNumber(edit_x.getText()) &&
+        validateEditNode(edit_y.getText()) &&
+        validateNumber(edit_y.getText()) &&
+        validateEditNode(edit_floor.getText()) &&
+        validateEditNode(edit_type.getText()) &&
+        validateEditNode(edit_long.getText()) &&
+        validateEditNode(edit_short.getText())) {
+            // save to send to DB
+            sendEditToDB();
+        }
+    }
+
+    void sendEditToDB() {
+        Node myNode = new Node(
+                edit_id.getId(),
+                Integer.parseInt(edit_x.getText()),
+                Integer.parseInt(edit_y.getText()),
+                edit_floor.getText(),
+                edit_building.getText(),
+                edit_type.getText(),
+                edit_long.getText(),
+                edit_short.getText()
+        );
+        System.out.println("her is updated node");
+        System.out.println(myNode);
+        System.out.println("NODE IS BEING SENT TO DB");
+        boolean isModified = dbs.updateNode(myNode);
+        System.out.println(isModified);
+        // rehydrate list
+        repopulateList();
+    }
+
+    @FXML
+    // probs not needed
+    void editNodeTextAction(ActionEvent e) {
+
+    }
+
+    @FXML
+    void nodeTextChanged(ActionEvent e) {
+        System.out.println("SHIT WAS CHANGED    ");
     }
 
     @FXML
     void authAction(ActionEvent e) {
         isAdmin = !isAdmin;
         authCheck();
+//        if (isAdmin) {
+//
+//        } else {
+//
+//        }
+        repopulateList();
+    }
+
+    boolean validateEditNode(String str) {
+        return !str.isEmpty();
+    }
+
+    boolean validateNumber(String num) {
+        return num.matches("[0-9]+");
+    }
+
+    void repopulateList() {
+        System.out.println("Repopulation of listView");
         if (isAdmin) {
-            System.out.println("Lets logout!");
+            allNodes = dbs.getAllNodes();
         } else {
-            System.out.println("Lets login!");
+            allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
         }
+        // wipe old observable
+        allNodesObservable = FXCollections.observableArrayList();
+        // repopulate
+        allNodesObservable.addAll(allNodes);
+        // add to listView
+        list_view.getItems().addAll(allNodesObservable);
+
+        list_view.setCellFactory(param -> new JFXListCell<Node>() {
+            @Override
+            protected  void updateItem(Node item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNodeID() == null ) {
+                    setText(null);
+                } else {
+                    setText(item.getLongName());
+                }
+            }
+        });
     }
 
 }

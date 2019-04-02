@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
@@ -47,9 +48,86 @@
             <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
          </VBox.margin>
       </HBox>
-      <SplitPane dividerPositions="0.2140468227424749" VBox.vgrow="ALWAYS">
+      <SplitPane dividerPositions="0.28858578607322327" VBox.vgrow="ALWAYS">
          <items>
-            <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" />
+            <HBox fx:id="hbox_container" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" prefHeight="590.0" prefWidth="294.0" HBox.hgrow="ALWAYS" />
+                  <VBox fx:id="edit_VBox" prefHeight="749.0" prefWidth="300.0">
+                     <children>
+                        <Label contentDisplay="CENTER" text="Editor">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="5.0" top="5.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="edit_id" text="Node: " textFill="#4d4d4d">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="5.0" top="8.0" />
+                           </VBox.margin>
+                        </Label>
+                        <JFXTextField fx:id="edit_x" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </JFXTextField>
+                        <JFXTextField fx:id="edit_y" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </JFXTextField>
+                        <JFXTextField fx:id="edit_floor" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </JFXTextField>
+                        <JFXTextField fx:id="edit_building" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </JFXTextField>
+                        <JFXTextField fx:id="edit_type" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </JFXTextField>
+                        <JFXTextField fx:id="edit_long" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </JFXTextField>
+                        <JFXTextField fx:id="edit_short" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </JFXTextField>
+                        <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                        <VBox fx:id="edit_btn_container">
+                           <children>
+                              <JFXButton fx:id="edit_save_btn" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" onAction="#editSaveAction" text="Save">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                              <JFXButton maxWidth="1.7976931348623157E308" onAction="#cancelEditAction" text="Cancel">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
             <StackPane>
                <children>
                   <ScrollPane fx:id="map_scrollpane" prefHeight="749.0" prefWidth="998.0">
