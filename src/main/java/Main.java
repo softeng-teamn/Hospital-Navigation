@@ -17,9 +17,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeWindow(primaryStage, root, "Home");
-
+        String name = "";
 
         CSVController.importIfNecessary();
     }
