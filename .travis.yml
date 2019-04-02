@@ -30,7 +30,7 @@ env:
             - secure: "O+CyqXXWIecZfcUNFmeDHG8pG6LY3SeLH9IdXxkDxWzvisbEBpy1zPVeMbsjCOmfV1kte4seyxEruinP0Ll3C/pT3jdHwbmjEvK3nGdVEFP3xnFG9lfuc6Zi30puAwBhDLGHjAeX3q0lKdktpDrhJ3Ap9JLanOIJS2UXlpfErNxyMVvLGlbHy7+9ehMCzNA2MRqbGQAeYHEsUsuIvtfC4+l7deKzh9ceja3KUZElOcIgEbHdrtS4urhxKoPzj2V54wNmR3XyWXEiAJUeZZL+Aw6Kpte3XkGqeHl7I8IriRD9k6kkvQF6Pnl3fyzfFOYeBdtDQX+G9iB1U2NxZhY4RXrXHzH5Z5kGr3Skh3MQdcT4eX6MSGzPpH9jCHBG1ceLw78d04QmslrM6N7/3DaQ6q6+6ntmMfuMTnZvbnV1l08fX76AfzXLcOLpUqWyfqCpbQ6E/YG7PZAQVG7u+R2r+/mJH64Xv9d90s3Y6JCqwkgf2YUGIbfnZkT7yJszHO3mRut3UmqRzkVIx6z6tRpXSpnlXkRt+1SxU3+ZldMMc67e0hkeWhOcFjtxUFKLzeW5PbqC8C2ok6U7xyqjx3O7PEsEbV9GKqj8mdtgw/BxYowLMW/HldnTE8ZXYptLjgnYUiCm660tDWYA2WlZWW6fvlj8bkro18lqTpq53y0AKko="
 
 after_script:
-      - zip -r ${TRAVIS_JOB_NUMBER}_${TRAVIS_BRANCH}.zip ./testfx-test*.png ./build/reports/* ./build/libs/*
+      - zip -r ${TRAVIS_JOB_NUMBER}_${TRAVIS_BRANCH}.zip ./testfx-test*.png ./screenshot*.png ./build/reports/* ./build/libs/*
       - sshpass -p ${SCP_PASS} scp -o StrictHostKeyChecking=no ${TRAVIS_JOB_NUMBER}_${TRAVIS_BRANCH}.zip ${SCP_USER}@ravana.dyn.wpi.edu:public_html/${TRAVIS_REPO_SLUG}/
 
 before_cache:
