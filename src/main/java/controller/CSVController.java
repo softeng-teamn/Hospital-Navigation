@@ -16,6 +16,7 @@ public class CSVController extends Controller {
 
     /**
      * Export the Nodes table
+     * @throws IOException
      */
     public static void exportNodes() throws IOException {
         // Open a file
@@ -52,6 +53,7 @@ public class CSVController extends Controller {
 
     /**
      * Export the Edges table
+     * @throws IOException
      */
     public static void exportEdges() throws IOException {
         // Open a file
