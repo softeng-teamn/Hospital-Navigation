@@ -6,11 +6,21 @@ public class Employee {
     int ID;
     String job;
     boolean isAdmin;
+    String password;
 
-    public Employee(int ID, String job, boolean isAdmin) {
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Employee(int ID, String job, boolean isAdmin, String password) {
         this.ID = ID;
         this.job = job;
         this.isAdmin = isAdmin;
+        this.password = password;
     }
 
     public int getID() {
