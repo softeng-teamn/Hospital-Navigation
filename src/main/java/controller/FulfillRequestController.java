@@ -152,7 +152,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         }
 
         return "ID: " + request.getId() +
-                " Request Type: " + request.getRequestType() +
+                " Request Type: " + request.getRequestType().getrType().toString() +
                 " Description: " + request.getNotes();
     }
 
