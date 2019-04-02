@@ -100,8 +100,27 @@ public class FulfillRequestController extends Controller implements Initializabl
             }
         }
 
+        printList(newRequestlist);
+    }
+
+    public void printList(ObservableList<Request> newReqList){
         requestListView.getItems().clear();
-        requestListView.getItems().addAll(newRequestlist);
+        requestListView.setItems(newReqList);
+
+        // Set the cell to display only the name of the reservableSpace
+        requestListView.setCellFactory(param -> new ListCell<Request>() {
+            @Override
+            protected void updateItem(Request item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null || printRequest(item) == null) {
+                    setText(null);
+                } else {
+                    setText(printRequest(item));
+                }
+            }
+        });
+        requestListView.setEditable(false);
     }
 
 
@@ -130,22 +149,7 @@ public class FulfillRequestController extends Controller implements Initializabl
 //        requestlist.addAll(medicineReq);
 //        requestlist.addAll(itReq);
 
-        requestListView.setItems(requestlist);
-
-        // Set the cell to display only the name of the reservableSpace
-        requestListView.setCellFactory(param -> new ListCell<Request>() {
-            @Override
-            protected void updateItem(Request item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty || item == null || printRequest(item) == null) {
-                    setText(null);
-                } else {
-                    setText(printRequest(item));
-                }
-            }
-        });
-        requestListView.setEditable(false);
+        printList(requestlist);
 
     }
 }
