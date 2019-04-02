@@ -48,7 +48,7 @@ public class CSVControllerTest {
         testEdges = new ArrayList<>();
         testSpaces = new ArrayList<>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         Date date1 = sdf.parse("2019-03-31 12:00");
         Date date2 = sdf.parse("2019-03-31 12:30");
@@ -89,13 +89,20 @@ public class CSVControllerTest {
         testEdges.add(e1);
         testEdges.add(e2);
         testEdges.add(e3);
+        testSpaces.add(space1);
+        testSpaces.add(space2);
+        testSpaces.add(space3);
 
         when(dbs.getAllNodes()).thenReturn(testNodes);
         when(dbs.getAllEdges()).thenReturn(testEdges);
+        when(dbs.getAllReservableSpaces()).thenReturn(testSpaces);
 
         when(dbs.getNode(n1.getNodeID())).thenReturn(n1);
         when(dbs.getNode(n2.getNodeID())).thenReturn(n2);
         when(dbs.getNode(n3.getNodeID())).thenReturn(n3);
+        when(dbs.getReservableSpace(space1.getSpaceID())).thenReturn(space1);
+        when(dbs.getReservableSpace(space2.getSpaceID())).thenReturn(space2);
+        when(dbs.getReservableSpace(space3.getSpaceID())).thenReturn(space3);
 
         CSVController.dbs = dbs;
     }
@@ -200,7 +207,47 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void exportReservableSpaces() {
+    @Category(FastTest.class)
+    public void exportReservableSpaces() throws IOException {
+        // Precondition: Check that ./nodes.csv does not exist
+        File tempfile = new File("./reservablespaces.csv");
+        assertFalse(tempfile.exists());
+
+        // Action: call CSVController.exportReservableSpaces
+        CSVController.exportReservableSpaces();
+        // Assert that export nodes has the correct content
+        File spacecsv = new File("./reservablespaces.csv");
+        assertTrue(spacecsv.exists());
+        BufferedReader reader = new BufferedReader( new InputStreamReader(new FileInputStream("./reservablespaces.csv"), StandardCharsets.UTF_8));
+
+        StringBuffer fileContents = new StringBuffer();
+        String line = reader.readLine();
+        while(line != null){
+            fileContents.append(line);
+            fileContents.append("\n");
+            line = reader.readLine();
+        }
+
+        try {
+            reader.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+
+            if (reader != null) {
+                reader.close();
+            }
+        }
+
+        String expectedValue = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n"+
+                "AAAAA00101,Bob,Computer,BBBBB00101,2019-03-31 12:00,2019-03-31 12:30" + "\n"
+                + "AAAAA00102,Alice,Conference,BBBBB00102,2019-03-25 14:00,2019-03-25 15:30\n"
+                + "AAAAA00103,John,Computer,BBBBB00103,2019-04-20 00:00,2019-04-20 23:59\n";
+
+
+        assertThat(fileContents.toString(), is(expectedValue));
+
+        File file = new File("./reservablespaces.csv");
+        assertThat(file.delete(), is(true));
     }
 
     @Test
@@ -257,7 +304,31 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void importReservableSpaces() {
+    @Category(FastTest.class)
+    public void importReservableSpaces() throws Exception {
+
+        URL originalURL = ResourceLoader.nodes;
+        // Override the csv file
+        setFinalStatic(ResourceLoader.class.getDeclaredField("reservablespaces"), service.ResourceLoader.class.getResource("/test_nreservablespaces.csv"));
+
+        // Create a class to capture arguments of the type Node
+        ArgumentCaptor<ReservableSpace> spaceCaptor = ArgumentCaptor.forClass(ReservableSpace.class);
+
+        // Action being tested
+        CSVController.importReservableSpaces();
+
+        // Capture the calls to insert node
+        verify(CSVController.dbs, times(3)).insertReservableSpace(spaceCaptor.capture());
+
+        // Check that each node captured is equal to the test nodes
+        List<ReservableSpace> capturedSpaces = spaceCaptor.getAllValues();
+        assertEquals(testSpaces.get(0), capturedSpaces.get(0));
+        assertEquals(testSpaces.get(1), capturedSpaces.get(1));
+        assertEquals(testSpaces.get(2), capturedSpaces.get(2));
+
+        // Reset to original URL
+        setFinalStatic(ResourceLoader.class.getDeclaredField("reservablespaces"), originalURL);
+
     }
 
     // DANGER! Use wisely!

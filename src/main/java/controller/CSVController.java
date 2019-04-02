@@ -19,7 +19,7 @@ public class CSVController extends Controller {
 
     private static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
-    private static final String SPACE_HEADER = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed";
+    private static final String SPACE_HEADER = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n";
 
     static {
         if (dbs.isNewlyCreated()) {
@@ -101,6 +101,7 @@ public class CSVController extends Controller {
     public static void exportReservableSpaces() {
         // Open a file
         Writer writer = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
             writer = new OutputStreamWriter(new FileOutputStream(SPACE_EXPORT_PATH), "UTF-8");
             //Write header
@@ -112,8 +113,8 @@ public class CSVController extends Controller {
                 writer.write(space.getSpaceName() + ",");
                 writer.write(space.getSpaceType() + ",");
                 writer.write(space.getLocationNodeID() + ",");
-                writer.write(space.getTimeOpen() + ",");
-                writer.write(space.getTimeClosed() + "\n");
+                writer.write(sdf.format(space.getTimeOpen().getTime())+ ",");
+                writer.write(sdf.format(space.getTimeClosed().getTime()) + "\n");
             }
 
             // Close the writer
@@ -233,7 +234,6 @@ public class CSVController extends Controller {
         BufferedReader reader = null;
 
         try {
-            //load file to be read
             reader = new BufferedReader(new InputStreamReader(ResourceLoader.reservablespaces.openStream(), "UTF-8"));
 
             //read first line
