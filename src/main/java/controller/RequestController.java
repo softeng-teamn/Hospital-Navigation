@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import model.Node;
@@ -82,6 +83,7 @@ public class RequestController extends Controller implements Initializable {
         } else if (requestType.contains("IT")) {
             ITRequest newITRequest = new ITRequest(-1, descrption, null, false);
             dbs.insertITRequest(newITRequest);
+
         }
     }
 
@@ -138,32 +140,32 @@ public class RequestController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ArrayList<Node> everyNode =  dbs.getAllNodes();
+        ArrayList<Node> everyNode =  dbs.getNodesFilteredByType("STAI", "HALL");
         System.out.println(everyNode.size());
 
-//        ObservableList<Node> nodeList = FXCollections.observableArrayList(dbs.getAllNodes());
-//
-//        locationNodeList.getItems().clear();
-//        locationNodeList.setItems(nodeList);
-//
-//        // Set the cell to display only the name of the reservableSpace
-//        locationNodeList.setCellFactory(param -> new ListCell<Node>() {
-//            @Override
-//            protected void updateItem(Node item, boolean empty) {
-//                super.updateItem(item, empty);
-//
-//                if (empty || item == null || item.getLongName() == null) {
-//                    setText(null);
-//                } else {
-//                    setText(item.getLongName());
-//                }
-//            }
-//        });
-//        locationNodeList.setEditable(false);
+        ObservableList<Node> nodeList = FXCollections.observableArrayList(dbs.getAllNodes());
 
-        ObservableList<String> locationList = FXCollections.observableArrayList("1","2","3");
+        locationNodeList.getItems().clear();
+        locationNodeList.setItems(nodeList);
+
+        // Set the cell to display only the name of the reservableSpace
+        locationNodeList.setCellFactory(param -> new ListCell<Node>() {
+            @Override
+            protected void updateItem(Node item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null || item.getLongName() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getLongName());
+                }
+            }
+        });
+        locationNodeList.setEditable(false);
+
+//        ObservableList<String> locationList = FXCollections.observableArrayList("1","2","3");
         ObservableList<String> typeList = FXCollections.observableArrayList("Medicine Request", "IT Request");
-        locationNodeList.getItems().addAll(locationList);
+//        locationNodeList.getItems().addAll(locationList);
         typeBox.getItems().addAll(typeList);
 
     }
