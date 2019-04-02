@@ -24,7 +24,7 @@ public class ElevatorTest {
         e.disconnect();
     }
     @Test
-    @Category(FastTest.class)
+    @Category(ElevatorTest.class)
     public void connectionTest() throws Exception {
         double[] d = e.data;
         System.out.println(d[0]);
