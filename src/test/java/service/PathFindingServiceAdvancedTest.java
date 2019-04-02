@@ -1,8 +1,10 @@
 package service;
 
+import controller.CSVController;
 import controller.MapController;
 import model.MapNode;
 import model.Node;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,6 +14,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import testclassifications.FastTest;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -102,9 +106,14 @@ public class PathFindingServiceAdvancedTest {
 
 
     @Before
-    @Test
-    @Category(FastTest.class)
-    public void mockingGetChildren() {
+    public void mockingGetChildren() throws IOException {
+        System.out.println("Start mocking get children...");
+        CSVController.closeDatabase();
+        FileUtils.forceDelete(new File("hospital-db"));
+        CSVController.initializeDatabase();
+        CSVController.importNodes();
+        CSVController.importEdges();
+
         createMap();
         ArrayList<MapNode> list = new ArrayList<MapNode>();
         list.add(mn2);
@@ -159,7 +168,7 @@ public class PathFindingServiceAdvancedTest {
 
     @Test
     @Category(FastTest.class)
-    public void pathTester() {
+    public void pathTester() throws IOException {
 //        createMap();
         mockingGetChildren();
         ArrayList<Node> expected = new ArrayList<Node>();
