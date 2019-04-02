@@ -1,14 +1,30 @@
 package controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.TitledPane;
+import javafx.stage.Stage;
+import model.Employee;
+import model.ReservableSpace;
+import model.Reservation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.loadui.testfx.GuiTest;
+import org.loadui.testfx.exceptions.NoNodesFoundException;
+import org.loadui.testfx.exceptions.NoNodesVisibleException;
 import org.mockito.Mock;
+import org.testfx.framework.junit.ApplicationTest;
 import service.DatabaseService;
+import service.ResourceLoader;
 import testclassifications.*;
 
 import java.sql.SQLOutput;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +33,8 @@ import java.util.GregorianCalendar;
 
 import static java.util.Calendar.JUNE;
 import static java.util.Calendar.MINUTE;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
@@ -26,14 +44,16 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.*;
 import org.mockito.Mock;
 
-
-
-
-public class ScheduleControllerTest {
+public class ScheduleControllerTest extends ApplicationTest {
     private ScheduleController sc = new ScheduleController();
     private ArrayList<ReservableSpace> rooms = new ArrayList<>();
     private ArrayList<Reservation> reservationsA = new ArrayList<Reservation>();
     private ArrayList<Reservation> reservationsB = new ArrayList<Reservation>();
+
+    final static String instrP = "#instructionsPane";
+    final static String instrBtn = "#instructionsBtn";
+    final static String homeBtn = "#homeBtn";
+    final static String closeInstrBrn = "#closeInstructionsBtn";
 
     /**
      * Create fake rooms and reservations
@@ -51,37 +71,50 @@ public class ScheduleControllerTest {
         reservationsB.add(new Reservation(41,1,13, "ER Meeting", "Room B",
                 new GregorianCalendar(2019, 4, 1, 18, 0),
                 new GregorianCalendar(2019,4,1,19,0)));
-        when(sc.initialize()).thenReturn();
     }
 
     @Mock private DatabaseService dbs;
     @Before
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
     public void init() {
+        GregorianCalendar gcalStart = GregorianCalendar.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()));
 
-        //  sc = spy(new ScheduleController());
-        //   when(sc.bookRoom())
-
-        rooms.add(0, "ROOM1");
-        rooms.add(1, "ROOM2");
         DatabaseService dbs = mock(DatabaseService.class);
-        when(dbs.insertReservation(reservA)).thenReturn(true).thenReturn(false) ;
-        when(dbs.insertReservation(reservB)).thenReturn(false) ;
-        when(dbs.insertReservation(reservC)).thenReturn(false) ;
+        // use these
+//        when(dbs.insertReservation(reservA)).thenReturn(true).thenReturn(false) ;
+//        when(dbs.insertReservation(reservB)).thenReturn(false) ;
+//        when(dbs.insertReservation(reservC)).thenReturn(false) ;
+        when(dbs.getAllReservableSpaces()).thenReturn(rooms);
+        when(dbs.getReservationBySpaceIdBetween("Room A",gcalStart,gcalStart)).thenReturn(reservationsA);
+        when(dbs.getReservationBySpaceIdBetween("Room B",gcalStart,gcalStart)).thenReturn(reservationsB);
+        when(dbs.getEmployee(123)).thenReturn(new Employee(123, "Janitor", false));
+        when(dbs.getEmployee(77)).thenReturn(null);
 
         ScheduleController.dbs=dbs ;
     }
 
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent mainNode = FXMLLoader.load(ResourceLoader.scheduler);
+        stage.setScene(new Scene(mainNode));
+        stage.show();
+        stage.toFront();
+    }
+
     @Test
     @Category({UiTest.class, FastTest.class})
-    public void showHome() {
-        // TODO
+    public void showHome() throws InterruptedException {
+        clickOn(homeBtn);
+        Thread.sleep(200);
+        //TODO: need a valid home screen w/ something to ID
+       // TitledPane pane = (TitledPane) GuiTest.find(instrP);
+        //assertTrue(pane.isVisible());
     }
 
     @Test
     @Category({UiTest.class, FastTest.class})
     public void showRoomSchedule() {
-        // TODO
+
     }
 
     @Test
@@ -104,58 +137,68 @@ public class ScheduleControllerTest {
 
     @Test
     @Category({UiTest.class, FastTest.class})
-    public void showInstructions() {
-
+    public void showInstructions() throws InterruptedException {
+        clickOn(instrBtn);
+        Thread.sleep(200);
+        TitledPane pane = (TitledPane) GuiTest.find(instrP);
+        assertTrue(pane.isVisible());
     }
 
     @Test
     @Category({UiTest.class, FastTest.class})
-    public void closeInstructions() {
-
+    public void closeInstructions() throws InterruptedException {
+        clickOn(instrBtn);
+        Thread.sleep(20000);
+        clickOn(closeInstrBrn);
+        Thread.sleep(200);
+        boolean vis = true;
+        try {
+            GuiTest.exists(instrP);
+        } catch (NoNodesFoundException | NoNodesVisibleException e) {
+            vis = false;
+        }
+        assertFalse(vis);
     }
 
     @Test
     @Category({UiTest.class, FastTest.class})
-    public void closeError() {
-
+    public void closeError() throws InterruptedException {
+        clickOn("#startTimePicker").write("1:00 AM");
+        Thread.sleep(200);
+        // TODO: need database to select location and make reservation to get an error
+//        clickOn("#errorBtn");
+//        Thread.sleep(200);
+//        boolean vis = true;
+//        try {
+//            GuiTest.exists("#errorDlg");
+//        } catch (NoNodesFoundException | NoNodesVisibleException e) {
+//            vis = false;
+//        }
+//        assertFalse(vis);
     }
 
     @Test
     @Category({UiTest.class, FastTest.class})
     public void closeConf() {
-
+        // TODO need database
     }
 
     @Test
     @Category({UiTest.class, FastTest.class})
     public void showConf() {
-
+        // TODO need database
     }
 
     @Test
     @Category({FastTest.class})
     public void validTimes() {
-
+        // TODO need database
     }
 
     @Test
     @Category({FastTest.class})
     public void makeTimesValid() {
-
-    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
-    public void init() {
-
-      //  sc = spy(new ScheduleController());
-     //   when(sc.bookRoom())
-
-        rooms.add(0, "ROOM1");
-        rooms.add(1, "ROOM2");
-        DatabaseService dbs = mock(DatabaseService.class);
-        when(dbs.insertReservation(reservA)).thenReturn(true).thenReturn(false) ;
-        when(dbs.insertReservation(reservB)).thenReturn(false) ;
-        when(dbs.insertReservation(reservC)).thenReturn(false) ;
-
-        ScheduleController.dbs=dbs ;
+        // TODO need database
     }
 
     @After
@@ -179,20 +222,7 @@ public class ScheduleControllerTest {
 
     @Test
     @Category({FastTest.class})
-    public void insertReservationTest(){//probs needs more test cases involving the db
-        // assert that an available room can be booked
-        assertThat(sc.insertReservation(reservA), equalTo(true));
-        // assert that a booked room cannot be double-booked
-        assertThat(sc.insertReservation(reservA), equalTo(false));
-        // assert that a non-existant room cannot be booked
-        assertThat(sc.insertReservation(reservC), equalTo(false));
-    }
-
-    @Test
-    @Category({FastTest.class})
     public void showAvailTimesTest() {
 
     }
-
-
 }

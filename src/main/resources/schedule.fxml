@@ -80,7 +80,7 @@
             <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
          </StackPane.margin>
       </AnchorPane>
-      <AnchorPane minHeight="-Infinity" prefWidth="600.0">
+      <AnchorPane fx:id="homePane" minHeight="-Infinity" prefWidth="600.0">
          <children>
             <TitledPane animated="false" collapsible="false" contentDisplay="BOTTOM" graphicTextGap="0.0" layoutX="311.0" prefWidth="234.0" style="-fx-background-color: #40B0D2;" text="Book a Room" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
                <font>
@@ -200,24 +200,27 @@
                         <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                            <children>
                               <Label fx:id="instructionsLbl" style="-fx-background-color: white;" text="Label" />
-                              <JFXButton fx:id="closeInstuctionsBtn" onAction="#closeInstructions" style="-fx-background-color: #61BFE0;" text="Close Instructions" />
+                              <JFXButton fx:id="closeInstructionsBtn" onAction="#closeInstructions" style="-fx-background-color: #61BFE0;" text="Close Instructions" />
                            </children>
                         </VBox>
                      </children>
                   </AnchorPane>
               </content>
             </TitledPane>
-            <AnchorPane fx:id="errorDlg" prefWidth="200.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="245.0" AnchorPane.topAnchor="170.0">
-               <children>
-                  <AnchorPane prefWidth="200.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TitledPane fx:id="errorDlg" animated="false" collapsible="false" text="ERROR" AnchorPane.leftAnchor="250.0" AnchorPane.topAnchor="200.0">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" text="ERROR" textFill="#d21212" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
-                        <JFXButton fx:id="errorBtn" onAction="#closeError" style="-fx-background-color: #E06479;" text="X" AnchorPane.rightAnchor="0.0" />
+                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Label fx:id="errorLbl" wrapText="true" />
+                              <JFXButton fx:id="errorBtn" onAction="#closeError" style="-fx-background-color: #E06479;" text="X" />
+                           </children>
+                        </VBox>
                      </children>
                   </AnchorPane>
-                  <Label fx:id="errorLbl" prefWidth="200.0" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="25.0" />
-               </children>
-            </AnchorPane>
+              </content>
+            </TitledPane>
          </children>
       </AnchorPane>
    </children>

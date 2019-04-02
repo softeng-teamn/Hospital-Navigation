@@ -29,7 +29,7 @@ import service.StageManager;
 public class ScheduleController extends Controller {
 
     @FXML
-    private JFXButton homeBtn, filterRoomBtn, makeReservationBtn, instructionsBtn, errorBtn, exitConfBtn, submitBtn, closeInstructionsBtn;
+    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn, instructionsBtn, errorBtn, exitConfBtn, submitBtn, closeInstructionsBtn;
 
     @FXML
     private VBox roomList, schedule, checks;
@@ -50,10 +50,10 @@ public class ScheduleController extends Controller {
     private Label errorLbl, timeLbl, confErrorLbl, instructionsLbl;
 
     @FXML
-    private TitledPane instructionsPane;
+    public TitledPane instructionsPane, errorDlg;
 
     @FXML
-    private AnchorPane errorDlg, confirmationPane;
+    private AnchorPane confirmationPane, homePane;
 
     @FXML
     private StackPane stackP;
@@ -70,8 +70,6 @@ public class ScheduleController extends Controller {
     private ReservableSpace currentSelection;
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
-    // Index of the home page in the stackPane
-    private final int homePage = 0;
 
     /**
      * Set up scheduler page.
@@ -92,8 +90,10 @@ public class ScheduleController extends Controller {
         // Disable things that can't be used yet
         errorDlg.setVisible(false);
         confirmationPane.setVisible(false);
+        confirmationPane.setDisable(true);
         confErrorLbl.setVisible(false);
         makeReservationBtn.setDisable(true);
+        homePane.setDisable(false);
 
         // Set event privacy options
         ObservableList<String> options =
@@ -153,13 +153,13 @@ public class ScheduleController extends Controller {
     }
 
     /**
-     *   On room button click, show the schedule for that room and date. 
+     *   On room button click, show the schedule for that room and date.
       */
     @FXML
     public void showRoomSchedule() {
         // Having chosen a location, users can now make a reservation
         makeReservationBtn.setDisable(false);
-        
+
         // Get the selected location
         ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
         currentSelection = curr;
@@ -269,9 +269,10 @@ public class ScheduleController extends Controller {
             errorDlg.setVisible(true);
         }
         else {    // Otherwise, display the confirmation screen
-            stackP.getChildren().get(homePage).setDisable(true);
-            stackP.getChildren().get(homePage).toBack();
+            homePane.setDisable(true);
+            homePane.toBack();
             confirmationPane.setVisible(true);
+            confirmationPane.setDisable(false);
             showConf();
         }
     }
@@ -390,9 +391,9 @@ public class ScheduleController extends Controller {
      * Close the reservation confirmation dialog.
      */
     public void closeConf() {
-        confirmationPane.toFront();
+        confirmationPane.toFront();    // TODO ???
         confirmationPane.setVisible(false);
-        stackP.getChildren().get(homePage).setDisable(false);
+        homePane.setDisable(false);
         confErrorLbl.setVisible(false);
         eventName.setText("");
         employeeID.setText("");
