@@ -374,8 +374,9 @@ public class HomeController extends MapController {
     }
 
     void sendEditToDB() {
+        Node oldNode = destNode;
         Node myNode = new Node(
-                edit_id.getId(),
+                destNode.getNodeID(),
                 Integer.parseInt(edit_x.getText()),
                 Integer.parseInt(edit_y.getText()),
                 edit_floor.getText(),
@@ -384,13 +385,14 @@ public class HomeController extends MapController {
                 edit_long.getText(),
                 edit_short.getText()
         );
-        System.out.println("her is updated node");
-        System.out.println(myNode);
-        System.out.println("NODE IS BEING SENT TO DB");
-        boolean isModified = dbs.updateNode(myNode);
-        System.out.println(isModified);
-        // rehydrate list
-        repopulateList();
+        if (dbs.updateNode(myNode)) {
+            System.out.println("Here is the Old Node");
+            System.out.println(oldNode);
+            System.out.println("NEW NODE");
+            System.out.println(myNode);
+            System.out.println("Lets repopulate the list");
+            insertNodeIntoList(oldNode, myNode);
+        }
     }
 
     @FXML
@@ -435,6 +437,36 @@ public class HomeController extends MapController {
         allNodesObservable = FXCollections.observableArrayList();
         // repopulate
         allNodesObservable.addAll(allNodes);
+        // clear listVIEW
+        list_view.getItems().clear();
+        // add to listView
+        list_view.getItems().addAll(allNodesObservable);
+
+        list_view.setCellFactory(param -> new JFXListCell<Node>() {
+            @Override
+            protected  void updateItem(Node item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNodeID() == null ) {
+                    setText(null);
+                } else {
+                    setText(item.getLongName());
+                }
+            }
+        });
+    }
+
+    void insertNodeIntoList(Node oldN, Node newN) {
+//        ArrayList<Node> repop;
+        int indxOfModified = allNodes.indexOf(oldN);
+
+        System.out.println("Removing old Node: " + allNodes.remove(oldN));
+        allNodes.add(indxOfModified, newN);
+        // wipe old observable
+        allNodesObservable = FXCollections.observableArrayList();
+        // repopulate
+        allNodesObservable.addAll(allNodes);
+        // clear listVIEW
+        list_view.getItems().clear();
         // add to listView
         list_view.getItems().addAll(allNodesObservable);
 
