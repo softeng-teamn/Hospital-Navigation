@@ -71,17 +71,17 @@ public class RequestController extends Controller implements Initializable {
 
         String descrption = textArea.getText();
         String requestType = typeBox.getValue();
-        Node requestLocation = (Node) locationNodeList.getSelectionModel().getSelectedItems();
+        Node requestLocation = (Node) locationNodeList.getSelectionModel().getSelectedItem();
 
         if (requestLocation == null) {
             locationTextField.setText("Request Location: \nPlease select location!");
         } else if (requestType == null) {
             typeTextField.setText("Request Type: \nPlease select type!");
         } else if (requestType.contains("Medicine")) {
-            MedicineRequest newMedicineRequest = new MedicineRequest(-1, descrption, null, false);
+            MedicineRequest newMedicineRequest = new MedicineRequest(-1, descrption, requestLocation, false);
             dbs.insertMedicineRequest(newMedicineRequest);
         } else if (requestType.contains("IT")) {
-            ITRequest newITRequest = new ITRequest(-1, descrption, null, false);
+            ITRequest newITRequest = new ITRequest(-1, descrption, requestLocation, false);
             dbs.insertITRequest(newITRequest);
 
         }

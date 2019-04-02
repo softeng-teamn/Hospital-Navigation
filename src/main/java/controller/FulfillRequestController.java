@@ -156,16 +156,14 @@ public class FulfillRequestController extends Controller implements Initializabl
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        MedicineRequest temp1 = new MedicineRequest(234, "the first medicine request", null, false);
-        ITRequest temp2 = new ITRequest(24354, "the first IT request", null, false);
 
-        ObservableList<Request> requestlist = FXCollections.observableArrayList(temp1, temp2);
+        ObservableList<Request> requestlist = FXCollections.observableArrayList();
 
-//        ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) dbs.getAllMedicineRequests();
-//        ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) dbs.getAllITRequests();
+        ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) dbs.getAllMedicineRequests();
+        ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) dbs.getAllITRequests();
 
-//        requestlist.addAll(medicineReq);
-//        requestlist.addAll(itReq);
+        requestlist.addAll(medicineReq);
+        requestlist.addAll(itReq);
 
         printList(requestlist);
 

@@ -20,7 +20,6 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(ResourceLoader.request);
         StageManager.changeWindow(primaryStage, root, "Home");
 
-
         CSVController.importIfNecessary();
     }
 

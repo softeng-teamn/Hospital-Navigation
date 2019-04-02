@@ -20,8 +20,7 @@ import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PathFindingServiceAdvancedTest {
 
@@ -108,51 +107,61 @@ public class PathFindingServiceAdvancedTest {
     @Before
     public void mockingGetChildren() throws IOException {
         System.out.println("Start mocking get children...");
-        CSVController.closeDatabase();
-        FileUtils.forceDelete(new File("hospital-db"));
-        CSVController.initializeDatabase();
-        CSVController.importNodes();
-        CSVController.importEdges();
+//        CSVController.closeDatabase();
+//        FileUtils.forceDelete(new File("hospital-db"));
+//        CSVController.initializeDatabase();
+//        CSVController.importNodes();
+//        CSVController.importEdges();
 
         createMap();
         ArrayList<MapNode> list = new ArrayList<MapNode>();
         list.add(mn2);
-        when(mockPF.getChildren(mn1)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn1));
+//        when(mockPF.getChildren(mn1)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn1);
         list.add(mn3);
         list.add(mn5);
         list.add(mn7);
-        when(mockPF.getChildren(mn2)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn2));
+//        when(mockPF.getChildren(mn2)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn2);
         list.add(mn4);
         list.add(mn9);
-        when(mockPF.getChildren(mn3)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn3));
+//        when(mockPF.getChildren(mn3)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn3);
-        when(mockPF.getChildren(mn4)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn4));
+//        when(mockPF.getChildren(mn4)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn2);
         list.add(mn6);
-        when(mockPF.getChildren(mn5)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn5));
+//        when(mockPF.getChildren(mn5)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn5);
-        when(mockPF.getChildren(mn6)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn6));
+//        when(mockPF.getChildren(mn6)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn2);
         list.add(mn8);
-        when(mockPF.getChildren(mn7)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn7));
+//        when(mockPF.getChildren(mn7)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn7);
-        when(mockPF.getChildren(mn8)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn8));
+//        when(mockPF.getChildren(mn8)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn3);
         list.add(mn10);
-        when(mockPF.getChildren(mn9)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn9));
+//        when(mockPF.getChildren(mn9)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn9);
-        when(mockPF.getChildren(mn10)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn10));
+//        when(mockPF.getChildren(mn10)).thenReturn(list);
     }
 
     @Test

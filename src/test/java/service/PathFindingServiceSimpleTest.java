@@ -61,31 +61,45 @@ public class PathFindingServiceSimpleTest {
     //      3 - 4 - 5
     //
     @Before
-    public void mockingGetChildren() {
+    public void mockingGetChildren() throws IOException {
+
+
+//        CSVController.closeDatabase();
+//        FileUtils.forceDelete(new File("hospital-db"));
+//        CSVController.initializeDatabase();
+//        CSVController.importNodes();
+//        CSVController.importEdges();
+
         ArrayList<MapNode> list = new ArrayList<MapNode>();
         list.add(mn2);
-        when(mockPF.getChildren(mn1)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn1));
+//        when(mockPF.getChildren(mn1)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn1);
         list.add(mn6);
         list.add(mn3);
-        when(mockPF.getChildren(mn2)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn2));
+        //when(mockPF.getChildren(mn2)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn2);
         list.add(mn4);
-        when(mockPF.getChildren(mn3)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn3));
+        //when(mockPF.getChildren(mn3)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn3);
         list.add(mn5);
-        when(mockPF.getChildren(mn4)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn4));
+        //when(mockPF.getChildren(mn4)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn4);
         list.add(mn6);
-        when(mockPF.getChildren(mn5)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn5));
+        //when(mockPF.getChildren(mn5)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn2);
         list.add(mn5);
-        when(mockPF.getChildren(mn6)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn6));
+        //when(mockPF.getChildren(mn6)).thenReturn(list);
     }
 
     // make sure I built the sinerio correctly
