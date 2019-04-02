@@ -15,6 +15,9 @@ public class Controller {
         initializeDatabase();
     }
 
+    /**
+     * initializes the Database
+     */
     public static void initializeDatabase() {
         try {
             dbs = DatabaseService.init();
@@ -25,11 +28,16 @@ public class Controller {
 
     static boolean isAdmin = false;
 
+    /**
+     * closes the database
+     */
     public static void closeDatabase() {
         dbs.close();
     }
 
-
+    /**
+     * empties all entries from tables in the database, used for testing.
+     */
     public static void wipeTables() {
         dbs.wipeTables();
     }

@@ -8,9 +8,9 @@ import static org.junit.Assert.assertEquals;
 
 public class EmployeeTest {
 
-   private Employee empA = new Employee(1337, "Janitor", true);
-   private Employee empB = new Employee(1337, "Janitor", true);
-   private Employee empC = new Employee(9876, "Dr. Nascimento", false);
+   private Employee empA = new Employee(1337, "Janitor", true, "danzaCuduro");
+   private Employee empB = new Employee(1337, "Janitor", true,"danzaCuduro");
+   private Employee empC = new Employee(9876, "Dr. Nascimento", false,"LAGODOSMACACOS");
 
     @Test
     @Category(FastTest.class)
