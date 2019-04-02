@@ -181,7 +181,7 @@
                                  <content>
                                     <AnchorPane minHeight="0.0" minWidth="0.0">
                                        <children>
-                                          <JFXListView fx:id="reservableList" prefHeight="100.0" prefWidth="260.0" />
+                                          <JFXListView fx:id="reservableList" prefHeight="290.0" prefWidth="260.0" />
                                        </children>
                                     </AnchorPane>
                                  </content>
