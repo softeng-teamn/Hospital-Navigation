@@ -190,10 +190,10 @@ public class HomeController extends MapController {
 
     @FXML
     // switches window to map editor screen.
-    public void showMapEditor() throws Exception {
+    public void showAdminLogin() throws Exception {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
-        StageManager.changeExistingWindow(stage, root, "Map Editor");
+        Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
+        StageManager.changeExistingWindow(stage, root, "Admin Login");
     }
 
     @FXML

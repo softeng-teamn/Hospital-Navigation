@@ -28,6 +28,8 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     private JFXButton homeBtn;
     @FXML
+    private JFXButton adminBtn;
+    @FXML
     private JFXListView requestListView;
     @FXML
     private JFXRadioButton allTypeRadio;
@@ -77,8 +79,10 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
     @FXML
-    public void showAdmin(){
-
+    public void showAdmin() throws Exception{
+        Stage stage = (Stage) adminBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.adminPage);
+        StageManager.changeExistingWindow(stage, root, "Admin Page");
     }
 
     @FXML

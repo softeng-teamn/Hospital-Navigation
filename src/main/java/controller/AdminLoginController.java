@@ -5,13 +5,21 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Employee;
 import service.ResourceLoader;
 import service.StageManager;
 
-public class AdministratorController extends Controller {
+import java.net.URL;
+import java.util.EmptyStackException;
+import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
+
+public class AdminLoginController extends Controller implements Initializable {
 
     @FXML
     private JFXButton cancelBtn;
@@ -28,6 +36,7 @@ public class AdministratorController extends Controller {
 
 
 
+
     @FXML
     public void showHome() throws Exception {
         Stage stage = (Stage) cancelBtn.getScene().getWindow();
@@ -35,20 +44,27 @@ public class AdministratorController extends Controller {
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
+
+
     @FXML
     public void showDecision() throws Exception {
         Stage stage = (Stage) loginBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
-        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
+        Parent root = FXMLLoader.load(ResourceLoader.adminPage);
+        StageManager.changeExistingWindow(stage, root, "Admin Page");
     }
+
+
 
     @FXML
     public void login() throws Exception{
         String id = idText.getText();
         String password = passwordField.getText();
+        int intID = Integer.parseInt(id);
+//        Employee user = dbs.getEmployee(intID);
 
-        if(id == "kimi"){
-            if(password == "kimi"){
+//        if(user.isAdmin() && user != null){
+        if (intID == 1234){
+            if(password.equals("kimi")){
                 showDecision();
             } else {
                 passwordPrompt.setText("Invalid Password");
@@ -61,4 +77,18 @@ public class AdministratorController extends Controller {
 
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String text = change.getText();
+
+            if (text.matches("[0-9]*")) {
+                return change;
+            }
+
+            return null;
+        };
+        TextFormatter<String> textFormatter = new TextFormatter<>(filter);
+        idText.setTextFormatter(textFormatter);
+    }
 }

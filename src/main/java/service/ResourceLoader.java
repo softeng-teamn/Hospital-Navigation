@@ -13,6 +13,8 @@ public class ResourceLoader {
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");
     public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
     public static final URL adminLogin = service.ResourceLoader.class.getResource("/administratorLogin.fxml");
+    public static final URL adminPage = service.ResourceLoader.class.getResource("/adminPage.fxml");
+
 
 
     // Images

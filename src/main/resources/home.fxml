@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
+<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="101.0" prefWidth="1385.0" spacing="5.0">
          <children>
@@ -30,7 +30,7 @@
                <HBox.margin>
                   <Insets right="40.0" />
                </HBox.margin></JFXButton>
-            <JFXButton contentDisplay="CENTER" onAction="#showMapEditor" text="Edit Map" />
+            <JFXButton contentDisplay="CENTER" onAction="#showAdminLogin" text="Admin Login" />
             <JFXButton onAction="#showSchedule" text="Book Room" />
             <JFXButton onAction="#showRequest" text="Service Request" />
             <Label text="Visuals" />
