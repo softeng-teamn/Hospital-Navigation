@@ -37,8 +37,8 @@
                   <Insets right="40.0" />
                </HBox.margin></JFXButton>
             <JFXButton contentDisplay="CENTER" text="Edit Map" />
-            <JFXButton text="Book Room" />
-            <JFXButton text="Service Request" />
+            <JFXButton onAction="#showSchedule" text="Book Room" />
+            <JFXButton onAction="#showRequest" text="Service Request" />
             <Label text="Visuals" />
          </children>
          <VBox.margin>

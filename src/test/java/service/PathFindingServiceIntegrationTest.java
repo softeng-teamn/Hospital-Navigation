@@ -43,10 +43,10 @@ public class PathFindingServiceIntegrationTest {
 
     }
 
-    @Test
-    @Category(FastTest.class)
-    public void testGetChildren(){
-        assertThat(pathFindingService.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
-    }
+//    @Test
+//    @Category(FastTest.class)
+//    public void testGetChildren(){
+//        assertThat(pathFindingService.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
+//    }
 
 }

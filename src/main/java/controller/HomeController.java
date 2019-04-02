@@ -191,7 +191,7 @@ public class HomeController extends MapController {
     @FXML
     // switches window to map editor screen.
     public void showMapEditor() throws Exception {
-        Stage stage = (Stage) editBtn.getScene().getWindow();
+        Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.mapEdit);
         StageManager.changeExistingWindow(stage, root, "Map Editor");
     }
@@ -199,7 +199,7 @@ public class HomeController extends MapController {
     @FXML
     // switches window to request screen
     public void showRequest() throws Exception {
-        Stage stage = (Stage) serviceBtn.getScene().getWindow();
+        Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request);
         StageManager.changeExistingWindow(stage, root, "Service Request");
     }
@@ -207,7 +207,7 @@ public class HomeController extends MapController {
     @FXML
     // switches window to schedule screen
     public void showSchedule() throws Exception {
-        Stage stage = (Stage) schedulerBtn.getScene().getWindow();
+        Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
     }
