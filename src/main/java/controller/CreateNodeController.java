@@ -15,12 +15,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import model.Edge;
 import model.Node;
 import service.ResourceLoader;
 import service.StageManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CreateNodeController extends Controller {
@@ -36,9 +38,9 @@ public class CreateNodeController extends Controller {
     @FXML
     Label instruction_label;
     @FXML
-    VBox node_info_vbox;
+    VBox node_info_vbox, narnar_vbox;
     @FXML
-    JFXTextField floor_field, type_field, short_field, long_field;
+    JFXTextField floor_field, type_field, short_field, long_field, building_field;
 
     private final Color DEFAULT_NODE_COLOR = Color.BLACK;
     private final Color SELECTED_NODE_COLOR = Color.RED;
@@ -49,7 +51,8 @@ public class CreateNodeController extends Controller {
     // State iteration for seperate interaction
     // 0 - select new node location (Start)
     // 1 - add node info select connected nodes
-    // 2 - select connected nodes (End)
+    // 2 - select connected nodes
+    // 3 - tell the user WE DID IT! (End)
     int stateIterator;
     // Circle to represent location of New Node
     Circle displayCircle;
@@ -60,7 +63,11 @@ public class CreateNodeController extends Controller {
     String node_type = "";
     String node_short = "";
     String node_long = "";
+    String node_building = "";
+    // Collection of edges
     ArrayList<Edge> edges;
+    // Collection of lines
+    ArrayList<Line> lineCollection;
 
     @FXML
     void initialize() {
@@ -69,6 +76,8 @@ public class CreateNodeController extends Controller {
 
         // remove texfields to SHOW MAP
         hideTextFields();
+        // remove the narwall stuff
+        anchor_pane.getChildren().remove(narnar_vbox);
 
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
         Group contentGroup = new Group();
@@ -94,7 +103,7 @@ public class CreateNodeController extends Controller {
     }
 
     @FXML
-    void nextAction(ActionEvent e) {
+    void nextAction(ActionEvent e) throws Exception {
         System.out.println("just clicked next");
         nextState();
         renderState();
@@ -139,21 +148,86 @@ public class CreateNodeController extends Controller {
         // find if the node was already clicked
         if (nodeCircle.getFill().equals(DEFAULT_NODE_COLOR)) {
             // add node to edge list
-
-//            edges.add();
+            edges.add(new Edge(myCreatedNode, selectedNode));
+            // change color
+            nodeCircle.setFill(SELECTED_NODE_COLOR);
+            // draw line path
+            appendLine(selectedNode);
         } else {
             // already selected
+            // change color
+            nodeCircle.setFill(DEFAULT_NODE_COLOR);
             // remove this as an edge
+            ArrayList<Edge> updatedEdges = new ArrayList<Edge>();
+            // filter through edges
+            for (Edge edge : edges) {
+                if (!edge.getNode2().getNodeID().equals(selectedNode.getNodeID())) {
+                    updatedEdges.add(edge);
+                }
+            }
+            edges = updatedEdges;
+            // remove the line
+            filterLine(selectedNode);
+        }
+        checkEnoughEdges();
+    }
 
+    void checkEnoughEdges() {
+        if (edges.size() > 0) {
+            next_btn.setDisable(false);
+        } else {
+            next_btn.setDisable(true);
         }
     }
 
+    // removes line from collection
+    void filterLine(Node destNode) {
+        ArrayList<Line> newLineCollection = new ArrayList<Line>();
+        for (Line line : lineCollection) {
+            if (!((int)line.getEndX() == destNode.getXcoord() && (int)line.getEndY() == destNode.getYcoord())) {
+                newLineCollection.add(line);
+            } else {
+                System.out.println("The line");
+                System.out.println(line.getEndX() + " " + line.getEndY());
+                System.out.println("Our dest");
+                System.out.println(destNode.getXcoord() + " " + destNode.getYcoord());
+            }
+        }
+        // remove last collection
+        zoomGroup.getChildren().removeAll(lineCollection);
+        // re-draw to screen
+        lineCollection = newLineCollection;
+        // re-add all
+        zoomGroup.getChildren().addAll(lineCollection);
+    }
+
+    // adds new line to collection
+    void appendLine(Node destNode) {
+        Line line = new Line();
+
+        line.setStartX(myCreatedNode.getXcoord());
+        line.setStartY(myCreatedNode.getYcoord());
+
+        line.setEndX(destNode.getXcoord());
+        line.setEndY(destNode.getYcoord());
+
+        line.setFill(EDGE_COLOR);
+        line.setStrokeWidth(10.0);
+        // add the line
+        lineCollection.add(line);
+        // draw the line
+        zoomGroup.getChildren().add(line);
+    }
+
     // iterate to next state
-    void nextState() {
-        if (stateIterator == 2) {
+    void nextState() throws Exception {
+        if (stateIterator == 3) {
             // SUBMIT AND REDIRECT
             // the node is fully created,
             // we are done here
+            Parent root = FXMLLoader.load(ResourceLoader.home);
+            Stage stage = (Stage) cancel_btn.getScene().getWindow();
+            StageManager.changeExistingWindow(stage, root, "Home");
         } else {
             stateIterator++;
         }
@@ -171,6 +245,13 @@ public class CreateNodeController extends Controller {
             case 2:
                 connectEdges();
                 break;
+            case 3:
+                submitNewNode();
+                break;
+
+                default:
+                    break;
+
         }
     }
 
@@ -202,12 +283,27 @@ public class CreateNodeController extends Controller {
         hideTextFields();
         // create edges list
         edges = new ArrayList<Edge>();
+        // create lines list
+        lineCollection = new ArrayList<Line>();
         // display the nodes on the map
         showAllNodes();
         // show instructions
         instruction_label.setText("Select all nodes that are reachable");
         next_btn.setDisable(true);
         next_btn.setText("Set Edges");
+    }
+
+    // STATE: populate the database with our info
+    void submitNewNode() {
+        // show instructions
+        instruction_label.setText("Node Successfully Created!");
+        next_btn.setDisable(false);
+        next_btn.setText("Finish");
+        // remove map
+        anchor_pane.getChildren().remove(map_scrollpane);
+        anchor_pane.getChildren().remove(zoom_slider);
+        // add the narwhal
+        anchor_pane.getChildren().add(narnar_vbox);
     }
 
     // remove textfields from screen
@@ -247,6 +343,10 @@ public class CreateNodeController extends Controller {
             node_short = newValue;
             checkAllFields();
         });
+        building_field.textProperty().addListener((observable, oldValue, newValue) -> {
+            node_building = newValue;
+            checkAllFields();
+        });
     }
 
     // will allow next button to be clicked if valid fields
@@ -264,18 +364,30 @@ public class CreateNodeController extends Controller {
     // create node from existing node info
     void buildNode() {
         // nodeID key:
-        String nodeID = "X" + node_type + genNodeNumber();
+        String nodeID = "X" + node_type + genNodeNumber() + genFloorNumber();
+        myCreatedNode.setNodeID(nodeID);
+        myCreatedNode.setBuilding(node_building);
+        myCreatedNode.setFloor(node_floor);
+        myCreatedNode.setShortName(node_short);
+        myCreatedNode.setLongName(node_long);
+        myCreatedNode.setNodeType(node_type);
+        System.out.println("Built node of ID: " + nodeID);
     }
 
     String genNodeNumber() {
-        String str = "";
-//        dbs.get
-        return str;
+        String str = "%3d";
+        int numNodes = dbs.getNumNodeTypeByFloor(node_type, node_floor);
+        return String.format(str, numNodes);
+    }
+
+    String genFloorNumber() {
+        String str = "%2s";
+        return String.format(str, node_floor).replace(' ', '0');
     }
 
     // validation for node info
     boolean isValid() {
-        return (!node_floor.isEmpty() && !node_type.isEmpty() && !node_short.isEmpty() && !node_long.isEmpty());
+        return (!node_floor.isEmpty() && !node_type.isEmpty() && !node_short.isEmpty() && !node_long.isEmpty() && !node_building.isEmpty());
     }
 
     void showAllNodes() {

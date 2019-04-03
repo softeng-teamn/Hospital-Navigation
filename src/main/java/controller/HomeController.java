@@ -464,6 +464,7 @@ public class HomeController extends MapController {
         // clear listVIEW
         if (list_view == null) {
             System.out.println("LIST VIEW IS NULL");
+            return;
         }
         list_view.getItems().clear();
         // add to listView
