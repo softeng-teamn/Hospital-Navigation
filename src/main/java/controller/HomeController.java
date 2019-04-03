@@ -121,6 +121,10 @@ public class HomeController extends MapController {
 
         authCheck();
 
+        dbs.registerNodeCallback(aVoid -> {
+            HomeController.this.nodeChangedCallback();
+            return null;
+        });
 
         repopulateList();
 
@@ -156,6 +160,10 @@ public class HomeController extends MapController {
     /**
      * TBD
      */
+    private void nodeChangedCallback() {
+        repopulateList();
+    }
+  
     void authCheck() {
         if (Controller.getIsAdmin()) {
             auth_btn.setText("Logout");
@@ -358,6 +366,8 @@ public class HomeController extends MapController {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
+        stage.sizeToScene();
+        stage.setFullScreen(true);
     }
 
     /**

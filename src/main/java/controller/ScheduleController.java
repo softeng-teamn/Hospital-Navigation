@@ -1,6 +1,5 @@
 package controller;
 
-import java.time.LocalDateTime;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -12,13 +11,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -27,17 +24,13 @@ import model.Reservation;
 import service.ResourceLoader;
 import service.StageManager;
 
-import service.DatabaseService;
-//import sun.util.calendar.Gregorian;
-
-import java.io.IOException;
-
-import static java.util.Calendar.*;
-
 public class ScheduleController extends Controller {
 
     @FXML
-    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn, instructionsBtn, errorBtn, exitConfBtn, submitBtn, closeInstructionsBtn;
+    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn, instructionsBtn, errorBtn;
+
+    @FXML
+    public JFXButton exitConfBtn, submitBtn, closeInstructionsBtn, serviceBtn, adminBtn;
 
     @FXML
     private VBox roomList, schedule, checks;
@@ -61,7 +54,13 @@ public class ScheduleController extends Controller {
     public TitledPane instructionsPane, errorDlg;
 
     @FXML
-    private AnchorPane confirmationPane, homePane;
+    private AnchorPane confirmationPane, rightPane, bottomPane, homePane;
+
+    @FXML
+    private VBox leftPane;
+
+    @FXML
+    private HBox header;
 
     @FXML
     private StackPane stackP;
@@ -69,7 +68,7 @@ public class ScheduleController extends Controller {
     @FXML
     private JFXComboBox<String> privacyLvlBox;
 
-    private int openTime = 9;   // hour to start schedule dislay TODO: change these depending on the room
+    private int openTime = 9;   // hour to start schedule dislay
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private int timeStep = 2;    // Fractions of an hour
     private int timeStepMinutes = 60/timeStep;    // In Minutes
@@ -79,21 +78,27 @@ public class ScheduleController extends Controller {
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
 
+    // TODO
+    private BorderPane borderP;
+
     /**
      * Set up scheduler page.
      */
     @FXML
     public void initialize() {
+        // Read in reservable Spaces
+        CSVController csvC = new CSVController();
+        csvC.importReservableSpaces();
+
         // Create the instructions and error message
         instructionsPane.setVisible(false);
-        instructionsLbl.setText("Instructions for Making a Reservation:\n" +
-                "1. Select desired date of reservation on the left.\n" +
-                "2. Select a location in the middle menu to view its schedule\n" +
-                "   on that date. \n" +
+        instructionsLbl.setText("1. Select desired date of reservation on the left.\n" +
+                "2. Select a location in the middle menu to view its schedule " +
+                "on that date. \n" +
                 "3. Select the start and end times for your reservation on the left.\n" +
-                "4. Select \"Make Reservation\" at bottom left (you must have selected\n" +
-                "   a location in order to make a reservation).\n" +
-                "5. Confirm your reservation and fill the required information.");
+                "4. Select \"Make Reservation\" at bottom left (you must have selected" +
+                " a location in order to make a reservation).\n" +
+                "5. Confirm your reservation and complete the required information.");
 
         // Disable things that can't be used yet
         errorDlg.setVisible(false);
@@ -149,7 +154,6 @@ public class ScheduleController extends Controller {
             }
         });
         reservableList.setEditable(false);
-
     }
 
 
@@ -181,12 +185,13 @@ public class ScheduleController extends Controller {
         GregorianCalendar gcalStart = GregorianCalendar.from(chosenDate.atStartOfDay(ZoneId.systemDefault()));
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
 
-
+        // Get reservations for this space and these times
         ArrayList<Reservation> reservations = (ArrayList<Reservation>) dbs.getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
 
         // clear the previous schedule
         schedule.getChildren().clear();
         checks.getChildren().clear();
+        currentSchedule.clear();
 
         // Make a list of time and activity labels for the schedule
         ArrayList<HBox> schedToAdd = new ArrayList<HBox>();
@@ -276,9 +281,9 @@ public class ScheduleController extends Controller {
 
         if (!valid) {    // If not valid, display an error message
             errorLbl.setText("Please enter valid start and end times " +
-                    "for this location.\n" +
+                    "for this location.\n\n" +
                     "Start and end times must not conflict with any " +
-                    "currently scheduled reservations.");
+                    "currently scheduled resMap.");
             errorDlg.setVisible(true);
         }
         else {    // Otherwise, display the confirmation screen
@@ -310,12 +315,12 @@ public class ScheduleController extends Controller {
         // If the user has not entered an event name, has entered an invalid ID,
         // or has not chosen a privacy level, display an error message
         if (eventName.getText().length() < 1 || employeeID.getText().length() < 1 || privacyLvlBox.getValue() == null) {
-            confErrorLbl.setText("Error: Please fill out all fields to make a reservation.");
+            confErrorLbl.setText("Error: Please complete all fields to make a reservation.");
             confErrorLbl.setVisible(true);
         }
 
         // If the ID number is bad, display an error message.
-        else if (badId || dbs.getEmployee(Integer.parseInt(employeeID.getText())) == null) {
+        else if (badId /*|| dbs.getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
             confErrorLbl.setText("Error: Please provide a valid employee ID number.");
             confErrorLbl.setVisible(true);
         }
@@ -338,7 +343,7 @@ public class ScheduleController extends Controller {
 
         // Get the privacy level
         int privacy = 0;
-        if (privacyLvlBox.getValue() == "Private") {
+        if (privacyLvlBox.getValue().equals("Private")) {
             privacy = 1;
         }
 
@@ -381,30 +386,18 @@ public class ScheduleController extends Controller {
         LocalTime start = startTimePicker.getValue();
         LocalTime end = endTimePicker.getValue();
 
-        // Display am/pm labels
-        String startAmPm = " AM";
-        String endAmPm = " PM";
-        if (start.getHour() >= 12) {
-            startAmPm = " PM";
-        }
-        if (end.getHour() >= 12) {
-            endAmPm = " PM";
-        }
-
-        // TODO fix timestamps
-
         // Display the current information
         timeLbl.setText("Reservation Location:      " + currentSelection.getSpaceName()
                 + "\n\nReservation Date:            " + datePicker.getValue()
-                + "\n\nReservation Start Time:   " + start + startAmPm
-                + "\n\nReservation End Time:    " + end + startAmPm);
+                + "\n\nReservation Start Time:   " + start
+                + "\n\nReservation End Time:    " + end);
     }
 
     /**
      * Close the reservation confirmation dialog.
      */
     public void closeConf() {
-        confirmationPane.toFront();    // TODO ???
+        confirmationPane.toFront();
         confirmationPane.setVisible(false);
         homePane.setDisable(false);
         confErrorLbl.setVisible(false);
@@ -431,7 +424,7 @@ public class ScheduleController extends Controller {
 
         // If the times are outside the location's open times
         // or end is greater than start, the times are invalid
-        if (end <= start || start < openTime || closeTime < end) {
+        if (endIndex <= index || start < openTime || closeTime < end) {
             return false;
         }
 
@@ -465,6 +458,21 @@ public class ScheduleController extends Controller {
         }
     }
 
+    @FXML
+    // switches window to map editor screen.
+    public void showLogin() throws Exception {
+        Stage stage = (Stage) adminBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.mapEdit);
+        StageManager.changeExistingWindow(stage, root, "Admin Login");
+    }
+
+    @FXML
+    // switches window to request screen
+    public void showService() throws Exception {
+        Stage stage = (Stage) serviceBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.request);
+        StageManager.changeExistingWindow(stage, root, "Service Request");
+    }
 
     // TODO
     public void filterRooms() {
@@ -486,125 +494,5 @@ public class ScheduleController extends Controller {
     ArrayList<String> getMaxPeople(int nPeople){
         ArrayList<String> a = new ArrayList<>();
         return a;
-    }
-
-    /**
-     * returns the roomID of the room asked for by the user
-     * @return
-     */
-    String getRoom(){
-        return "";
-    }
-
-    /**
-     * returns the roomID of the workstations asked for by the user
-     * @return
-     */
-    String getWorkStation() {
-        return "";
-    }
-
-
-    /**
-     * pull unavailable times for a room & date from database, return available times
-     * @param id
-     * @param date
-     * @return
-     */
-    ArrayList<GregorianCalendar> getAvailableTimes(String id, GregorianCalendar date) {
-
-        // correct time zone to set
-        TimeZone tz = TimeZone.getTimeZone("GMT");
-
-        // set date
-        date.setTimeZone(tz) ;
-
-        // get unavailable reservations from database
-        List<Reservation> unavailableReservations = dbs.getReservationsBySpaceId(id);
-
-
-        // fields that will be incremented to generate all possible times
-        int hour = 0;
-        int minute = 0;
-
-        // list of all possible times, will be filtered out to contain only available times
-        ArrayList<GregorianCalendar> allPossTimes = new ArrayList<>();
-
-        // make all available times by time step increment
-        // loop 48 times (30 minute increments over 24 hours)
-        System.out.println("LIST OF ALL POSS TIMES");
-        for (int i = 0; i < 48; i++) {
-
-            // create new GC object
-            GregorianCalendar addGC = new GregorianCalendar(date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), hour, minute, date.get(Calendar.SECOND));
-            // set the time zone
-            addGC.setTimeZone(tz) ;
-            // add to list
-            allPossTimes.add(addGC);
-
-            // if time is at the half hour mark, reset minutes to 0, increment hour
-            if (minute == timeStep) {
-                minute = 0;
-                hour += 1;
-
-            } else {
-                minute += timeStep;
-
-            }
-            System.out.println(allPossTimes.get(i).toInstant());
-        }
-
-        // remove unavailable times in for loop over unavailable reservations
-        for (int i = 0; i < unavailableReservations.size(); i++) {
-
-            // Create a new Reservation object with SET TIMES (so i can retrieve from this object and not keep referencing the incorrect time (zone) of the original)
-            Reservation newRes = new Reservation(unavailableReservations.get(i).getEventID(),
-                    unavailableReservations.get(i).getPrivacyLevel(),
-                    unavailableReservations.get(i).getEmployeeId(),
-                    unavailableReservations.get(i).getEventName(),
-                    unavailableReservations.get(i).getLocationID(),
-                    unavailableReservations.get(i).getStartTime(),
-                    unavailableReservations.get(i).getEndTime() );
-            // create new GC objects for same purpose as above
-            //GregorianCalendar start = (unavailableReservations.get(i).getStartTime()) ;
-            //GregorianCalendar end = (unavailableReservations.get(i).getEndTime()) ;
-            GregorianCalendar start = (newRes.getStartTime()) ;
-            GregorianCalendar end = (newRes.getEndTime()) ;
-            // set to correct time zone
-            start.setTimeZone(tz);
-            end.setTimeZone(tz);
-
-            System.out.println("Times for reservations");
-            System.out.println(start.toInstant());
-            System.out.println(end.toInstant()) ;
-
-            // set the hour and the minute for start
-            int hour2 = start.get(HOUR);
-            int minute2 = start.get(MINUTE);
-
-            // while the start time is less than the end time
-            while (start.compareTo(end) < 0) {
-
-                // remove start time from list
-                allPossTimes.remove(start);
-
-                // increment hour and reset minutes if at 30 minute slot
-                if (minute2 == timeStep) {
-                    minute2 = 0;
-                    hour2 += 1;
-                    start.set(MINUTE, minute2);
-                    start.set(HOUR, hour2);
-
-                } else {
-                    minute2 = 30;
-                    start.set(MINUTE, minute2);
-                }
-            }
-        }
-
-        // at this point allPossTimes is filtered to only available times - ready to use!
-        return allPossTimes;
-
-        // UI - display things in available list of calendar dates!! thank u :)
     }
 }

@@ -12,6 +12,7 @@ import model.ReservableSpace;
 import model.Reservation;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.loadui.testfx.GuiTest;
@@ -203,6 +204,8 @@ public class ScheduleControllerTest extends ApplicationTest {
         stage.setScene(new Scene(mainNode));
         stage.show();
         stage.toFront();
+        stage.sizeToScene();
+        stage.setFullScreen(true);
     }
 
     @Test
@@ -239,6 +242,7 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void showInstructions() throws InterruptedException {
@@ -248,6 +252,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(pane.isVisible());
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void closeInstructions() throws InterruptedException {
@@ -293,17 +298,17 @@ public class ScheduleControllerTest extends ApplicationTest {
         // TODO need database
     }
 
-    @Test
-    @Category({FastTest.class})
-    public void validTimes() {
-        // TODO need database
-    }
-
-    @Test
-    @Category({FastTest.class})
-    public void makeTimesValid() {
-        // TODO need database
-    }
+//    @Test
+//    @Category({FastTest.class})
+//    public void validTimes() {
+//        // TODO need database
+//    }
+//
+//    @Test
+//    @Category({FastTest.class})
+//    public void makeTimesValid() {
+//        // TODO need database
+//    }
 
     @After
     public void clear(){
