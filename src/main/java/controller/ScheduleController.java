@@ -157,7 +157,10 @@ public class ScheduleController extends Controller {
     }
 
 
-    // switches window to home screen
+    /**
+     * switches window to home screen
+     * @throws Exception
+     */
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
@@ -231,7 +234,9 @@ public class ScheduleController extends Controller {
             }
         }
 
-        // For each of this location's resMap, mark it booked on the schedule
+        /**
+         * For each of this location's reservations, mark it booked on the schedule
+         */
         for (Reservation res : reservations) {
             // Get the start time
             int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
@@ -480,9 +485,12 @@ public class ScheduleController extends Controller {
     }
 
 
-
-    // Currently unused:
-    //returns a list of roomIDs which have a max capacity of less than nPeople
+    /**
+     * Currently unused:
+     * returns a list of roomIDs which have a max capacity of less than nPeople
+     * @param nPeople
+     * @return
+     */
     ArrayList<String> getMaxPeople(int nPeople){
         ArrayList<String> a = new ArrayList<>();
         return a;

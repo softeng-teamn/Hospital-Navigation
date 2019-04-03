@@ -94,6 +94,14 @@ public class FloorMap {
         }
     }
 
+    /**
+     * finds the weight of an edge
+     * @param x1
+     * @param x2
+     * @param y1
+     * @param y2
+     * @return
+     */
     public double findWeight(int x1, int x2, int y1, int y2){
         return (Math.abs(x1-x2) + Math.abs(y1 - y2));
     }
