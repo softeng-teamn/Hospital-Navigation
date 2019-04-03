@@ -66,18 +66,17 @@ public class RequestController extends Controller implements Initializable {
     public void makeRequest() {
         JFXToggleNode selected = (JFXToggleNode) requestType.getSelectedToggle();
 
-        String reqType = selected.getText();
         String description = textArea.getText();
         Node requestLocation = (Node) locationNodeList.getSelectionModel().getSelectedItem();
 
         if (requestLocation == null) {
             textArea.setText("Please select location");
-        } else if (reqType == null) {
+        } else if (selected == null) {
             textArea.setText("Please select type");
-        } else if (reqType.contains("Medicine")) {
+        } else if (selected.getText().contains("Medicine")) {
             MedicineRequest newMedicineRequest = new MedicineRequest( -1, description, requestLocation, false);
             dbs.insertMedicineRequest(newMedicineRequest);
-        } else if (reqType.contains("IT")) {
+        } else if (selected.getText().contains("IT")) {
             ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
             dbs.insertITRequest(newITRequest);
 
