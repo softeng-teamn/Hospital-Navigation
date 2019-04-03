@@ -554,22 +554,31 @@ public class DatabaseServiceTest {
         res2End.setTime(new Date(now + 110000));
         Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
         Reservation res1 = new Reservation(1, 0, 43, "Event 1", "ABCD", res2Start, res2End);
+        Reservation res2 = new Reservation(2, 0, 43, "Event 1", "LMNO", res2Start, res2End);
 
         // Insert two
         assertTrue(myDBS.insertReservation(res0));
         assertTrue(myDBS.insertReservation(res1));
+        assertTrue(myDBS.insertReservation(res2));
 
+        GregorianCalendar gapStart = new GregorianCalendar();
+        GregorianCalendar gapEnd = new GregorianCalendar();
+        gapStart.setTime(new Date(now - 6000));
+        gapEnd.setTime(new Date(now + 200));
 
-//        // Check that only one is retrieved (small time block)
-//        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", new Date(now - 6000), new Date(now + 200));
-//        assertThat(reservationList.size(), is(1));
-//        assertEquals(res0, reservationList.get(0));
-//
-//        // Check that both are retrieved (large time block)
-//        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", new Date(now - 1000000), new Date(now + 1100000));
-//        assertThat(reservationList.size(), is(2));
-//        assertEquals(res0, reservationList.get(0));
-//        assertEquals(res1, reservationList.get(1));
+        // Check that only one is retrieved (small time block)
+        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", gapStart, gapEnd);
+        assertThat(reservationList.size(), is(1));
+        assertEquals(res0, reservationList.get(0));
+
+        gapStart.setTime(new Date(now - 1000000));
+        gapEnd.setTime(new Date(now + 1100000));
+
+        // Check that both are retrieved (large time block)
+        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", gapStart, gapEnd);
+        assertThat(reservationList.size(), is(2));
+        assertEquals(res0, reservationList.get(0));
+        assertEquals(res1, reservationList.get(1));
     }
 
     @Test

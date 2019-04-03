@@ -265,8 +265,12 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     @Test
     @Category({UiTest.class, FastTest.class})
-    public void submit() {
-
+    public void submit() throws InterruptedException {
+        Thread.sleep(2000);
+        System.out.println(sc.reservableList);
+        System.out.println(sc.reservableList.getChildrenUnmodifiable());
+        clickOn(sc.reservableList.getChildrenUnmodifiable().get(0));
+        Thread.sleep(20000);
         assertFalse(sc.confErrorLbl.isVisible());
         sc.eventName.setText("");
         sc.employeeID.setText("ROFL");
@@ -304,38 +308,6 @@ public class ScheduleControllerTest extends ApplicationTest {
         boolean vis = true;
         try {
             GuiTest.exists(instrP);
-        } catch (NoNodesFoundException | NoNodesVisibleException e) {
-            vis = false;
-        }
-        assertFalse(vis);
-    }
-
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void closeError() throws InterruptedException {
-        clickOn("#startTimePicker").write("1:00 AM");
-        Thread.sleep(200);
-        clickOn("#errorBtn");
-        Thread.sleep(200);
-        boolean vis = true;
-        try {
-            GuiTest.exists("#errorDlg");
-        } catch (NoNodesFoundException | NoNodesVisibleException e) {
-            vis = false;
-        }
-        assertFalse(vis);
-    }
-
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void closeConf() throws InterruptedException {
-        clickOn("#startTimePicker").write("1:00 AM");
-        Thread.sleep(200);
-        clickOn("#errorBtn");
-        Thread.sleep(200);
-        boolean vis = true;
-        try {
-            GuiTest.exists("#errorDlg");
         } catch (NoNodesFoundException | NoNodesVisibleException e) {
             vis = false;
         }

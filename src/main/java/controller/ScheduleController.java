@@ -47,7 +47,7 @@ public class ScheduleController extends Controller {
     public JFXTextField employeeID;
 
     @FXML
-    private JFXListView reservableList;
+    public JFXListView reservableList;
 
     @FXML
     public JFXDatePicker datePicker;
@@ -70,7 +70,7 @@ public class ScheduleController extends Controller {
     public TitledPane instructionsPane, errorDlg;
 
     @FXML
-    private AnchorPane confirmationPane, rightPane, bottomPane, homePane;
+    public AnchorPane confirmationPane, rightPane, bottomPane, homePane;
 
     @FXML
     private VBox leftPane;
@@ -193,13 +193,22 @@ public class ScheduleController extends Controller {
         currentSelection = curr;
 
         // Get that date and turn it into gregorian calendars to pass to the database
-        LocalDate chosenDate = datePicker.getValue();
-        LocalDate endDate = chosenDate.plus(1, ChronoUnit.DAYS);
+
+        //TODO: change to not infinite
+        LocalDate chosenDate = datePicker.getValue().plus(-30, ChronoUnit.YEARS);
+        LocalDate endDate = chosenDate.plus(30, ChronoUnit.MONTHS);
+        endDate = endDate.plus(30, ChronoUnit.YEARS);
         GregorianCalendar gcalStart = GregorianCalendar.from(chosenDate.atStartOfDay(ZoneId.systemDefault()));
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
 
         // Get reservations for this space and these times
         ArrayList<Reservation> reservations = (ArrayList<Reservation>) dbs.getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
+        System.out.println(curr.getSpaceID());
+        System.out.println(gcalStart.get(Calendar.MONTH) +  " " + gcalStart.get(Calendar.DATE) +  " " +
+                gcalStart.get(Calendar.YEAR) +  " " + gcalStart.get(Calendar.HOUR) +  " " );
+        System.out.println(gcalEnd.get(Calendar.MONTH) +  " " + gcalEnd.get(Calendar.DATE) +  " " +
+                gcalEnd.get(Calendar.YEAR) +  " " + gcalEnd.get(Calendar.HOUR) +  " " );
+        System.out.println(reservations);
 
         // clear the previous schedule
         schedule.getChildren().clear();
@@ -359,7 +368,7 @@ public class ScheduleController extends Controller {
         }
 
         // Create the new reservation
-        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getLocationNodeID(),gcalStart,gcalEnd);
+        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),gcalStart,gcalEnd);
         dbs.insertReservation(newRes);
         showRoomSchedule();
         closeConf();
