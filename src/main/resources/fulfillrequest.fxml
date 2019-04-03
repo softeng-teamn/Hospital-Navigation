@@ -10,14 +10,13 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox alignment="CENTER" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FulfillRequestController">
    <children>
       <Label text="Fulfill Request" textAlignment="CENTER" />
       <Region prefHeight="80.0" />
       <HBox alignment="CENTER" stylesheets="@theme.css">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="360.0" prefWidth="202.0">
+            <VBox prefHeight="360.0" prefWidth="202.0">
                <children>
                   <Label styleClass="small-label" text="Request Type">
                      <VBox.margin>
@@ -56,7 +55,7 @@
                         <Insets bottom="7.0" right="40.0" />
                      </VBox.margin>
                   </JFXRadioButton>
-                  <JFXRadioButton fx:id="uncRadio" onAction="#radioChanged" text="Uncomplete" toggleGroup="$statesToggle">
+                  <JFXRadioButton fx:id="uncRadio" onAction="#radioChanged" text="Unfufilled" toggleGroup="$statesToggle">
                      <VBox.margin>
                         <Insets bottom="7.0" right="35.0" />
                      </VBox.margin>
@@ -68,10 +67,16 @@
                   </JFXButton>
                   <JFXButton fx:id="homeBtn" onAction="#showHome" text="Home">
                      <VBox.margin>
-                        <Insets top="20.0" />
+                        <Insets left="37.0" top="20.0" />
                      </VBox.margin>
                   </JFXButton>
                </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets left="42.0" />
+               </padding>
             </VBox>
             <JFXListView fx:id="requestListView" prefHeight="380.0" prefWidth="700.0" styleClass="fulfilllist-view">
                <HBox.margin>
