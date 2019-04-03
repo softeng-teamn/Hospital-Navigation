@@ -295,6 +295,11 @@ public class CreateNodeController extends Controller {
 
     // STATE: populate the database with our info
     void submitNewNode() {
+        // send info to dbs
+        dbs.insertNode(myCreatedNode);
+        for (Edge e : edges) {
+            dbs.insertEdge(e);
+        }
         // show instructions
         instruction_label.setText("Node Successfully Created!");
         next_btn.setDisable(false);
@@ -303,7 +308,10 @@ public class CreateNodeController extends Controller {
         anchor_pane.getChildren().remove(map_scrollpane);
         anchor_pane.getChildren().remove(zoom_slider);
         // add the narwhal
-        anchor_pane.getChildren().add(narnar_vbox);
+        if (!anchor_pane.getChildren().contains(narnar_vbox)) {
+            anchor_pane.getChildren().add(narnar_vbox);
+        }
+
     }
 
     // remove textfields from screen
