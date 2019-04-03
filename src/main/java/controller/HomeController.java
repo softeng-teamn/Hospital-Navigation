@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -165,7 +166,15 @@ public class HomeController extends MapController {
     }
 
     private void elevCallback(Double aDouble) {
-        cur_el_floor.setText("" + aDouble.intValue());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                // if you change the UI, do it here !
+                cur_el_floor.setText("" + elev.data[0]);
+                System.out.println(elev.data[0]);
+            }
+        });
+
     }
 
     /**
@@ -383,6 +392,7 @@ public class HomeController extends MapController {
 
     @FXML
     void callElevatorAction(ActionEvent e) {
+        System.out.println("i was just called");
         JFXButton btn = (JFXButton) e.getSource();
         char test = btn.getText().charAt(btn.getText().length()-1);
         switch (test) {
