@@ -1,6 +1,7 @@
 package controller;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import model.Employee;
 import model.Node;
 import model.Edge;
 import model.ReservableSpace;
@@ -38,6 +39,7 @@ public class CSVControllerTest {
     private ArrayList<Node> testNodes;
     private ArrayList<Edge> testEdges;
     private ArrayList<ReservableSpace> testSpaces;
+    private ArrayList<Employee> testEmployees;
 
     @Before
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
@@ -47,6 +49,7 @@ public class CSVControllerTest {
         testNodes = new ArrayList<>();
         testEdges = new ArrayList<>();
         testSpaces = new ArrayList<>();
+        testEmployees = new ArrayList<>();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -63,6 +66,10 @@ public class CSVControllerTest {
         GregorianCalendar calendar4 = new GregorianCalendar();
         GregorianCalendar calendar5 = new GregorianCalendar();
         GregorianCalendar calendar6 = new GregorianCalendar();
+
+        Employee emp1 = new Employee(1,"Doctor",true,"wong");
+        Employee emp2 = new Employee(2,"Nurse",false,"duff");
+        Employee emp3 = new Employee(3,"Nurse",false,"bennett");
 
         calendar1.setTime(date1);
         calendar2.setTime(date2);
@@ -92,10 +99,14 @@ public class CSVControllerTest {
         testSpaces.add(space1);
         testSpaces.add(space2);
         testSpaces.add(space3);
+        testEmployees.add(emp1);
+        testEmployees.add(emp2);
+        testEmployees.add(emp3);
 
         when(dbs.getAllNodes()).thenReturn(testNodes);
         when(dbs.getAllEdges()).thenReturn(testEdges);
         when(dbs.getAllReservableSpaces()).thenReturn(testSpaces);
+        when(dbs.getAllEmployees()).thenReturn(testEmployees);
 
         when(dbs.getNode(n1.getNodeID())).thenReturn(n1);
         when(dbs.getNode(n2.getNodeID())).thenReturn(n2);
@@ -103,6 +114,9 @@ public class CSVControllerTest {
         when(dbs.getReservableSpace(space1.getSpaceID())).thenReturn(space1);
         when(dbs.getReservableSpace(space2.getSpaceID())).thenReturn(space2);
         when(dbs.getReservableSpace(space3.getSpaceID())).thenReturn(space3);
+        when(dbs.getEmployee(emp1.getID())).thenReturn(emp1);
+        when(dbs.getEmployee(emp2.getID())).thenReturn(emp2);
+        when(dbs.getEmployee(emp3.getID())).thenReturn(emp3);
 
         CSVController.dbs = dbs;
     }
@@ -252,6 +266,50 @@ public class CSVControllerTest {
 
     @Test
     @Category(FastTest.class)
+    public void exportEmployees() throws IOException{
+        // Precondition: Check that ./employees.csv does not exist
+        File tempfile = new File("./employees.csv");
+        assertFalse(tempfile.exists());
+
+        // Action: call CSVController.exportEmployees
+        CSVController.exportEmployees();
+
+        // Assert that export employees has the correct content
+        File empcsv = new File("./employees.csv");
+        assertTrue(empcsv.exists());
+        BufferedReader reader = new BufferedReader( new InputStreamReader(new FileInputStream("./employees.csv"), StandardCharsets.UTF_8));
+
+        StringBuffer fileContents = new StringBuffer();
+        String line = reader.readLine();
+        while(line != null){
+            fileContents.append(line);
+            fileContents.append("\n");
+            line = reader.readLine();
+        }
+
+        try {
+            reader.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+
+            if (reader != null) {
+                reader.close();
+            }
+        }
+
+        String expectedValue = "ID,job,isAdmin,password" + "\n"
+                + "1,Doctor,true,wong\n"
+                + "2,Nurse,false,duff\n"
+                + "3,Nurse,false,bennett\n";
+
+        assertThat(fileContents.toString(), is(expectedValue));
+
+        File file = new File("./employees.csv");
+        assertThat(file.delete(), is(true));
+    }
+
+    @Test
+    @Category(FastTest.class)
     // Warning: this test contains large amounts of black magic
     public void importNodes() throws Exception {
         URL originalURL = ResourceLoader.nodes;
@@ -311,16 +369,16 @@ public class CSVControllerTest {
         // Override the csv file
         setFinalStatic(ResourceLoader.class.getDeclaredField("reservablespaces"), service.ResourceLoader.class.getResource("/test_reservablespaces.csv"));
 
-        // Create a class to capture arguments of the type Node
+        // Create a class to capture arguments of the type ReservableSpace
         ArgumentCaptor<ReservableSpace> spaceCaptor = ArgumentCaptor.forClass(ReservableSpace.class);
 
         // Action being tested
         CSVController.importReservableSpaces();
 
-        // Capture the calls to insert node
+        // Capture the calls to insert spaces
         verify(CSVController.dbs, times(3)).insertReservableSpace(spaceCaptor.capture());
 
-        // Check that each node captured is equal to the test nodes
+        // Check that each node captured is equal to the test spaces
         List<ReservableSpace> capturedSpaces = spaceCaptor.getAllValues();
         assertEquals(testSpaces.get(0), capturedSpaces.get(0));
         assertEquals(testSpaces.get(1), capturedSpaces.get(1));
@@ -328,6 +386,33 @@ public class CSVControllerTest {
 
         // Reset to original URL
         setFinalStatic(ResourceLoader.class.getDeclaredField("reservablespaces"), originalURL);
+
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void importEmployees() throws Exception {
+
+        URL originalURL = ResourceLoader.employees;
+        // Override the csv file
+        setFinalStatic(ResourceLoader.class.getDeclaredField("employees"), service.ResourceLoader.class.getResource("/test_employees.csv"));
+
+        // Create a class to capture arguments of the type Employee
+        ArgumentCaptor<Employee> empCaptor = ArgumentCaptor.forClass(Employee.class);
+
+        // Action being tested
+        CSVController.importEmployees();
+        // Capture the calls to insert employees
+        verify(CSVController.dbs, times(3)).insertEmployee(empCaptor.capture());
+
+        // Check that each node captured is equal to the test employee
+        List<Employee> capturedEmp = empCaptor.getAllValues();
+        assertEquals(testEmployees.get(0), capturedEmp.get(0));
+        assertEquals(testEmployees.get(1), capturedEmp.get(1));
+        assertEquals(testEmployees.get(2), capturedEmp.get(2));
+
+        // Reset to original URL
+        setFinalStatic(ResourceLoader.class.getDeclaredField("employees"), originalURL);
 
     }
 
