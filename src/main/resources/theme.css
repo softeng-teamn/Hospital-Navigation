@@ -1,12 +1,19 @@
 * {
     -fx-primary: #2A2E37;
-    -fx-secondary: #02A9F4;
+    -fx-secondary: #D4AF37;
     -fx-tertiary: #646464;
     -fx-primarytext: #B2B2B2;
     -fx-scrollBar: #212121;
+    -fx-red: #F44336;
 }
 .root{
     -fx-background-color: -fx-primary;
+}
+
+.label{
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-family: Roboto;
+    /*-fx-font-size: 24pt;*/
 }
 
 .glyph-icon {
@@ -34,12 +41,11 @@
     -jfx-focus-color: -fx-secondary;
 }
 
-.Text {
-    -fx-font-family: Roboto;
-    -fx-text-fill: -fx-primaryText;
-    -fx-font-size: 13pt;
-    -jfx-focus-color: -fx-secondary;
+.wrong-credentials{
+    -jfx-unfocus-color: -fx-red;
+    -jfx-focus-color: -fx-red;
 }
+
 
 
 /*******************************************************************************
