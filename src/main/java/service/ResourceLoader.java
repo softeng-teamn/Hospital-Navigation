@@ -13,12 +13,4 @@ public class ResourceLoader {
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");
     public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
     public static final URL adminLogin = service.ResourceLoader.class.getResource("/administratorLogin.fxml");
-
-
-
-    // Images
-    public static final URL firstFloor = service.ResourceLoader.class.getResource("/Images/01_thefirstfloor.png");
-    public static final URL calendarIcon = service.ResourceLoader.class.getResource("/Images/calendar.png");
-    public static final URL pencilIcon = service.ResourceLoader.class.getResource("/Images/pencil.jpg");
-    public static final URL wrenchICon = service.ResourceLoader.class.getResource("/Images/wrench.jpg");
 }
