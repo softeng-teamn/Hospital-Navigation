@@ -62,7 +62,7 @@ public class HomeController extends MapController {
     ArrayList<Node> allNodes;
     ObservableList<Node> allNodesObservable;
 
-    private Node kioskNode = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
+    private Node kioskNode = new Node("FEXIT00201",1748,1321,"1","Tower","EDIT","75 Francis Valet Drop-off","75 Francis Edit");
     private Node destNode;
     private Circle destCircle = new Circle();
     private Circle kioskCircle = new Circle();

@@ -269,6 +269,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertFalse(vis);
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void closeError() throws InterruptedException {
