@@ -313,6 +313,7 @@ public class HomeController extends MapController {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
+        stage.sizeToScene();
         stage.setFullScreen(true);
     }
   
