@@ -239,6 +239,31 @@ public class DatabaseService {
         return floorNodes;
     }
 
+    public int getNumNodeTypeByFloor(String nodeType, String floor) {
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try{
+            stmt = connection.prepareStatement("SELECT COUNT (*) AS TOTAL FROM NODE WHERE (floor=? AND nodeType=?)");
+            prepareStatement(stmt, floor, nodeType);
+
+            // execute the query
+            res = stmt.executeQuery();
+            int num = -1;
+            while(res.next()){
+                num = res.getInt("TOTAL");
+            }
+            stmt.close();
+            res.close();
+            return num;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return -1;
+        } finally {
+            closeAll(stmt, res);
+        }
+    }
+
     // EDGE FUNCTIONS
     // returns a list of nodes that are connected to the given node
     public ArrayList<Node> getNodesConnectedTo(Node n) {
