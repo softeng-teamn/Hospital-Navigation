@@ -244,7 +244,6 @@ public class DatabaseService {
      * @return an arraylist of all nodes on the given floor.
      */
     public ArrayList<Node> getNodesByFloor(String floor) {
-        ArrayList<Node> floorNodes = new ArrayList<Node>();
         String query = "Select * FROM NODE WHERE NODE.FLOOR = ?";
         return (ArrayList<Node>)(List<?>) executeGetMultiple(query, Node.class, floor);
     }
