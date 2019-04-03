@@ -26,7 +26,6 @@
             <JFXButton fx:id="navigate_btn" onAction="#startNavigation" text="Navigate Here" />
             <JFXButton fx:id="edit_btn" onAction="#editAction" text="Edit" />
             <Region HBox.hgrow="ALWAYS" />
-            <Label text="Zoom" />
             <JFXButton onAction="#zoomOut" text="-" />
             <JFXSlider fx:id="zoom_slider" />
             <JFXButton onAction="#zoomIn" text="+">

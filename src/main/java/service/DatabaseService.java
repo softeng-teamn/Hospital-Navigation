@@ -820,7 +820,7 @@ public class DatabaseService {
         }
         return insertStatus;
     }
-
+  
     /** returns an object from the database based on a given ID
      * @param query the query to
      * @param cls the class of object to return
