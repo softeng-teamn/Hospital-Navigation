@@ -24,6 +24,7 @@ import service.StageManager;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class RequestController extends Controller implements Initializable {
@@ -76,8 +77,9 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     public void makeRequest() {
 
-        String descrption = textArea.getText();
+        String description = textArea.getText();
         String requestType = typeBox.getValue();
+        Random r = new Random();
         Node requestLocation = (Node) locationNodeList.getSelectionModel().getSelectedItem();
 
         if (requestLocation == null) {
@@ -85,13 +87,15 @@ public class RequestController extends Controller implements Initializable {
         } else if (requestType == null) {
             typeTextField.setText("Request Type: \nPlease select type!");
         } else if (requestType.contains("Medicine")) {
-            MedicineRequest newMedicineRequest = new MedicineRequest(-1, descrption, requestLocation, false);
+            MedicineRequest newMedicineRequest = new MedicineRequest( r.nextInt(10000), description, requestLocation, false);
             dbs.insertMedicineRequest(newMedicineRequest);
         } else if (requestType.contains("IT")) {
-            ITRequest newITRequest = new ITRequest(-1, descrption, requestLocation, false);
+            ITRequest newITRequest = new ITRequest(r.nextInt(10000), description, requestLocation, false);
             dbs.insertITRequest(newITRequest);
 
         }
+        textArea.clear();
+        typeBox.setValue(null);
     }
 
 

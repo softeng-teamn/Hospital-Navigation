@@ -28,6 +28,8 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     private JFXButton homeBtn;
     @FXML
+    private JFXButton adminBtn;
+    @FXML
     private JFXListView requestListView;
     @FXML
     private JFXRadioButton allTypeRadio;
@@ -54,7 +56,7 @@ public class FulfillRequestController extends Controller implements Initializabl
      * sets a request as completed in the database
      */
     @FXML
-    public  void fulfillRequest(){
+    public void fulfillRequest(){
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
         MedicineRequest medupdate;
         ITRequest ITupdate;
@@ -171,7 +173,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         }
 
         return "ID: " + request.getId() +
-                " Request Type: " + request.getRequestType() +
+                " Request Type: " + request.getRequestType().getrType().toString() +
                 " Description: " + request.getNotes();
     }
 
