@@ -13,6 +13,11 @@
 .label{
     -fx-text-fill: -fx-primaryText;
     -fx-font-family: Roboto;
+    -fx-font-size: 24pt;
+}
+
+.small-label{
+    -fx-font-size: 12pt;
 }
 
 .glyph-icon {
@@ -90,7 +95,6 @@
     -jfx-selected-color: -fx-secondary;
 
 }
-
 
 .text-area {
     -fx-font-family: Roboto;

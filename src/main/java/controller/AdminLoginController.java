@@ -67,11 +67,13 @@ public class AdminLoginController extends Controller implements Initializable {
                 if (password.equals(user.getPassword())){
                     Controller.setIsAdmin(true);
                     showHome();
+                } else {
+                    passwordField.getStyleClass().add("wrong-credentials");
                 }
             }
         } catch (Exception e) {
-            passwordField.getStyleClass().add("wrong-credentials");
             idText.getStyleClass().add("wrong-credentials");
+            passwordField.getStyleClass().add("wrong-credentials");
         }
 
 //        if(user.isAdmin()){
