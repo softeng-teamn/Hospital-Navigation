@@ -27,24 +27,16 @@ import service.StageManager;
 public class ScheduleController extends Controller {
 
     @FXML
-    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn, instructionsBtn, errorBtn;
+    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn, errorBtn;
 
     @FXML
-    public JFXButton exitConfBtn, submitBtn, closeInstructionsBtn, serviceBtn, adminBtn;
+    public JFXButton exitConfBtn, submitBtn, adminBtn;
 
     @FXML
-    private VBox roomList;
-    @FXML
-    public VBox schedule;
-    @FXML
-    private VBox checks;
+    public VBox schedule, checks;
 
     @FXML
-    private JFXTextField numRooms;
-    @FXML
-    public JFXTextField eventName;
-    @FXML
-    public JFXTextField employeeID;
+    public JFXTextField eventName, employeeID;
 
     @FXML
     public JFXListView reservableList;
@@ -53,33 +45,16 @@ public class ScheduleController extends Controller {
     public JFXDatePicker datePicker;
 
     @FXML
-    public JFXTimePicker startTimePicker;
-    @FXML
-    public JFXTimePicker endTimePicker;
+    public JFXTimePicker startTimePicker, endTimePicker;
 
     @FXML
-    private Label errorLbl;
-    @FXML
-    private Label timeLbl;
-    @FXML
-    public Label confErrorLbl;
-    @FXML
-    private Label instructionsLbl;
+    public Label errorLbl, timeLbl, confErrorLbl;
 
     @FXML
-    public TitledPane instructionsPane, errorDlg;
+    public JFXDialog errorDlg, confirmationDlg;
 
     @FXML
-    public AnchorPane confirmationPane, rightPane, bottomPane, homePane;
-
-    @FXML
-    private VBox leftPane;
-
-    @FXML
-    private HBox header;
-
-    @FXML
-    private StackPane stackP;
+    private HBox homePane;
 
     @FXML
     public JFXComboBox<String> privacyLvlBox;
@@ -102,20 +77,10 @@ public class ScheduleController extends Controller {
         // Read in reservable Spaces
         CSVController.importReservableSpaces();
 
-        // Create the instructions and error message
-        instructionsPane.setVisible(false);
-        instructionsLbl.setText("1. Select desired date of reservation on the left.\n" +
-                "2. Select a location in the middle menu to view its schedule " +
-                "on that date. \n" +
-                "3. Select the start and end times for your reservation on the left.\n" +
-                "4. Select \"Make Reservation\" at bottom left (you must have selected" +
-                " a location in order to make a reservation).\n" +
-                "5. Confirm your reservation and complete the required information.");
-
         // Disable things that can't be used yet
         errorDlg.setVisible(false);
-        confirmationPane.setVisible(false);
-        confirmationPane.setDisable(true);
+        confirmationDlg.setVisible(false);
+        confirmationDlg.setDisable(true);
         confErrorLbl.setVisible(false);
         makeReservationBtn.setDisable(true);
         homePane.setDisable(false);
@@ -297,16 +262,14 @@ public class ScheduleController extends Controller {
 
         if (!valid) {    // If not valid, display an error message
             errorLbl.setText("Please enter valid start and end times " +
-                    "for this location.\n\n" +
-                    "Start and end times must not conflict with any " +
-                    "currently scheduled resMap.");
+                    "for this location.");
             errorDlg.setVisible(true);
         }
         else {    // Otherwise, display the confirmation screen
             homePane.setDisable(true);
             homePane.toBack();
-            confirmationPane.setVisible(true);
-            confirmationPane.setDisable(false);
+            confirmationDlg.setVisible(true);
+            confirmationDlg.setDisable(false);
             showConf();
         }
     }
@@ -371,23 +334,7 @@ public class ScheduleController extends Controller {
         closeConf();
     }
 
-    /**
-     * Show basic text instructions for how a user makes a reservation.
-     */
-    @FXML
-    public void showInstructions() {
-        instructionsPane.setVisible(true);
-    }
-
-    /**
-     * Close instructions window.
-     */
-    @FXML
-    public void closeInstructions() {
-        instructionsPane.setVisible(false);
-    }
-
-    /**
+     /**
      * Close the error dialog.
      */
     @FXML
@@ -414,8 +361,8 @@ public class ScheduleController extends Controller {
      * Close the reservation confirmation dialog.
      */
     public void closeConf() {
-        confirmationPane.toFront();
-        confirmationPane.setVisible(false);
+        confirmationDlg.toFront();
+        confirmationDlg.setVisible(false);
         homePane.setDisable(false);
         confErrorLbl.setVisible(false);
         eventName.setText("");
@@ -428,6 +375,7 @@ public class ScheduleController extends Controller {
      * Valid times must: be within the chosen location's start and end times.
      *      Have an end time greater than the start time.
      *      Not conflict with any existing reservation.
+     *      Be in the future. TODO
      * @return true if the selected times are valid, false otherwise
      */
     private boolean validTimes() {
@@ -481,14 +429,6 @@ public class ScheduleController extends Controller {
         Stage stage = (Stage) adminBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.mapEdit);
         StageManager.changeExistingWindow(stage, root, "Admin Login");
-    }
-
-    @FXML
-    // switches window to request screen
-    public void showService() throws Exception {
-        Stage stage = (Stage) serviceBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.request);
-        StageManager.changeExistingWindow(stage, root, "Service Request");
     }
 
     // TODO

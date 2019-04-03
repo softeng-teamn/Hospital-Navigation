@@ -69,11 +69,7 @@ public class ScheduleControllerTest extends ApplicationTest {
     private ArrayList<Reservation> reservationsA = new ArrayList<Reservation>();
     private ArrayList<Reservation> reservationsB = new ArrayList<Reservation>();
 
-    final static String instrP = "#instructionsPane";
-    final static String instrBtn = "#instructionsBtn";
     final static String homeBtn = "#homeBtn";
-    final static String closeInstrBrn = "#closeInstructionsBtn";
-
 
     private Reservation reservA = new Reservation(23, 0, 1337, "Cancer Seminar",
             "TFB", gc, gc);
@@ -292,33 +288,6 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(sc.dbs.getReservation(0).getPrivacyLevel() == 0);
     }
 
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void showInstructions() throws InterruptedException {
-        clickOn(instrBtn);
-        Thread.sleep(200);
-        TitledPane pane = (TitledPane) GuiTest.find(instrP);
-        assertTrue(pane.isVisible());
-    }
-
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void closeInstructions() throws InterruptedException {
-        clickOn(instrBtn);
-        Thread.sleep(200);
-        clickOn(closeInstrBrn);
-        Thread.sleep(200);
-        boolean vis = true;
-        try {
-            GuiTest.exists(instrP);
-        } catch (NoNodesFoundException | NoNodesVisibleException e) {
-            vis = false;
-        }
-        assertFalse(vis);
-    }
-
     //select a location
     //click make reservation
     @Ignore
@@ -328,8 +297,8 @@ public class ScheduleControllerTest extends ApplicationTest {
         clickOn("#");
         Thread.sleep(200);
         //TODO: need a valid home screen w/ something to ID
-        TitledPane pane = (TitledPane) GuiTest.find(instrP);
-        assertTrue(pane.isVisible());
+        //TitledPane pane = (TitledPane) GuiTest.find();
+        //assertTrue(pane.isVisible());
     }
 
 //    @Test
