@@ -466,6 +466,10 @@ public class DatabaseService {
      */
     public List<Reservation> getReservationBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
         String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
+        System.out.println(id);
+        System.out.println("dbs" + from.get(Calendar.YEAR) +  " " + from.get(Calendar.MONTH) + " " + from.get(Calendar.DATE) + " " + from.get(Calendar.HOUR));
+        System.out.println(to.get(Calendar.YEAR) +  " " + to.get(Calendar.MONTH) + " " + to.get(Calendar.DATE)+ " " + to.get(Calendar.HOUR));
+
         return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, id, from, to, from, to);
     }
 

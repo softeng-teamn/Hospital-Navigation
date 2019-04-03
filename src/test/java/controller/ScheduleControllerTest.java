@@ -1,10 +1,14 @@
 package controller;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Employee;
 import model.ReservableSpace;
@@ -29,10 +33,8 @@ import testclassifications.*;
 import java.sql.Array;
 import java.sql.SQLException;
 import java.sql.SQLOutput;
+import java.time.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -195,7 +197,6 @@ public class ScheduleControllerTest extends ApplicationTest {
 
 
         ScheduleController.dbs=dbs ;
-
     }
 
     @Override
@@ -208,20 +209,32 @@ public class ScheduleControllerTest extends ApplicationTest {
         stage.setFullScreen(true);
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void showHome() throws InterruptedException {
         clickOn(homeBtn);
         Thread.sleep(200);
         //TODO: need a valid home screen w/ something to ID
-       // TitledPane pane = (TitledPane) GuiTest.find(instrP);
-        //assertTrue(pane.isVisible());
+        HBox pane = (HBox) GuiTest.find("#top_nav");
+        assertTrue(pane.isVisible());
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
-    public void showRoomSchedule() {
-
+    public void showRoomSchedule() throws InterruptedException {
+        clickOn("#makeReservationBtn");
+        Thread.sleep(200);
+        //checks to see if the button is visible, and available to be clicked on
+        assertFalse(sc.makeReservationBtn.isDisable());
+        //Checking both lists to see if the correct people have been initialized
+        Label l = (Label)sc.schedule.getChildren().get(0);
+        assertTrue(l != null);
+        assertTrue(l.getText().equals("10:00"));
+        Label l2 = (Label)sc.schedule.getChildren().get(1);
+        assertTrue(l2 != null);
+        assertTrue(l2.getText().equals("5:30"));
     }
 
     @Test
@@ -230,16 +243,53 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void createReservation() {
+        sc.datePicker.setValue(LocalDate.now());
+        sc.startTimePicker.setValue(LocalTime.of(9,0));
+        sc.endTimePicker.setValue(LocalTime.of(10, 0));
+        GregorianCalendar gcalStart = new GregorianCalendar(2019, 3, 20, 9, 0, 0) ;
+        GregorianCalendar gcalEnd = new GregorianCalendar(2019, 3, 20, 10, 0, 0) ;
+
+
+        Reservation r = new Reservation(-1, Integer.parseInt(sc.privacyLvlBox.getValue()),Integer.parseInt(sc.employeeID.getText()),
+                sc.eventName.getText(),sc.currentSelection.getLocationNodeID(),gcalStart,gcalEnd);
+        sc.createReservation();
+        assertTrue(sc.dbs.getReservation(0).getEventID() == r.getEventID());
+        assertTrue(sc.dbs.getReservation(0).getPrivacyLevel() == r.getPrivacyLevel());
+        assertTrue(sc.dbs.getReservation(0).getEmployeeId() == r.getEmployeeId());
+        assertTrue(sc.dbs.getReservation(0).getEventName().equals(r.getEventName()));
+        assertTrue(sc.dbs.getReservation(0).getLocationID() == r.getLocationID());
+        assertTrue(sc.dbs.getReservation(0).getStartTime().equals(r.getStartTime()));
+        assertTrue(sc.dbs.getReservation(0).getEndTime().equals(r.getEndTime()));
 
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
-    public void submit() {
-
+    public void submit() throws InterruptedException {
+        Thread.sleep(2000);
+        System.out.println(sc.reservableList);
+        System.out.println(sc.reservableList.getChildrenUnmodifiable());
+        clickOn(sc.reservableList.getChildrenUnmodifiable().get(0));
+        Thread.sleep(20000);
+        assertFalse(sc.confErrorLbl.isVisible());
+        sc.eventName.setText("");
+        sc.employeeID.setText("ROFL");
+        sc.privacyLvlBox.setValue("0");
+        sc.submit();
+        assertTrue(sc.confErrorLbl.getText().equals("Error: Please fill out all fields to make a reservation."));
+        sc.eventName.setText("LMAO");
+        sc.submit();
+        assertTrue(sc.confErrorLbl.getText().equals("Error: Please provide a valid employee ID number."));
+        sc.employeeID.setText("2");
+        sc.submit();
+        assertTrue(sc.dbs.getReservation(0).getEventName().equals("LMAO"));
+        assertTrue(sc.dbs.getReservation(0).getEmployeeId() == 2);
+        assertTrue(sc.dbs.getReservation(0).getPrivacyLevel() == 0);
     }
 
     @Ignore
@@ -269,34 +319,16 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertFalse(vis);
     }
 
+
     @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
-    public void closeError() throws InterruptedException {
-        clickOn("#startTimePicker").write("1:00 AM");
+    public void showConf() throws InterruptedException {
+        clickOn("#");
         Thread.sleep(200);
-        // TODO: need database to select location and make reservation to get an error
-//        clickOn("#errorBtn");
-//        Thread.sleep(200);
-//        boolean vis = true;
-//        try {
-//            GuiTest.exists("#errorDlg");
-//        } catch (NoNodesFoundException | NoNodesVisibleException e) {
-//            vis = false;
-//        }
-//        assertFalse(vis);
-    }
-
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void closeConf() {
-        // TODO need database
-    }
-
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void showConf() {
-        // TODO need database
+        //TODO: need a valid home screen w/ something to ID
+        TitledPane pane = (TitledPane) GuiTest.find(instrP);
+        assertTrue(pane.isVisible());
     }
 
 //    @Test

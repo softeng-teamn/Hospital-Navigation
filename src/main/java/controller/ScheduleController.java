@@ -33,28 +33,44 @@ public class ScheduleController extends Controller {
     public JFXButton exitConfBtn, submitBtn, closeInstructionsBtn, serviceBtn, adminBtn;
 
     @FXML
-    private VBox roomList, schedule, checks;
+    private VBox roomList;
+    @FXML
+    public VBox schedule;
+    @FXML
+    private VBox checks;
 
     @FXML
-    private JFXTextField numRooms, eventName, employeeID;
+    private JFXTextField numRooms;
+    @FXML
+    public JFXTextField eventName;
+    @FXML
+    public JFXTextField employeeID;
 
     @FXML
-    private JFXListView reservableList;
+    public JFXListView reservableList;
 
     @FXML
-    private JFXDatePicker datePicker;
+    public JFXDatePicker datePicker;
 
     @FXML
-    private JFXTimePicker startTimePicker, endTimePicker;
+    public JFXTimePicker startTimePicker;
+    @FXML
+    public JFXTimePicker endTimePicker;
 
     @FXML
-    private Label errorLbl, timeLbl, confErrorLbl, instructionsLbl;
+    private Label errorLbl;
+    @FXML
+    private Label timeLbl;
+    @FXML
+    public Label confErrorLbl;
+    @FXML
+    private Label instructionsLbl;
 
     @FXML
     public TitledPane instructionsPane, errorDlg;
 
     @FXML
-    private AnchorPane confirmationPane, rightPane, bottomPane, homePane;
+    public AnchorPane confirmationPane, rightPane, bottomPane, homePane;
 
     @FXML
     private VBox leftPane;
@@ -66,7 +82,7 @@ public class ScheduleController extends Controller {
     private StackPane stackP;
 
     @FXML
-    private JFXComboBox<String> privacyLvlBox;
+    public JFXComboBox<String> privacyLvlBox;
 
     private int openTime = 9;   // hour to start schedule dislay
     private int closeTime = 22;    // 24-hours hour to end schedule display
@@ -74,12 +90,9 @@ public class ScheduleController extends Controller {
     private int timeStepMinutes = 60/timeStep;    // In Minutes
 
     // Currently selected location
-    private ReservableSpace currentSelection;
+    public ReservableSpace currentSelection;
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
-
-    // TODO
-    private BorderPane borderP;
 
     /**
      * Set up scheduler page.
@@ -87,8 +100,7 @@ public class ScheduleController extends Controller {
     @FXML
     public void initialize() {
         // Read in reservable Spaces
-        CSVController csvC = new CSVController();
-        csvC.importReservableSpaces();
+        CSVController.importReservableSpaces();
 
         // Create the instructions and error message
         instructionsPane.setVisible(false);
@@ -181,12 +193,16 @@ public class ScheduleController extends Controller {
 
         // Get that date and turn it into gregorian calendars to pass to the database
         LocalDate chosenDate = datePicker.getValue();
-        LocalDate endDate = chosenDate.plus(1, ChronoUnit.DAYS);
+        LocalDate endDate = datePicker.getValue().plus(1, ChronoUnit.DAYS);
         GregorianCalendar gcalStart = GregorianCalendar.from(chosenDate.atStartOfDay(ZoneId.systemDefault()));
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
+        System.out.println(gcalStart.get(Calendar.YEAR) +  " " + gcalStart.get(Calendar.MONTH) + " " + gcalStart.get(Calendar.DATE) + " \n" + gcalStart.get(Calendar.HOUR));
+        System.out.println(gcalEnd.get(Calendar.YEAR) +  " " + gcalEnd.get(Calendar.MONTH) + " " + gcalEnd.get(Calendar.DATE)+ " \n" + gcalEnd.get(Calendar.HOUR));
+
 
         // Get reservations for this space and these times
         ArrayList<Reservation> reservations = (ArrayList<Reservation>) dbs.getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
+        System.out.println(curr.getSpaceID() + " " + reservations);
 
         // clear the previous schedule
         schedule.getChildren().clear();
@@ -333,7 +349,7 @@ public class ScheduleController extends Controller {
      * Create the reservation and send it to the database.
      */
     @FXML
-    private void createReservation() {
+    public void createReservation() {
         // Get the times and dates and turn them into gregorian calendars
         LocalDate chosenDate = datePicker.getValue();
         LocalTime startTime = startTimePicker.getValue();
@@ -348,8 +364,9 @@ public class ScheduleController extends Controller {
         }
 
         // Create the new reservation
-        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getLocationNodeID(),gcalStart,gcalEnd);
+        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),gcalStart,gcalEnd);
         dbs.insertReservation(newRes);
+        closeError();
         showRoomSchedule();
         closeConf();
     }
