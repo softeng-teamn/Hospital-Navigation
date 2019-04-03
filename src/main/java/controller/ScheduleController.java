@@ -299,7 +299,7 @@ public class ScheduleController extends Controller {
             errorLbl.setText("Please enter valid start and end times " +
                     "for this location.\n\n" +
                     "Start and end times must not conflict with any " +
-                    "currently scheduled resMap.");
+                    "currently scheduled reservations.");
             errorDlg.setVisible(true);
         }
         else {    // Otherwise, display the confirmation screen
