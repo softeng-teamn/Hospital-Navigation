@@ -142,9 +142,9 @@
                         </Pane>
                      </content>
                   </ScrollPane>
-                  <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="150.0" StackPane.alignment="BOTTOM_RIGHT">
+                  <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="350.0" prefWidth="290.0" StackPane.alignment="BOTTOM_RIGHT">
                      <children>
-                        <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="120.0" style="-fx-background-color: white;">
+                        <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">
                            <children>
                               <Label text="Call Elevator" />
                               <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" text="Level 1">

@@ -19,6 +19,8 @@ public class Controller {
 
     static {
         initializeDatabase();
+        // init node hash map
+        initConnections();
         initializeElevator();
     }
 
