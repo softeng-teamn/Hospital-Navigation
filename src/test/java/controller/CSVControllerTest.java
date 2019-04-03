@@ -317,19 +317,17 @@ public class CSVControllerTest {
         setFinalStatic(ResourceLoader.class.getDeclaredField("nodes"), service.ResourceLoader.class.getResource("/test_nodes.csv"));
 
         // Create a class to capture arguments of the type Node
-        ArgumentCaptor<Node> nodeCaptor = ArgumentCaptor.forClass(Node.class);
+        ArgumentCaptor<ArrayList<Node>> nodeCaptor = ArgumentCaptor.forClass(ArrayList.class);
 
         // Action being tested
         CSVController.importNodes();
 
         // Capture the calls to insert node
-        verify(CSVController.dbs, times(3)).insertNode(nodeCaptor.capture());
+        verify(CSVController.dbs, times(1)).insertAllNodes(nodeCaptor.capture());
 
         // Check that each node captured is equal to the test nodes
-        List<Node> capturedNodes = nodeCaptor.getAllValues();
-        assertEquals(testNodes.get(0), capturedNodes.get(0));
-        assertEquals(testNodes.get(1), capturedNodes.get(1));
-        assertEquals(testNodes.get(2), capturedNodes.get(2));
+        List<ArrayList<Node>> capturedNodes = nodeCaptor.getAllValues();
+        assertEquals(testNodes, capturedNodes.get(0));
 
         // Reset to original URL
         setFinalStatic(ResourceLoader.class.getDeclaredField("nodes"), originalURL);

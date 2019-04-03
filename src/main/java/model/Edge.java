@@ -43,6 +43,11 @@ public class Edge {
         this.node2 = node2;
     }
 
+    /**
+     * checks if two edges are equal to each other.
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,6 +58,10 @@ public class Edge {
                 Objects.equals(node2, edge.node2);
     }
 
+    /**
+     * TBD
+     * @return
+     */
     @Override
     public int hashCode() {
         return Objects.hash(edgeID, node1, node2);

@@ -1,14 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.AdministratorController"
-            prefHeight="400.0" prefWidth="600.0">
 
-</AnchorPane>
+<VBox alignment="CENTER" fillWidth="false" prefHeight="406.0" prefWidth="490.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminLoginController">
+   <children>
+      <FontAwesomeIconView glyphName="LOCK" size="80" />
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <FontAwesomeIconView glyphName="USER" size="30">
+               <HBox.margin>
+                  <Insets left="2.0" right="16.0" top="5.0" />
+               </HBox.margin>
+            </FontAwesomeIconView>
+            <JFXTextField fx:id="idText" labelFloat="true" prefHeight="34.0" prefWidth="202.0" promptText="ID Number" />
+         </children>
+      </HBox>
+      <HBox prefHeight="75.0" prefWidth="200.0">
+         <children>
+            <FontAwesomeIconView glyphName="KEY" size="30">
+               <HBox.margin>
+                  <Insets right="10.0" top="5.0" />
+               </HBox.margin>
+            </FontAwesomeIconView>
+            <JFXPasswordField fx:id="passwordField" labelFloat="true" prefHeight="34.0" prefWidth="202.0" promptText="Password" />
+         </children>
+      </HBox>
+      <HBox>
+         <children>
+              <JFXButton fx:id="loginBtn" onAction="#login" prefHeight="34.0" prefWidth="76.0" text="Log In" />
+            <Region prefHeight="34.0" prefWidth="48.0" />
+              <JFXButton fx:id="cancelBtn" onAction="#showHome" prefHeight="34.0" prefWidth="76.0" text="Cancel" />
+         </children>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+   </padding>
+</VBox>

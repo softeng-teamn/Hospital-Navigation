@@ -28,6 +28,8 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     private JFXButton homeBtn;
     @FXML
+    private JFXButton adminBtn;
+    @FXML
     private JFXListView requestListView;
     @FXML
     private JFXRadioButton allTypeRadio;
@@ -40,17 +42,21 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     private JFXRadioButton uncRadio;
 
+    /**switches window to home screen
+     * @throws Exception
+     */
     @FXML
-    // switches window to home screen
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
-
+    /**
+     * sets a request as completed in the database
+     */
     @FXML
-    public  void fulfillRequest(){
+    public void fulfillRequest(){
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
         MedicineRequest medupdate;
         ITRequest ITupdate;
@@ -76,17 +82,27 @@ public class FulfillRequestController extends Controller implements Initializabl
 
     }
 
+    /**
+     * TBD
+     */
     @FXML
     public void showAdmin(){
 
     }
 
+    /**
+     * TBD
+     * @param event
+     */
     @FXML
     public void radioChanged(ActionEvent event){
         reloadList();
 
     }
 
+    /**
+     * reloads the list of requests
+     */
     public void reloadList(){
         ObservableList<Request> newRequestlist = FXCollections.observableArrayList();
 
@@ -121,6 +137,10 @@ public class FulfillRequestController extends Controller implements Initializabl
         printList(newRequestlist);
     }
 
+    /**
+     * Prints out the list of Requests
+     * @param newReqList
+     */
     public void printList(ObservableList<Request> newReqList){
         requestListView.getItems().clear();
         requestListView.setItems(newReqList);
@@ -142,18 +162,27 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
 
+    /**
+     * Prints out a single request
+     * @param request
+     * @return
+     */
     public String printRequest(Request request){
         if (request == null){
             return null;
         }
 
         return "ID: " + request.getId() +
-                " Request Type: " + request.getRequestType() +
+                " Request Type: " + request.getRequestType().getrType().toString() +
                 " Description: " + request.getNotes();
     }
 
-    
-    
+
+    /**
+     * initialize the list of requests
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
