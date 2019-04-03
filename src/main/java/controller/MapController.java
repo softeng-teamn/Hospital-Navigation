@@ -28,7 +28,9 @@ public class MapController extends Controller {
      * @return
      */
     public static ArrayList<Node> getNodesConnectedTo(Node n) {
-        return Controller.dbs.getNodesConnectedTo(n);
+
+        return Controller.connections.get(n.getNodeID());
+
     }
 
 
