@@ -236,7 +236,6 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     }
 
-    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void submit() {
@@ -253,6 +252,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(pane.isVisible());
     }
 
+    @ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void closeInstructions() throws InterruptedException {
