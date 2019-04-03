@@ -3,21 +3,48 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminLoginController">
 
-    <children>
-        <JFXButton fx:id="cancelBtn" layoutX="346.0" layoutY="283.0" onAction="#showHome" style="-fx-background-color: red;" text="Cancel" />
-        <JFXButton fx:id="loginBtn" layoutX="255.0" layoutY="192.0" onAction="#login" prefHeight="32.0" prefWidth="91.0" style="-fx-background-color: green;" text="Log In" />
-        <JFXTextField fx:id="idText" layoutX="211.0" layoutY="75.0" prefHeight="26.0" prefWidth="179.0" style="-fx-background-color: white;" />
-      <JFXPasswordField fx:id="passwordField" layoutX="211.0" layoutY="124.0" prefHeight="27.0" prefWidth="179.0" />
-      <Text layoutX="177.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID:" wrappingWidth="32.783203125" />
-      <Text layoutX="130.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" />
-      <Text layoutX="210.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log in:" />
-      <Text fx:id="idPrompt" layoutX="390.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="142.2060546875" />
-      <Text fx:id="passwordPrompt" layoutX="390.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="142.2060546875" />
-    </children>
-
-</AnchorPane>
+<VBox alignment="CENTER" fillWidth="false" prefHeight="406.0" prefWidth="490.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminLoginController">
+   <children>
+      <FontAwesomeIconView glyphName="LOCK" size="80" />
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <FontAwesomeIconView glyphName="USER" size="30">
+               <HBox.margin>
+                  <Insets left="2.0" right="16.0" top="5.0" />
+               </HBox.margin>
+            </FontAwesomeIconView>
+            <JFXTextField fx:id="idText" labelFloat="true" prefHeight="34.0" prefWidth="202.0" promptText="ID Number" />
+         </children>
+      </HBox>
+      <HBox prefHeight="75.0" prefWidth="200.0">
+         <children>
+            <FontAwesomeIconView glyphName="KEY" size="30">
+               <HBox.margin>
+                  <Insets right="10.0" top="5.0" />
+               </HBox.margin>
+            </FontAwesomeIconView>
+            <JFXPasswordField fx:id="passwordField" labelFloat="true" prefHeight="34.0" prefWidth="202.0" promptText="Password" />
+         </children>
+      </HBox>
+      <HBox>
+         <children>
+              <JFXButton fx:id="loginBtn" onAction="#login" prefHeight="34.0" prefWidth="76.0" text="Log In" />
+            <Region prefHeight="34.0" prefWidth="48.0" />
+              <JFXButton fx:id="cancelBtn" onAction="#showHome" prefHeight="34.0" prefWidth="76.0" text="Cancel" />
+         </children>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+   </padding>
+</VBox>
