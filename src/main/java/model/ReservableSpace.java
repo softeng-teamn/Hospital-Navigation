@@ -90,4 +90,16 @@ public class ReservableSpace {
     public int hashCode() {
         return Objects.hash(spaceID, spaceName, spaceType, locationNodeID, timeOpen, timeClosed);
     }
+
+    @Override
+    public String toString() {
+        return "ReservableSpace{" +
+                "spaceID='" + spaceID + '\'' +
+                ", spaceName='" + spaceName + '\'' +
+                ", spaceType='" + spaceType + '\'' +
+                ", locationNodeID='" + locationNodeID + '\'' +
+                ", timeOpen=" + timeOpen +
+                ", timeClosed=" + timeClosed +
+                '}';
+    }
 }
