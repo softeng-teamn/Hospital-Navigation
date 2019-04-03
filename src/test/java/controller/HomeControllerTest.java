@@ -27,6 +27,8 @@ import static junit.framework.TestCase.assertEquals;
 
 
 public class HomeControllerTest {
+    public HomeController h = new HomeController();
+
 
 
 }

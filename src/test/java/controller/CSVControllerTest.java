@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.Employee;
 import model.Node;
 import model.Edge;
-import model.ReservableSpace;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +22,8 @@ import java.net.URL;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
@@ -86,10 +82,6 @@ public class CSVControllerTest {
         Edge e2 = new Edge(n2, n3);
         Edge e3 = new Edge(n1, n3);
 
-        ReservableSpace space1 = new ReservableSpace("AAAAA00101","Bob","Computer","BBBBB00101", calendar1, calendar2);
-        ReservableSpace space2 = new ReservableSpace("AAAAA00102","Alice","Conference","BBBBB00102",calendar3, calendar4);
-        ReservableSpace space3 = new ReservableSpace("AAAAA00103","John","Computer","BBBBB00103",calendar5,calendar6);
-
         testNodes.add(n1);
         testNodes.add(n2);
         testNodes.add(n3);
@@ -111,6 +103,7 @@ public class CSVControllerTest {
         when(dbs.getNode(n1.getNodeID())).thenReturn(n1);
         when(dbs.getNode(n2.getNodeID())).thenReturn(n2);
         when(dbs.getNode(n3.getNodeID())).thenReturn(n3);
+
         when(dbs.getReservableSpace(space1.getSpaceID())).thenReturn(space1);
         when(dbs.getReservableSpace(space2.getSpaceID())).thenReturn(space2);
         when(dbs.getReservableSpace(space3.getSpaceID())).thenReturn(space3);
@@ -221,47 +214,7 @@ public class CSVControllerTest {
     }
 
     @Test
-    @Category(FastTest.class)
-    public void exportReservableSpaces() throws IOException {
-        // Precondition: Check that ./nodes.csv does not exist
-        File tempfile = new File("./reservablespaces.csv");
-        assertFalse(tempfile.exists());
-
-        // Action: call CSVController.exportReservableSpaces
-        CSVController.exportReservableSpaces();
-        // Assert that export nodes has the correct content
-        File spacecsv = new File("./reservablespaces.csv");
-        assertTrue(spacecsv.exists());
-        BufferedReader reader = new BufferedReader( new InputStreamReader(new FileInputStream("./reservablespaces.csv"), StandardCharsets.UTF_8));
-
-        StringBuffer fileContents = new StringBuffer();
-        String line = reader.readLine();
-        while(line != null){
-            fileContents.append(line);
-            fileContents.append("\n");
-            line = reader.readLine();
-        }
-
-        try {
-            reader.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-
-            if (reader != null) {
-                reader.close();
-            }
-        }
-
-        String expectedValue = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n"+
-                "AAAAA00101,Bob,Computer,BBBBB00101,2019-03-31 12:00,2019-03-31 12:30" + "\n"
-                + "AAAAA00102,Alice,Conference,BBBBB00102,2019-03-25 14:00,2019-03-25 15:30\n"
-                + "AAAAA00103,John,Computer,BBBBB00103,2019-04-20 00:00,2019-04-20 23:59\n";
-
-
-        assertThat(fileContents.toString(), is(expectedValue));
-
-        File file = new File("./reservablespaces.csv");
-        assertThat(file.delete(), is(true));
+    public void exportRequests() {
     }
 
     @Test
@@ -384,7 +337,6 @@ public class CSVControllerTest {
 
         // Reset to original URL
         setFinalStatic(ResourceLoader.class.getDeclaredField("reservablespaces"), originalURL);
-
     }
 
     @Test
