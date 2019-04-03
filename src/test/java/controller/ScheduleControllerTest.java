@@ -209,6 +209,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         stage.setFullScreen(true);
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void showHome() throws InterruptedException {
