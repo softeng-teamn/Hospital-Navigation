@@ -319,8 +319,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertFalse(vis);
     }
 
-    //select a location
-    //click make reservation
+
     @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
