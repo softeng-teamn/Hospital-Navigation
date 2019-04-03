@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXSlider?>
@@ -7,7 +14,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -17,7 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
+<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <children>
       <HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="101.0" prefWidth="1385.0" spacing="5.0">
          <children>
@@ -26,7 +32,6 @@
             <JFXButton fx:id="navigate_btn" onAction="#startNavigation" text="Navigate Here" />
             <JFXButton fx:id="edit_btn" onAction="#editAction" text="Edit" />
             <Region HBox.hgrow="ALWAYS" />
-            <Label text="Zoom" />
             <JFXButton onAction="#zoomOut" text="-" />
             <JFXSlider fx:id="zoom_slider" />
             <JFXButton onAction="#zoomIn" text="+">
@@ -42,87 +47,87 @@
             <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
          </VBox.margin>
       </HBox>
-      <SplitPane dividerPositions="0.28858578607322327" VBox.vgrow="ALWAYS">
-         <items>
-            <HBox fx:id="hbox_container" prefHeight="100.0" prefWidth="200.0">
+      <HBox fx:id="hbox_container" VBox.vgrow="ALWAYS">
+         <children>
+            <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" prefWidth="256.0" HBox.hgrow="ALWAYS" />
+            <VBox fx:id="edit_VBox">
                <children>
-                  <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" prefHeight="590.0" prefWidth="294.0" HBox.hgrow="ALWAYS" />
-                  <VBox fx:id="edit_VBox" prefHeight="749.0" prefWidth="300.0">
+                  <Label contentDisplay="CENTER" text="Editor">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="5.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="edit_id" text="Node: " textFill="#4d4d4d">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="5.0" top="8.0" />
+                     </VBox.margin>
+                  </Label>
+                  <JFXTextField fx:id="edit_x" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_y" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_floor" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_building" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_type" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_long" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_short" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <Region prefHeight="210.0" prefWidth="89.0" VBox.vgrow="ALWAYS" />
+                  <VBox fx:id="edit_btn_container" alignment="CENTER" prefHeight="127.0" prefWidth="89.0">
                      <children>
-                        <Label contentDisplay="CENTER" text="Editor">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
+                        <JFXButton fx:id="edit_save_btn" contentDisplay="CENTER" onAction="#editSaveAction" styleClass="confirm-button" text="Save">
                            <VBox.margin>
-                              <Insets left="5.0" top="5.0" />
+                              <Insets bottom="5.0" left="5.0" right="5.0" />
                            </VBox.margin>
-                           <padding>
-                              <Insets bottom="5.0" />
-                           </padding>
-                        </Label>
-                        <Label fx:id="edit_id" text="Node: " textFill="#4d4d4d">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
+                        </JFXButton>
+                        <Region prefHeight="200.0" prefWidth="200.0" />
+                        <JFXButton onAction="#cancelEditAction" styleClass="confirm-button" text="Cancel">
                            <VBox.margin>
-                              <Insets left="5.0" top="8.0" />
+                              <Insets bottom="5.0" left="5.0" right="5.0" />
                            </VBox.margin>
-                        </Label>
-                        <JFXTextField fx:id="edit_x" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </VBox.margin>
-                        </JFXTextField>
-                        <JFXTextField fx:id="edit_y" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </VBox.margin>
-                        </JFXTextField>
-                        <JFXTextField fx:id="edit_floor" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </VBox.margin>
-                        </JFXTextField>
-                        <JFXTextField fx:id="edit_building" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </VBox.margin>
-                        </JFXTextField>
-                        <JFXTextField fx:id="edit_type" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </VBox.margin>
-                        </JFXTextField>
-                        <JFXTextField fx:id="edit_long" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </VBox.margin>
-                        </JFXTextField>
-                        <JFXTextField fx:id="edit_short" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </VBox.margin>
-                        </JFXTextField>
-                        <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                        <VBox fx:id="edit_btn_container">
-                           <children>
-                              <JFXButton fx:id="edit_save_btn" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" onAction="#editSaveAction" text="Save">
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </VBox.margin>
-                              </JFXButton>
-                              <JFXButton maxWidth="1.7976931348623157E308" onAction="#cancelEditAction" text="Cancel">
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </VBox.margin>
-                              </JFXButton>
-                           </children>
-                        </VBox>
+                        </JFXButton>
                      </children>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
                   </VBox>
                </children>
-            </HBox>
-            <StackPane>
+            </VBox>
+            <StackPane prefWidth="1280.0" HBox.hgrow="ALWAYS">
                <children>
                   <ScrollPane fx:id="map_scrollpane" prefHeight="749.0" prefWidth="998.0">
                      <content>
@@ -137,9 +142,53 @@
                         </Pane>
                      </content>
                   </ScrollPane>
+                  <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="350.0" prefWidth="290.0" StackPane.alignment="BOTTOM_RIGHT">
+                     <children>
+                        <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">
+                           <children>
+                              <Label text="Call Elevator" />
+                              <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" text="Level 1">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="call_el2_btn" onAction="#callElevatorAction" text="Level 2">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="call_el3_btn" onAction="#callElevatorAction" text="Level 3">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="call_el4_btn" onAction="#callElevatorAction" text="Level 4">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                              <Label text="Current Level" />
+                              <Label fx:id="cur_el_floor" text="2">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </Pane>
                </children>
             </StackPane>
-         </items>
-      </SplitPane>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
    </children>
 </VBox>

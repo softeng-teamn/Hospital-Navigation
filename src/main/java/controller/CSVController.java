@@ -18,13 +18,16 @@ public class CSVController extends Controller {
     public static final String NODE_EXPORT_PATH = "nodes.csv";
     public static final String EDGE_EXPORT_PATH = "edges.csv";
     public static final String SPACE_EXPORT_PATH = "reservablespaces.csv";
+    public static final String EMPLOYEE_EXPORT_PATH = "employees.csv";
 
     private static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
     private static final String SPACE_HEADER = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n";
+    private static final String EMPLOYEE_HEADER ="ID,job,isAdmin,password\n";
 
     /**
      * Export the Nodes table
+     * @throws IOException
      */
     public static void exportNodes() throws IOException {
         // Open a file
@@ -61,6 +64,7 @@ public class CSVController extends Controller {
 
     /**
      * Export the Edges table
+     * @throws IOException
      */
     public static void exportEdges() throws IOException {
         // Open a file
@@ -124,6 +128,39 @@ public class CSVController extends Controller {
                 }
             }
 
+        }
+    }
+
+    /**
+     * Export the Employees table
+     */
+    public static void exportEmployees() throws IOException {
+        // Open a file
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(EMPLOYEE_EXPORT_PATH), "UTF-8");
+            ;
+            writer.write(EMPLOYEE_HEADER);
+
+            // Write out each node
+            for (Employee emp : dbs.getAllEmployees()) {
+                writer.write(emp.getID() + ",");
+                writer.write(emp.getJob() + ",");
+                writer.write(emp.isAdmin() + ",");
+                writer.write(emp.getPassword() + "\n");
+
+            }
+
+            // Close the writer
+            writer.close();
+        } catch (IOException e) {
+            // Cleanup the writer if possible
+            if (writer != null) {
+                writer.close();
+            }
+
+            // Throw the error so upstream can handle it
+            throw e;
         }
     }
 
@@ -294,6 +331,51 @@ public class CSVController extends Controller {
     }
 
     /**
+     * Import the Edges table
+     */
+    public static void importEmployees() {
+
+        BufferedReader reader = null;
+
+        try {
+            //load file to read
+            reader = new BufferedReader(new InputStreamReader(ResourceLoader.employees.openStream(), "UTF-8"));
+
+            //read first line
+            reader.readLine();
+
+            String line = null;
+
+            //loop until there is nothing to read
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+
+
+                    Employee emp = new Employee(Integer.parseInt(data[0]),data[1], Boolean.parseBoolean(data[2]),data[3]);
+
+                    //Add edge to the database
+                    dbs.insertEmployee(emp);
+
+            }
+
+            //close reader
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //clean up reader
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    /**
      * Import CSVs if dbs was just created.
      */
     public static void importIfNecessary() {
@@ -301,6 +383,8 @@ public class CSVController extends Controller {
             Employee newEmployee = new Employee(1234, "Admin", true, "test");
             importNodes();
             importEdges();
+            importReservableSpaces();
+            importEmployees();
             dbs.insertEmployee(newEmployee);
         }
     }

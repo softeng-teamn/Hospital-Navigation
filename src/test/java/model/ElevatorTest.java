@@ -33,6 +33,6 @@ public class ElevatorTest {
         System.out.println(d[0]);
         Thread.sleep(100);
         System.out.println(d[0]);
-        assertEquals(37.0, d[0], 0.1);
+        assertEquals(1.0, d[0], 0.1);
     }
 }

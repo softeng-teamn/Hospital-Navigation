@@ -2,37 +2,106 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleNode?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="394.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
-    <children>
-        <JFXTextField layoutX="14.0" layoutY="13.0" prefHeight="26.0" prefWidth="168.0" promptText="Search This Hospital" style="-fx-background-color: white;" />
-        <AnchorPane layoutX="432.0" prefHeight="394.0" prefWidth="168.0" style="-fx-background-color: white;">
-            <children>
-                <AnchorPane layoutX="4.0" prefHeight="68.0" prefWidth="168.0" style="-fx-background-color: green;">
-                    <children>
-                        <JFXTextField id="SceneID" alignment="CENTER" layoutX="9.0" layoutY="21.0" text="Service Request" />
-                    </children>
-                </AnchorPane>
-                <TextArea layoutX="4.0" layoutY="240.0" prefHeight="134.0" prefWidth="168.0" text="Enter Request Details:" />
-                <TextArea fx:id="textArea" layoutX="19.0" layoutY="271.0" prefHeight="77.0" prefWidth="130.0" promptText="Enter details" />
-                <JFXButton fx:id="cancelBtn" layoutX="4.0" layoutY="374.0" onAction="#showHome" style="-fx-background-color: red;" text="Cancel" />
-                <JFXButton fx:id="confirmBtn" layoutX="105.0" layoutY="374.0" onAction="#makeRequest" style="-fx-background-color: green;" text="Confirm" />
-            <ChoiceBox fx:id="typeBox" layoutX="7.0" layoutY="98.0" prefHeight="27.0" prefWidth="158.0" />
-            <JFXTextField fx:id="typeTextField" layoutX="9.0" layoutY="70.0" text="Request Type:" />
-            <JFXTextField fx:id="locationTextField" layoutX="9.0" layoutY="124.0" text="Request Location:">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-            </JFXTextField>
-            <JFXListView fx:id="locationNodeList" layoutX="8.0" layoutY="145.0" prefHeight="95.0" prefWidth="158.0" />
-            </children>
-        </AnchorPane>
-    </children>
-
-
-</AnchorPane>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
+   <children>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+         <children>
+            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" promptText="Search Room" />
+            <Region prefHeight="100.0" prefWidth="491.0" />
+            <Label prefHeight="39.0" prefWidth="242.0" text="Request Service" />
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="cancelBtn" onAction="#showHome" text="Return Home" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <children>
+            <JFXListView fx:id="list_view" prefHeight="970.0" prefWidth="520.0">
+               <HBox.margin>
+                  <Insets right="50.0" />
+               </HBox.margin></JFXListView>
+            <VBox prefWidth="256.0">
+               <children>
+                  <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="IT Request">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="DESKTOP" styleClass="button-glyph-icon" />
+                     </graphic>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="requestType" />
+                     </toggleGroup>
+                  </JFXToggleNode>
+                  <Region prefHeight="50.0" />
+                  <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Medicine Request" toggleGroup="$requestType">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="AMBULANCE" styleClass="button-glyph-icon" />
+                     </graphic>
+                  </JFXToggleNode>
+                  <Region prefHeight="50.0" />
+                  <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Security Request" toggleGroup="$requestType">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="SHIELD" styleClass="button-glyph-icon" />
+                     </graphic>
+                  </JFXToggleNode>
+                  <Region prefHeight="50.0" />
+               </children>
+            </VBox>
+            <Region prefHeight="610.0" prefWidth="50.0" />
+            <VBox prefWidth="256.0">
+               <children>
+                  <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Food Request" toggleGroup="$requestType">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="BIRTHDAY_CAKE" styleClass="button-glyph-icon" />
+                     </graphic>
+                  </JFXToggleNode>
+                  <Region prefHeight="50.0" />
+                  <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Maintenance Request" toggleGroup="$requestType">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="WRENCH" styleClass="button-glyph-icon" />
+                     </graphic>
+                  </JFXToggleNode>
+                  <Region prefHeight="50.0" />
+                  <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Personnel Request" toggleGroup="$requestType">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="USER" styleClass="button-glyph-icon" />
+                     </graphic>
+                  </JFXToggleNode>
+                  <Region prefHeight="50.0" />
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="970.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label alignment="TOP_LEFT" text="Enter Request Details:">
+                     <VBox.margin>
+                        <Insets top="32.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Region prefHeight="45.0" />
+                  <JFXTextArea fx:id="textArea" prefHeight="677.0" prefWidth="718.0">
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </JFXTextArea>
+                  <Region prefHeight="41.0" />
+                  <JFXButton onAction="#makeRequest" styleClass="confirm-button" text="Confirm" />
+               </children>
+               <HBox.margin>
+                  <Insets left="30.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>
