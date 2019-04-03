@@ -118,6 +118,9 @@ public class HomeController extends MapController {
     @FXML
     void initialize() {
 
+        // init node hash map
+        Controller.initConnections();
+
         // Hide the edit window
         hideEditor();
 
