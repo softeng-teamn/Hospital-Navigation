@@ -176,7 +176,6 @@
                      <content>
                         <VBox alignment="TOP_CENTER" prefWidth="100.0" spacing="2.0">
                            <children>
-                              <JFXButton fx:id="filterRoomBtn" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" onAction="#filterRooms" style="-fx-background-color: #003DA6;" text="Filter Rooms by Selected Time" textFill="WHITE" wrapText="true" />
                               <TitledPane animated="false" collapsible="false" text="Select Location:">
                                  <content>
                                     <AnchorPane minHeight="0.0" minWidth="0.0">
@@ -266,18 +265,6 @@
                   <ImageView fitHeight="71.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="/Images/wrench.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </JFXButton>
-            <JFXButton fx:id="adminBtn" contentDisplay="TOP" layoutX="15.0" layoutY="233.0" maxHeight="-Infinity" onAction="#showLogin" prefHeight="120.0" prefWidth="120.0" style="-fx-background-color: #003DA6;" text="Admin Services" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-               <graphic>
-                  <ImageView fitHeight="63.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="/Images/gear.png" />
                      </image>
                   </ImageView>
                </graphic>
