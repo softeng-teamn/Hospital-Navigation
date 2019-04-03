@@ -18,7 +18,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -26,7 +25,6 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class DatabaseServiceTest {
     private DatabaseService myDBS;
@@ -34,7 +32,6 @@ public class DatabaseServiceTest {
     @Before
     public void setUp() throws SQLException, MismatchedDatabaseVersionException {
         myDBS = DatabaseService.init("hospital-db-test");
-        myDBS.wipeTables();
     }
 
     @After
@@ -151,56 +148,6 @@ public class DatabaseServiceTest {
 
     @Test
     @Category(FastTest.class)
-    public void insertAllNodes() {
-        final Function callback = mock(Function.class);
-        myDBS.registerNodeCallback(callback);
-
-        assertThat(myDBS.getAllNodes().size(), is(0));
-        ArrayList<Node> nodes = new ArrayList<>();
-
-        for (int i = 0; i < 10001; i ++) {
-            nodes.add(new Node("" + i, i, i, "2", "BTM", "HALL", "Hall", "Hall"));
-        }
-
-        assertTrue(myDBS.insertAllNodes(nodes));
-
-        verify(callback, times(11)).apply(null);
-
-        assertThat(myDBS.getAllNodes().size(), is(10001));
-    }
-
-    @Test
-    @Category(FastTest.class)
-    public void getNumNodeTypeByFloor() {
-        Node testNode1 = new Node("ACONF00101", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        Node testNode2 = new Node("ACONF00102", 1648, 2968, "2", "BTM", "STAI", "BTM Conference Center", "BTM Conference");
-        Node testNode3 = new Node("ACONF00103", 1648, 2968, "2", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        Node testNode4 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-
-        Node testNode5 = new Node("ACONF00105", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        Node testNode6 = new Node("ACONF00106", 1648, 2968, "1", "BTM", "DEPT", "BTM Conference Center", "BTM Conference");
-        Node testNode7 = new Node("ACONF00107", 1580, 2538, "1", "BTM", "LABS", "Hall", "Hall");
-        Node testNode8 = new Node("ACONF00108", 1648, 2968, "1", "BTM", "LABS", "BTM Conference Center", "BTM Conference");
-        Node testNode9 = new Node("ACONF00109", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        assertTrue(myDBS.insertNode(testNode1));
-        assertTrue(myDBS.insertNode(testNode2));
-        assertTrue(myDBS.insertNode(testNode3));
-        assertTrue(myDBS.insertNode(testNode4));
-        assertTrue(myDBS.insertNode(testNode5));
-        assertTrue(myDBS.insertNode(testNode6));
-        assertTrue(myDBS.insertNode(testNode7));
-        assertTrue(myDBS.insertNode(testNode8));
-        assertTrue(myDBS.insertNode(testNode9));
-
-        assertEquals(2, myDBS.getNumNodeTypeByFloor("HALL","2"));
-        assertEquals(1, myDBS.getNumNodeTypeByFloor("STAI","2"));
-        assertEquals(0, myDBS.getNumNodeTypeByFloor("HALL","1"));
-        assertEquals(2, myDBS.getNumNodeTypeByFloor("LABS","1"));
-        assertEquals(1, myDBS.getNumNodeTypeByFloor("DEPT","1"));
-    }
-
-    @Test
-    @Category(FastTest.class)
     public void getNodesByFloor() {
         Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         myDBS.insertNode(testNode1);
@@ -213,9 +160,7 @@ public class DatabaseServiceTest {
         assertEquals(getByFloor.get(0),testNode2);
         assertEquals(getByFloor.get(1),testNode3);
     }
-
-    @Test
-    @Category(FastTest.class)
+  
     public void getNodesFilteredByType() {
         Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         myDBS.insertNode(testNode1);
@@ -319,7 +264,7 @@ public class DatabaseServiceTest {
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newEdge.getNode1().getNodeID()));
         assertThat(gotEdge.getNode2().getNodeID(), is(newEdge.getNode2().getNodeID()));
-        Edge newerEdge = new Edge("ACONF00102-ACONF00103", testNode, anotherNode);
+        Edge newerEdge = new Edge("ACONF00102-ACONF00104", testNode, anotherNode);
         // update the values and confirm that they were changed
         assertTrue(myDBS.updateEdge(newerEdge));
         gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
@@ -339,6 +284,7 @@ public class DatabaseServiceTest {
         myDBS.insertNode(testNode);
         myDBS.insertNode(otherNode);
         myDBS.insertEdge(newEdge);
+        myDBS.insertNode(testNode);
         Edge gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         // delete it
@@ -378,7 +324,7 @@ public class DatabaseServiceTest {
         Reservation value, expected;
 
         // First verify that these reservations are null
-        value = myDBS.getReservation(1);
+        value = myDBS.getReservation(23);
         assertThat(value, is(nullValue()));
 
         // Create a reservation
@@ -389,9 +335,20 @@ public class DatabaseServiceTest {
         reservationEnd.add(Calendar.HOUR, 1);
         Reservation reservation1 = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
 
+        // This insertion will fail because there exists no employee zero in the system to make the reservation
+       // boolean insertRes = myDBS.insertReservation(reservation1);
+       // assertFalse(insertRes);
+
+        // Insert Employee in to make sure the reservation will work
+        //Employee employee = new Employee(23, "Doctor", false);
+        //myDBS.insertEmployee(employee);
+
         // successful insert because of constraints
         boolean insertRes = myDBS.insertReservation(reservation1);
         assertTrue(insertRes);
+
+
+
 
         // Verify successful get
         expected = reservation1;
@@ -554,28 +511,19 @@ public class DatabaseServiceTest {
         res2End.setTime(new Date(now + 110000));
         Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
         Reservation res1 = new Reservation(1, 0, 43, "Event 1", "ABCD", res2Start, res2End);
-        Reservation res2 = new Reservation(2, 0, 43, "Event 1", "LMNO", res2Start, res2End);
 
         // Insert two
         assertTrue(myDBS.insertReservation(res0));
         assertTrue(myDBS.insertReservation(res1));
-        assertTrue(myDBS.insertReservation(res2));
 
-        GregorianCalendar gapStart = new GregorianCalendar();
-        GregorianCalendar gapEnd = new GregorianCalendar();
-        gapStart.setTime(new Date(now - 6000));
-        gapEnd.setTime(new Date(now + 200));
 
         // Check that only one is retrieved (small time block)
-        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", gapStart, gapEnd);
+        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", new Date(now - 6000), new Date(now + 200));
         assertThat(reservationList.size(), is(1));
         assertEquals(res0, reservationList.get(0));
 
-        gapStart.setTime(new Date(now - 1000000));
-        gapEnd.setTime(new Date(now + 1100000));
-
         // Check that both are retrieved (large time block)
-        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", gapStart, gapEnd);
+        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", new Date(now - 1000000), new Date(now + 1100000));
         assertThat(reservationList.size(), is(2));
         assertEquals(res0, reservationList.get(0));
         assertEquals(res1, reservationList.get(1));
@@ -648,7 +596,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void updateEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "123456");
+        Employee employee = new Employee(0, "Doctor", false, "Douglas");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
@@ -663,7 +611,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void deleteEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "password");
+        Employee employee = new Employee(0, "Doctor", false, "CatPlanet");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
@@ -840,9 +788,6 @@ public class DatabaseServiceTest {
         assertTrue(myDBS.insertITRequest(req1));
         assertTrue(myDBS.insertITRequest(req2));
 
-        req1.setId(0);
-        req2.setId(1);
-
         // Check that there are two and only two, and that they are the right two
         List<ITRequest> allITRequests = myDBS.getAllITRequests();
         assertThat(allITRequests.size(), is(2));
@@ -851,8 +796,6 @@ public class DatabaseServiceTest {
 
         // Insert #3, and rerun checks
         assertTrue(myDBS.insertITRequest(req3));
-
-        req3.setId(2);
 
         allITRequests = myDBS.getAllITRequests();
         assertThat(allITRequests.size(), is(3));
