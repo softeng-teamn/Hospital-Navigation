@@ -47,6 +47,11 @@ public class Employee {
         isAdmin = admin;
     }
 
+    /**
+     * checks if two employees are the same employee
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,6 +62,10 @@ public class Employee {
                 Objects.equals(job, employee.job);
     }
 
+    /**
+     * TBD
+     * @return
+     */
     @Override
     public int hashCode() {
         return Objects.hash(ID, job, isAdmin);
