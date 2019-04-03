@@ -33,22 +33,38 @@ public class ScheduleController extends Controller {
     public JFXButton exitConfBtn, submitBtn, closeInstructionsBtn, serviceBtn, adminBtn;
 
     @FXML
-    private VBox roomList, schedule, checks;
+    private VBox roomList;
+    @FXML
+    public VBox schedule;
+    @FXML
+    private VBox checks;
 
     @FXML
-    private JFXTextField numRooms, eventName, employeeID;
+    private JFXTextField numRooms;
+    @FXML
+    public JFXTextField eventName;
+    @FXML
+    public JFXTextField employeeID;
 
     @FXML
     private JFXListView reservableList;
 
     @FXML
-    private JFXDatePicker datePicker;
+    public JFXDatePicker datePicker;
 
     @FXML
-    private JFXTimePicker startTimePicker, endTimePicker;
+    public JFXTimePicker startTimePicker;
+    @FXML
+    public JFXTimePicker endTimePicker;
 
     @FXML
-    private Label errorLbl, timeLbl, confErrorLbl, instructionsLbl;
+    private Label errorLbl;
+    @FXML
+    private Label timeLbl;
+    @FXML
+    public Label confErrorLbl;
+    @FXML
+    private Label instructionsLbl;
 
     @FXML
     public TitledPane instructionsPane, errorDlg;
@@ -66,7 +82,7 @@ public class ScheduleController extends Controller {
     private StackPane stackP;
 
     @FXML
-    private JFXComboBox<String> privacyLvlBox;
+    public JFXComboBox<String> privacyLvlBox;
 
     private int openTime = 9;   // hour to start schedule dislay
     private int closeTime = 22;    // 24-hours hour to end schedule display
@@ -74,7 +90,7 @@ public class ScheduleController extends Controller {
     private int timeStepMinutes = 60/timeStep;    // In Minutes
 
     // Currently selected location
-    private ReservableSpace currentSelection;
+    public ReservableSpace currentSelection;
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
 
@@ -328,7 +344,7 @@ public class ScheduleController extends Controller {
      * Create the reservation and send it to the database.
      */
     @FXML
-    private void createReservation() {
+    public void createReservation() {
         // Get the times and dates and turn them into gregorian calendars
         LocalDate chosenDate = datePicker.getValue();
         LocalTime startTime = startTimePicker.getValue();
