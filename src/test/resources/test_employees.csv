@@ -1,0 +1,4 @@
+ID,job,isAdmin,password
+1,Doctor,true,wong
+2,Nurse,false,duff
+3,Nurse,false,bennett
