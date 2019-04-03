@@ -9,6 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import sun.plugin2.jvm.RemoteJVMLauncher;
 import testclassifications.FastTest;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -25,6 +27,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class DatabaseServiceTest {
     private DatabaseService myDBS;
@@ -145,6 +148,26 @@ public class DatabaseServiceTest {
         assertThat(allNodes.get(0).getNodeID(),is("ACONF00102"));
         assertThat(allNodes.get(1).getNodeID(),is("ACONF00103"));
         assertThat(allNodes.get(2).getNodeID(),is("ACONF00104"));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void insertAllNodes() {
+        final Function callback = mock(Function.class);
+        myDBS.registerNodeCallback(callback);
+
+        assertThat(myDBS.getAllNodes().size(), is(0));
+        ArrayList<Node> nodes = new ArrayList<>();
+
+        for (int i = 0; i < 10001; i ++) {
+            nodes.add(new Node("" + i, i, i, "2", "BTM", "HALL", "Hall", "Hall"));
+        }
+
+        assertTrue(myDBS.insertAllNodes(nodes));
+
+        verify(callback, times(11)).apply(null);
+
+        assertThat(myDBS.getAllNodes().size(), is(10001));
     }
 
     @Test

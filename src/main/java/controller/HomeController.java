@@ -112,6 +112,10 @@ public class HomeController extends MapController {
 
         authCheck();
 
+        dbs.registerNodeCallback(aVoid -> {
+            HomeController.this.nodeChangedCallback();
+            return null;
+        });
 
         repopulateList();
 
@@ -142,6 +146,10 @@ public class HomeController extends MapController {
         zoom_slider.setValue(0.3);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.3);
+    }
+
+    private void nodeChangedCallback() {
+        repopulateList();
     }
 
     void authCheck() {
