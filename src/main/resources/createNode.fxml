@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import com.jfoenix.controls.*?>
 <?import java.lang.*?>
@@ -8,13 +10,22 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CreateNodeController">
+<AnchorPane fx:id="anchor_pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CreateNodeController">
    <children>
+      <VBox prefHeight="59.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="instruction_label" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Select new node's location" textAlignment="CENTER" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
       <JFXButton fx:id="cancel_btn" layoutX="14.0" layoutY="359.0" onAction="#cancelAction" text="Cancel" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-      <JFXButton layoutX="525.0" layoutY="359.0" text="Create Room" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+      <JFXButton fx:id="next_btn" layoutX="525.0" layoutY="359.0" onAction="#nextAction" text="Create Room" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
       <ScrollPane fx:id="map_scrollpane" layoutX="65.0" layoutY="58.0" prefHeight="251.0" prefWidth="432.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
          <content>
-            <Pane>
+            <Pane onMouseClicked="#mapClickedHandler">
                <children>
                   <ImageView>
                      <image>
@@ -26,5 +37,35 @@
          </content>
       </ScrollPane>
       <Slider fx:id="zoom_slider" orientation="VERTICAL" AnchorPane.bottomAnchor="85.0" AnchorPane.rightAnchor="25.0" />
+      <VBox fx:id="node_info_vbox" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+         <children>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+            <VBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Label maxWidth="200.0" text="Floor Level" />
+                  <JFXTextField fx:id="floor_field" maxWidth="200.0">
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <Label maxWidth="200.0" text="Node Type" />
+                  <JFXTextField fx:id="type_field" maxWidth="200.0">
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <Label maxWidth="200.0" text="Short Name" />
+                  <JFXTextField fx:id="short_field" maxWidth="200.0">
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <Label maxWidth="200.0" text="Long Name" />
+                  <JFXTextField fx:id="long_field" maxWidth="200.0" />
+               </children>
+            </VBox>
+            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
