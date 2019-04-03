@@ -9,7 +9,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import sun.plugin2.jvm.RemoteJVMLauncher;
 import testclassifications.FastTest;
 
 import java.io.File;
