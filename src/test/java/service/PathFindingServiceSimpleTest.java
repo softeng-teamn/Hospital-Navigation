@@ -1,8 +1,10 @@
 package service;
 
+import controller.CSVController;
 import controller.MapController;
 import model.MapNode;
 import model.Node;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,6 +18,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
@@ -57,39 +61,47 @@ public class PathFindingServiceSimpleTest {
     //      3 - 4 - 5
     //
     @Before
-    @Test
-    @Category(FastTest.class)
     public void mockingGetChildren() {
+        CSVController.wipeTables();
+        CSVController.importNodes();
+        CSVController.importEdges();
+
         ArrayList<MapNode> list = new ArrayList<MapNode>();
         list.add(mn2);
-        when(mockPF.getChildren(mn1)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn1));
+//        when(mockPF.getChildren(mn1)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn1);
         list.add(mn6);
         list.add(mn3);
-        when(mockPF.getChildren(mn2)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn2));
+        //when(mockPF.getChildren(mn2)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn2);
         list.add(mn4);
-        when(mockPF.getChildren(mn3)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn3));
+        //when(mockPF.getChildren(mn3)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn3);
         list.add(mn5);
-        when(mockPF.getChildren(mn4)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn4));
+        //when(mockPF.getChildren(mn4)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn4);
         list.add(mn6);
-        when(mockPF.getChildren(mn5)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn5));
+        //when(mockPF.getChildren(mn5)).thenReturn(list);
         list = new ArrayList<MapNode>();
         list.add(mn2);
         list.add(mn5);
-        when(mockPF.getChildren(mn6)).thenReturn(list);
+        doReturn(list).when(mockPF).getChildren((mn6));
+        //when(mockPF.getChildren(mn6)).thenReturn(list);
     }
 
     // make sure I built the sinerio correctly
     @Test
     @Category(FastTest.class)
-    public void testMocking() {
+    public void testMocking() throws IOException {
         ArrayList<MapNode> expected = new ArrayList<MapNode>();
         expected.add(mn1);
         expected.add(mn6);
@@ -137,9 +149,9 @@ public class PathFindingServiceSimpleTest {
         ArrayList<Node> expected = new ArrayList<Node>();
         expected.add(0, n1);
         expected.add(0, n2);
-        expected.add(0, n6);
-        expected.add(0, n5);
-        assertThat(mockPF.genPath(mn5, mn1), is(expected));
+        expected.add(0, n3);
+        expected.add(0, n4);
+        assertThat(mockPF.genPath(mn4, mn1), is(expected));
     }
 
 }

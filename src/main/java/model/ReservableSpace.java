@@ -64,6 +64,11 @@ public class ReservableSpace {
         this.timeClosed = (GregorianCalendar) timeClosed.clone();
     }
 
+    /**
+     * checks if two ReservableSpaces are the same space
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,8 +82,24 @@ public class ReservableSpace {
                 Objects.equals(timeClosed.getTime(), that.timeClosed.getTime());
     }
 
+    /**
+     * hash code
+     * @return
+     */
     @Override
     public int hashCode() {
         return Objects.hash(spaceID, spaceName, spaceType, locationNodeID, timeOpen, timeClosed);
+    }
+
+    @Override
+    public String toString() {
+        return "ReservableSpace{" +
+                "spaceID='" + spaceID + '\'' +
+                ", spaceName='" + spaceName + '\'' +
+                ", spaceType='" + spaceType + '\'' +
+                ", locationNodeID='" + locationNodeID + '\'' +
+                ", timeOpen=" + timeOpen +
+                ", timeClosed=" + timeClosed +
+                '}';
     }
 }

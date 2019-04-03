@@ -1,89 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXSlider?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
+<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <children>
-      <ImageView fitHeight="407.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@Images/01_thefirstfloor.png" />
-         </image>
-      </ImageView>
-      <VBox alignment="TOP_CENTER" layoutX="373.0" layoutY="13.0" prefWidth="65.0">
+      <HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="101.0" prefWidth="1385.0" spacing="5.0">
          <children>
-            <JFXButton fx:id="schedulerBtn" alignment="CENTER" contentDisplay="TOP" onAction="#showSchedule" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: #40B0D2;" text=" ">
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@Images/calendar.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </JFXButton>
-            <JFXButton fx:id="schedulerBtnLbl" alignment="TOP_CENTER" contentDisplay="CENTER" onAction="#showSchedule" text="Scheduler" textAlignment="CENTER" textFill="WHITE">
-               <VBox.margin>
-                  <Insets top="-24.0" />
-               </VBox.margin>
-               <padding>
-                  <Insets left="-1.0" />
-               </padding>
-            </JFXButton>
+            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2" />
+            <JFXButton fx:id="newRoom_btn" onAction="#newRoomAction" text="New Room" />
+            <JFXButton fx:id="navigate_btn" onAction="#startNavigation" text="Navigate Here" />
+            <JFXButton fx:id="edit_btn" onAction="#editAction" text="Edit" />
+            <Region HBox.hgrow="ALWAYS" />
+            <JFXButton onAction="#zoomOut" text="-" />
+            <JFXSlider fx:id="zoom_slider" />
+            <JFXButton onAction="#zoomIn" text="+">
+               <HBox.margin>
+                  <Insets right="40.0" />
+               </HBox.margin></JFXButton>
+            <JFXButton fx:id="fulfillBtn" contentDisplay="CENTER" onAction="#showFulfillRequest" text="Fulfill Request" />
+            <JFXButton fx:id="bookBtn" onAction="#showSchedule" text="Book Room" />
+            <JFXButton onAction="#showRequest" text="Service Request" />
+            <JFXButton fx:id="auth_btn" onAction="#showAdminLogin" text="Logout" />
          </children>
-      </VBox>
-      <VBox alignment="TOP_CENTER" layoutX="447.0" layoutY="14.0">
+         <VBox.margin>
+            <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox fx:id="hbox_container" VBox.vgrow="ALWAYS">
          <children>
-            <JFXButton fx:id="serviceBtn" contentDisplay="TOP" onAction="#showRequest" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: #40B0D2;" text=" ">
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@Images/wrench.jpg" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </JFXButton>
-            <JFXButton fx:id="serviceBtnLbl" alignment="TOP_CENTER" contentDisplay="CENTER" onAction="#showRequest" prefWidth="55.0" text="Service Request" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-               <VBox.margin>
-                  <Insets top="-34.0" />
-               </VBox.margin>
-               <font>
-                  <Font name="System Bold" size="10.0" />
-               </font>
-            </JFXButton>
+            <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" prefWidth="256.0" HBox.hgrow="ALWAYS" />
+            <VBox fx:id="edit_VBox">
+               <children>
+                  <Label contentDisplay="CENTER" text="Editor">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="5.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="edit_id" text="Node: " textFill="#4d4d4d">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="5.0" top="8.0" />
+                     </VBox.margin>
+                  </Label>
+                  <JFXTextField fx:id="edit_x" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_y" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_floor" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_building" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_type" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_long" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <JFXTextField fx:id="edit_short" onAction="#editNodeTextAction" onInputMethodTextChanged="#nodeTextChanged">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <Region prefHeight="210.0" prefWidth="89.0" VBox.vgrow="ALWAYS" />
+                  <VBox fx:id="edit_btn_container" alignment="CENTER" prefHeight="127.0" prefWidth="89.0">
+                     <children>
+                        <JFXButton fx:id="edit_save_btn" contentDisplay="CENTER" onAction="#editSaveAction" styleClass="confirm-button" text="Save">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" />
+                           </VBox.margin>
+                        </JFXButton>
+                        <Region prefHeight="200.0" prefWidth="200.0" />
+                        <JFXButton onAction="#cancelEditAction" styleClass="confirm-button" text="Cancel">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" />
+                           </VBox.margin>
+                        </JFXButton>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </VBox>
+            <StackPane prefWidth="1280.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <ScrollPane fx:id="map_scrollpane" prefHeight="749.0" prefWidth="998.0">
+                     <content>
+                        <Pane>
+                           <children>
+                              <ImageView>
+                                 <image>
+                                    <Image url="Images/1_NoIcons.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </StackPane>
          </children>
-      </VBox>
-      <VBox alignment="TOP_CENTER" layoutX="521.0" layoutY="14.0">
-         <children>
-            <JFXButton fx:id="editBtn" alignment="CENTER" contentDisplay="TOP" onAction="#showMapEditor" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: #40B0D2;" text=" ">
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@Images/pencil.jpg" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </JFXButton>
-            <JFXButton fx:id="editBtnLbl" alignment="TOP_CENTER" contentDisplay="CENTER" onAction="#showMapEditor" text="Edit Map" textAlignment="CENTER" textFill="WHITE">
-               <padding>
-                  <Insets left="-1.0" />
-               </padding>
-               <VBox.margin>
-                  <Insets top="-24.0" />
-               </VBox.margin>
-            </JFXButton>
-         </children>
-      </VBox>
-      <JFXTextField layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="172.0" promptText="Search Hospital Locations" style="-fx-background-color: white;" />
-      <JFXButton layoutX="540.0" layoutY="349.0" prefHeight="44.0" prefWidth="46.0" style="-fx-background-color: #40B0D2;" text="?" textFill="#f9fafa">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-      </JFXButton>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
    </children>
-</AnchorPane>
+</VBox>

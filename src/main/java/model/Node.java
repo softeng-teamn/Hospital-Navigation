@@ -78,7 +78,14 @@ public class Node {
     @Override
     public String toString() {
         return "Node{" +
-                "nodeID='" + nodeID + '\'' +
+                "xcoord=" + xcoord +
+                ", ycoord=" + ycoord +
+                ", nodeID='" + nodeID + '\'' +
+                ", floor='" + floor + '\'' +
+                ", building='" + building + '\'' +
+                ", nodeType='" + nodeType + '\'' +
+                ", longName='" + longName + '\'' +
+                ", shortName='" + shortName + '\'' +
                 '}';
     }
 
@@ -120,10 +127,20 @@ public class Node {
         this.shortName = shortName;
     }
 
+    /**
+     * ensures nodeType is a string
+     * @param nodeType
+     * @return
+     */
     public boolean validateType(String nodeType) {
         return true;
     }
 
+    /**
+     * checks if two nodes are equal to each other.
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -139,6 +156,10 @@ public class Node {
                 Objects.equals(shortName, node.shortName);
     }
 
+    /**
+     * hash code
+     * @return
+     */
     @Override
     public int hashCode() {
         return Objects.hash(xcoord, ycoord, nodeID, floor, building, nodeType, longName, shortName);

@@ -1,6 +1,5 @@
 package service;
 
-import java.io.File;
 import java.net.URL;
 
 public class ResourceLoader {
@@ -9,8 +8,17 @@ public class ResourceLoader {
     public static final URL mapEdit = service.ResourceLoader.class.getResource("/mapEdit.fxml");
     public static final URL scheduler = service.ResourceLoader.class.getResource("/schedule.fxml");
     public static final URL request = service.ResourceLoader.class.getResource("/request.fxml");
+    public static final URL createNode = service.ResourceLoader.class.getResource("/createNode.fxml");
     public static final URL edges = service.ResourceLoader.class.getResource("/edges.csv");
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
-//        service.ResourceLoader.class.getResource("/nodes.csv");
+    public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");
+    public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
+    public static final URL employees = service.ResourceLoader.class.getResource("/employees.csv");
 
+    // Images
+    public static final URL firstFloor = service.ResourceLoader.class.getResource("/Images/01_thefirstfloor.png");
+    public static final URL calendarIcon = service.ResourceLoader.class.getResource("/Images/calendar.png");
+    public static final URL pencilIcon = service.ResourceLoader.class.getResource("/Images/pencil.jpg");
+    public static final URL wrenchICon = service.ResourceLoader.class.getResource("/Images/wrench.jpg");
+    public static final URL adminLogin = service.ResourceLoader.class.getResource("/administratorLogin.fxml");
 }

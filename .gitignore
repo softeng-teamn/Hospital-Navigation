@@ -8,6 +8,7 @@ derby.log
 *.class
 *.jar
 *.lock
+screenshot*.png
 *.iml
 *db*/
 testfx-test*.png

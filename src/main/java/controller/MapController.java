@@ -22,6 +22,11 @@ public class MapController extends Controller {
     }
 
 
+    /**
+     * a getter to return the notes connected to a given node
+     * @param n
+     * @return
+     */
     public static ArrayList<Node> getNodesConnectedTo(Node n) {
         return Controller.dbs.getNodesConnectedTo(n);
     }

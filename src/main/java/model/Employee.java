@@ -6,11 +6,21 @@ public class Employee {
     int ID;
     String job;
     boolean isAdmin;
+    String password;
 
-    public Employee(int ID, String job, boolean isAdmin) {
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Employee(int ID, String job, boolean isAdmin, String password) {
         this.ID = ID;
         this.job = job;
         this.isAdmin = isAdmin;
+        this.password = password;
     }
 
     public int getID() {
@@ -37,6 +47,11 @@ public class Employee {
         isAdmin = admin;
     }
 
+    /**
+     * checks if two employees are the same employee
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,8 +62,22 @@ public class Employee {
                 Objects.equals(job, employee.job);
     }
 
+    /**
+     * TBD
+     * @return
+     */
     @Override
     public int hashCode() {
         return Objects.hash(ID, job, isAdmin);
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "ID=" + ID +
+                ", job='" + job + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
