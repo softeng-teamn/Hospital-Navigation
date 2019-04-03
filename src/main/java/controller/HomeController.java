@@ -41,7 +41,7 @@ public class HomeController extends MapController {
     @FXML
     private VBox root, edit_VBox, edit_btn_container;
     @FXML
-    private HBox top_nav, hbox_container;
+    public HBox top_nav, hbox_container;
     @FXML
     private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn, bookBtn, fulfillBtn;
     @FXML
