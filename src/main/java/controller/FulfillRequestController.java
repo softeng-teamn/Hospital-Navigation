@@ -28,6 +28,8 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     private JFXButton homeBtn;
     @FXML
+    private JFXButton adminBtn;
+    @FXML
     private JFXListView requestListView;
     @FXML
     private JFXRadioButton allTypeRadio;
@@ -73,11 +75,6 @@ public class FulfillRequestController extends Controller implements Initializabl
         }
 
         reloadList();
-
-    }
-
-    @FXML
-    public void showAdmin(){
 
     }
 
@@ -148,7 +145,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         }
 
         return "ID: " + request.getId() +
-                " Request Type: " + request.getRequestType() +
+                " Request Type: " + request.getRequestType().getrType().toString() +
                 " Description: " + request.getNotes();
     }
 

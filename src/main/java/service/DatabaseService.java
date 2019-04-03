@@ -8,6 +8,7 @@ import model.request.MedicineRequest;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
+import java.util.function.Function;
 
 @SuppressWarnings("ALL")
 public class DatabaseService {
@@ -20,8 +21,15 @@ public class DatabaseService {
 
     private boolean newlyCreated;
 
+    private ArrayList<Function<Void, Void>> nodeCallbacks;
+
     private DatabaseService(Connection connection) {
         this.connection = connection;
+        nodeCallbacks = new ArrayList<>();
+    }
+
+    public void registerNodeCallback(Function<Void, Void> callback) {
+        nodeCallbacks.add(callback);
     }
 
     public static DatabaseService init(String dbName) throws SQLException, MismatchedDatabaseVersionException {
@@ -192,6 +200,42 @@ public class DatabaseService {
         return (Node) executeGetById(query, Node.class, nodeID);
     }
 
+    public boolean insertAllNodes(List<Node> nodes) {
+        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+        boolean successful = true;
+        PreparedStatement insertStatement = null;
+
+        // Track the status of the insert
+        boolean insertStatus = false;
+
+        try {
+            // Prep the statement
+            insertStatement = connection.prepareStatement(nodeStatement);
+
+            for (int i = 0; i <= nodes.size() / 1000; i++) {
+                for (int j = (i*1000); j < i*1000+1000 && j < nodes.size(); j++) {
+                    Node n = nodes.get(j);
+                    prepareStatement(insertStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
+                    insertStatement.addBatch();
+                }
+                // Execute
+                insertStatement.executeBatch();
+
+                for (Function<Void, Void> callback : nodeCallbacks) {
+                    callback.apply(null);
+                }
+
+                // If we made it this far, we're successful!
+                insertStatus = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(insertStatement);
+        }
+        return insertStatus;
+    }
+
     public ArrayList<Node> getAllNodes() {
         String query = "Select * FROM NODE";
         return (ArrayList<Node>)(List<?>) executeGetMultiple(query, Node.class, new Object[]{});
@@ -237,6 +281,31 @@ public class DatabaseService {
         }
 
         return floorNodes;
+    }
+
+    public int getNumNodeTypeByFloor(String nodeType, String floor) {
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try{
+            stmt = connection.prepareStatement("SELECT COUNT (*) AS TOTAL FROM NODE WHERE (floor=? AND nodeType=?)");
+            prepareStatement(stmt, floor, nodeType);
+
+            // execute the query
+            res = stmt.executeQuery();
+            int num = -1;
+            while(res.next()){
+                num = res.getInt("TOTAL");
+            }
+            stmt.close();
+            res.close();
+            return num;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            return -1;
+        } finally {
+            closeAll(stmt, res);
+        }
     }
 
     // EDGE FUNCTIONS
