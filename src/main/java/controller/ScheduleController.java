@@ -11,13 +11,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -56,10 +54,13 @@ public class ScheduleController extends Controller {
     public TitledPane instructionsPane, errorDlg;
 
     @FXML
-    private AnchorPane confirmationPane, homePane;
+    private AnchorPane confirmationPane, rightPane, bottomPane, homePane;
 
     @FXML
     private VBox leftPane;
+
+    @FXML
+    private HBox header;
 
     @FXML
     private StackPane stackP;
@@ -76,6 +77,9 @@ public class ScheduleController extends Controller {
     private ReservableSpace currentSelection;
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
+
+    // TODO
+    private BorderPane borderP;
 
     /**
      * Set up scheduler page.
@@ -150,7 +154,6 @@ public class ScheduleController extends Controller {
             }
         });
         reservableList.setEditable(false);
-
     }
 
 

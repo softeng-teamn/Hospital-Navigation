@@ -203,6 +203,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         stage.setScene(new Scene(mainNode));
         stage.show();
         stage.toFront();
+        stage.setFullScreen(true);
     }
 
     @Test
