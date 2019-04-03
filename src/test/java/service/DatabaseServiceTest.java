@@ -18,6 +18,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -25,6 +26,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class DatabaseServiceTest {
     private DatabaseService myDBS;
@@ -149,6 +151,56 @@ public class DatabaseServiceTest {
 
     @Test
     @Category(FastTest.class)
+    public void insertAllNodes() {
+        final Function callback = mock(Function.class);
+        myDBS.registerNodeCallback(callback);
+
+        assertThat(myDBS.getAllNodes().size(), is(0));
+        ArrayList<Node> nodes = new ArrayList<>();
+
+        for (int i = 0; i < 10001; i ++) {
+            nodes.add(new Node("" + i, i, i, "2", "BTM", "HALL", "Hall", "Hall"));
+        }
+
+        assertTrue(myDBS.insertAllNodes(nodes));
+
+        verify(callback, times(11)).apply(null);
+
+        assertThat(myDBS.getAllNodes().size(), is(10001));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getNumNodeTypeByFloor() {
+        Node testNode1 = new Node("ACONF00101", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node testNode2 = new Node("ACONF00102", 1648, 2968, "2", "BTM", "STAI", "BTM Conference Center", "BTM Conference");
+        Node testNode3 = new Node("ACONF00103", 1648, 2968, "2", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode4 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+
+        Node testNode5 = new Node("ACONF00105", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode6 = new Node("ACONF00106", 1648, 2968, "1", "BTM", "DEPT", "BTM Conference Center", "BTM Conference");
+        Node testNode7 = new Node("ACONF00107", 1580, 2538, "1", "BTM", "LABS", "Hall", "Hall");
+        Node testNode8 = new Node("ACONF00108", 1648, 2968, "1", "BTM", "LABS", "BTM Conference Center", "BTM Conference");
+        Node testNode9 = new Node("ACONF00109", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        assertTrue(myDBS.insertNode(testNode1));
+        assertTrue(myDBS.insertNode(testNode2));
+        assertTrue(myDBS.insertNode(testNode3));
+        assertTrue(myDBS.insertNode(testNode4));
+        assertTrue(myDBS.insertNode(testNode5));
+        assertTrue(myDBS.insertNode(testNode6));
+        assertTrue(myDBS.insertNode(testNode7));
+        assertTrue(myDBS.insertNode(testNode8));
+        assertTrue(myDBS.insertNode(testNode9));
+
+        assertEquals(2, myDBS.getNumNodeTypeByFloor("HALL","2"));
+        assertEquals(1, myDBS.getNumNodeTypeByFloor("STAI","2"));
+        assertEquals(0, myDBS.getNumNodeTypeByFloor("HALL","1"));
+        assertEquals(2, myDBS.getNumNodeTypeByFloor("LABS","1"));
+        assertEquals(1, myDBS.getNumNodeTypeByFloor("DEPT","1"));
+    }
+
+    @Test
+    @Category(FastTest.class)
     public void getNodesByFloor() {
         Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         myDBS.insertNode(testNode1);
@@ -161,7 +213,9 @@ public class DatabaseServiceTest {
         assertEquals(getByFloor.get(0),testNode2);
         assertEquals(getByFloor.get(1),testNode3);
     }
-  
+
+    @Test
+    @Category(FastTest.class)
     public void getNodesFilteredByType() {
         Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         myDBS.insertNode(testNode1);
