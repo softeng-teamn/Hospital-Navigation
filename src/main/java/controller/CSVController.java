@@ -1,6 +1,7 @@
 package controller;
 
 import model.Edge;
+import model.Employee;
 import model.Node;
 import model.ReservableSpace;
 import service.ResourceLoader;
@@ -293,8 +294,10 @@ public class CSVController extends Controller {
      */
     public static void importIfNecessary() {
         if (dbs.isNewlyCreated()) {
+            Employee newEmployee = new Employee(1234, "Admin", true, "test");
             importNodes();
             importEdges();
+            dbs.insertEmployee(newEmployee);
         }
     }
 }

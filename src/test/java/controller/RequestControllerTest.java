@@ -22,14 +22,14 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class RequestControllerTest {
-    private Node n = new Node(1, 1 , "","","","","","");
+    private Node n = new Node(1, 1 , "ABCD","","","","","");
     private RequestController RC = new RequestController();
     private Request request;
     private MedicineRequest mReq;
-    private MedicineRequest medReqR = new MedicineRequest(1001,"Fast",n,false);
-    private MedicineRequest medReqM = new MedicineRequest(1002,"take your time", n, false, "Morphine", 200.0);
-    private ITRequest ITReqA = new ITRequest(1003,"3/31/2019 1:21 PM",n,false,"Hard Drive Broke When I peed on it");
-    private ITRequest ITReqB = new ITRequest(1005,"4/1/2019 2:30 PM", n, false, "Can't wifi");
+    private MedicineRequest medReqR = new MedicineRequest(2,"Fast",n,false);
+    private MedicineRequest medReqM = new MedicineRequest(2,"take your time", n, false, "Morphine", 200.0);
+    private ITRequest ITReqA = new ITRequest(2,"3/31/2019 1:21 PM",n,false,"Hard Drive Broke When I peed on it");
+    private ITRequest ITReqB = new ITRequest(3,"4/1/2019 2:30 PM", n, false, "Can't wifi");
     private MedicineRequest c;
     private ITRequest itReq;
 
@@ -40,15 +40,13 @@ public class RequestControllerTest {
 //    RequestController mockRequestController = spy(new RequestController());
 
     @Before
-    public void mockMethod() {
+    public void setupTest() {
 //        when(mockRequestController.initialize()).thenReturn();
-    }
+        Controller.initializeDatabase();
+        RC.dbs.wipeTables();
 
-    private ArrayList<MedicineRequest> medList = new ArrayList<>();
-    private ArrayList<ITRequest> ITList = new ArrayList<>();
+        RC.dbs.insertNode(n);
 
-    @Before
-    public void setUp() throws Exception {
         medList.add(medReqM);
         medList.add(medReqR);
         ITList.add(ITReqA);
@@ -59,6 +57,9 @@ public class RequestControllerTest {
         RequestController.dbs.insertITRequest(ITReqA);
         RequestController.dbs.insertITRequest(ITReqB);
     }
+
+    private ArrayList<MedicineRequest> medList = new ArrayList<>();
+    private ArrayList<ITRequest> ITList = new ArrayList<>();
 
 
     // test showHome()
@@ -77,6 +78,8 @@ public class RequestControllerTest {
         requests.add(ITReqA);
         RC.makeRequest(ITReqA);
         List<ITRequest> requests1 = RC.dbs.getAllIncompleteITRequests();
+        System.out.println(requests);
+        System.out.println(requests1);
         assertThat(requests.containsAll(requests1), equalTo(true));
         requests = requests1;
         //don't make two of the same exact req
@@ -92,6 +95,10 @@ public class RequestControllerTest {
         requests.add(medReqM);
         RC.makeRequest(medReqM);
         List<MedicineRequest> requests1 = RC.dbs.getAllIncompleteMedicineRequests();
+
+        System.out.println(requests);
+
+        System.out.println(requests1);
         assertThat(requests.containsAll(requests1), equalTo(true));
 
         requests = requests1;

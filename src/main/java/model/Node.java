@@ -78,7 +78,14 @@ public class Node {
     @Override
     public String toString() {
         return "Node{" +
-                "nodeID='" + nodeID + '\'' +
+                "xcoord=" + xcoord +
+                ", ycoord=" + ycoord +
+                ", nodeID='" + nodeID + '\'' +
+                ", floor='" + floor + '\'' +
+                ", building='" + building + '\'' +
+                ", nodeType='" + nodeType + '\'' +
+                ", longName='" + longName + '\'' +
+                ", shortName='" + shortName + '\'' +
                 '}';
     }
 
