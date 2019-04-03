@@ -219,6 +219,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(pane.isVisible());
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void showRoomSchedule() throws InterruptedException {
@@ -241,6 +242,7 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void createReservation() {
@@ -264,6 +266,7 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void submit() throws InterruptedException {
@@ -317,6 +320,7 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     //select a location
     //click make reservation
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void showConf() throws InterruptedException {

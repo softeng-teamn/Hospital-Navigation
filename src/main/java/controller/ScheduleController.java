@@ -94,9 +94,6 @@ public class ScheduleController extends Controller {
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
 
-    // TODO
-    private BorderPane borderP;
-
     /**
      * Set up scheduler page.
      */
@@ -487,24 +484,5 @@ public class ScheduleController extends Controller {
         Stage stage = (Stage) serviceBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request);
         StageManager.changeExistingWindow(stage, root, "Service Request");
-    }
-
-    // TODO
-    public void filterRooms() {
-
-    }
-
-    // TODO
-    public void clearFilter() {
-
-    }
-
-
-
-    // Currently unused:
-    //returns a list of roomIDs which have a max capacity of less than nPeople
-    ArrayList<String> getMaxPeople(int nPeople){
-        ArrayList<String> a = new ArrayList<>();
-        return a;
     }
 }
