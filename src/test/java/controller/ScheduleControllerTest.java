@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Employee;
@@ -214,7 +215,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         clickOn(homeBtn);
         Thread.sleep(200);
         //TODO: need a valid home screen w/ something to ID
-        TitledPane pane = (TitledPane) GuiTest.find(instrP);
+        HBox pane = (HBox) GuiTest.find("#top_nav");
         assertTrue(pane.isVisible());
     }
 

@@ -103,8 +103,7 @@ public class ScheduleController extends Controller {
     @FXML
     public void initialize() {
         // Read in reservable Spaces
-        CSVController csvC = new CSVController();
-        csvC.importReservableSpaces();
+        CSVController.importReservableSpaces();
 
         // Create the instructions and error message
         instructionsPane.setVisible(false);
@@ -193,22 +192,17 @@ public class ScheduleController extends Controller {
         currentSelection = curr;
 
         // Get that date and turn it into gregorian calendars to pass to the database
-
-        //TODO: change to not infinite
-        LocalDate chosenDate = datePicker.getValue().plus(-30, ChronoUnit.YEARS);
-        LocalDate endDate = chosenDate.plus(30, ChronoUnit.MONTHS);
-        endDate = endDate.plus(30, ChronoUnit.YEARS);
+        LocalDate chosenDate = datePicker.getValue();
+        LocalDate endDate = datePicker.getValue().plus(1, ChronoUnit.DAYS);
         GregorianCalendar gcalStart = GregorianCalendar.from(chosenDate.atStartOfDay(ZoneId.systemDefault()));
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
+        System.out.println(gcalStart.get(Calendar.YEAR) +  " " + gcalStart.get(Calendar.MONTH) + " " + gcalStart.get(Calendar.DATE) + " \n" + gcalStart.get(Calendar.HOUR));
+        System.out.println(gcalEnd.get(Calendar.YEAR) +  " " + gcalEnd.get(Calendar.MONTH) + " " + gcalEnd.get(Calendar.DATE)+ " \n" + gcalEnd.get(Calendar.HOUR));
+
 
         // Get reservations for this space and these times
         ArrayList<Reservation> reservations = (ArrayList<Reservation>) dbs.getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
-        System.out.println(curr.getSpaceID());
-        System.out.println(gcalStart.get(Calendar.MONTH) +  " " + gcalStart.get(Calendar.DATE) +  " " +
-                gcalStart.get(Calendar.YEAR) +  " " + gcalStart.get(Calendar.HOUR) +  " " );
-        System.out.println(gcalEnd.get(Calendar.MONTH) +  " " + gcalEnd.get(Calendar.DATE) +  " " +
-                gcalEnd.get(Calendar.YEAR) +  " " + gcalEnd.get(Calendar.HOUR) +  " " );
-        System.out.println(reservations);
+        System.out.println(curr.getSpaceID() + " " + reservations);
 
         // clear the previous schedule
         schedule.getChildren().clear();
@@ -370,6 +364,7 @@ public class ScheduleController extends Controller {
         // Create the new reservation
         Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),gcalStart,gcalEnd);
         dbs.insertReservation(newRes);
+        closeError();
         showRoomSchedule();
         closeConf();
     }

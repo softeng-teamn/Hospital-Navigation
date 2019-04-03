@@ -301,6 +301,7 @@ public class CSVController extends Controller {
             Employee newEmployee = new Employee(1234, "Admin", true, "test");
             importNodes();
             importEdges();
+            importReservableSpaces();
             dbs.insertEmployee(newEmployee);
         }
     }
