@@ -1,5 +1,6 @@
 package controller;
 
+import model.Elevator;
 import model.Node;
 import service.DatabaseService;
 import service.MismatchedDatabaseVersionException;
@@ -13,10 +14,12 @@ public class Controller {
 
     static DatabaseService dbs;
 
+    static Elevator elev;
     static HashMap<String, ArrayList<Node>> connections;
 
     static {
         initializeDatabase();
+        initializeElevator();
     }
 
     /**
@@ -30,6 +33,14 @@ public class Controller {
         }
     }
 
+    public static void initializeElevator() {
+        try {
+            elev = Elevator.get("MyRobotName");
+        } catch ( Exception e) {
+            e.printStackTrace();
+        }
+    }
+  
     public static void initConnections() {
         System.out.println("creating hashmap ...");
         connections = new HashMap<String, ArrayList<Node>>();
