@@ -46,6 +46,19 @@
     -jfx-focus-color: -fx-red;
 }
 
+.jfx-radio-button {
+    -fx-font-family: Roboto;
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-size: 10pt;
+    -jfx-selected-color: -fx-secondary;
+
+}
+
+
+
+/*.radio-button :selected{*/
+    /*-fx-background-color: -fx-secondary;*/
+/*}*/
 
 
 /*******************************************************************************
@@ -57,6 +70,8 @@
 .list-view {
     -fx-background-color: -fx-primary;
     -fx-border-radius: 0px;
+
+
 }
 
 .list-view .list-cell {
@@ -72,6 +87,12 @@
 
 .list-view .list-cell:selected {
     -fx-background-color: #434343;
+}
+
+.fulfilllist-view {
+    -fx-background-color: -fx-primary;
+    -fx-border-radius: 2px;
+    -fx-border-color: -fx-tertiary;
 }
 
 /*******************************************************************************
