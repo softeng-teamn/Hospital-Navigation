@@ -34,6 +34,14 @@
     -jfx-focus-color: -fx-secondary;
 }
 
+.Text {
+    -fx-font-family: Roboto;
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-size: 13pt;
+    -jfx-focus-color: -fx-secondary;
+}
+
+
 /*******************************************************************************
  *                                                                             *
  * List View                                                                   *
