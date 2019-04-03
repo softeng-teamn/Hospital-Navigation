@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.Employee;
 import model.Node;
 import model.Edge;
+import model.ReservableSpace;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,10 @@ import java.net.URL;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -73,6 +77,10 @@ public class CSVControllerTest {
         calendar4.setTime(date4);
         calendar5.setTime(date5);
         calendar6.setTime(date6);
+
+        ReservableSpace space1 = new ReservableSpace("AAAAA00101","Bob","Computer","BBBBB00101", calendar1, calendar2);
+        ReservableSpace space2 = new ReservableSpace("AAAAA00102","Alice","Conference","BBBBB00102",calendar3, calendar4);
+        ReservableSpace space3 = new ReservableSpace("AAAAA00103","John","Computer","BBBBB00103",calendar5,calendar6);
 
         Node n1 = new Node("ABC123", 0, 0, "1", "Main", "ABC", "Test Node 1", "T1");
         Node n2 = new Node("XYZ4242", 50, 50, "L1", "Aux", "XYZ", "Test Node 2", "T2");
