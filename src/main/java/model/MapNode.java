@@ -20,6 +20,11 @@ public class MapNode implements Comparable<MapNode>{
         this.g = 99999999;
     }
 
+    /**
+     * checks if two MapNodes are equal to each other
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,12 +59,20 @@ public class MapNode implements Comparable<MapNode>{
         return this.h;
     }
 
+    /**
+     * calculates the heuristic
+     * @param destination
+     */
     public void calculateHeuristic(MapNode destination) {
         double dx = (double) destination.x - this.x;
         double dy = (double) destination.y - this.y;
         this.h = Math.sqrt(Math.pow(dx, 2.0) + Math.pow(dy, 2.0));
     }
 
+    /**
+     * calculates G
+     * @param nextNode
+     */
     public void calculateG(MapNode nextNode) {
         int dx = nextNode.x - this.x;
         int dy = nextNode.y - this.y;
@@ -88,6 +101,11 @@ public class MapNode implements Comparable<MapNode>{
                 '}';
     }
 
+    /**
+     * compares two nodes
+     * @param node
+     * @return
+     */
     @Override
     public int compareTo(MapNode node) {
         int comparison = Double.compare(this.getF(), node.getF());

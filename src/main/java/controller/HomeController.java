@@ -1,7 +1,6 @@
 package controller;
 
 import com.jfoenix.controls.*;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -12,17 +11,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
@@ -41,9 +36,6 @@ import java.util.stream.Stream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 public class HomeController extends MapController {
 
     @FXML
@@ -51,7 +43,7 @@ public class HomeController extends MapController {
     @FXML
     private HBox top_nav, hbox_container;
     @FXML
-    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn;
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn, bookBtn, fulfillBtn;
     @FXML
     private JFXSlider zoom_slider;
     @FXML
@@ -78,6 +70,9 @@ public class HomeController extends MapController {
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
 
+    /**
+     * pulls up the editor for user interaction
+     */
     void showEditor() {
         if (top_nav.getChildren().contains(edit_btn)) {
             top_nav.getChildren().remove(edit_btn);
@@ -95,6 +90,9 @@ public class HomeController extends MapController {
         }
     }
 
+    /**
+     * hides the editor from the screen
+     */
     void hideEditor() {
         if (!top_nav.getChildren().contains(edit_btn)) {
             top_nav.getChildren().add(top_nav.getChildren().indexOf(navigate_btn)+1, edit_btn);
@@ -104,7 +102,18 @@ public class HomeController extends MapController {
         }
     }
 
+    @FXML
+    // switches window to map editor screen.
+    public void showFulfillRequest() throws Exception {
+        Stage stage = (Stage) auth_btn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
+        StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
+    }
 
+
+    /**
+     * initializes the home controller
+     */
     @FXML
     void initialize() {
 
@@ -113,6 +122,10 @@ public class HomeController extends MapController {
 
         authCheck();
 
+        dbs.registerNodeCallback(aVoid -> {
+            HomeController.this.nodeChangedCallback();
+            return null;
+        });
 
         repopulateList();
 
@@ -145,15 +158,24 @@ public class HomeController extends MapController {
         zoom(0.3);
     }
 
+    /**
+     * TBD
+     */
+    private void nodeChangedCallback() {
+        repopulateList();
+    }
+  
     void authCheck() {
-        if (isAdmin) {
+        if (Controller.getIsAdmin()) {
             auth_btn.setText("Logout");
             edit_btn.setVisible(true);
             newRoom_btn.setVisible(true);
+
             if (!top_nav.getChildren().contains(edit_btn)) {
                 edit_btn.setVisible(false);
                 top_nav.getChildren().add(top_nav.getChildren().indexOf(navigate_btn)+1, edit_btn);
                 top_nav.getChildren().add(1, newRoom_btn);
+                top_nav.getChildren().add(top_nav.getChildren().indexOf(bookBtn)-1, fulfillBtn);
             }
         } else {
             System.out.println("not an admin anymore");
@@ -167,19 +189,29 @@ public class HomeController extends MapController {
             if (top_nav.getChildren().contains(newRoom_btn)) {
                 top_nav.getChildren().remove(newRoom_btn);
             }
+            if (top_nav.getChildren().contains(fulfillBtn)) {
+                top_nav.getChildren().remove(fulfillBtn);
+            }
         }
     }
 
+    /**
+     * remove all the drawn paths
+     */
     public void removeLines() {
         zoomGroup.getChildren().removeAll(drawnLines);
     }
 
-    //for lists
+    /**
+     *for lists
+     */
     private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
         return from.stream().map(func).collect(Collectors.toList());
     }
 
-    // Filters the ListView based on the string
+    /**
+     *Filters the ListView based on the string
+     */
     private void filterList(String findStr) {
         if (findStr.equals("")) {
             list_view.getItems().clear();
@@ -207,6 +239,10 @@ public class HomeController extends MapController {
         }
     }
 
+    /**
+     * Runs when user clicks a location
+     * @param e
+     */
     @FXML
     public void listViewClicked(MouseEvent e) {
 
@@ -231,13 +267,13 @@ public class HomeController extends MapController {
         drawnLines = new ArrayList<Line>();
         // Un-hide Navigation button
         navigate_btn.setVisible(true);
-        if (isAdmin) {
+        if (Controller.getIsAdmin()) {
             edit_btn.setVisible(true);
         } else {
             edit_btn.setVisible(false);
         }
         // hide editor
-        if (isAdmin) {
+        if (Controller.getIsAdmin()) {
             hideEditor();
         }
         // set destination node
@@ -259,6 +295,10 @@ public class HomeController extends MapController {
         timeline.play();
     }
 
+    /**
+     * displays the destination node
+     * @param n
+     */
     private void showDestination(Node n) {
         destCircle.setCenterX(n.getXcoord());
         destCircle.setCenterY(n.getYcoord());
@@ -271,8 +311,11 @@ public class HomeController extends MapController {
     //      Call Find path and Draw Line
     //      Clear Screen
 
+    /**
+     * searches for room
+     * @param e
+     */
     @FXML
-    // searches for Room
     public void searchBarEnter(ActionEvent e) {
         String search = search_bar.getText();
         System.out.println(search);
@@ -280,31 +323,59 @@ public class HomeController extends MapController {
 
     }
 
+    /**
+     * switches window to map editor screen.
+     * @throws Exception
+     */
     @FXML
     // switches window to map editor screen.
+    public void showAdminLogin() throws Exception {
+        if (Controller.getIsAdmin()) {
+            Controller.setIsAdmin(false);
+            authCheck();
+            repopulateList();
+        } else {
+            Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
+            Stage stage = (Stage) navigate_btn.getScene().getWindow();
+            StageManager.changeExistingWindow(stage, root, "Admin Login");
+        }
+    }
+
     public void showMapEditor() throws Exception {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
         StageManager.changeExistingWindow(stage, root, "Map Editor");
     }
 
+    /**
+     * switches window to request screen
+     * @throws Exception
+     */
     @FXML
-    // switches window to request screen
     public void showRequest() throws Exception {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request);
         StageManager.changeExistingWindow(stage, root, "Service Request");
     }
 
+    /**
+     * switches window to schedule screen
+     * @throws Exception
+     */
     @FXML
-    // switches window to schedule screen
     public void showSchedule() throws Exception {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
+        stage.sizeToScene();
+        stage.setFullScreen(true);
     }
-  
-    //Pathfind and show path to user
+
+    /**
+     * Pathfind and show path to user
+     * @param start
+     * @param dest
+     */
     public void pathfind(Node start, Node dest) {
         MapNode pStart = new MapNode(start.getXcoord(), start.getYcoord(), start);
         MapNode pDest = new MapNode(dest.getXcoord(), dest.getYcoord(), dest);
@@ -335,23 +406,39 @@ public class HomeController extends MapController {
         }
     }
 
+    /**
+     * Begins the action of pathfinding
+     * @param event
+     */
     @FXML
     void startNavigation(ActionEvent event) {
         pathfind(kioskNode, destNode);
     }
 
+    /**
+     * zooms in the map
+     * @param event
+     */
     @FXML
     void zoomIn(ActionEvent event) {
         double sliderVal = zoom_slider.getValue();
         zoom_slider.setValue(sliderVal += 0.05);
     }
 
+    /**
+     * zooms out the map
+     * @param event
+     */
     @FXML
     void zoomOut(ActionEvent event) {
         double sliderVal = zoom_slider.getValue();
         zoom_slider.setValue(sliderVal + -0.05);
     }
 
+    /**
+     * scales zoom grouping based on given value
+     * @param scaleValue
+     */
     private void zoom(double scaleValue) {
 //    System.out.println("airportapp.Controller.zoom, scaleValue: " + scaleValue);
         double scrollH = map_scrollpane.getHvalue();
@@ -362,6 +449,10 @@ public class HomeController extends MapController {
         map_scrollpane.setVvalue(scrollV);
     }
 
+    /**
+     * function to create a new room
+     * @param e
+     */
     @FXML
     void newRoomAction(ActionEvent e) throws Exception {
         // open the new editor window
@@ -370,21 +461,32 @@ public class HomeController extends MapController {
         StageManager.changeExistingWindow(mainStage, root, "Create New Room");
     }
 
+    /**
+     * pulls up the room editor
+     * @param e
+     * @throws IOException
+     */
     @FXML
     void editAction(ActionEvent e) throws IOException {
             showEditor();
     }
 
+    /**
+     * clicking cancel button in node editor
+     * @param e
+     */
     @FXML
-    // clicking cancel button in node editor
     void cancelEditAction(ActionEvent e) {
         System.out.println("Lets hide it!");
         edit_btn.setVisible(false);
         hideEditor();
     }
 
+    /**
+     * clicking the save button (after editing)
+     * @param e
+     */
     @FXML
-    // clicking the save button (after editing)
     void editSaveAction(ActionEvent e) {
         System.out.println(edit_short.getText());
         // validation
@@ -402,6 +504,9 @@ public class HomeController extends MapController {
         }
     }
 
+    /**
+     * Function to pass on edits performed on the map to the database for future use
+     */
     void sendEditToDB() {
         Node oldNode = destNode;
         Node myNode = new Node(
@@ -424,17 +529,28 @@ public class HomeController extends MapController {
         }
     }
 
+    /**
+     * probs not needed
+     * @param e
+     */
     @FXML
-    // probs not needed
     void editNodeTextAction(ActionEvent e) {
 
     }
 
+    /**
+     * TBD
+     * @param e
+     */
     @FXML
     void nodeTextChanged(ActionEvent e) {
         System.out.println("SHIT WAS CHANGED    ");
     }
 
+    /**
+     * prompts the user to validate their Admin status
+     * @param e
+     */
     @FXML
     void authAction(ActionEvent e) {
         isAdmin = !isAdmin;
@@ -442,17 +558,30 @@ public class HomeController extends MapController {
         repopulateList();
     }
 
+    /**
+     * checks if the node to be edited exists
+     * @param str
+     * @return
+     */
     boolean validateEditNode(String str) {
         return !str.isEmpty();
     }
 
+    /**
+     * checks if num is an integer
+     * @param num
+     * @return
+     */
     boolean validateNumber(String num) {
         return num.matches("[0-9]+");
     }
 
+    /**
+     * populates list based on the user
+     */
     void repopulateList() {
         System.out.println("Repopulation of listView");
-        if (isAdmin) {
+        if (Controller.getIsAdmin()) {
             allNodes = dbs.getAllNodes();
         } else {
             allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
@@ -483,6 +612,11 @@ public class HomeController extends MapController {
         });
     }
 
+    /**
+     * Removes a node and inserts a new node in its place.
+     * @param oldN
+     * @param newN
+     */
     void insertNodeIntoList(Node oldN, Node newN) {
 //        ArrayList<Node> repop;
         int indxOfModified = allNodes.indexOf(oldN);
