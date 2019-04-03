@@ -1,24 +1,34 @@
 * {
     -fx-primary: #2A2E37;
-    -fx-secondary: #02A9F4;
+    -fx-secondary: #D4AF37;
     -fx-tertiary: #646464;
     -fx-primarytext: #B2B2B2;
     -fx-scrollBar: #212121;
+    -fx-red: #F44336;
 }
 .root{
     -fx-background-color: -fx-primary;
+}
+
+.label{
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-family: Roboto;
 }
 
 .glyph-icon {
     -fx-fill: -fx-primaryText;
 }
 
+.button-glyph-icon {
+    -fx-fill: -fx-primaryText;
+    -glyph-size: 128px;
+}
+
 .button{
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primaryText;
     -fx-border-color: -fx-secondary;
-    -fx-border-radius: 20px;
-    -fx-background-radius: 20px;
+    -fx-border-radius: 5px;
 }
 
 .button:hover{
@@ -27,11 +37,66 @@
     -fx-background-color: -fx-secondary;
 }
 
+.confirm-button{
+    -fx-font-size: 12pt;
+}
+
+.jfx-toggle-node {
+    -fx-font-family: Roboto;
+    -fx-text-fill: -fx-primaryText;
+    -fx-border-color: -fx-secondary;
+    -fx-border-radius: 5px;
+    -fx-font-size: 16pt;
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 12px;
+}
+
+.jfx-toggle-node:hover{
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
+}
+
+.jfx-toggle-node:hover .button-glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
+.jfx-toggle-node:selected{
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
+}
+
+.jfx-toggle-node:selected .button-glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
 .text-field {
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primaryText;
-    -fx-font-size: 13pt;
+    -fx-font-size: 14pt;
     -jfx-focus-color: -fx-secondary;
+}
+
+.wrong-credentials{
+    -jfx-unfocus-color: -fx-red;
+    -jfx-focus-color: -fx-red;
+}
+
+.jfx-radio-button {
+    -fx-font-family: Roboto;
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-size: 10pt;
+    -jfx-selected-color: -fx-secondary;
+
+}
+
+
+.text-area {
+    -fx-font-family: Roboto;
+    -fx-border-color: -fx-tertiary;
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-size: 14pt;
 }
 
 /*******************************************************************************
@@ -43,6 +108,8 @@
 .list-view {
     -fx-background-color: -fx-primary;
     -fx-border-radius: 0px;
+
+
 }
 
 .list-view .list-cell {
@@ -58,6 +125,12 @@
 
 .list-view .list-cell:selected {
     -fx-background-color: #434343;
+}
+
+.fulfilllist-view {
+    -fx-background-color: -fx-primary;
+    -fx-border-radius: 2px;
+    -fx-border-color: -fx-tertiary;
 }
 
 /*******************************************************************************

@@ -1,8 +1,6 @@
 package controller;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 import model.Node;
 import model.RequestType;
@@ -35,15 +34,11 @@ public class RequestController extends Controller implements Initializable {
 
     @FXML
     private JFXListView locationNodeList;
-    @FXML
-    private ChoiceBox<String> typeBox;
-    @FXML
-    private JFXTextField locationTextField;
-    @FXML
-    private JFXTextField typeTextField;
 
     @FXML
-    private TextArea textArea;
+    private JFXTextArea textArea;
+    @FXML
+    private ToggleGroup requestType;
 
     private Collection<Request> requests;
     private Collection<Request> pendingRequests;
@@ -76,26 +71,24 @@ public class RequestController extends Controller implements Initializable {
      */
     @FXML
     public void makeRequest() {
+        JFXToggleNode selected = (JFXToggleNode) requestType.getSelectedToggle();
 
         String description = textArea.getText();
-        String requestType = typeBox.getValue();
-        Random r = new Random();
         Node requestLocation = (Node) locationNodeList.getSelectionModel().getSelectedItem();
 
         if (requestLocation == null) {
-            locationTextField.setText("Request Location: \nPlease select location!");
-        } else if (requestType == null) {
-            typeTextField.setText("Request Type: \nPlease select type!");
-        } else if (requestType.contains("Medicine")) {
-            MedicineRequest newMedicineRequest = new MedicineRequest( r.nextInt(10000), description, requestLocation, false);
+            textArea.setText("Please select location");
+        } else if (selected == null) {
+            textArea.setText("Please select type");
+        } else if (selected.getText().contains("Medicine")) {
+            MedicineRequest newMedicineRequest = new MedicineRequest( -1, description, requestLocation, false);
             dbs.insertMedicineRequest(newMedicineRequest);
-        } else if (requestType.contains("IT")) {
-            ITRequest newITRequest = new ITRequest(r.nextInt(10000), description, requestLocation, false);
+        } else if (selected.getText().contains("IT")) {
+            ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
             dbs.insertITRequest(newITRequest);
 
         }
         textArea.clear();
-        typeBox.setValue(null);
     }
 
 
@@ -191,9 +184,9 @@ public class RequestController extends Controller implements Initializable {
         locationNodeList.setEditable(false);
 
 //        ObservableList<String> locationList = FXCollections.observableArrayList("1","2","3");
-        ObservableList<String> typeList = FXCollections.observableArrayList("Medicine Request", "IT Request");
+//        ObservableList<String> typeList = FXCollections.observableArrayList("Medicine Request", "IT Request");
 //        locationNodeList.getItems().addAll(locationList);
-        typeBox.getItems().addAll(typeList);
+//        typeBox.getItems().addAll(typeList);
 
     }
 
