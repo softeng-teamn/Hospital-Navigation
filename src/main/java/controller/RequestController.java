@@ -44,8 +44,11 @@ public class RequestController extends Controller implements Initializable {
     private Collection<Request> pendingRequests;
 
 
+    /**
+     * switches window to home screen
+     * @throws Exception
+     */
     @FXML
-    // switches window to home screen
     public void showHome() throws Exception {
         Stage stage = (Stage) cancelBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
@@ -53,15 +56,19 @@ public class RequestController extends Controller implements Initializable {
     }
 
 
+    /**
+     * show every nodes on  JFXListView
+     */
     @FXML
-    //show every nodes on  JFXListView
     void showLocation(){
 
     }
 
 
-    // submits request to database
-    // "confirm" button
+    /**
+     * submits request to database
+     * "confirm" button
+     */
     @FXML
     public void makeRequest() {
         JFXToggleNode selected = (JFXToggleNode) requestType.getSelectedToggle();
@@ -85,6 +92,10 @@ public class RequestController extends Controller implements Initializable {
     }
 
 
+    /**
+     * Generates a request of the given type
+     * @param type
+     */
     void makeRequest(Request type) {
         RequestType rType = type.getRequestType();
         switch(rType.getrType()){
@@ -105,7 +116,11 @@ public class RequestController extends Controller implements Initializable {
         }
     }
 
-    // removes object from database
+    /**
+     * removes object from database
+     * @param type
+     * @param byWho
+     */
     void fufillRequest(Request type, String byWho) {
         RequestType rType = type.getRequestType();
         switch(rType.getrType()){
@@ -126,7 +141,10 @@ public class RequestController extends Controller implements Initializable {
         }
     }
 
-    // getter for pendingRequests
+    /**
+     * getter for pendingRequests
+     * @return
+     */
     public Collection<Request> getPendingRequests () {
         ArrayList<Request> requests = new ArrayList<>();
         requests.addAll(this.dbs.getAllIncompleteITRequests());
@@ -135,6 +153,11 @@ public class RequestController extends Controller implements Initializable {
     }
 
 
+    /**
+     * initializes the request controller
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ArrayList<Node> everyNode =  dbs.getNodesFilteredByType("STAI", "HALL");

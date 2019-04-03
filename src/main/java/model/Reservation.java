@@ -74,6 +74,11 @@ public class Reservation {
         this.endTime = (GregorianCalendar) endTime.clone();
     }
 
+    /**
+     * checks if two Reservations are equal to each other.
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

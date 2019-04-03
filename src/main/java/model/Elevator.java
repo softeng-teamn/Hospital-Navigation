@@ -6,8 +6,10 @@ import java.util.HashSet;
 import edu.wpi.SimplePacketComs.FloatPacketType;
 import edu.wpi.SimplePacketComs.phy.UDPSimplePacketComs;
 
-//to use Elevator myInstance = ExampleClient.get("MyRobotName");
-//then myInstance.data[x] where x is...
+/**
+ * to use Elevator myInstance = ExampleClient.get("MyRobotName");
+ * then myInstance.data[x] where x is...
+ */
 public class Elevator extends UDPSimplePacketComs {
     private static byte[] dev = new byte[] { (byte) 170, (byte) 20, (byte) 10, (byte) 2 };
     private FloatPacketType IMU = new FloatPacketType(1871, 64);

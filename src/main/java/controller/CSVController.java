@@ -9,6 +9,7 @@ import service.ResourceLoader;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Date;
 
@@ -24,6 +25,7 @@ public class CSVController extends Controller {
 
     /**
      * Export the Nodes table
+     * @throws IOException
      */
     public static void exportNodes() throws IOException {
         // Open a file
@@ -60,6 +62,7 @@ public class CSVController extends Controller {
 
     /**
      * Export the Edges table
+     * @throws IOException
      */
     public static void exportEdges() throws IOException {
         // Open a file
@@ -130,9 +133,9 @@ public class CSVController extends Controller {
      * Import the Nodes table
      */
     public static void importNodes() {
-
-
         BufferedReader reader = null;
+
+        ArrayList<Node> nodes = new ArrayList<>();
 
         try {
             //load file to be read
@@ -149,9 +152,12 @@ public class CSVController extends Controller {
                 //Create node and populate it with data
                 Node node = new Node(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2]), data[3], data[4], data[5], data[6], data[7]);
 
-                //insert node into database
-                dbs.insertNode(node);
+                //insert node into list
+                nodes.add(node);
             }
+
+            dbs.insertAllNodes(nodes);
+
             //close reader
             reader.close();
         } catch (IOException e) {

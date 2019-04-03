@@ -8,6 +8,7 @@ import model.request.MedicineRequest;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
+import java.util.function.Function;
 
 @SuppressWarnings("ALL")
 public class DatabaseService {
@@ -20,10 +21,25 @@ public class DatabaseService {
 
     private boolean newlyCreated;
 
+    private ArrayList<Function<Void, Void>> nodeCallbacks;
+
     private DatabaseService(Connection connection) {
         this.connection = connection;
+        nodeCallbacks = new ArrayList<>();
     }
 
+    public void registerNodeCallback(Function<Void, Void> callback) {
+        nodeCallbacks.add(callback);
+    }
+
+
+    /**
+     * Tries to connect to an existing database, if one does not exist, creates and populates a new one.
+     * @param dbName
+     * @return a DatabaseService object, to be used by other functions to access the database.
+     * @throws SQLException
+     * @throws MismatchedDatabaseVersionException
+     */
     public static DatabaseService init(String dbName) throws SQLException, MismatchedDatabaseVersionException {
         DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
         Connection connection;
@@ -60,6 +76,7 @@ public class DatabaseService {
 
     /**
      * Throws an exception if myDB has an invalid version
+     * @throws MismatchedDatabaseVersionException
      */
     private void validateVersion() throws MismatchedDatabaseVersionException {
         String query = "SELECT * FROM META_DB_VER";
@@ -98,11 +115,20 @@ public class DatabaseService {
         }
     }
 
+    /**
+     * runs init with a default name
+     * @return an initialized DatabaseService
+     * @throws SQLException
+     * @throws MismatchedDatabaseVersionException
+     */
     public static DatabaseService init() throws SQLException, MismatchedDatabaseVersionException {
         return init("hospital-db");
     }
 
-    // create tables in the database if they do not already exist.
+    /**
+     * creates tables in the database if they do not already exist.
+     *
+     */
     private void createTables(){
         Statement statement = null;
         try {
@@ -186,17 +212,63 @@ public class DatabaseService {
         return executeUpdate(query, n.getNodeID());
     }
 
-    // retrieves the given node from the database
+    /** retrieves the given node from the database
+     * @param nodeID the ID of the node to be retrieved
+     * @return a node with the given ID
+     */
     public Node getNode(String nodeID){
         String query = "SELECT * FROM NODE WHERE (NODEID = ?)";
         return (Node) executeGetById(query, Node.class, nodeID);
     }
 
+    public boolean insertAllNodes(List<Node> nodes) {
+        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+        boolean successful = true;
+        PreparedStatement insertStatement = null;
+
+        // Track the status of the insert
+        boolean insertStatus = false;
+
+        try {
+            // Prep the statement
+            insertStatement = connection.prepareStatement(nodeStatement);
+
+            for (int i = 0; i <= nodes.size() / 1000; i++) {
+                for (int j = (i*1000); j < i*1000+1000 && j < nodes.size(); j++) {
+                    Node n = nodes.get(j);
+                    prepareStatement(insertStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
+                    insertStatement.addBatch();
+                }
+                // Execute
+                insertStatement.executeBatch();
+
+                for (Function<Void, Void> callback : nodeCallbacks) {
+                    callback.apply(null);
+                }
+
+                // If we made it this far, we're successful!
+                insertStatus = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement(insertStatement);
+        }
+        return insertStatus;
+    }
+
+    /** Returns all nodes in the database.
+     * @return list of all nodes in the database
+     */
     public ArrayList<Node> getAllNodes() {
         String query = "Select * FROM NODE";
         return (ArrayList<Node>)(List<?>) executeGetMultiple(query, Node.class, new Object[]{});
     }
 
+    /** get nodes filtered by specific type
+     * @param filterOut the parameter to exclude specific nodes by
+     * @return an arraylist of nodes that do not include the specified parameter
+     */
     @SuppressFBWarnings(value="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING", justification="Not a security issue - just add question marks based on number of types to filter out.")
     public ArrayList<Node> getNodesFilteredByType(String... filterOut) {
         String query = "Select * from NODE where NODETYPE not in (";
@@ -211,36 +283,45 @@ public class DatabaseService {
         return (ArrayList<Node>)(List<?>) executeGetMultiple(builtQuery.toString(), Node.class, (Object[]) filterOut);
     }
 
-    // get all nodes from the specified floor
+    /** get all nodes from the specified floor
+     * @param floor the floor to retrieve all nodes from
+     * @return an arraylist of all nodes on the given floor.
+     */
     public ArrayList<Node> getNodesByFloor(String floor) {
-        ArrayList<Node> floorNodes = new ArrayList<Node>();
         String query = "Select * FROM NODE WHERE NODE.FLOOR = ?";
+        return (ArrayList<Node>)(List<?>) executeGetMultiple(query, Node.class, floor);
+    }
+
+    public int getNumNodeTypeByFloor(String nodeType, String floor) {
         PreparedStatement stmt = null;
-        ResultSet nodes = null;
+        ResultSet res = null;
         try{
-            stmt = connection.prepareStatement(query);
-            prepareStatement(stmt, floor);
+            stmt = connection.prepareStatement("SELECT COUNT (*) AS TOTAL FROM NODE WHERE (floor=? AND nodeType=?)");
+            prepareStatement(stmt, floor, nodeType);
 
             // execute the query
-            nodes = stmt.executeQuery();
-            while(nodes.next()){
-                floorNodes.add(extractNode(nodes));
+            res = stmt.executeQuery();
+            int num = -1;
+            while(res.next()){
+                num = res.getInt("TOTAL");
             }
             stmt.close();
-            nodes.close();
+            res.close();
+            return num;
         }
         catch(SQLException e) {
             e.printStackTrace();
-            return null;
+            return -1;
         } finally {
-            closeAll(stmt, nodes);
+            closeAll(stmt, res);
         }
-
-        return floorNodes;
     }
 
     // EDGE FUNCTIONS
-    // returns a list of nodes that are connected to the given node
+    /** returns a list of nodes that are connected to the given node
+     * @param n the node to retrieve all nodes connected to from
+     * @return A list of all nodes connected to the given node.
+     */
     public ArrayList<Node> getNodesConnectedTo(Node n) {
         String nodeID = n.getNodeID();
         String query = "SELECT NODE.NodeID, NODE.xcoord, NODE.ycoord, NODE.floor, NODE.building, NODE.nodeType, NODE.longName, NODE.shortName FROM NODE INNER JOIN EDGE ON (NODE.NodeID = EDGE.node1 AND EDGE.node2 = ?) OR (NODE.NodeID = EDGE.node2 AND EDGE.Node1 = ?)";
@@ -248,6 +329,12 @@ public class DatabaseService {
         return (ArrayList<Node>)(List<?>) executeGetMultiple(query, Node.class, nodeID, nodeID);
     }
 
+    /** returns all edges on a specific floor
+     * not fully implemented yet
+     * not really that necessary
+     * @param floor
+     * @return
+     */
     // get edges from a specific floor
     public static Collection<Edge> getEdges(int floor) {
 
@@ -271,8 +358,11 @@ public class DatabaseService {
 
     }
 
-    // insert an edge. The method will fail and return false if the two nodes it points to
-    // do not already exist in the database.
+    /** insert an edge. The method will fail and return false if the two nodes it points to
+     * do not already exist in the database.
+     * @param e the edge to insert
+     * @return true if the insert succeeds and false if otherwise
+     */
     public boolean insertEdge(Edge e){
         String insertStatement = ("INSERT INTO EDGE VALUES(?,?,?)");
         String node1ID = e.getNode1().getNodeID();
@@ -281,17 +371,28 @@ public class DatabaseService {
         return executeInsert(insertStatement, e.getEdgeID(), node1ID, node2ID);
     }
 
-    // get an edge. This also pulls out the nodes that edge connects.
+    /** get an edge. This also pulls out the nodes that edge connects.
+     * @param edgeID the ID of the edge to retrieve
+     * @return the edge corresponding to the given ID
+     */
     public Edge getEdge(String edgeID){
         String query = "SELECT * FROM EDGE WHERE (EDGEID = ?)";
         return (Edge) executeGetById(query, Edge.class, edgeID);
     }
 
+    /** updates an edge with new node IDs.
+     * @param e the edge to update
+     * @return true or false based on whether the insert succeeded or not
+     */
     public boolean updateEdge(Edge e){
         String query = "UPDATE EDGE SET edgeID=?, NODE1=?, NODE2=? WHERE(EDGEID = ?)";
         return executeUpdate(query, e.getEdgeID(), e.getNode1().getNodeID(), e.getNode2().getNodeID(), e.getEdgeID());
     }
 
+    /** Deletes an edge from the database.
+     * @param e edge to delete from the database
+     * @return true or false based on whether the insert succeeded or not
+     */
     public boolean deleteEdge(Edge e){
         String query = "DELETE FROM EDGE WHERE (edgeID = ?)";
         return executeUpdate(query, e.getEdgeID());
@@ -301,27 +402,46 @@ public class DatabaseService {
         return new ArrayList<Edge>();
     }
 
+    /** Inserts a new reservation into the database.
+     * @param reservation reservation to insert into the database
+     * @return true or false based on whether the insert succeeded or not
+     */
     public boolean insertReservation(Reservation reservation) {
         String insertStatement = ("INSERT INTO RESERVATION(EVENTNAME, LOCATIONID, STARTTIME, ENDTIME, PRIVACYLEVEL, EMPLOYEEID) VALUES(?, ?, ?, ?, ?, ?)");
         return executeInsert(insertStatement, reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
     }
 
+    /** retrieves a single reservation from the database with it's ID.
+     * @param id id of the reservation to get from the database
+     * @return the reservation object corresponding to the ID
+     */
     public Reservation getReservation(int id) {
         String query = "SELECT * FROM RESERVATION WHERE (EVENTID = ?)";
         return (Reservation) executeGetById(query, Reservation.class, id);
     }
 
+    /** retrieves all reservations from the database
+     * @return a list of all reservations in the database
+     */
     public List<Reservation> getAllReservations() {
         String query = "Select * FROM RESERVATION";
         return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, new Object[]{});
     }
 
+    /** updates a reservation in the database.
+     * @param reservation reservation to update in the database
+     * @return true or false based on whether the insert succeeded or not
+     */
     public boolean updateReservation(Reservation reservation) {
         String query = "UPDATE RESERVATION SET eventName=?, locationID=?, startTime=?, endTime=?, privacyLevel=?, employeeID=? WHERE (eventID = ?)";
         return executeUpdate(query, reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(),
                 reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId(), reservation.getEventID());
     }
 
+    /** Removes a reservation from the database.
+     * @param reservation a reservation object
+     * @return true or false based on whether the insert succeeded or not
+     */
     public boolean deleteReservation(Reservation reservation) {
         String query = "DELETE FROM RESERVATION WHERE (eventID = ?)";
         return executeUpdate(query, reservation.getEventID());
@@ -349,116 +469,202 @@ public class DatabaseService {
         return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, id, from, to, from, to);
     }
 
+    /**
+     * @param employee the employee to insert into the database
+     * @return true if the insert succeeded or false if otherwise.
+     */
     public boolean insertEmployee(Employee employee) {
         String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?)");
         return executeInsert(insertStatement, employee.getID(), employee.getJob(), employee.isAdmin(), employee.getPassword());
     }
 
+    /**
+     * @param id the id of the employee to get from the database
+     * @return the object belonging to the employee of the given ID
+     */
     public Employee getEmployee(int id) {
         String query = "SELECT * FROM EMPLOYEE WHERE (EMPLOYEEID = ?)";
         return (Employee) executeGetById(query, Employee.class, id);
     }
 
+    /** retrieves a list of all employees from the database.
+     * @return a list of all employees in the database.
+     */
     public List<Employee> getAllEmployees() {
         String query = "Select * FROM EMPLOYEE";
         return (List<Employee>)(List<?>) executeGetMultiple(query, Employee.class, new Object[]{});
     }
 
+    /**
+     * @param employee the employee to update in the database
+     * @return true if the update succeeds and false if otherwise
+     */
     public boolean updateEmployee(Employee employee) {
         String query = "UPDATE EMPLOYEE SET job=?, isAdmin=? WHERE (employeeID = ?)";
         return executeUpdate(query, employee.getJob(), employee.isAdmin(), employee.getID());
     }
 
+    /**
+     * @param employee employee to delete from the database
+     * @return true if the delete succeeds and false if otherwise
+     */
     public boolean deleteEmployee(Employee employee) {
         String query = "DELETE FROM EMPLOYEE WHERE (employeeID = ?)";
         return executeUpdate(query, employee.getID());
     }
 
+    /**
+     * @param space space to insert into the database
+     * @return true if the insert succeeded and false if otherwise
+     */
     public boolean insertReservableSpace(ReservableSpace space) {
         String insertQuery = ("INSERT INTO RESERVABLESPACE VALUES(?, ?, ?, ?, ?, ?)");
         return executeInsert(insertQuery, space.getSpaceID(), space.getSpaceName(), space.getSpaceType(), space.getLocationNodeID(), space.getTimeOpen(), space.getTimeClosed());
     }
 
+    /**
+     * @param id ID of the space to get from the database
+     * @return a reservable space with matching ID to the given one
+     */
     public ReservableSpace getReservableSpace(String id) {
         String query = "SELECT * FROM RESERVABLESPACE WHERE (spaceID = ?)";
         return (ReservableSpace) executeGetById(query, ReservableSpace.class, id);
     }
 
+    /**
+     * @return a list of all reservable spaces in the database
+     */
     public List<ReservableSpace> getAllReservableSpaces() {
         String query = "Select * FROM RESERVABLESPACE";
         return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, new Object[]{});
     }
 
+    /**
+     * @param space the reservable space to update in the database
+     * @return true if the update succeeds and false if otherwise
+     */
     public boolean updateReservableSpace(ReservableSpace space) {
         String query = "UPDATE RESERVABLESPACE SET spaceName=?, spaceType=?, locationNode=?, timeOpen=?, timeClosed=? WHERE (spaceID = ?)";
         return executeUpdate(query, space.getSpaceName(), space.getSpaceType(), space.getLocationNodeID(), space.getTimeOpen(), space.getTimeClosed(), space.getSpaceID());
     }
 
+    /**
+     * @param space space to delete from the database
+     * @return true if the delete succeeds and false if otherwise
+     */
     public boolean deleteReservableSpace(ReservableSpace space) {
         String query = "DELETE FROM RESERVABLESPACE WHERE (spaceID = ?)";
         return executeUpdate(query, space.getSpaceID());
     }
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
     public boolean insertITRequest(ITRequest req) {
         String insertQuery = ("INSERT INTO ITREQUEST(notes, locationNodeID, completed, description) VALUES(?, ?, ?, ?)");
         return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDescription());
     }
 
+    /**
+     * @param id the id of the request to get from the database
+     * @return the IT request object with the given ID
+     */
     public ITRequest getITRequest(int id) {
         String query = "SELECT * FROM ITREQUEST WHERE (serviceID = ?)";
         return (ITRequest) executeGetById(query, ITRequest.class, id);
     }
 
+    /**
+     * @return all IT requests stored in the database in a List.
+     */
     public List<ITRequest> getAllITRequests() {
         String query = "Select * FROM ITREQUEST";
         return (List<ITRequest>)(List<?>) executeGetMultiple(query, ITRequest.class, new Object[]{});
     }
 
+    /** updates a given IT request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
     public boolean updateITRequest(ITRequest req) {
         String query = "UPDATE ITREQUEST SET notes=?, locationNodeID=?, completed=?, description=? WHERE (serviceID = ?)";
         return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDescription(), req.getId());
     }
 
+    /** deletes a given IT request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
     public boolean deleteITRequest(ITRequest req) {
         String query = "DELETE FROM ITREQUEST WHERE (serviceID = ?)";
         return executeUpdate(query, req.getId());
     }
 
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
     public List<ITRequest> getAllIncompleteITRequests() {
         String query = "Select * FROM ITREQUEST WHERE (completed = ?)";
         return (List<ITRequest>)(List<?>) executeGetMultiple(query, ITRequest.class, false);
     }
 
+    /**
+     * @param req the request to insert into the database
+     * @return true if the insert succeeds and false if otherwise
+     */
     public boolean insertMedicineRequest(MedicineRequest req) {
         String insertQuery = ("INSERT INTO MEDICINEREQUEST(notes, locationNodeID, completed, medicineType, quantity) VALUES(?, ?, ?, ?, ?)");
         return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity());
     }
 
+    /**
+     * @param id the id of the medicine request to get
+     * @return the medicine request with the given ID
+     */
     public MedicineRequest getMedicineRequest(int id) {
         String query = "SELECT * FROM MEDICINEREQUEST WHERE (serviceID = ?)";
         return (MedicineRequest) executeGetById(query, MedicineRequest.class, id);
     }
 
+    /**
+     * @return all medicine requests in the database
+     */
     public List<MedicineRequest> getAllMedicineRequests() {
         String query = "Select * FROM MEDICINEREQUEST";
         return (List<MedicineRequest>)(List<?>) executeGetMultiple(query, MedicineRequest.class, new Object[]{});
     }
 
+    /**
+     * @param req the given request to update
+     * @return true if the update succeeded and false if otherwise.
+     */
     public boolean updateMedicineRequest(MedicineRequest req) {
         String query = "UPDATE MEDICINEREQUEST SET notes=?, locationNodeID=?, completed=?, medicineType=?, quantity=? WHERE (serviceID = ?)";
         return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity(), req.getId());
     }
 
+    /**
+     * @param req the given request to delete
+     * @return true if the delete succeeded and false if otherwise.
+     */
     public boolean deleteMedicineRequest(MedicineRequest req) {
         String query = "DELETE FROM MEDICINEREQUEST WHERE (serviceID = ?)";
         return executeUpdate(query, req.getId());
     }
 
+    /**
+     * @return a list of all medicine requests that haven't been completed yet
+     */
     public List<MedicineRequest> getAllIncompleteMedicineRequests() {
         String query = "Select * FROM MEDICINEREQUEST where (completed = ?)";
         return (List<MedicineRequest>)(List<?>) executeGetMultiple(query, MedicineRequest.class, false);
     }
 
+    /**
+     * @param table table to check
+     * @return true if a table with the given name exists in the database and false if otherwise.
+     */
     // CONTROLS
     boolean tableExists(String table){
         DatabaseMetaData dbm;
@@ -472,6 +678,9 @@ public class DatabaseService {
         }
     }
 
+    /**
+     * closes the connection when the database is done.
+     */
     public void close() {
         try {
             connection.close();
@@ -485,6 +694,10 @@ public class DatabaseService {
         }
     }
 
+    /** helper function to close result sets and SQL statments after they've been used.
+     * @param stmt
+     * @param rs
+     */
     private void closeAll(Statement stmt, ResultSet rs) {
         if(rs != null){
             try {
@@ -496,7 +709,9 @@ public class DatabaseService {
         closeStatement(stmt);
     }
 
-    // delete all from each table. Almost exclusively used for testing.
+    /**
+     * deletes everything from each table. Used exclusively for testing.
+     */
     public void wipeTables(){
         Statement statement = null;
         try {
@@ -521,6 +736,12 @@ public class DatabaseService {
 
     //<editor-fold desc="Generic Execution Methods">
 
+    /** execute get multiple
+     * @param query the query to use as the prepared statement.
+     * @param cls the class that the method should return
+     * @param parameters the parameters for the prepared statement. There must be an equal number of ?s in the query and parameters in here for the query to run properly.
+     * @return a list of the given object type, based on the database query
+     */
     private <T> List<Object> executeGetMultiple(String query, Class<T> cls, Object... parameters) {
         ArrayList<Object> reqs = new ArrayList();
         PreparedStatement stmt = null;
@@ -571,6 +792,11 @@ public class DatabaseService {
         return modifyResult;
     }
 
+    /** a helper method used to insert into the database
+     * @param insertQuery a string to work as the query
+     * @param values the values to go into the insert statement
+     * @return true if every value went in and false if otherwise
+     */
     private boolean executeInsert(String insertQuery, Object... values) {
         PreparedStatement insertStatement = null;
 
@@ -594,7 +820,13 @@ public class DatabaseService {
         }
         return insertStatus;
     }
-
+  
+    /** returns an object from the database based on a given ID
+     * @param query the query to
+     * @param cls the class of object to return
+     * @param id  the id that functions as the key to retrieve
+     * @return an object of type cls
+     */
     private <T> Object executeGetById(String query, Class<T> cls, Object id) {
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -608,7 +840,6 @@ public class DatabaseService {
             // execute the query
             rs = stmt.executeQuery();
 
-            // extract results, only one record should be found.
             boolean hasNext = rs.next();
 
             // If there is no next node, return null
@@ -635,7 +866,15 @@ public class DatabaseService {
 
     //<editor-fold desc="Extraction Methods">
     /////////// EXTRACTION METHODS /////////////////////////////////////////////////////////////////////////////////////
-
+    // all of the methods below are helpers for extracting results from ResultSets generated by queries.
+    // either extractGeneric or the specific ExtractType methods can be used.
+    /**
+     * @param rs
+     * @param cls
+     * @param <T>
+     * @return
+     * @throws SQLException when extraction fails.
+     */
     private <T> Object extractGeneric(ResultSet rs, Class<T> cls) throws SQLException {
         Object result;
 

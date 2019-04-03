@@ -16,7 +16,12 @@ public class PathFindingService {
 
     public PathFindingService() {}
 
-    // Returns null on fail
+    /**
+     *  attempts to generate a path from a start node to a dest node
+     * @param start
+     * @param dest
+     * @return Returns null on fail
+     * */
     public ArrayList<Node> genPath(MapNode start, MapNode dest) {
         MapNode target = aStar(start, dest);
         if (target != null) {
@@ -34,8 +39,13 @@ public class PathFindingService {
         return null;
     }
 
-    // Will either return the last MapNode with a parent chain back to the start
-    // or returns null if we CANT get to the dest node
+    /**
+     *  Will either return the last MapNode with a parent chain back to the start
+     *  or returns null if we CANT get to the dest node
+     * @param start
+     * @param dest
+     * @return
+     */
     MapNode aStar(MapNode start, MapNode dest) {
         //1.  Initialize queue and set
         PriorityQueue<MapNode> open = new PriorityQueue<>();
@@ -91,7 +101,11 @@ public class PathFindingService {
         return null;
     }
 
-    // Gets reachable MapNodes from given MapNode
+    /**
+     * Gets reachable MapNodes from given MapNode
+     * @param node
+     * @return
+     */
      ArrayList<MapNode> getChildren(MapNode node) {
         ArrayList<Node> neighbors = MapController.getNodesConnectedTo(node.getData());
         ArrayList<MapNode> nodeChildren = new ArrayList<>();
