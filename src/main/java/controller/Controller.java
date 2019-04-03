@@ -1,5 +1,6 @@
 package controller;
 
+import model.Elevator;
 import service.DatabaseService;
 import service.MismatchedDatabaseVersionException;
 
@@ -11,8 +12,11 @@ public class Controller {
 
     static DatabaseService dbs;
 
+    static Elevator elev;
+
     static {
         initializeDatabase();
+        initializeElevator();
     }
 
     /**
@@ -22,6 +26,14 @@ public class Controller {
         try {
             dbs = DatabaseService.init();
         } catch (SQLException | MismatchedDatabaseVersionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void initializeElevator() {
+        try {
+            elev = Elevator.get("MyRobotName");
+        } catch ( Exception e) {
             e.printStackTrace();
         }
     }

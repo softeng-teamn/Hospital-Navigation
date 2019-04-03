@@ -44,7 +44,7 @@ public class HomeController extends MapController {
     @FXML
     private HBox top_nav, hbox_container;
     @FXML
-    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn, bookBtn, fulfillBtn;
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn, bookBtn, fulfillBtn, call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
     private JFXSlider zoom_slider;
     @FXML
@@ -52,7 +52,7 @@ public class HomeController extends MapController {
     @FXML
     private JFXTextField search_bar, edit_x, edit_y, edit_floor, edit_building, edit_type, edit_long, edit_short;
     @FXML
-    private Label edit_id, new_room1, new_room2;
+    private Label edit_id, new_room1, new_room2, cur_el_floor;
     @FXML
     private JFXListView<Node> list_view;
 
@@ -128,6 +128,11 @@ public class HomeController extends MapController {
             return null;
         });
 
+        elev.registerCallback(aDouble -> {
+            this.elevCallback(aDouble);
+            return null;
+        });
+
         repopulateList();
 
         // MAKE NAVIGATION BUTTON INVISIBLE
@@ -157,6 +162,10 @@ public class HomeController extends MapController {
         zoom_slider.setValue(0.3);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.3);
+    }
+
+    private void elevCallback(Double aDouble) {
+        cur_el_floor.setText("" + aDouble.intValue());
     }
 
     /**
@@ -370,6 +379,33 @@ public class HomeController extends MapController {
         StageManager.changeExistingWindow(stage, root, "Scheduler");
         stage.sizeToScene();
         stage.setFullScreen(true);
+    }
+
+    @FXML
+    void callElevatorAction(ActionEvent e) {
+        JFXButton btn = (JFXButton) e.getSource();
+        char test = btn.getText().charAt(btn.getText().length()-1);
+        switch (test) {
+            case '1':
+                elev.data[2] = 1;
+                elev.data[3] = 1;
+                break;
+            case '2':
+                elev.data[2] = 1;
+                elev.data[3] = 2;
+                break;
+            case '3':
+                elev.data[2] = 1;
+                elev.data[3] = 3;
+                break;
+            case '4':
+                elev.data[2] = 1;
+                elev.data[3] = 4;
+                break;
+                default:
+                    break;
+
+        }
     }
 
     /**
