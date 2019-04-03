@@ -308,6 +308,7 @@ public class ScheduleController extends Controller {
         }
     }
 
+    // TODO: consolidate
     /**
      * Create the reservation and send it to the database.
      */
