@@ -85,7 +85,7 @@ public class RequestControllerTest {
         requests = requests1;
         //don't make two of the same exact req
         RC.makeRequest(ITReqA);
-        requests1 = DatabaseService.getDatabaseService(true).getAllIncompleteITRequests();
+        requests1 = DatabaseService.getDatabaseService().getAllIncompleteITRequests();
         System.out.println(requests);
         System.out.println(requests1);
         assertEquals(requests.size(), requests1.size());
