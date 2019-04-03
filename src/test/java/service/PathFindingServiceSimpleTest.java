@@ -62,10 +62,6 @@ public class PathFindingServiceSimpleTest {
     //
     @Before
     public void mockingGetChildren() {
-        CSVController.wipeTables();
-        CSVController.importNodes();
-        CSVController.importEdges();
-
         ArrayList<MapNode> list = new ArrayList<MapNode>();
         list.add(mn2);
         doReturn(list).when(mockPF).getChildren((mn1));

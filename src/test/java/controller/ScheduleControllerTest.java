@@ -22,12 +22,12 @@ import org.junit.experimental.categories.Category;
 import org.loadui.testfx.GuiTest;
 import org.loadui.testfx.exceptions.NoNodesFoundException;
 import org.loadui.testfx.exceptions.NoNodesVisibleException;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.framework.junit.ApplicationTest;
 import service.DatabaseService;
 import service.ResourceLoader;
-import service.MismatchedDatabaseVersionException;
 import testclassifications.*;
 
 import java.sql.Array;
@@ -96,7 +96,7 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     @Before
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
-    public void init() throws SQLException, MismatchedDatabaseVersionException {
+    public void init() {
         GregorianCalendar gcalStart = GregorianCalendar.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()));
 
         ReservableSpace A = new ReservableSpace("ID A", "Conf room A", "CONF", "location A", new GregorianCalendar(), new GregorianCalendar());
@@ -196,7 +196,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         when(dbs.getReservationsBySpaceId(roomID)).thenReturn(reservationReturns) ;
 
 
-        ScheduleController.dbs=dbs ;
+        DatabaseService.setDatabaseForMocking(dbs);
     }
 
     @Override
@@ -257,13 +257,13 @@ public class ScheduleControllerTest extends ApplicationTest {
         Reservation r = new Reservation(-1, Integer.parseInt(sc.privacyLvlBox.getValue()),Integer.parseInt(sc.employeeID.getText()),
                 sc.eventName.getText(),sc.currentSelection.getLocationNodeID(),gcalStart,gcalEnd);
         sc.createReservation();
-        assertTrue(sc.dbs.getReservation(0).getEventID() == r.getEventID());
-        assertTrue(sc.dbs.getReservation(0).getPrivacyLevel() == r.getPrivacyLevel());
-        assertTrue(sc.dbs.getReservation(0).getEmployeeId() == r.getEmployeeId());
-        assertTrue(sc.dbs.getReservation(0).getEventName().equals(r.getEventName()));
-        assertTrue(sc.dbs.getReservation(0).getLocationID() == r.getLocationID());
-        assertTrue(sc.dbs.getReservation(0).getStartTime().equals(r.getStartTime()));
-        assertTrue(sc.dbs.getReservation(0).getEndTime().equals(r.getEndTime()));
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventID() == r.getEventID());
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getPrivacyLevel() == r.getPrivacyLevel());
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEmployeeId() == r.getEmployeeId());
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventName().equals(r.getEventName()));
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getLocationID() == r.getLocationID());
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getStartTime().equals(r.getStartTime()));
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEndTime().equals(r.getEndTime()));
 
     }
 
@@ -287,9 +287,9 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(sc.confErrorLbl.getText().equals("Error: Please provide a valid employee ID number."));
         sc.employeeID.setText("2");
         sc.submit();
-        assertTrue(sc.dbs.getReservation(0).getEventName().equals("LMAO"));
-        assertTrue(sc.dbs.getReservation(0).getEmployeeId() == 2);
-        assertTrue(sc.dbs.getReservation(0).getPrivacyLevel() == 0);
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventName().equals("LMAO"));
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEmployeeId() == 2);
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getPrivacyLevel() == 0);
     }
 
     @Ignore
@@ -346,7 +346,7 @@ public class ScheduleControllerTest extends ApplicationTest {
     @After
     public void clear(){
         rooms.clear();
-        sc.dbs.wipeTables();
+        DatabaseService.getDatabaseService(true).wipeTables();
     }
 
 

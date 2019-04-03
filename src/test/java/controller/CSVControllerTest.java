@@ -12,11 +12,14 @@ import org.junit.Test;
 import java.io.*;
 
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.BDDMockito;
 import service.DatabaseService;
 import service.ResourceLoader;
 import testclassifications.FastTest;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -119,19 +122,11 @@ public class CSVControllerTest {
         when(dbs.getEmployee(emp2.getID())).thenReturn(emp2);
         when(dbs.getEmployee(emp3.getID())).thenReturn(emp3);
 
-        CSVController.dbs = dbs;
+        DatabaseService.setDatabaseForMocking(dbs);
     }
 
     @After
     public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void exportDatabase() {
-    }
-
-    @Test
-    public void importDatabase() {
     }
 
     @Test
@@ -222,10 +217,6 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void exportRequests() {
-    }
-
-    @Test
     @Category(FastTest.class)
     public void exportEmployees() throws IOException{
         // Precondition: Check that ./employees.csv does not exist
@@ -284,7 +275,7 @@ public class CSVControllerTest {
         CSVController.importNodes();
 
         // Capture the calls to insert node
-        verify(CSVController.dbs, times(1)).insertAllNodes(nodeCaptor.capture());
+        verify(DatabaseService.getDatabaseService(false), times(1)).insertAllNodes(nodeCaptor.capture());
 
         // Check that each node captured is equal to the test nodes
         List<ArrayList<Node>> capturedNodes = nodeCaptor.getAllValues();
@@ -308,7 +299,7 @@ public class CSVControllerTest {
         CSVController.importEdges();
 
         // Capture the calls to insert edge
-        verify(CSVController.dbs, times(3)).insertEdge(edgeCaptor.capture());
+        verify(DatabaseService.getDatabaseService(false), times(3)).insertEdge(edgeCaptor.capture());
 
         // Check that each edge captured is equal to the test edge
         List<Edge> capturedEdges = edgeCaptor.getAllValues();
@@ -335,7 +326,7 @@ public class CSVControllerTest {
         CSVController.importReservableSpaces();
 
         // Capture the calls to insert spaces
-        verify(CSVController.dbs, times(3)).insertReservableSpace(spaceCaptor.capture());
+        verify(DatabaseService.getDatabaseService(false), times(3)).insertReservableSpace(spaceCaptor.capture());
 
         // Check that each node captured is equal to the test spaces
         List<ReservableSpace> capturedSpaces = spaceCaptor.getAllValues();
@@ -361,7 +352,7 @@ public class CSVControllerTest {
         // Action being tested
         CSVController.importEmployees();
         // Capture the calls to insert employees
-        verify(CSVController.dbs, times(3)).insertEmployee(empCaptor.capture());
+        verify(DatabaseService.getDatabaseService(false), times(3)).insertEmployee(empCaptor.capture());
 
         // Check that each node captured is equal to the test employee
         List<Employee> capturedEmp = empCaptor.getAllValues();

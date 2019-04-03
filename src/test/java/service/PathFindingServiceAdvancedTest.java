@@ -106,9 +106,6 @@ public class PathFindingServiceAdvancedTest {
 
     @Before
     public void mockingGetChildren() throws IOException {
-        CSVController.wipeTables();
-        CSVController.importNodes();
-        CSVController.importEdges();
 
         createMap();
         ArrayList<MapNode> list = new ArrayList<MapNode>();

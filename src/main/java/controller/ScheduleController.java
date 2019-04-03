@@ -21,6 +21,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.ReservableSpace;
 import model.Reservation;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -145,7 +146,7 @@ public class ScheduleController extends Controller {
         endTimePicker.setValue(endTime);
 
         //  Pull spaces from database
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) dbs.getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
         resSpaces.addAll(dbResSpaces);
 
         // Add the nodes to the listview
@@ -201,7 +202,7 @@ public class ScheduleController extends Controller {
 
 
         // Get reservations for this space and these times
-        ArrayList<Reservation> reservations = (ArrayList<Reservation>) dbs.getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
+        ArrayList<Reservation> reservations = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
         System.out.println(curr.getSpaceID() + " " + reservations);
 
         // clear the previous schedule
@@ -365,7 +366,7 @@ public class ScheduleController extends Controller {
 
         // Create the new reservation
         Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),gcalStart,gcalEnd);
-        dbs.insertReservation(newRes);
+        DatabaseService.getDatabaseService().insertReservation(newRes);
         closeError();
         showRoomSchedule();
         closeConf();

@@ -27,6 +27,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import model.MapNode;
 import model.Node;
+import service.DatabaseService;
 import service.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -124,7 +125,7 @@ public class HomeController extends MapController {
 
         authCheck();
 
-        dbs.registerNodeCallback(aVoid -> {
+        DatabaseService.getDatabaseService().registerNodeCallback(aVoid -> {
             HomeController.this.nodeChangedCallback();
             return null;
         });
@@ -566,7 +567,7 @@ public class HomeController extends MapController {
                 edit_long.getText(),
                 edit_short.getText()
         );
-        if (dbs.updateNode(myNode)) {
+        if (DatabaseService.getDatabaseService().updateNode(myNode)) {
             System.out.println("Here is the Old Node");
             System.out.println(oldNode);
             System.out.println("NEW NODE");
@@ -629,9 +630,9 @@ public class HomeController extends MapController {
     void repopulateList() {
         System.out.println("Repopulation of listView");
         if (Controller.getIsAdmin()) {
-            allNodes = dbs.getAllNodes();
+            allNodes = DatabaseService.getDatabaseService().getAllNodes();
         } else {
-            allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
+            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
         }
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();

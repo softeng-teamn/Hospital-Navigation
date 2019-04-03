@@ -34,9 +34,6 @@ public class PathFindingServiceIntegrationTest {
 
     @Before
     public void setUp() throws IOException {
-        CSVController.wipeTables();
-        CSVController.importNodes();
-        CSVController.importEdges();
 
     }
 
