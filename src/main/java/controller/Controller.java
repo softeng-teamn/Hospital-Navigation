@@ -1,18 +1,27 @@
 package controller;
 
+import model.Elevator;
+import model.Node;
 import service.DatabaseService;
 import service.MismatchedDatabaseVersionException;
 
 import java.sql.SQLException;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Controller {
 
     static DatabaseService dbs;
 
+    static Elevator elev;
+    static HashMap<String, ArrayList<Node>> connections;
+
     static {
         initializeDatabase();
+        // init node hash map
+        initConnections();
+        initializeElevator();
     }
 
     /**
@@ -24,6 +33,24 @@ public class Controller {
         } catch (SQLException | MismatchedDatabaseVersionException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void initializeElevator() {
+        try {
+            elev = Elevator.get("MyRobotName");
+        } catch ( Exception e) {
+            e.printStackTrace();
+        }
+    }
+  
+    public static void initConnections() {
+        System.out.println("creating hashmap ...");
+        connections = new HashMap<String, ArrayList<Node>>();
+        ArrayList<Node> allNodes = dbs.getAllNodes();
+        for (Node n : allNodes) {
+            connections.put(n.getNodeID(), dbs.getNodesConnectedTo(n));
+        }
+        System.out.println("the hashmap is MADE!");
     }
 
     static boolean isAdmin = false;
