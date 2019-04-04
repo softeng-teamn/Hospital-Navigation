@@ -53,13 +53,14 @@ public class FulfillRequestControllerTest {
     Node a = new Node (0, 0, "nodeID", "Floor1", "building", "hallway", "longName", "shortName") ;
 
     ITRequest itR = new ITRequest(1337, "Lost Laptop Battery",a, false);
-    @Test
-    @Category(FastTest.class)
-    public void fulfillRequestTest(){
-        DatabaseService.getDatabaseService(true).insertITRequest(itR);
-        itR.setCompleted(true);
-        DatabaseService.getDatabaseService(true).updateITRequest(itR);
-        assertEquals(DatabaseService.getDatabaseService(true).getITRequest(1337).isCompleted(), true);
-    }
+    // TODO: rewrite, currently everything is fake
+//    @Test
+//    @Category(FastTest.class)
+//    public void fulfillRequestTest(){
+//        DatabaseService.getDatabaseService(true).insertITRequest(itR);
+//        itR.setCompleted(true);
+//        DatabaseService.getDatabaseService().updateITRequest(itR);
+//        assertEquals(DatabaseService.getDatabaseService().getITRequest(1337).isCompleted(), true);
+//    }
 
 }
