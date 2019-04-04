@@ -15,29 +15,21 @@ import java.util.function.Function;
 public class DatabaseService {
 
     public static final String DATABASE_NAME = "hospital-db";
-
     public static final Integer DATABASE_VERSION = 6;
+    private static DatabaseService _dbs;
+
+
+
 
     private Connection connection;
-
     private ArrayList<Function<Void, Void>> nodeCallbacks;
 
-    private static Connection openConnection(boolean allowCreate) throws SQLException {
-        try {
-            if (!allowCreate) {
-                return DriverManager.getConnection("jdbc:derby:" + DATABASE_NAME + ";");
-            } else {
-                return DriverManager.getConnection("jdbc:derby:" + DATABASE_NAME + ";create=true");
-            }
-        } catch (SQLException e) {
-            if (e.getMessage().contains("Database '" + DATABASE_NAME + "' not found")) {
-                return null;
-            } else {
-                throw e;
-            }
-        }
-    }
-
+    /**
+     * Construct a DatabaseService
+     * @param startFresh if true, blow away any database existing on disk
+     * @param loadCSVs if true, load the CSVs
+     * @throws SQLException on DB connection creation error
+     */
     private DatabaseService(boolean startFresh, boolean loadCSVs) throws SQLException {
         DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
         boolean createFlag = false;
@@ -70,7 +62,7 @@ public class DatabaseService {
         if (!createFlag) {
             this.connection = conn;
             boolean valid = validateVersion();
-            if (!valid) {
+            if (!valid) { // Not valid. Nuke it and try again
                 conn.close();
                 this.connection = null;
 
@@ -107,22 +99,38 @@ public class DatabaseService {
 
 
 
-    public static void setDatabaseForMocking(DatabaseService dbs) {
-        _dbs = dbs;
+    private static Connection openConnection(boolean allowCreate) throws SQLException {
+        try {
+            if (!allowCreate) {
+                return DriverManager.getConnection("jdbc:derby:" + DATABASE_NAME + ";");
+            } else {
+                return DriverManager.getConnection("jdbc:derby:" + DATABASE_NAME + ";create=true");
+            }
+        } catch (SQLException e) {
+            if (e.getMessage().contains("Database '" + DATABASE_NAME + "' not found")) { // Expected issue: no existing DB
+                return null;
+            } else { // Unexpected issue, throw it
+                throw e;
+            }
+        }
     }
 
 
-
-
-    private static DatabaseService _dbs;
+    /**
+     * This overrides the global dbs - only use to mock the database!!
+     * @param dbs
+     */
+    public static void setDatabaseForMocking(DatabaseService dbs) {
+        _dbs = dbs;
+    }
 
     public static synchronized DatabaseService getDatabaseService(boolean startFresh, boolean loadCSVs) {
         // Case 1: Database already exists in memory and we want to start fresh
         // Execute later if statement as well
         if (startFresh && _dbs != null) {
             _dbs.close();
-            wipeOutFiles();
             _dbs = null;
+            wipeOutFiles();
         }
 
         // Create a new database service, telling it to start over if necessary
@@ -139,10 +147,12 @@ public class DatabaseService {
         return _dbs;
     }
 
+    // Default loadCSVs to true
     public static synchronized DatabaseService getDatabaseService(boolean startFresh) {
         return getDatabaseService(startFresh, true);
     }
 
+    // Default start fresh to false
     public static synchronized  DatabaseService getDatabaseService() {
         return getDatabaseService(false);
     }
@@ -153,23 +163,6 @@ public class DatabaseService {
      */
     public static void wipeOutFiles() {
         FileUtil.removeDirectory(new File(DATABASE_NAME));
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void registerNodeCallback(Function<Void, Void> callback) {
-        nodeCallbacks.add(callback);
     }
 
     /**
@@ -259,10 +252,7 @@ public class DatabaseService {
         }
     }
 
-
-
     // NODE FUNCTIONS
-
     /**
      * Attempt to insert a node into the database. Will not succeed if n.nodeID is not unique
      * @param n A {@link Node} to insert into the database
@@ -270,7 +260,9 @@ public class DatabaseService {
      */
     public boolean insertNode(Node n){
         String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-        return executeInsert(nodeStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
+        boolean successful = executeInsert(nodeStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
+        if (successful) executeNodeCallbacks();
+        return successful;
     }
 
     /**
@@ -280,8 +272,10 @@ public class DatabaseService {
      */
     public boolean updateNode(Node n) {
         String query = "UPDATE NODE SET xcoord=?, ycoord=?, floor=?, building=?, nodeType=?, longName=?, shortName=? WHERE (nodeID = ?)";
-        return executeUpdate(query, n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(),
+        boolean successful = executeUpdate(query, n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(),
                 n.getLongName(), n.getShortName(), n.getNodeID());
+        if (successful) executeNodeCallbacks();
+        return successful;
     }
 
     /**
@@ -291,7 +285,9 @@ public class DatabaseService {
      */
     public boolean deleteNode(Node n) {
         String query = "DELETE FROM NODE WHERE (nodeID = ?)";
-        return executeUpdate(query, n.getNodeID());
+        boolean successful = executeUpdate(query, n.getNodeID());
+        if (successful) executeNodeCallbacks();
+        return successful;
     }
 
     /** retrieves the given node from the database
@@ -305,7 +301,6 @@ public class DatabaseService {
 
     public boolean insertAllNodes(List<Node> nodes) {
         String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-        boolean successful = true;
         PreparedStatement insertStatement = null;
 
         // Track the status of the insert
@@ -324,9 +319,7 @@ public class DatabaseService {
                 // Execute
                 insertStatement.executeBatch();
 
-                for (Function<Void, Void> callback : nodeCallbacks) {
-                    callback.apply(null);
-                }
+                executeNodeCallbacks();
 
                 // If we made it this far, we're successful!
                 insertStatus = true;
@@ -419,25 +412,8 @@ public class DatabaseService {
      */
     // get edges from a specific floor
     public static Collection<Edge> getEdges(int floor) {
-
-        ArrayList<Edge> edges = new ArrayList<>();
-        Node a = new Node(0,0);
-        Node b = new Node(0,1);
-        Node c = new Node(1,1);
-        Node d = new Node(2,0);
-        Node e = new Node(2,2);
-        Node f = new Node(3,2);
-        Node g = new Node(3,3);
-        edges.add(new Edge(a, b));
-        edges.add(new Edge(b, c));
-        edges.add(new Edge(c, d));
-        edges.add(new Edge(c, e));
-        edges.add(new Edge(e, f));
-        edges.add(new Edge(d, f));
-        edges.add(new Edge(f, g));
-
-        return edges;
-
+        // DEPRECATED
+        return null;
     }
 
     /** insert an edge. The method will fail and return false if the two nodes it points to
@@ -809,6 +785,7 @@ public class DatabaseService {
             statement.addBatch("DROP TABLE MEDICINEREQUEST");
             statement.addBatch("DROP TABLE RESERVATION");
             statement.addBatch("DROP TABLE RESERVABLESPACE");
+            statement.addBatch("DROP TABLE META_DB_VER");
             statement.executeBatch();
 
             this.createTables();
@@ -1073,6 +1050,24 @@ public class DatabaseService {
     }
     ////////////////END EXTRACTION METHODS /////////////////////////////////////////////////////////////////////////////
     //</editor-fold>
+
+
+    /////////////////////////////////////// CALLBACKS //////////////////////////////////////////////////////////////////
+
+
+    private void executeNodeCallbacks() {
+        for (Function<Void, Void> callback : nodeCallbacks) {
+            callback.apply(null);
+        }
+    }
+
+    public void registerNodeCallback(Function<Void, Void> callback) {
+        nodeCallbacks.add(callback);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
     /**
      * Set the values of a prepared statement. The number of variables in the prepared statement and the number of

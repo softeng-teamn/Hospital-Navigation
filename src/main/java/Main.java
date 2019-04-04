@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 import java.lang.SuppressWarnings;
@@ -15,6 +16,7 @@ public class Main extends Application {
      * @param args
      */
     public static void main(String[] args) {
+        DatabaseService.getDatabaseService();
         launch();
     }
 

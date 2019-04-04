@@ -25,6 +25,7 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
+import model.Elevator;
 import model.MapNode;
 import model.Node;
 import service.DatabaseService;
@@ -70,6 +71,8 @@ public class HomeController extends MapController {
     private Circle kioskCircle = new Circle();
     private int addNodeState = 0;
 
+    static Elevator elev;
+
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
 
@@ -113,12 +116,31 @@ public class HomeController extends MapController {
         StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
     }
 
+    public static void initializeElevator() {
+        try {
+            elev = Elevator.get("MyRobotName");
+        } catch ( Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void initConnections() {
+        System.out.println("creating hashmap ...");
+        connections = new HashMap<String, ArrayList<Node>>();
+        ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
+        for (Node n : allNodes) {
+            connections.put(n.getNodeID(), DatabaseService.getDatabaseService().getNodesConnectedTo(n));
+        }
+        System.out.println("the hashmap is MADE!");
+    }
 
     /**
      * initializes the home controller
      */
     @FXML
     void initialize() {
+        initConnections();
+        initializeElevator();
 
         // Hide the edit window
         hideEditor();
@@ -179,9 +201,11 @@ public class HomeController extends MapController {
     }
 
     /**
-     * TBD
+     * DatabaseService calls this when nodes are inserted, modified, deleted
      */
     private void nodeChangedCallback() {
+        System.err.println("Node Changed received in home!");
+        initConnections();
         repopulateList();
     }
   

@@ -4,6 +4,7 @@ import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,16 +28,18 @@ public class DatabaseServiceTest {
     @Before
     public void setUp() {
         DatabaseService.getDatabaseService(true, false);
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
-    @AfterClass
-    public static void tearDown() {
-        DatabaseService.wipeOutFiles();
+    @After
+    public void tearDown() {
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws IOException {
-        FileUtils.deleteDirectory(new File("hospital-db-test"));
+        DatabaseService.getDatabaseService().close();
+        FileUtils.deleteDirectory(new File("hospital-db"));
     }
 
     @Test
