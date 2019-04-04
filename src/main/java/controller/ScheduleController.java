@@ -477,5 +477,4 @@ public class ScheduleController extends Controller {
         ArrayList<String> a = new ArrayList<>();
         return a;
     }
-
 }
