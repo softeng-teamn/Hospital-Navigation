@@ -369,7 +369,7 @@ public class HomeController extends MapController {
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
         stage.sizeToScene();
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
     }
 
     /**

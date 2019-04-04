@@ -3,7 +3,6 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
-<?import com.jfoenix.controls.JFXDialog?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTimePicker?>
@@ -11,65 +10,55 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
    <children>
-      <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" VBox.vgrow="NEVER">
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="NEVER">
          <children>
             <JFXTextField />
-            <Label text="Reserve a Room" />
+            <Label text="Reserve a Room">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
             <JFXButton fx:id="homeBtn" onAction="#showHome" text="Home" />
-            <JFXButton fx:id="instructionsBtn" text="?" />
          </children>
       </HBox>
-      <HBox fx:id="homePane" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: gray;" VBox.vgrow="ALWAYS">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" VBox.vgrow="ALWAYS">
          <children>
             <JFXListView fx:id="reservableList" minWidth="10.0" prefWidth="200.0" />
-            <VBox alignment="TOP_CENTER" minWidth="10.0" prefHeight="200.0" prefWidth="200.0" spacing="10.0">
+            <VBox alignment="TOP_CENTER" minWidth="10.0" prefHeight="200.0" prefWidth="200.0" spacing="20.0">
                <children>
-                  <Label text="Details" />
+                  <Label text="Date and Time" />
                   <JFXDatePicker fx:id="datePicker" prefHeight="26.0" prefWidth="144.0" />
                   <JFXTimePicker fx:id="startTimePicker" />
                   <JFXTimePicker fx:id="endTimePicker" />
+                  <Label fx:id="errorLbl" text="Error" wrapText="true" />
                </children>
             </VBox>
             <VBox minWidth="10.0" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label text="Schedule" />
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                  <ScrollPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <content>
-                        <HBox prefHeight="100.0" prefWidth="200.0">
+                        <HBox prefHeight="100.0">
                            <children>
-                              <VBox fx:id="schedule" prefHeight="200.0" prefWidth="100.0">
-                                 <children>
-                                    <Label text="Label" />
-                                 </children>
-                              </VBox>
-                              <VBox fx:id="checks" prefHeight="200.0" prefWidth="100.0">
-                                 <children>
-                                    <Label text="Label" />
-                                 </children>
-                              </VBox>
+                              <VBox fx:id="schedule" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="NEVER" />
+                              <VBox fx:id="checks" prefHeight="200.0" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                      </content>
                   </ScrollPane>
                </children>
             </VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <JFXDialog fx:id="confirmationDlg" />
-                  <JFXComboBox fx:id="privacyLvlBox" />
-                  <JFXButton fx:id="errorBtn" />
-                  <JFXButton fx:id="exitConfBtn" />
-                  <JFXButton fx:id="submitBtn" />
+                  <Label fx:id="timeLbl" text="Times" />
                   <JFXTextField fx:id="eventName" promptText="event name" />
                   <JFXTextField fx:id="employeeID" promptText="employee id number" />
-                  <Label fx:id="timeLbl" text="Label" />
-                  <Label fx:id="errorLbl" text="Label" />
-                  <Label fx:id="confErrorLbl" text="Label" />
-                  <JFXDialog fx:id="errorDlg" />
-                  <JFXButton fx:id="makeReservationBtn" text="Make Reservation" />
+                  <JFXComboBox fx:id="privacyLvlBox" />
+                  <JFXButton fx:id="makeReservationBtn" onAction="#makeReservation" text="Make Reservation" />
+                  <Label fx:id="confErrorLbl" text="confError" wrapText="true" />
                </children>
             </VBox>
          </children>

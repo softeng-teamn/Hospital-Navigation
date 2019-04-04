@@ -262,32 +262,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(sc.dbs.getReservation(0).getEndTime().equals(r.getEndTime()));
 
     }
-
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void submit() throws InterruptedException {
-        Thread.sleep(2000);
-        System.out.println(sc.reservableList);
-        System.out.println(sc.reservableList.getChildrenUnmodifiable());
-        clickOn(sc.reservableList.getChildrenUnmodifiable().get(0));
-        Thread.sleep(20000);
-        assertFalse(sc.confErrorLbl.isVisible());
-        sc.eventName.setText("");
-        sc.employeeID.setText("ROFL");
-        sc.privacyLvlBox.setValue("0");
-        sc.submit();
-        assertTrue(sc.confErrorLbl.getText().equals("Error: Please fill out all fields to make a reservation."));
-        sc.eventName.setText("LMAO");
-        sc.submit();
-        assertTrue(sc.confErrorLbl.getText().equals("Error: Please provide a valid employee ID number."));
-        sc.employeeID.setText("2");
-        sc.submit();
-        assertTrue(sc.dbs.getReservation(0).getEventName().equals("LMAO"));
-        assertTrue(sc.dbs.getReservation(0).getEmployeeId() == 2);
-        assertTrue(sc.dbs.getReservation(0).getPrivacyLevel() == 0);
-    }
-
+    
     //select a location
     //click make reservation
     @Ignore

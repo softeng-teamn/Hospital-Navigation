@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import com.jfoenix.controls.*;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,10 +28,10 @@ import service.StageManager;
 public class ScheduleController extends Controller {
 
     @FXML
-    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn, errorBtn;
+    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn;
 
     @FXML
-    public JFXButton exitConfBtn, submitBtn, adminBtn;
+    public JFXButton submitBtn;
 
     @FXML
     public VBox schedule, checks;
@@ -49,12 +50,6 @@ public class ScheduleController extends Controller {
 
     @FXML
     public Label errorLbl, timeLbl, confErrorLbl;
-
-    @FXML
-    public JFXDialog errorDlg, confirmationDlg;
-
-    @FXML
-    private HBox homePane;
 
     @FXML
     public JFXComboBox<String> privacyLvlBox;
@@ -78,12 +73,9 @@ public class ScheduleController extends Controller {
         CSVController.importReservableSpaces();
 
         // Disable things that can't be used yet
-        errorDlg.setVisible(false);
-        confirmationDlg.setVisible(false);
-        confirmationDlg.setDisable(true);
+        errorLbl.setVisible(false);
         confErrorLbl.setVisible(false);
         makeReservationBtn.setDisable(true);
-        homePane.setDisable(false);
 
         // Set event privacy options
         ObservableList<String> options =
@@ -131,8 +123,34 @@ public class ScheduleController extends Controller {
             }
         });
         reservableList.setEditable(false);
+
+        reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            focusState(newValue);
+        });
+        datePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            focusState(newValue);
+        });
+        startTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            focusState(newValue);
+        });
+        endTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            focusState(newValue);
+        });
     }
 
+    private void focusState(boolean value) {
+        if (!value) {
+            makeTimeValid();
+            LocalTime start = startTimePicker.getValue();
+            LocalTime end = endTimePicker.getValue();
+
+            // Display the current information
+            timeLbl.setText("Reservation Location:      " + currentSelection.getSpaceName()
+                    + "\n\nReservation Date:            " + datePicker.getValue()
+                    + "\n\nReservation Start Time:   " + start
+                    + "\n\nReservation End Time:    " + end);
+        }
+    }
 
     /**
      * switches window to home screen
@@ -161,13 +179,9 @@ public class ScheduleController extends Controller {
         LocalDate endDate = datePicker.getValue().plus(1, ChronoUnit.DAYS);
         GregorianCalendar gcalStart = GregorianCalendar.from(chosenDate.atStartOfDay(ZoneId.systemDefault()));
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
-        System.out.println(gcalStart.get(Calendar.YEAR) +  " " + gcalStart.get(Calendar.MONTH) + " " + gcalStart.get(Calendar.DATE) + " \n" + gcalStart.get(Calendar.HOUR));
-        System.out.println(gcalEnd.get(Calendar.YEAR) +  " " + gcalEnd.get(Calendar.MONTH) + " " + gcalEnd.get(Calendar.DATE)+ " \n" + gcalEnd.get(Calendar.HOUR));
-
 
         // Get reservations for this space and these times
         ArrayList<Reservation> reservations = (ArrayList<Reservation>) dbs.getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
-        System.out.println(curr.getSpaceID() + " " + reservations);
 
         // clear the previous schedule
         schedule.getChildren().clear();
@@ -197,6 +211,7 @@ public class ScheduleController extends Controller {
                 if (j > 0) {    // Set the minutes
                     minutes = String.format("%d", (60 / timeStep));
                 }
+                actLabel.setMaxWidth(Double.MAX_VALUE);
 
                 // Create a new hbox to contain both labels and fill
                 HBox hBox = new HBox();
@@ -260,26 +275,6 @@ public class ScheduleController extends Controller {
         makeTimeValid();
         boolean valid = validTimes();
 
-        if (!valid) {    // If not valid, display an error message
-            errorLbl.setText("Please enter valid start and end times " +
-                    "for this location.");
-            errorDlg.setVisible(true);
-        }
-        else {    // Otherwise, display the confirmation screen
-            homePane.setDisable(true);
-            homePane.toBack();
-            confirmationDlg.setVisible(true);
-            confirmationDlg.setDisable(false);
-            showConf();
-        }
-    }
-
-    /**
-     * Called by the submit button on the confirmation page.
-     * Creates a new reservation and adds it to the database.
-     */
-    @FXML
-    public void submit() {
         confErrorLbl.setVisible(false);
         String id = employeeID.getText();
         boolean badId = false;
@@ -297,18 +292,21 @@ public class ScheduleController extends Controller {
             confErrorLbl.setText("Error: Please complete all fields to make a reservation.");
             confErrorLbl.setVisible(true);
         }
-
+        else if (eventName.getText().length() > 50) {
+            confErrorLbl.setText("Error: Please enter a shorter reservation name.");
+            confErrorLbl.setVisible(true);
+        }
+        // TODO: validate id
         // If the ID number is bad, display an error message.
         else if (badId /*|| dbs.getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
             confErrorLbl.setText("Error: Please provide a valid employee ID number.");
             confErrorLbl.setVisible(true);
         }
-        else {    // Otherwise, create the reservation
+        else if (valid){    // Otherwise, create the reservation
             createReservation();
         }
     }
 
-    // TODO: consolidate
     /**
      * Create the reservation and send it to the database.
      */
@@ -330,45 +328,15 @@ public class ScheduleController extends Controller {
         // Create the new reservation
         Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),gcalStart,gcalEnd);
         dbs.insertReservation(newRes);
-        closeError();
+
+        // Reset the screen
         showRoomSchedule();
-        closeConf();
-    }
-
-     /**
-     * Close the error dialog.
-     */
-    @FXML
-    public void closeError() {
-        errorDlg.setVisible(false);
-    }
-
-    /**
-     * Show the reservation confirmation
-     */
-    private void showConf() {
-        // Get the times to display
-        LocalTime start = startTimePicker.getValue();
-        LocalTime end = endTimePicker.getValue();
-
-        // Display the current information
-        timeLbl.setText("Reservation Location:      " + currentSelection.getSpaceName()
-                + "\n\nReservation Date:            " + datePicker.getValue()
-                + "\n\nReservation Start Time:   " + start
-                + "\n\nReservation End Time:    " + end);
-    }
-
-    /**
-     * Close the reservation confirmation dialog.
-     */
-    public void closeConf() {
-        confirmationDlg.toFront();
-        confirmationDlg.setVisible(false);
-        homePane.setDisable(false);
         confErrorLbl.setVisible(false);
+        errorLbl.setVisible(false);
         eventName.setText("");
         employeeID.setText("");
         privacyLvlBox.setValue(null);
+        timeLbl.setText("");
     }
 
     /**
@@ -380,6 +348,7 @@ public class ScheduleController extends Controller {
      * @return true if the selected times are valid, false otherwise
      */
     private boolean validTimes() {
+        boolean valid = true;
         // Get the selected times
         int start = startTimePicker.getValue().getHour();
         int mins = startTimePicker.getValue().getMinute()/(timeStepMinutes);
@@ -391,16 +360,22 @@ public class ScheduleController extends Controller {
         // If the times are outside the location's open times
         // or end is greater than start, the times are invalid
         if (endIndex <= index || start < openTime || closeTime < end) {
-            return false;
+            valid = false;
         }
 
         // For each time in the reservation, check whether it is already booked
         for (int i = index; i < endIndex; i++) {
             if (currentSchedule.get(i) == 1) {
-                return false;
+                valid = false;
             }
         }
-        return true;
+
+        if (!valid) {
+            errorLbl.setText("Please enter valid start and end times " +
+                    "for this location.");
+            errorLbl.setVisible(true);
+        }
+        return valid;
     }
 
     /**
@@ -422,14 +397,6 @@ public class ScheduleController extends Controller {
             int minutes = ((int) endTimePicker.getValue().getMinute()/(timeStepMinutes))*(timeStepMinutes);
             endTimePicker.setValue(LocalTime.of(endTimePicker.getValue().getHour(), minutes));
         }
-    }
-
-    @FXML
-    // switches window to map editor screen.
-    public void showLogin() throws Exception {
-        Stage stage = (Stage) adminBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.mapEdit);
-        StageManager.changeExistingWindow(stage, root, "Admin Login");
     }
 
     // TODO
