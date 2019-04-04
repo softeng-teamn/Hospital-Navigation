@@ -23,7 +23,9 @@ public class Elevator extends UDPSimplePacketComs {
         addPollingPacket(IMU);
         addEvent(1871,()->{
             readFloats(1871, data);
-            callback.apply(new Double(data[0]));
+            if (callback != null) {
+                callback.apply(new Double(data[0]));
+            }
         });
         connect();
     }

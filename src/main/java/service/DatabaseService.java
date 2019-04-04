@@ -131,10 +131,11 @@ public class DatabaseService {
                 _dbs = new DatabaseService(startFresh, loadCSVs);
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                System.out.println("Database NOT Created!");
+                System.out.println("WARNING!");
+                System.out.println("Database not created due to the above error!");
             }
         }
+
         return _dbs;
     }
 
