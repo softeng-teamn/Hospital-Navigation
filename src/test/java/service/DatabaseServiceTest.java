@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class DatabaseServiceTest {
     @Before
     public void setUp() {
-        DatabaseService.getDatabaseService(true);
+        DatabaseService.getDatabaseService(true, false);
     }
 
     @AfterClass
@@ -163,16 +163,16 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void getNumNodeTypeByFloor() {
-        Node testNode1 = new Node("ACONF00101", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        Node testNode2 = new Node("ACONF00102", 1648, 2968, "2", "BTM", "STAI", "BTM Conference Center", "BTM Conference");
-        Node testNode3 = new Node("ACONF00103", 1648, 2968, "2", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        Node testNode4 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node testNode1 = new Node("XCONF00101", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node testNode2 = new Node("XCONF00102", 1648, 2968, "2", "BTM", "STAI", "BTM Conference Center", "BTM Conference");
+        Node testNode3 = new Node("XCONF00103", 1648, 2968, "2", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode4 = new Node("XCONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
 
-        Node testNode5 = new Node("ACONF00105", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        Node testNode6 = new Node("ACONF00106", 1648, 2968, "1", "BTM", "DEPT", "BTM Conference Center", "BTM Conference");
-        Node testNode7 = new Node("ACONF00107", 1580, 2538, "1", "BTM", "LABS", "Hall", "Hall");
-        Node testNode8 = new Node("ACONF00108", 1648, 2968, "1", "BTM", "LABS", "BTM Conference Center", "BTM Conference");
-        Node testNode9 = new Node("ACONF00109", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode5 = new Node("XCONF00105", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode6 = new Node("XCONF00106", 1648, 2968, "1", "BTM", "DEPT", "BTM Conference Center", "BTM Conference");
+        Node testNode7 = new Node("XCONF00107", 1580, 2538, "1", "BTM", "LABS", "Hall", "Hall");
+        Node testNode8 = new Node("XCONF00108", 1648, 2968, "1", "BTM", "LABS", "BTM Conference Center", "BTM Conference");
+        Node testNode9 = new Node("XCONF00109", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         assertTrue(DatabaseService.getDatabaseService().insertNode(testNode1));
         assertTrue(DatabaseService.getDatabaseService().insertNode(testNode2));
         assertTrue(DatabaseService.getDatabaseService().insertNode(testNode3));

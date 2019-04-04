@@ -38,7 +38,7 @@ public class DatabaseService {
         }
     }
 
-    private DatabaseService(boolean startFresh) throws SQLException {
+    private DatabaseService(boolean startFresh, boolean loadCSVs) throws SQLException {
         DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
         boolean createFlag = false;
 
@@ -94,10 +94,12 @@ public class DatabaseService {
         if(createFlag) {
             this.createTables();
 
-
-            // TODO load CSV data
-
-
+            if (loadCSVs) {
+                CSVService.importNodes();
+                CSVService.importEdges();
+                CSVService.importEmployees();
+                CSVService.importReservableSpaces();
+            }
         }
 
         nodeCallbacks = new ArrayList<>();
@@ -114,7 +116,7 @@ public class DatabaseService {
 
     private static DatabaseService _dbs;
 
-    public static synchronized DatabaseService getDatabaseService(boolean startFresh) {
+    public static synchronized DatabaseService getDatabaseService(boolean startFresh, boolean loadCSVs) {
         // Case 1: Database already exists in memory and we want to start fresh
         // Execute later if statement as well
         if (startFresh && _dbs != null) {
@@ -126,7 +128,7 @@ public class DatabaseService {
         // Create a new database service, telling it to start over if necessary
         if (_dbs == null) {
             try {
-                _dbs = new DatabaseService(startFresh);
+                _dbs = new DatabaseService(startFresh, loadCSVs);
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -134,6 +136,10 @@ public class DatabaseService {
             }
         }
         return _dbs;
+    }
+
+    public static synchronized DatabaseService getDatabaseService(boolean startFresh) {
+        return getDatabaseService(startFresh, true);
     }
 
     public static synchronized  DatabaseService getDatabaseService() {
