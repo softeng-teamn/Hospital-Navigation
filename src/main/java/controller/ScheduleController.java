@@ -3,11 +3,15 @@ package controller;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.jfoenix.controls.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -20,6 +24,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.model.ExtractedResult;
+import model.Node;
 import model.ReservableSpace;
 import model.Reservation;
 import service.ResourceLoader;
@@ -37,7 +44,7 @@ public class ScheduleController extends Controller {
     public VBox schedule, checks;
 
     @FXML
-    public JFXTextField eventName, employeeID;
+    public JFXTextField eventName, employeeID, searchBar;
 
     @FXML
     public JFXListView reservableList;
@@ -397,6 +404,56 @@ public class ScheduleController extends Controller {
             int minutes = ((int) endTimePicker.getValue().getMinute()/(timeStepMinutes))*(timeStepMinutes);
             endTimePicker.setValue(LocalTime.of(endTimePicker.getValue().getHour(), minutes));
         }
+    }
+
+    /**
+     * searches for room
+     * @param e
+     */
+    @FXML
+    public void searchBarEnter(ActionEvent e) {
+        String search = searchBar.getText();
+        filterList(search);
+    }
+
+    /**
+     *Filters the ListView based on the string
+     */
+    private void filterList(String findStr) {
+        ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) dbs.getAllReservableSpaces();
+        resSpaces.addAll(dbResSpaces);
+        if (findStr.equals("")) {
+            reservableList.getItems().clear();
+            reservableList.getItems().addAll(resSpaces);
+        }
+        else {
+            //Get List of all nodes
+            ObservableList<ReservableSpace> original = resSpaces;
+
+            //Get Sorted list of nodes based on search value
+            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName),75);
+
+            // Map to nodes based on index
+            Stream<ReservableSpace> stream = filtered.stream().map(er -> {
+                return original.get(er.getIndex());
+            });
+
+            // Convert to list and then to observable list
+            List<ReservableSpace> filteredSpaces = stream.collect(Collectors.toList());
+            ObservableList<ReservableSpace> toShow = FXCollections.observableList(filteredSpaces);
+
+            // Add to view
+            reservableList.getItems().clear();
+            reservableList.getItems().addAll(toShow);
+        }
+    }
+
+    /**
+     *for lists
+     */
+    private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
+        return from.stream().map(func).collect(Collectors.toList());
     }
 
     // TODO
