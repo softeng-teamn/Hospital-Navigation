@@ -15,8 +15,8 @@ public class Controller {
 
     static {
         // init node hash map
-//        initConnections();
-//        initializeElevator();
+        initConnections();
+        initializeElevator();
     }
 
 

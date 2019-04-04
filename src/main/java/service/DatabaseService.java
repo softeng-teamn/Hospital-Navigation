@@ -99,6 +99,8 @@ public class DatabaseService {
 
 
         }
+
+        nodeCallbacks = new ArrayList<>();
     }
 
 
@@ -142,7 +144,7 @@ public class DatabaseService {
     /**
      * Delete DB Files
      */
-    private static void wipeOutFiles() {
+    public static void wipeOutFiles() {
         FileUtil.removeDirectory(new File(DATABASE_NAME));
     }
 
@@ -537,7 +539,7 @@ public class DatabaseService {
      * @param to end of the window
      * @return a list of the requested reservations
      */
-    public List<Reservation> getReservationBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
+    public List<Reservation> getReservationsBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
         String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
         System.out.println(id);
         System.out.println("dbs" + from.get(Calendar.YEAR) +  " " + from.get(Calendar.MONTH) + " " + from.get(Calendar.DATE) + " " + from.get(Calendar.HOUR));

@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class MainTest {
 
     private static final int EXPECTED_INITIAL_WINDOWS = 1;
-    private static final int ALLOWABLE_STARTUP_DELAY = 10000; // milliseconds
+    private static final int ALLOWABLE_STARTUP_DELAY = 10_000; // seconds
 
     @Test
     @Category({SlowTest.class})
