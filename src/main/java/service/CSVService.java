@@ -1,5 +1,6 @@
-package controller;
+package service;
 
+import controller.Controller;
 import model.Edge;
 import model.Employee;
 import model.Node;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Date;
 
-public class CSVController extends Controller {
+public class CSVService extends Controller {
 
     public static final String NODE_EXPORT_PATH = "nodes.csv";
     public static final String EDGE_EXPORT_PATH = "edges.csv";

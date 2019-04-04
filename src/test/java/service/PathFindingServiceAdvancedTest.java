@@ -1,6 +1,6 @@
 package service;
 
-import controller.CSVController;
+import service.CSVService;
 import controller.MapController;
 import model.MapNode;
 import model.Node;

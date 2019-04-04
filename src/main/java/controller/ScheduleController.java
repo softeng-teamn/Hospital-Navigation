@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TitledPane;
@@ -21,6 +20,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.ReservableSpace;
 import model.Reservation;
+import service.CSVService;
 import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -101,7 +101,7 @@ public class ScheduleController extends Controller {
     @FXML
     public void initialize() {
         // Read in reservable Spaces
-        CSVController.importReservableSpaces();
+        CSVService.importReservableSpaces();
 
         // Create the instructions and error message
         instructionsPane.setVisible(false);
