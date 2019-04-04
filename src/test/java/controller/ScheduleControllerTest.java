@@ -330,7 +330,7 @@ public class ScheduleControllerTest extends ApplicationTest {
     @After
     public void clear(){
         rooms.clear();
-        DatabaseService.getDatabaseService(true).wipeTables();
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
 
