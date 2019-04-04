@@ -1,6 +1,7 @@
 package service;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.FastTest;
@@ -16,7 +17,7 @@ public class DBInitTests {
     DatabaseService myDB;
     DatabaseService altDB;
 
-
+    @Ignore
     @Test
     @Category(FastTest.class)
     public void initBase() {
