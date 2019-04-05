@@ -625,6 +625,16 @@ public class DatabaseService {
     }
 
     /**
+     * @param gcalStart gregorian calendar start time
+     * @param gcalEnd gregorian calendar end time
+     * @return a list of Reservable spaces available between start and end times
+     */
+    public List<ReservableSpace> getReservableSpacesAvailableBtw(GregorianCalendar gcalStart, GregorianCalendar gcalEnd) {
+        return null;
+        // TODO write query
+    }
+
+    /**
      * @param space the reservable space to update in the database
      * @return true if the update succeeds and false if otherwise
      */

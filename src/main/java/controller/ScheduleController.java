@@ -12,6 +12,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -36,7 +37,7 @@ import service.StageManager;
 public class ScheduleController extends Controller {
 
     @FXML
-    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn;
+    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn, filterBtn;
 
     @FXML
     public JFXButton submitBtn;
@@ -72,6 +73,9 @@ public class ScheduleController extends Controller {
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
 
+    // LIst of spaces to display
+    private ObservableList<ReservableSpace> resSpaces;
+
     /**
      * Set up scheduler page.
      */
@@ -95,7 +99,7 @@ public class ScheduleController extends Controller {
 
         // Create arraylists
         currentSchedule = new ArrayList<Integer>();
-        ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
+        resSpaces = FXCollections.observableArrayList();
 
         // Set default date to today's date
         LocalDate date =  LocalDate.now();
@@ -307,7 +311,7 @@ public class ScheduleController extends Controller {
         }
         // TODO: validate id
         // If the ID number is bad, display an error message.
-        else if (badId /*|| dbs.getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
+        else if (badId /*|| DatabaseService.getDatabaseService().getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
             confErrorLbl.setText("Error: Please provide a valid employee ID number.");
             confErrorLbl.setVisible(true);
         }
@@ -423,7 +427,7 @@ public class ScheduleController extends Controller {
      */
     private void filterList(String findStr) {
         ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) dbs.getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
         resSpaces.addAll(dbResSpaces);
         if (findStr.equals("")) {
             reservableList.getItems().clear();
@@ -460,12 +464,33 @@ public class ScheduleController extends Controller {
 
     // TODO
     public void filterRooms() {
+        LocalDate chosenDate = datePicker.getValue();
+        LocalTime startTime = startTimePicker.getValue();
+        LocalTime endTime = endTimePicker.getValue();
+        GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
 
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getReservableSpacesAvailableBtw(gcalStart, gcalEnd);
+        resSpaces.clear();
+        resSpaces.addAll(dbResSpaces);
+
+        schedule.getChildren().clear();
+        checks.getChildren().clear();
+        currentSchedule.clear();
+
+        filterBtn.setOnAction(EventHandler -> {clearFilter();} );
     }
 
-    // TODO
     public void clearFilter() {
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+        resSpaces.clear();
+        resSpaces.addAll(dbResSpaces);
 
+        schedule.getChildren().clear();
+        checks.getChildren().clear();
+        currentSchedule.clear();
+
+        filterBtn.setOnAction(EventHandler -> {filterRooms();});
     }
 
 
