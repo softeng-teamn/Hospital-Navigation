@@ -73,7 +73,7 @@ public class ScheduleController extends Controller {
     // LIst of spaces to display
     private ObservableList<ReservableSpace> resSpaces;
 
-    private String timeErrorText, inputError, availRoomsText, bookedRoomsText, clearFilterText;
+    private String timeErrorText, availRoomsText, bookedRoomsText, clearFilterText;
 
     /**
      * Set up scheduler page.
@@ -117,14 +117,10 @@ public class ScheduleController extends Controller {
         LocalTime endTime = LocalTime.of(startTime.getHour() + 1, 0);
         endTimePicker.setValue(endTime);
 
-        //  Pull spaces from database
+        //  Pull spaces from database, sort, add to list and listview
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
-
         Collections.sort(dbResSpaces);
-
         resSpaces.addAll(dbResSpaces);
-
-        // Add the nodes to the listview
         reservableList.setItems(resSpaces);
 
         // Set the cell to display only the name of the reservableSpace
@@ -142,10 +138,13 @@ public class ScheduleController extends Controller {
             }
         });
         reservableList.setEditable(false);
+
+        // Select the first item and display its schedule
         reservableList.getSelectionModel().select(0);
         reservableList.getFocusModel().focus(0);
         showRoomSchedule();
 
+        // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             listFocus(newValue);
         });
