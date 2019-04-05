@@ -22,6 +22,7 @@
    <children>
       <HBox fx:id="hbox_container" VBox.vgrow="ALWAYS">
          <children>
+            <fx:include source="searchResults.fxml" fx:id="searchResults"/>
             <fx:include source="mapView.fxml" fx:id="mapView" />
          </children>
          <padding>
