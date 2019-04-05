@@ -70,9 +70,9 @@ public class CSVServiceTest {
         GregorianCalendar calendar5 = new GregorianCalendar();
         GregorianCalendar calendar6 = new GregorianCalendar();
 
-        Employee emp1 = new Employee(1,"Doctor",true,"wong");
-        Employee emp2 = new Employee(2,"Nurse",false,"duff");
-        Employee emp3 = new Employee(3,"Nurse",false,"bennett");
+        Employee emp1 = new Employee(1,"ww", "Doctor",true,"wong");
+        Employee emp2 = new Employee(2,"dan", "Nurse",false,"duff");
+        Employee emp3 = new Employee(3,"bennett", "Nurse",false,"bennett");
 
         calendar1.setTime(date1);
         calendar2.setTime(date2);
@@ -249,10 +249,10 @@ public class CSVServiceTest {
             }
         }
 
-        String expectedValue = "ID,job,isAdmin,password" + "\n"
-                + "1,Doctor,true,wong\n"
-                + "2,Nurse,false,duff\n"
-                + "3,Nurse,false,bennett\n";
+        String expectedValue = "ID,username,job,isAdmin,password" + "\n"
+                + "1,ww,Doctor,true,wong\n"
+                + "2,dan,Nurse,false,duff\n"
+                + "3,bennett,Nurse,false,bennett\n";
 
         assertThat(fileContents.toString(), is(expectedValue));
 

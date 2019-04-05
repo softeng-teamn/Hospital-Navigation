@@ -1,4 +1,4 @@
-ID,job,isAdmin,password
-1,Doctor,true,wong
-2,Nurse,false,duff
-3,Nurse,false,bennett
+ID,username,job,isAdmin,password
+1,ww,Doctor,true,wong
+2,dan,Nurse,false,duff
+3,bennett,Nurse,false,bennett

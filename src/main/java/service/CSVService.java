@@ -25,7 +25,7 @@ public class CSVService extends Controller {
     private static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
     private static final String SPACE_HEADER = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n";
-    private static final String EMPLOYEE_HEADER ="ID,job,isAdmin,password\n";
+    private static final String EMPLOYEE_HEADER ="ID,username,job,isAdmin,password\n";
 
     /**
      * Export the Nodes table
@@ -147,10 +147,10 @@ public class CSVService extends Controller {
             // Write out each node
             for (Employee emp : DatabaseService.getDatabaseService().getAllEmployees()) {
                 writer.write(emp.getID() + ",");
+                writer.write(emp.getUsername() + ",");
                 writer.write(emp.getJob() + ",");
                 writer.write(emp.isAdmin() + ",");
                 writer.write(emp.getPassword() + "\n");
-
             }
 
             // Close the writer
@@ -352,13 +352,10 @@ public class CSVService extends Controller {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
-
-
-                Employee emp = new Employee(Integer.parseInt(data[0]),data[1], Boolean.parseBoolean(data[2]),data[3]);
+                Employee emp = new Employee(Integer.parseInt(data[0]), data[1], data[2], Boolean.parseBoolean(data[3]),data[4]);
 
                 //Add edge to the database
                 DatabaseService.getDatabaseService().insertEmployee(emp);
-
             }
 
             //close reader
@@ -374,6 +371,5 @@ public class CSVService extends Controller {
                 }
             }
         }
-
     }
 }

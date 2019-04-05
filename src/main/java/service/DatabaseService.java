@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class DatabaseService {
 
     public static final String DATABASE_NAME = "hospital-db";
-    public static final Integer DATABASE_VERSION = 6;
+    public static final Integer DATABASE_VERSION = 7;
     private static DatabaseService _dbs;
 
     private Connection connection;
@@ -237,7 +237,7 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
 
-            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean, password varchar(50))");
+            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255), job varchar(25), isAdmin boolean, password varchar(50))");
 
             statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
 
@@ -257,7 +257,7 @@ public class DatabaseService {
             //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
 
 
-            statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (locationID)");
+            statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
 
             statement.executeBatch();
@@ -559,8 +559,8 @@ public class DatabaseService {
      * @return true if the insert succeeded or false if otherwise.
      */
     public boolean insertEmployee(Employee employee) {
-        String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?)");
-        return executeInsert(insertStatement, employee.getID(), employee.getJob(), employee.isAdmin(), employee.getPassword());
+        String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertStatement, employee.getID(), employee.getUsername(), employee.getJob(), employee.isAdmin(), employee.getPassword());
     }
 
     /**
@@ -585,8 +585,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateEmployee(Employee employee) {
-        String query = "UPDATE EMPLOYEE SET job=?, isAdmin=? WHERE (employeeID = ?)";
-        return executeUpdate(query, employee.getJob(), employee.isAdmin(), employee.getID());
+        String query = "UPDATE EMPLOYEE SET username=?, job=?, isAdmin=? WHERE (employeeID = ?)";
+        return executeUpdate(query, employee.getUsername(), employee.getJob(), employee.isAdmin(), employee.getID());
     }
 
     /**
@@ -1033,8 +1033,9 @@ public class DatabaseService {
         String job = rs.getString("job");
         boolean isAdmin = rs.getBoolean("isAdmin");
         String password = rs.getString("password");
+        String username = rs.getString("username");
 
-        return new Employee(empID, job, isAdmin, password);
+        return new Employee(empID, username, job, isAdmin, password);
     }
 
     private ReservableSpace extractReservableSpace(ResultSet rs) throws SQLException {

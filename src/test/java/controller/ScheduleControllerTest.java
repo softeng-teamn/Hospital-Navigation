@@ -104,7 +104,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         when(dbs.getAllReservableSpaces()).thenReturn(spaces);
         when(dbs.getReservationsBySpaceIdBetween("Room A",gcalStart,gcalStart)).thenReturn(reservationsA);
         when(dbs.getReservationsBySpaceIdBetween("Room B",gcalStart,gcalStart)).thenReturn(reservationsB);
-        when(dbs.getEmployee(123)).thenReturn(new Employee(123, "Janitor", false, "password"));
+        when(dbs.getEmployee(123)).thenReturn(new Employee(123, "username", "Janitor", false, "password"));
         when(dbs.getEmployee(77)).thenReturn(null);
 
 

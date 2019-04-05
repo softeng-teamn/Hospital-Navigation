@@ -613,7 +613,7 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee = new Employee(0, "Doctor", false, "douglas");
+        Employee employee = new Employee(0, "mrdoctor", "Doctor", false, "douglas");
 
         // Verify successful insertion
         boolean insertRes = DatabaseService.getDatabaseService().insertEmployee(employee);
@@ -639,9 +639,9 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee1 = new Employee(0, "Doctor", false, "douglas");
-        Employee employee2 = new Employee(1, "Nurse", false, "tyler");
-        Employee employee3 = new Employee(2, "Admin", true, "joshua");
+        Employee employee1 = new Employee(0, "douglas", "Doctor", false, "douglas");
+        Employee employee2 = new Employee(1, "tferrara", "Nurse", false, "tyler");
+        Employee employee3 = new Employee(2, "josh", "Admin", true, "joshua");
 
         // Verify successful insertion
         boolean insertRes = DatabaseService.getDatabaseService().insertEmployee(employee1);
@@ -668,7 +668,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void updateEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "123456");
+        Employee employee = new Employee(0, "doc", "Doctor", false, "123456");
 
         assertTrue(DatabaseService.getDatabaseService().insertEmployee(employee));
         assertEquals(employee, DatabaseService.getDatabaseService().getEmployee(0));
@@ -683,7 +683,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void deleteEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "password");
+        Employee employee = new Employee(0, "doc", "Doctor", false, "password");
 
         assertTrue(DatabaseService.getDatabaseService().insertEmployee(employee));
         assertEquals(employee, DatabaseService.getDatabaseService().getEmployee(0));
