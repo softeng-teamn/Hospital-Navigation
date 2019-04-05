@@ -217,6 +217,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(l2.getText().equals("5:30"));
     }
 
+    @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
     public void makeReservation() {
