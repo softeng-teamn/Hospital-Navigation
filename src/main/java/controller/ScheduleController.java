@@ -16,7 +16,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TitledPane;
@@ -29,6 +28,8 @@ import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import model.Node;
 import model.ReservableSpace;
 import model.Reservation;
+import service.CSVService;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -77,7 +78,7 @@ public class ScheduleController extends Controller {
     @FXML
     public void initialize() {
         // Read in reservable Spaces
-        CSVController.importReservableSpaces();
+        CSVService.importReservableSpaces();
 
         // Disable things that can't be used yet
         errorLbl.setVisible(false);
@@ -109,7 +110,7 @@ public class ScheduleController extends Controller {
         endTimePicker.setValue(endTime);
 
         //  Pull spaces from database
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) dbs.getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
         resSpaces.addAll(dbResSpaces);
 
         // Add the nodes to the listview
@@ -188,7 +189,7 @@ public class ScheduleController extends Controller {
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
 
         // Get reservations for this space and these times
-        ArrayList<Reservation> reservations = (ArrayList<Reservation>) dbs.getReservationBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
+        ArrayList<Reservation> reservations = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
 
         // clear the previous schedule
         schedule.getChildren().clear();
@@ -334,7 +335,7 @@ public class ScheduleController extends Controller {
 
         // Create the new reservation
         Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),gcalStart,gcalEnd);
-        dbs.insertReservation(newRes);
+        DatabaseService.getDatabaseService().insertReservation(newRes);
 
         // Reset the screen
         showRoomSchedule();
