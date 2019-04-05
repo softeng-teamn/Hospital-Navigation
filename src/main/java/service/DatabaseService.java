@@ -452,7 +452,7 @@ public class DatabaseService {
      * @return the edge corresponding to the given ID
      */
     public Edge getEdge(String edgeID){
-        String query = "SELECT * FROM EDGE WHERE (EDGEID = ?)";
+        String query = "SELECT e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID WHERE (EDGEID = ?)";
         return (Edge) executeGetById(query, Edge.class, edgeID);
     }
 
@@ -479,7 +479,7 @@ public class DatabaseService {
     }
 
     public ArrayList<Edge> getAllEdges(){
-        String query = "Select * FROM EDGE";
+        String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e";
         return (ArrayList<Edge>)(List<?>) executeGetMultiple(query, Edge.class, new Object[]{});
     }
 
@@ -984,25 +984,27 @@ public class DatabaseService {
         return result;
     }
 
-    private Node extractNode(ResultSet rs) throws SQLException {
-        String newNodeID = rs.getString("nodeID");
-        int newxcoord = rs.getInt("xcoord");
-        int newycoord = rs.getInt("ycoord");
-        String newFloor = rs.getString("floor");
-        String newBuilding = rs.getString("building");
-        String newNodeType = rs.getString("nodeType");
-        String newLongName = rs.getString("longName");
-        String newShortName = rs.getString("shortName");
+    private Node extractNode(ResultSet rs, String name) throws SQLException {
+        String newNodeID = rs.getString(name + "nodeID");
+        int newxcoord = rs.getInt(name + "xcoord");
+        int newycoord = rs.getInt(name + "ycoord");
+        String newFloor = rs.getString(name + "floor");
+        String newBuilding = rs.getString(name + "building");
+        String newNodeType = rs.getString(name + "nodeType");
+        String newLongName = rs.getString(name + "longName");
+        String newShortName = rs.getString(name + "shortName");
         // construct the new node and return it
         return new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
     }
 
+    private Node extractNode(ResultSet rs) throws SQLException {
+        return extractNode(rs, "");
+    }
+
     private Edge extractEdge(ResultSet rs) throws SQLException {
         String newEdgeID = rs.getString("edgeID");
-        String node1Name = rs.getString("NODE1");
-        String node2Name = rs.getString("NODE2");
-        Node node1 = getNode(node1Name);
-        Node node2 = getNode(node2Name);
+        Node node1 = extractNode(rs, "n1");
+        Node node2 = extractNode(rs, "n2");
         return new Edge (newEdgeID, node1, node2);
     }
 
