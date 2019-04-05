@@ -226,7 +226,6 @@ public class ScheduleController extends Controller {
 
         // Get reservations for this space and these times
         ArrayList<Reservation> reservations = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
-        System.out.println(curr.getSpaceID() + " " + reservations);
 
         // clear the previous schedule
         schedule.getChildren().clear();
@@ -446,7 +445,7 @@ public class ScheduleController extends Controller {
     }
 
     /**
-     * searches for room
+     * Searches for reservable space
      * @param e
      */
     @FXML
