@@ -159,6 +159,10 @@ public class ScheduleController extends Controller {
         });
     }
 
+    /**
+     * Listener to update listview and info label
+     * @param value
+     */
     private void focusState(boolean value) {
         if (!value) {
             makeTimeValid();
@@ -180,6 +184,10 @@ public class ScheduleController extends Controller {
         }
     }
 
+    /**
+     * Listener to update label when listview selection changed
+     * @param value
+     */
     private void listFocus(boolean value) {
         if (!value) {
             makeTimeValid();
@@ -558,7 +566,7 @@ public class ScheduleController extends Controller {
             GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
             GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
 
-            ObservableList<ReservableSpace> bookedSpaces = FXCollections.observableArrayList();
+            ArrayList<ReservableSpace> bookedSpaces = new ArrayList<>();
             ArrayList<ReservableSpace> allSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
 
             // Get reservations between selected times
@@ -588,7 +596,6 @@ public class ScheduleController extends Controller {
             availRoomsBtn.setText(availRoomsText);
             availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
 
-           // availRoomsBtn.setDisable(true); todo
             reservableList.setItems(resSpaces);
 
 

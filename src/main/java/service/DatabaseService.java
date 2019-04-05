@@ -633,8 +633,6 @@ public class DatabaseService {
         String query = "SELECT * FROM RESERVATION WHERE ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?))";
 
         return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, from, from, from, to);
-
-        // TODO write query
     }
 
     /**
