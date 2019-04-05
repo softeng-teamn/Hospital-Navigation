@@ -241,17 +241,6 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     }
 
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void showConf() throws InterruptedException {
-        clickOn("#");
-        Thread.sleep(200);
-        //TODO: need a valid home screen w/ something to ID
-        //TitledPane pane = (TitledPane) GuiTest.find();
-        //assertTrue(pane.isVisible());
-    }
-
 //    @Test
 //    @Category({FastTest.class})
 //    public void validTimes() {

@@ -625,6 +625,17 @@ public class DatabaseService {
     }
 
     /**
+     * @param from gregorian calendar start time
+     * @param to gregorian calendar end time
+     * @return a list of reservations  between start and end times
+     */
+    public List<Reservation> getReservationsBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "SELECT * FROM RESERVATION WHERE ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?))";
+
+        return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, from, from, from, to);
+    }
+
+    /**
      * @param space the reservable space to update in the database
      * @return true if the update succeeds and false if otherwise
      */
