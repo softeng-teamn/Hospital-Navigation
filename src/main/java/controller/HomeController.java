@@ -65,6 +65,8 @@ public class HomeController extends MapController {
     private JFXListView<Node> list_view;
     @FXML
     private FontAwesomeIconView lock_icon;
+    @FXML
+    private JFXToggleNode accessibilityButton;
 
     public Group zoomGroup;
     Node restRoom = new Node("BREST00102",2177,1010,"2","45 Francis","REST","Restroom 1 Level 2","REST B0102");
@@ -477,11 +479,11 @@ public class HomeController extends MapController {
      * @param start
      * @param dest
      */
-    public void pathfind(Node start, Node dest) {
+    public void pathfind(Node start, Node dest, Boolean accessibility) {
         MapNode pStart = new MapNode(start.getXcoord(), start.getYcoord(), start);
         MapNode pDest = new MapNode(dest.getXcoord(), dest.getYcoord(), dest);
         PathFindingService pathFindingService = new PathFindingService();
-        ArrayList<Node> path = pathFindingService.genPath(pStart, pDest);
+        ArrayList<Node> path = pathFindingService.genPath(pStart, pDest, accessibility);
         if (path != null && path.size() > 1) {
             Node last = path.get(0);
             Node current;
@@ -513,7 +515,9 @@ public class HomeController extends MapController {
      */
     @FXML
     void startNavigation(ActionEvent event) {
-        pathfind(kioskNode, destNode);
+        Boolean accessibility = accessibilityButton.isSelected();
+        removeLines();
+        pathfind(kioskNode, destNode, accessibility);
     }
 
     /**
