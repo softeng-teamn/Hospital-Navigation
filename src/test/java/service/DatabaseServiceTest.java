@@ -4,6 +4,7 @@ import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -365,8 +366,6 @@ public class DatabaseServiceTest {
 
         //make sure that it's not there
         assertThat((DatabaseService.getDatabaseService().getEdge("ACONF00102-ACONF00103")), is(nullValue()));
-
-
     }
 
 
@@ -386,7 +385,26 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void getAllEdges() {
+        Node n1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node n2 = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node n3 = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge e1 = new Edge("ACONF00102-ACONF00103", n1, n2);
+        Edge e2 = new Edge("ACONF00102-ACONF00104", n1, n3);
+        Edge e3 = new Edge("ACONF00103-ACONF00104", n2, n3);
+        assertTrue(DatabaseService.getDatabaseService().insertNode(n1));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(n2));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(n3));
+
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(e1));
+
+        assertThat(DatabaseService.getDatabaseService().getAllEdges(), Matchers.contains(e1));
+
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(e2));
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(e3));
+
+        assertThat(DatabaseService.getDatabaseService().getAllEdges(), Matchers.contains(e1, e2, e3));
     }
 
     @Test
