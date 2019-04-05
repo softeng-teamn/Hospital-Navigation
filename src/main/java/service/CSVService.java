@@ -1,9 +1,11 @@
-package controller;
+package service;
 
+import controller.Controller;
 import model.Edge;
 import model.Employee;
 import model.Node;
 import model.ReservableSpace;
+import service.DatabaseService;
 import service.ResourceLoader;
 
 import java.io.*;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Date;
 
-public class CSVController extends Controller {
+public class CSVService extends Controller {
 
     public static final String NODE_EXPORT_PATH = "nodes.csv";
     public static final String EDGE_EXPORT_PATH = "edges.csv";
@@ -38,7 +40,7 @@ public class CSVController extends Controller {
             writer.write(NODE_HEADER);
 
             // Write out each node
-            for (Node node : dbs.getAllNodes()) {
+            for (Node node : DatabaseService.getDatabaseService().getAllNodes()) {
                 writer.write(node.getNodeID() + ",");
                 writer.write(node.getXcoord() + ",");
                 writer.write(node.getYcoord() + ",");
@@ -75,7 +77,7 @@ public class CSVController extends Controller {
             writer.write(EDGES_HEADER);
 
             // Write out each node
-            for (Edge edge : dbs.getAllEdges()) {
+            for (Edge edge : DatabaseService.getDatabaseService().getAllEdges()) {
                 writer.write(edge.getEdgeID() + ",");
                 writer.write(edge.getNode1().getNodeID() + ",");
                 writer.write(edge.getNode2().getNodeID() + "\n");
@@ -107,7 +109,7 @@ public class CSVController extends Controller {
             writer.write(SPACE_HEADER);
 
             // Write out each space
-            for (ReservableSpace space : dbs.getAllReservableSpaces()) {
+            for (ReservableSpace space : DatabaseService.getDatabaseService().getAllReservableSpaces()) {
                 writer.write(space.getSpaceID() + ",");
                 writer.write(space.getSpaceName() + ",");
                 writer.write(space.getSpaceType() + ",");
@@ -143,7 +145,7 @@ public class CSVController extends Controller {
             writer.write(EMPLOYEE_HEADER);
 
             // Write out each node
-            for (Employee emp : dbs.getAllEmployees()) {
+            for (Employee emp : DatabaseService.getDatabaseService().getAllEmployees()) {
                 writer.write(emp.getID() + ",");
                 writer.write(emp.getJob() + ",");
                 writer.write(emp.isAdmin() + ",");
@@ -191,7 +193,7 @@ public class CSVController extends Controller {
                 nodes.add(node);
             }
 
-            dbs.insertAllNodes(nodes);
+            DatabaseService.getDatabaseService().insertAllNodes(nodes);
 
             //close reader
             reader.close();
@@ -229,8 +231,8 @@ public class CSVController extends Controller {
                 String[] data = line.split(",");
 
                 //retrieve nodes from database based on ID
-                Node node1 = dbs.getNode(data[1]);
-                Node node2 = dbs.getNode(data[2]);
+                Node node1 = DatabaseService.getDatabaseService().getNode(data[1]);
+                Node node2 = DatabaseService.getDatabaseService().getNode(data[2]);
 
                 //checks to see if nodes are not null before creating and adding an edge
                 if ((node1 != null) && (node2 != null)) {
@@ -238,7 +240,7 @@ public class CSVController extends Controller {
                     Edge edge = new Edge(node1, node2);
 
                     //Add edge to the database
-                    dbs.insertEdge(edge);
+                    DatabaseService.getDatabaseService().insertEdge(edge);
                 } else {
                     //Print out error statement
                     System.out.println("Invalid Edge Found: " + line);
@@ -309,7 +311,7 @@ public class CSVController extends Controller {
                     ReservableSpace space = new ReservableSpace(data[0], data[1], data[2], data[3], openCalender, closedCalender);
 
                     //insert space into database
-                    dbs.insertReservableSpace(space);
+                    DatabaseService.getDatabaseService().insertReservableSpace(space);
                 } else {
                     System.out.println("Invalid Time Found: " + line);
                 }
@@ -352,10 +354,10 @@ public class CSVController extends Controller {
 
 
 
-                    Employee emp = new Employee(Integer.parseInt(data[0]),data[1], Boolean.parseBoolean(data[2]),data[3]);
+                Employee emp = new Employee(Integer.parseInt(data[0]),data[1], Boolean.parseBoolean(data[2]),data[3]);
 
-                    //Add edge to the database
-                    dbs.insertEmployee(emp);
+                //Add edge to the database
+                DatabaseService.getDatabaseService().insertEmployee(emp);
 
             }
 
@@ -373,19 +375,5 @@ public class CSVController extends Controller {
             }
         }
 
-    }
-
-    /**
-     * Import CSVs if dbs was just created.
-     */
-    public static void importIfNecessary() {
-        if (dbs.isNewlyCreated()) {
-            Employee newEmployee = new Employee(1234, "Admin", true, "test");
-            importNodes();
-            importEdges();
-            importReservableSpaces();
-            importEmployees();
-            dbs.insertEmployee(newEmployee);
-        }
     }
 }

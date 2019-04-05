@@ -1,17 +1,14 @@
 package controller;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Employee;
-import model.ReservableSpace;
 import model.ReservableSpace;
 import model.Reservation;
 import org.junit.After;
@@ -24,35 +21,22 @@ import org.loadui.testfx.exceptions.NoNodesFoundException;
 import org.loadui.testfx.exceptions.NoNodesVisibleException;
 import org.mockito.Mock;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.framework.junit.ApplicationTest;
 import service.DatabaseService;
 import service.ResourceLoader;
-import service.MismatchedDatabaseVersionException;
 import testclassifications.*;
 
-import java.sql.Array;
-import java.sql.SQLException;
-import java.sql.SQLOutput;
 import java.time.*;
 import java.time.LocalDate;
-import java.util.*;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static java.util.Calendar.JUNE;
-import static java.util.Calendar.MINUTE;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.*;
-import org.mockito.Mock;
 
 import java.util.TimeZone ;
 
@@ -92,7 +76,7 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     @Before
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
-    public void init() throws SQLException, MismatchedDatabaseVersionException {
+    public void init() {
         GregorianCalendar gcalStart = GregorianCalendar.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()));
 
         ReservableSpace A = new ReservableSpace("ID A", "Conf room A", "CONF", "location A", new GregorianCalendar(), new GregorianCalendar());
@@ -114,8 +98,8 @@ public class ScheduleControllerTest extends ApplicationTest {
 //        when(dbs.insertReservation(reservB)).thenReturn(false) ;
 //        when(dbs.insertReservation(reservC)).thenReturn(false) ;
         when(dbs.getAllReservableSpaces()).thenReturn(spaces);
-        when(dbs.getReservationBySpaceIdBetween("Room A",gcalStart,gcalStart)).thenReturn(reservationsA);
-        when(dbs.getReservationBySpaceIdBetween("Room B",gcalStart,gcalStart)).thenReturn(reservationsB);
+        when(dbs.getReservationsBySpaceIdBetween("Room A",gcalStart,gcalStart)).thenReturn(reservationsA);
+        when(dbs.getReservationsBySpaceIdBetween("Room B",gcalStart,gcalStart)).thenReturn(reservationsB);
         when(dbs.getEmployee(123)).thenReturn(new Employee(123, "Janitor", false, "password"));
         when(dbs.getEmployee(77)).thenReturn(null);
 
@@ -192,7 +176,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         when(dbs.getReservationsBySpaceId(roomID)).thenReturn(reservationReturns) ;
 
 
-        ScheduleController.dbs=dbs ;
+        DatabaseService.setDatabaseForMocking(dbs);
     }
 
     @Override
@@ -253,18 +237,68 @@ public class ScheduleControllerTest extends ApplicationTest {
         Reservation r = new Reservation(-1, Integer.parseInt(sc.privacyLvlBox.getValue()),Integer.parseInt(sc.employeeID.getText()),
                 sc.eventName.getText(),sc.currentSelection.getLocationNodeID(),gcalStart,gcalEnd);
         sc.createReservation();
-        assertTrue(sc.dbs.getReservation(0).getEventID() == r.getEventID());
-        assertTrue(sc.dbs.getReservation(0).getPrivacyLevel() == r.getPrivacyLevel());
-        assertTrue(sc.dbs.getReservation(0).getEmployeeId() == r.getEmployeeId());
-        assertTrue(sc.dbs.getReservation(0).getEventName().equals(r.getEventName()));
-        assertTrue(sc.dbs.getReservation(0).getLocationID() == r.getLocationID());
-        assertTrue(sc.dbs.getReservation(0).getStartTime().equals(r.getStartTime()));
-        assertTrue(sc.dbs.getReservation(0).getEndTime().equals(r.getEndTime()));
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventID() == r.getEventID());
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getPrivacyLevel() == r.getPrivacyLevel());
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEmployeeId() == r.getEmployeeId());
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventName().equals(r.getEventName()));
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getLocationID() == r.getLocationID());
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getStartTime().equals(r.getStartTime()));
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEndTime().equals(r.getEndTime()));
 
     }
-    
-    //select a location
-    //click make reservation
+
+    @Ignore
+    @Test
+    @Category({UiTest.class, FastTest.class})
+    public void submit() throws InterruptedException {
+        Thread.sleep(2000);
+        System.out.println(sc.reservableList);
+        System.out.println(sc.reservableList.getChildrenUnmodifiable());
+        clickOn(sc.reservableList.getChildrenUnmodifiable().get(0));
+        Thread.sleep(20000);
+        assertFalse(sc.confErrorLbl.isVisible());
+        sc.eventName.setText("");
+        sc.employeeID.setText("ROFL");
+        sc.privacyLvlBox.setValue("0");
+        sc.submit();
+        assertTrue(sc.confErrorLbl.getText().equals("Error: Please fill out all fields to make a reservation."));
+        sc.eventName.setText("LMAO");
+        sc.submit();
+        assertTrue(sc.confErrorLbl.getText().equals("Error: Please provide a valid employee ID number."));
+        sc.employeeID.setText("2");
+        sc.submit();
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventName().equals("LMAO"));
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEmployeeId() == 2);
+        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getPrivacyLevel() == 0);
+    }
+
+    @Ignore
+    @Test
+    @Category({UiTest.class, FastTest.class})
+    public void showInstructions() throws InterruptedException {
+        clickOn(instrBtn);
+        Thread.sleep(200);
+        TitledPane pane = (TitledPane) GuiTest.find(instrP);
+        assertTrue(pane.isVisible());
+    }
+
+    @Ignore
+    @Test
+    @Category({UiTest.class, FastTest.class})
+    public void closeInstructions() throws InterruptedException {
+        clickOn(instrBtn);
+        Thread.sleep(200);
+        clickOn(closeInstrBrn);
+        Thread.sleep(200);
+        boolean vis = true;
+        try {
+            GuiTest.exists(instrP);
+        } catch (NoNodesFoundException | NoNodesVisibleException e) {
+            vis = false;
+        }
+        assertFalse(vis);
+    }
+  
     @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
@@ -291,7 +325,7 @@ public class ScheduleControllerTest extends ApplicationTest {
     @After
     public void clear(){
         rooms.clear();
-        sc.dbs.wipeTables();
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
 

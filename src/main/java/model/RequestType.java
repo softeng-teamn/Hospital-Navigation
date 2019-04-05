@@ -3,6 +3,14 @@ package model;
 
 
 public class RequestType {
+    @Override
+    public String toString() {
+        return "RequestType{" +
+                "rType=" + rType +
+                ", size=" + size +
+                '}';
+    }
+
     public enum RType{
         ITS, MED, ABS
     }

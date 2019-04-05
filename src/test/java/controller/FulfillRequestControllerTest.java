@@ -13,12 +13,12 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import org.loadui.testfx.GuiTest;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.testfx.framework.junit.ApplicationTest;
 import service.DatabaseService;
 import testclassifications.UiTest;
 
-import static controller.Controller.dbs;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -35,9 +35,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class FulfillRequestControllerTest {
-
-    @Mock DatabaseService dbs;
-
     /*
     UI TESTS HAVE NOT BEEN COMPLETED
      */
@@ -46,21 +43,24 @@ public class FulfillRequestControllerTest {
     @Before
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
     public void init(){
-        dbs = mock(DatabaseService.class);
+        DatabaseService dbs = mock(DatabaseService.class);
         when(dbs.insertITRequest(itR)).thenReturn(true);
         when(dbs.updateITRequest(itR)).thenReturn(true);
         when(dbs.getITRequest(1337)).thenReturn(itR);
+
+        DatabaseService.setDatabaseForMocking(dbs);
     }
     Node a = new Node (0, 0, "nodeID", "Floor1", "building", "hallway", "longName", "shortName") ;
 
     ITRequest itR = new ITRequest(1337, "Lost Laptop Battery",a, false);
-    @Test
-    @Category(FastTest.class)
-    public void fulfillRequestTest(){
-        dbs.insertITRequest(itR);
-        itR.setCompleted(true);
-        dbs.updateITRequest(itR);
-        assertEquals(dbs.getITRequest(1337).isCompleted(), true);
-    }
+    // TODO: rewrite, currently everything is fake
+//    @Test
+//    @Category(FastTest.class)
+//    public void fulfillRequestTest(){
+//        DatabaseService.getDatabaseService(true).insertITRequest(itR);
+//        itR.setCompleted(true);
+//        DatabaseService.getDatabaseService().updateITRequest(itR);
+//        assertEquals(DatabaseService.getDatabaseService().getITRequest(1337).isCompleted(), true);
+//    }
 
 }
