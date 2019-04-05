@@ -6,39 +6,52 @@
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTimePicker?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ScheduleController">
    <children>
-      <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="NEVER">
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" styleClass="header">
          <children>
-            <JFXTextField fx:id="searchBar" onAction="#searchBarEnter" />
-            <Label text="Reserve a Room">
+            <JFXTextField fx:id="searchBar" labelFloat="true" onAction="#searchBarEnter" promptText="Search Room" />
+            <Region prefHeight="100.0" prefWidth="724.0" />
+            <Label styleClass="big-label" text="Reserve a Room">
                <font>
                   <Font size="18.0" />
                </font></Label>
-            <JFXButton fx:id="homeBtn" onAction="#showHome" text="Home" />
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
+               <graphic>
+                  <FontAwesomeIconView glyphName="HOME" size="60" />
+               </graphic></JFXButton>
          </children>
+         <VBox.margin>
+            <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
+         </VBox.margin>
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" VBox.vgrow="ALWAYS">
          <children>
-            <JFXListView fx:id="reservableList" minWidth="10.0" prefWidth="200.0" />
-            <VBox alignment="TOP_CENTER" minWidth="10.0" prefHeight="200.0" prefWidth="200.0" spacing="20.0">
+            <JFXListView fx:id="reservableList" prefWidth="520.0" />
+            <VBox alignment="CENTER" minWidth="10.0" prefHeight="970.0" prefWidth="316.0" spacing="20.0">
                <children>
-                  <Label text="Date and Time" />
-                  <JFXDatePicker fx:id="datePicker" prefHeight="26.0" prefWidth="144.0" />
-                  <JFXTimePicker fx:id="startTimePicker" />
-                  <JFXTimePicker fx:id="endTimePicker" />
+                  <Label styleClass="big-label" text="Date and Time" />
+                  <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                  <JFXDatePicker fx:id="datePicker" promptText="Choose a date" />
+                  <JFXTimePicker fx:id="startTimePicker" promptText="Choose a start time" />
+                  <JFXTimePicker fx:id="endTimePicker" promptText="Choose an end time" />
                   <Label fx:id="errorLbl" text="Error" wrapText="true" />
+                  <Region prefHeight="707.0" prefWidth="316.0" />
                </children>
             </VBox>
             <VBox minWidth="10.0" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="Schedule" />
+                  <Label styleClass="big-label" text="Schedule" />
                   <ScrollPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <content>
                         <HBox prefHeight="100.0">
@@ -48,19 +61,23 @@
                            </children>
                         </HBox>
                      </content>
+                     <VBox.margin>
+                        <Insets bottom="24.0" right="12.0" top="12.0" />
+                     </VBox.margin>
                   </ScrollPane>
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="timeLbl" text="Times" />
-                  <JFXTextField fx:id="eventName" promptText="event name" />
+                  <Label fx:id="timeLbl" styleClass="big-label" text="Times" />
+                  <JFXTextField fx:id="eventName" prefWidth="235.0" promptText="event name" />
                   <JFXTextField fx:id="employeeID" promptText="employee id number" />
                   <JFXComboBox fx:id="privacyLvlBox" />
                   <JFXButton fx:id="makeReservationBtn" onAction="#makeReservation" text="Make Reservation" />
                   <Label fx:id="confErrorLbl" text="confError" wrapText="true" />
                </children>
             </VBox>
+            <Region prefHeight="970.0" prefWidth="107.0" />
          </children>
       </HBox>
    </children>

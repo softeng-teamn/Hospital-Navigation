@@ -1,6 +1,9 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import com.sun.javafx.font.Glyph;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -34,9 +37,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 
 public class HomeController extends MapController {
 
@@ -56,6 +60,8 @@ public class HomeController extends MapController {
     private Label edit_id, new_room1, new_room2, cur_el_floor;
     @FXML
     private JFXListView<Node> list_view;
+    @FXML
+    private FontAwesomeIconView lock_icon;
 
 
     public Group zoomGroup;
@@ -186,7 +192,7 @@ public class HomeController extends MapController {
   
     void authCheck() {
         if (Controller.getIsAdmin()) {
-            auth_btn.setText("Logout");
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
             edit_btn.setVisible(true);
             newRoom_btn.setVisible(true);
 
@@ -198,7 +204,7 @@ public class HomeController extends MapController {
             }
         } else {
             System.out.println("not an admin anymore");
-            auth_btn.setText("Log In");
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
             if (top_nav.getChildren().contains(edit_btn)) {
                 top_nav.getChildren().remove(edit_btn);
             }
