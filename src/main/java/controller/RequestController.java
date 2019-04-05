@@ -108,14 +108,11 @@ public class RequestController extends Controller implements Initializable {
 
 
     /**
-     * submits request to database
+     * collects user input information, calls Facade class to create object and submit to database
      * "confirm" button
      */
-    // get information from user input, send to Facade
     @FXML
     public void makeRequest() {
-
-
 
         JFXToggleNode selected = (JFXToggleNode) requestType.getSelectedToggle();
         String description = textArea.getText();
@@ -128,12 +125,8 @@ public class RequestController extends Controller implements Initializable {
             textArea.setText("Please select type");
         }
 
-
         // new Facade object
         RequestFacade reqFacade = new RequestFacade(selected,description, requestLocation) ;
-        // pass text inputs into facade object?
-        // call a makeRequest() and/or a fulfillRequest()
-
 
         if (selected.getText().contains("Medicine")) {
             reqFacade.makeMedRequest();
@@ -171,7 +164,7 @@ public class RequestController extends Controller implements Initializable {
     }
 
     /**
-     * removes object from database
+     * removes object from database through Facade class
      *
      * @param type
      * @param byWho

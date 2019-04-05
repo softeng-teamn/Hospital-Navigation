@@ -23,10 +23,17 @@ public class RequestFacade {
         this.byWho = byWho;
     }
 
+    // ******************
+    ITRequest newITRequest ;
+
     // to make  a new IT Request
     public void makeITRequest(){
-        ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
-        DatabaseService.getDatabaseService().insertITRequest(newITRequest);
+      //ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
+      //  DatabaseService.getDatabaseService().insertITRequest(newITRequest);
+        // *********
+        newITRequest.makeRequest(selected, description, requestLocation);
+
+
     }
 
     // to make a new medicine Request
@@ -35,14 +42,12 @@ public class RequestFacade {
         DatabaseService.getDatabaseService().insertMedicineRequest(newMedicineRequest);
     }
 
-
     // to fulfill an existing IT Request
     public void fillITRequest(){
         Type.setCompleted(true);
         Type.setCompletedBy(byWho);
         DatabaseService.getDatabaseService().updateITRequest((ITRequest)Type);
     }
-
 
     // to fulfill an existing medicine Request
     public void fillMedRequest(){

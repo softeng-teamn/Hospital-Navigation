@@ -1,7 +1,9 @@
 package model.request;
 
+import com.jfoenix.controls.JFXToggleNode;
 import model.Node;
 import model.RequestType;
+import service.DatabaseService;
 //import sun.plugin.services.AxBridgeBrowserService;
 
 import static model.RequestType.RType.ABS;
@@ -111,4 +113,15 @@ public abstract class Request {
                 ", completedBy='" + completedBy + '\'' +
                 '}';
     }
+
+    // *******************************
+    public void makeRequest(JFXToggleNode selection, String description, Node requestLocation) {}
+    public void fulfillRequest(Request type, String byWho) {}
+
+
 }
+
+
+
+
+

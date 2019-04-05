@@ -58,4 +58,16 @@ public class MedicineRequest extends Request {
     public int hashCode() {
         return Objects.hash(super.hashCode(), medicineType, quantity);
     }
+
+
+
+    // *************************
+   // @Override
+   // public void makeRequest() {}
+
+   // @Override
+    //public void fulfillRequest () {}
+
+
+
 }

@@ -1,7 +1,9 @@
 package model.request;
 
+import com.jfoenix.controls.JFXToggleNode;
 import model.Node;
 import model.RequestType;
+import service.DatabaseService;
 
 import static model.RequestType.RType.ITS;
 
@@ -44,4 +46,25 @@ public class ITRequest extends Request {
     public int hashCode() {
         return Objects.hash(super.hashCode(), description);
     }
+
+
+    // *************************
+    @Override
+    public void makeRequest(JFXToggleNode selection, String description, Node requestLocation) {
+        ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
+        DatabaseService.getDatabaseService().insertITRequest(newITRequest);
+    }
+
+
+    @Override
+    public void fulfillRequest (Request type, String byWho) {
+        type.setCompleted(true);
+        type.setCompletedBy(byWho);
+        DatabaseService.getDatabaseService().updateITRequest((ITRequest)type);
+    }
+
+
 }
+
+
+
