@@ -45,9 +45,13 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void insertNode() {
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerNodeCallback(callback);
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         // make sure that the new node is successfully inserted
         assertThat(DatabaseService.getDatabaseService().insertNode(testNode), is(true));
+        verify(callback, times(1)).apply(null);
+
         // make sure that the same node cannot be inserted a second time
         assertThat(DatabaseService.getDatabaseService().insertNode(testNode), is(false));
     }
@@ -79,6 +83,9 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void updateNode() {
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerNodeCallback(callback);
+
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         DatabaseService.getDatabaseService().insertNode(testNode);
 
@@ -95,6 +102,7 @@ public class DatabaseServiceTest {
 
         testNode = new Node("ACONF00102", 1582, 2540, "3", "BTM", "CONF", "Halla", "Halls");
         DatabaseService.getDatabaseService().updateNode(testNode);
+        verify(callback, times(2)).apply(null); // Cumulative
 
         toGet = DatabaseService.getDatabaseService().getNode("ACONF00102");
         assertThat(toGet.getNodeID(),is("ACONF00102"));
@@ -110,12 +118,17 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void deleteNode() {
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerNodeCallback(callback);
+
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         DatabaseService.getDatabaseService().insertNode(testNode);
         // make sure it can be got
         assertThat(DatabaseService.getDatabaseService().getNode("ACONF00102").getNodeID(), is("ACONF00102"));
         // delete the node from the database successfully
         assertThat(DatabaseService.getDatabaseService().deleteNode(testNode),is(true));
+        verify(callback, times(2)).apply(null);
+
         //make sure that it is not in the database
         assertThat((DatabaseService.getDatabaseService().getNode("ACONF00102")), is(nullValue()));
         //delete is like update so trying to delete a record that isn't there doesn't cause problems. No case needed for that.
@@ -286,19 +299,29 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void insertEdge(){
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerEdgeCallback(callback);
+
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
         assertFalse(DatabaseService.getDatabaseService().insertEdge(newEdge));
+        verify(callback, times(0)).apply(null);
+
         DatabaseService.getDatabaseService().insertNode(testNode);
         assertFalse(DatabaseService.getDatabaseService().insertEdge(newEdge));
+        verify(callback, times(0)).apply(null);
+
         DatabaseService.getDatabaseService().insertNode(otherNode);
         assertTrue(DatabaseService.getDatabaseService().insertEdge(newEdge));
+        verify(callback, times(1)).apply(null);
     }
 
     @Test
     @Category(FastTest.class)
     public void updateEdge(){
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerEdgeCallback(callback);
         // set up the DB
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
@@ -320,13 +343,14 @@ public class DatabaseServiceTest {
         assertThat(gotEdge,is(notNullValue()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newerEdge.getNode1().getNodeID()));
 
-
-
+        verify(callback, times(2)).apply(null);
     }
 
     @Test
     @Category(FastTest.class)
     public void deleteEdge(){
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerEdgeCallback(callback);
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
@@ -337,6 +361,8 @@ public class DatabaseServiceTest {
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         // delete it
         DatabaseService.getDatabaseService().deleteEdge(gotEdge);
+        verify(callback, times(2)).apply(null);
+
         //make sure that it's not there
         assertThat((DatabaseService.getDatabaseService().getEdge("ACONF00102-ACONF00103")), is(nullValue()));
 

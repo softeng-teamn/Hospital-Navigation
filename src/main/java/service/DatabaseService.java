@@ -462,7 +462,9 @@ public class DatabaseService {
      */
     public boolean updateEdge(Edge e){
         String query = "UPDATE EDGE SET edgeID=?, NODE1=?, NODE2=? WHERE(EDGEID = ?)";
-        return executeUpdate(query, e.getEdgeID(), e.getNode1().getNodeID(), e.getNode2().getNodeID(), e.getEdgeID());
+        boolean successful = executeUpdate(query, e.getEdgeID(), e.getNode1().getNodeID(), e.getNode2().getNodeID(), e.getEdgeID());
+        if (successful) executeEdgeCallbacks();
+        return successful;
     }
 
     /** Deletes an edge from the database.
@@ -471,7 +473,9 @@ public class DatabaseService {
      */
     public boolean deleteEdge(Edge e){
         String query = "DELETE FROM EDGE WHERE (edgeID = ?)";
-        return executeUpdate(query, e.getEdgeID());
+        boolean successful = executeUpdate(query, e.getEdgeID());
+        if (successful) executeEdgeCallbacks();
+        return successful;
     }
 
     public ArrayList<Edge> getAllEdges(){
