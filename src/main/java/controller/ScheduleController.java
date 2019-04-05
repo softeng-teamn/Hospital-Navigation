@@ -470,9 +470,22 @@ public class ScheduleController extends Controller {
         GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
         GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
 
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getReservableSpacesAvailableBtw(gcalStart, gcalEnd);
-        resSpaces.clear();
-        resSpaces.addAll(dbResSpaces);
+        int startSize = resSpaces.size();
+        ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(gcalStart, gcalEnd);
+
+        System.out.println(reservationsBetween);
+
+        for (int i = 0; i < reservationsBetween.size(); i++) {
+            System.out.println("outside loop" + startSize);
+            for (int j = 0; j < startSize; j++) {
+                if (resSpaces.get(j).getSpaceID().equals(reservationsBetween.get(i).getLocationID())) {
+                    resSpaces.remove(j);
+                    startSize--;
+                    j--;
+                    System.out.println("decrement" + startSize);
+                }
+            }
+        }
 
         schedule.getChildren().clear();
         checks.getChildren().clear();
