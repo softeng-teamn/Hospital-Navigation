@@ -12,21 +12,18 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
-import model.Node;
 import model.ReservableSpace;
 import model.Reservation;
 import service.CSVService;
@@ -76,11 +73,18 @@ public class ScheduleController extends Controller {
     // LIst of spaces to display
     private ObservableList<ReservableSpace> resSpaces;
 
+    private String timeErrorText, inputError, availRoomsText, bookedRoomsText, clearFilterText;
+
     /**
      * Set up scheduler page.
      */
     @FXML
     public void initialize() {
+        timeErrorText = "Please enter valid start and end times.";
+        availRoomsText = "Show Available Spaces";
+        bookedRoomsText = "Show Booked Spaces";
+        clearFilterText = "Clear Filter";
+
         // Read in reservable Spaces
         CSVService.importReservableSpaces();
 
@@ -115,6 +119,9 @@ public class ScheduleController extends Controller {
 
         //  Pull spaces from database
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+
+        Collections.sort(dbResSpaces);
+
         resSpaces.addAll(dbResSpaces);
 
         // Add the nodes to the listview
@@ -411,7 +418,7 @@ public class ScheduleController extends Controller {
         }
 
         if (!valid) {
-            errorLbl.setText("Please enter valid start and end times.");
+            errorLbl.setText(timeErrorText);
             errorLbl.setVisible(true);
         }
         return valid;
@@ -522,11 +529,11 @@ public class ScheduleController extends Controller {
             availRoomsBtn.setOnAction(EventHandler -> {
                 clearFilter();
             });
-            availRoomsBtn.setText("Clear filter");
-            bookedRoomsBtn.setText("Show Booked Rooms");
+            availRoomsBtn.setText(clearFilterText);
+            bookedRoomsBtn.setText(bookedRoomsText);
             bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
 
-            //bookedRoomsBtn.setDisable(true);  Todo
+            Collections.sort(allSpaces);
             resSpaces.clear();
             resSpaces.addAll(allSpaces);
             reservableList.setItems(resSpaces);
@@ -571,6 +578,7 @@ public class ScheduleController extends Controller {
                 }
             }
 
+            Collections.sort(bookedSpaces);
             resSpaces.clear();
             resSpaces.addAll(bookedSpaces);
 
@@ -578,8 +586,8 @@ public class ScheduleController extends Controller {
             bookedRoomsBtn.setOnAction(EventHandler -> {
                 clearFilter();
             });
-            bookedRoomsBtn.setText("Clear filter");
-            availRoomsBtn.setText("Show Available Spaces");
+            bookedRoomsBtn.setText(clearFilterText);
+            availRoomsBtn.setText(availRoomsText);
             availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
 
            // availRoomsBtn.setDisable(true); todo
@@ -600,6 +608,7 @@ public class ScheduleController extends Controller {
         errorLbl.setVisible(false);
         // Set list to all spaces
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+        Collections.sort(dbResSpaces);
         resSpaces.clear();
         resSpaces.addAll(dbResSpaces);
 
@@ -610,8 +619,8 @@ public class ScheduleController extends Controller {
 
         availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
         bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
-        availRoomsBtn.setText("Show Available Rooms");
-        bookedRoomsBtn.setText("Show booked Rooms");
+        availRoomsBtn.setText(availRoomsText);
+        bookedRoomsBtn.setText(bookedRoomsText);
         availRoomsBtn.setDisable(false);
         bookedRoomsBtn.setDisable(false);
     }
