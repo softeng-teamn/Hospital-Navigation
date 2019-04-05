@@ -1,4 +1,4 @@
-package controller;
+package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.Employee;
@@ -12,11 +12,14 @@ import org.junit.Test;
 import java.io.*;
 
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.BDDMockito;
 import service.DatabaseService;
 import service.ResourceLoader;
 import testclassifications.FastTest;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -34,7 +37,7 @@ import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class CSVControllerTest {
+public class CSVServiceTest {
 
     private ArrayList<Node> testNodes;
     private ArrayList<Edge> testEdges;
@@ -119,19 +122,11 @@ public class CSVControllerTest {
         when(dbs.getEmployee(emp2.getID())).thenReturn(emp2);
         when(dbs.getEmployee(emp3.getID())).thenReturn(emp3);
 
-        CSVController.dbs = dbs;
+        DatabaseService.setDatabaseForMocking(dbs);
     }
 
     @After
     public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void exportDatabase() {
-    }
-
-    @Test
-    public void importDatabase() {
     }
 
     @Test
@@ -142,7 +137,7 @@ public class CSVControllerTest {
         assertFalse(tempfile.exists());
 
         // Action: call CSVController.exportNodes
-        CSVController.exportNodes();
+        CSVService.exportNodes();
         // Assert that export nodes has the correct content
         File nodecsv = new File("./nodes.csv");
         assertTrue(nodecsv.exists());
@@ -185,7 +180,7 @@ public class CSVControllerTest {
         assertFalse(tempfile.exists());
 
         // Action: call CSVController.exportEdges
-        CSVController.exportEdges();
+        CSVService.exportEdges();
 
         // Assert that export nodes has the correct content
         File edgecsv = new File("./edges.csv");
@@ -222,10 +217,6 @@ public class CSVControllerTest {
     }
 
     @Test
-    public void exportRequests() {
-    }
-
-    @Test
     @Category(FastTest.class)
     public void exportEmployees() throws IOException{
         // Precondition: Check that ./employees.csv does not exist
@@ -233,7 +224,7 @@ public class CSVControllerTest {
         assertFalse(tempfile.exists());
 
         // Action: call CSVController.exportEmployees
-        CSVController.exportEmployees();
+        CSVService.exportEmployees();
 
         // Assert that export employees has the correct content
         File empcsv = new File("./employees.csv");
@@ -271,20 +262,64 @@ public class CSVControllerTest {
 
     @Test
     @Category(FastTest.class)
+    public void exportReservableSpaces() throws IOException{
+        // Precondition: Check that ./reservablespaces.csv does not exist
+        File tempfile = new File("./reservablespaces.csv");
+        assertFalse(tempfile.exists());
+
+        // Action: call CSVService.exportReservableSpaces
+        CSVService.exportReservableSpaces();
+
+        // Assert that export employees has the correct content
+        File spacecsv = new File("./reservablespaces.csv");
+        assertTrue(spacecsv.exists());
+        BufferedReader reader = new BufferedReader( new InputStreamReader(new FileInputStream("./reservablespaces.csv"), StandardCharsets.UTF_8));
+
+        StringBuffer fileContents = new StringBuffer();
+        String line = reader.readLine();
+        while(line != null){
+            fileContents.append(line);
+            fileContents.append("\n");
+            line = reader.readLine();
+        }
+
+        try {
+            reader.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+
+            if (reader != null) {
+                reader.close();
+            }
+        }
+
+        String expectedValue = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed" + "\n"
+                + "AAAAA00101,Bob,Computer,BBBBB00101,2019-03-31 12:00,2019-03-31 12:30\n"
+                + "AAAAA00102,Alice,Conference,BBBBB00102,2019-03-25 14:00,2019-03-25 15:30\n"
+                + "AAAAA00103,John,Computer,BBBBB00103,2019-04-20 00:00,2019-04-20 23:59\n";
+
+        assertThat(fileContents.toString(), is(expectedValue));
+
+        File file = new File("./reservablespaces.csv");
+        assertThat(file.delete(), is(true));
+    }
+
+    @Test
+    @Category(FastTest.class)
     // Warning: this test contains large amounts of black magic
     public void importNodes() throws Exception {
         URL originalURL = ResourceLoader.nodes;
         // Override the csv file
-        setFinalStatic(ResourceLoader.class.getDeclaredField("nodes"), service.ResourceLoader.class.getResource("/test_nodes.csv"));
+        setFinalStatic(ResourceLoader.class.getDeclaredField("nodes"), ResourceLoader.class.getResource("/test_nodes.csv"));
 
         // Create a class to capture arguments of the type Node
         ArgumentCaptor<ArrayList<Node>> nodeCaptor = ArgumentCaptor.forClass(ArrayList.class);
 
         // Action being tested
-        CSVController.importNodes();
+        CSVService.importNodes();
 
         // Capture the calls to insert node
-        verify(CSVController.dbs, times(1)).insertAllNodes(nodeCaptor.capture());
+        verify(DatabaseService.getDatabaseService(false), times(1)).insertAllNodes(nodeCaptor.capture());
 
         // Check that each node captured is equal to the test nodes
         List<ArrayList<Node>> capturedNodes = nodeCaptor.getAllValues();
@@ -305,10 +340,10 @@ public class CSVControllerTest {
         ArgumentCaptor<Edge> edgeCaptor = ArgumentCaptor.forClass(Edge.class);
 
         // Action being tested
-        CSVController.importEdges();
+        CSVService.importEdges();
 
         // Capture the calls to insert edge
-        verify(CSVController.dbs, times(3)).insertEdge(edgeCaptor.capture());
+        verify(DatabaseService.getDatabaseService(false), times(3)).insertEdge(edgeCaptor.capture());
 
         // Check that each edge captured is equal to the test edge
         List<Edge> capturedEdges = edgeCaptor.getAllValues();
@@ -332,10 +367,10 @@ public class CSVControllerTest {
         ArgumentCaptor<ReservableSpace> spaceCaptor = ArgumentCaptor.forClass(ReservableSpace.class);
 
         // Action being tested
-        CSVController.importReservableSpaces();
+        CSVService.importReservableSpaces();
 
         // Capture the calls to insert spaces
-        verify(CSVController.dbs, times(3)).insertReservableSpace(spaceCaptor.capture());
+        verify(DatabaseService.getDatabaseService(false), times(3)).insertReservableSpace(spaceCaptor.capture());
 
         // Check that each node captured is equal to the test spaces
         List<ReservableSpace> capturedSpaces = spaceCaptor.getAllValues();
@@ -359,9 +394,9 @@ public class CSVControllerTest {
         ArgumentCaptor<Employee> empCaptor = ArgumentCaptor.forClass(Employee.class);
 
         // Action being tested
-        CSVController.importEmployees();
+        CSVService.importEmployees();
         // Capture the calls to insert employees
-        verify(CSVController.dbs, times(3)).insertEmployee(empCaptor.capture());
+        verify(DatabaseService.getDatabaseService(false), times(3)).insertEmployee(empCaptor.capture());
 
         // Check that each node captured is equal to the test employee
         List<Employee> capturedEmp = empCaptor.getAllValues();

@@ -16,6 +16,7 @@ import model.RequestType;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -68,11 +69,11 @@ public class FulfillRequestController extends Controller implements Initializabl
         switch(rType.getrType()){
             case ITS:
                 ITupdate = (ITRequest) selected;
-                dbs.updateITRequest(ITupdate);
+                DatabaseService.getDatabaseService().updateITRequest(ITupdate);
                 break;
             case MED:
                 medupdate = (MedicineRequest) selected;
-                dbs.updateMedicineRequest(medupdate);
+                DatabaseService.getDatabaseService().updateMedicineRequest(medupdate);
                 break;
             case ABS:
                 //do nothing
@@ -108,28 +109,28 @@ public class FulfillRequestController extends Controller implements Initializabl
 
         if (allRadio.isSelected()){
             if(allTypeRadio.isSelected()){
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) dbs.getAllMedicineRequests();
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) dbs.getAllITRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
                 newRequestlist.addAll(allMedReqList);
                 newRequestlist.addAll(allITReqList);
             }else if (medicineRadio.isSelected()){
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) dbs.getAllMedicineRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
                 newRequestlist.addAll(allMedReqList);
             }else if (ITRadio.isSelected()){
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) dbs.getAllITRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
                 newRequestlist.addAll(allITReqList);
             }
         }else if (uncRadio.isSelected()){
             if(allTypeRadio.isSelected()){
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) dbs.getAllIncompleteMedicineRequests();
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) dbs.getAllIncompleteITRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllIncompleteITRequests();
                 newRequestlist.addAll(allMedReqList);
                 newRequestlist.addAll(allITReqList);
             }else if (medicineRadio.isSelected()){
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) dbs.getAllIncompleteMedicineRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
                 newRequestlist.addAll(allMedReqList);
             }else if (ITRadio.isSelected()){
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) dbs.getAllIncompleteITRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllIncompleteITRequests();
                 newRequestlist.addAll(allITReqList);
             }
         }
@@ -188,8 +189,8 @@ public class FulfillRequestController extends Controller implements Initializabl
 
         ObservableList<Request> requestlist = FXCollections.observableArrayList();
 
-        ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) dbs.getAllMedicineRequests();
-        ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) dbs.getAllITRequests();
+        ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
+        ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
 
         requestlist.addAll(medicineReq);
         requestlist.addAll(itReq);

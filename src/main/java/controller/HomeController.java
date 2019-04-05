@@ -1,9 +1,13 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import com.sun.javafx.font.Glyph;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,8 +28,11 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
+import model.Edge;
+import model.Elevator;
 import model.MapNode;
 import model.Node;
+import service.DatabaseService;
 import service.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -33,9 +40,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 
 public class HomeController extends MapController {
 
@@ -44,7 +52,7 @@ public class HomeController extends MapController {
     @FXML
     private HBox top_nav, hbox_container;
     @FXML
-    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn, bookBtn, fulfillBtn;
+    private JFXButton editBtn, editBtnLbl, schedulerBtn, schedulerBtnLbl, serviceBtn, serviceBtnLbl, navigate_btn, auth_btn, edit_btn, newRoom_btn, edit_save_btn, bookBtn, fulfillBtn, call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
     private JFXSlider zoom_slider;
     @FXML
@@ -52,21 +60,24 @@ public class HomeController extends MapController {
     @FXML
     private JFXTextField search_bar, edit_x, edit_y, edit_floor, edit_building, edit_type, edit_long, edit_short;
     @FXML
-    private Label edit_id, new_room1, new_room2;
+    private Label edit_id, new_room1, new_room2, cur_el_floor;
     @FXML
     private JFXListView<Node> list_view;
-
+    @FXML
+    private FontAwesomeIconView lock_icon;
 
     public Group zoomGroup;
     Node restRoom = new Node("BREST00102",2177,1010,"2","45 Francis","REST","Restroom 1 Level 2","REST B0102");
     ArrayList<Node> allNodes;
     ObservableList<Node> allNodesObservable;
 
-    private Node kioskNode = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
+    private Node kioskNode = new Node("FEXIT00201",1748,1321,"1","Tower","EDIT","75 Francis Valet Drop-off","75 Francis Edit");
     private Node destNode;
     private Circle destCircle = new Circle();
     private Circle kioskCircle = new Circle();
     private int addNodeState = 0;
+
+    static Elevator elev;
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
@@ -111,20 +122,61 @@ public class HomeController extends MapController {
         StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
     }
 
+    public static void initializeElevator() {
+        try {
+            elev = Elevator.get("MyRobotName");
+        } catch ( Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void initConnections() {
+        System.out.println("creating hashmap ...");
+        connections = new HashMap<>();
+        ArrayList<Edge> allEdges = DatabaseService.getDatabaseService().getAllEdges();
+
+        for (Edge e : allEdges) {
+            if (connections.containsKey(e.getNode1().getNodeID())) {
+                connections.get(e.getNode1().getNodeID()).add(e.getNode2());
+            } else {
+                ArrayList<Node> newList = new ArrayList<>();
+                newList.add(e.getNode2());
+                connections.put(e.getNode1().getNodeID(), newList);
+            }
+
+
+            if (connections.containsKey(e.getNode2().getNodeID())) {
+                connections.get(e.getNode2().getNodeID()).add(e.getNode1());
+            } else {
+                ArrayList<Node> newList = new ArrayList<>();
+                newList.add(e.getNode1());
+                connections.put(e.getNode2().getNodeID(), newList);
+            }
+        }
+
+        System.out.println("the hashmap is MADE!");
+    }
 
     /**
      * initializes the home controller
      */
     @FXML
     void initialize() {
+        initConnections();
+        initializeElevator();
 
         // Hide the edit window
         hideEditor();
 
         authCheck();
 
-        dbs.registerNodeCallback(aVoid -> {
+        DatabaseService.getDatabaseService().registerNodeCallback(aVoid -> {
             HomeController.this.nodeChangedCallback();
+            return null;
+        });
+
+        DatabaseService.getDatabaseService().registerEdgeCallback(aVoid -> {
+            HomeController.this.edgeChangedCallback();
             return null;
         });
 
@@ -159,16 +211,36 @@ public class HomeController extends MapController {
         zoom(0.3);
     }
 
+    private void elevCallback(Double aDouble) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                // if you change the UI, do it here !
+                cur_el_floor.setText("" + elev.data[0]);
+                System.out.println(elev.data[0]);
+            }
+        });
+
+    }
+
     /**
-     * TBD
+     * DatabaseService calls this when nodes are inserted, modified, deleted
      */
     private void nodeChangedCallback() {
+        initConnections();
         repopulateList();
+    }
+
+    /**
+     * DatabaseService calls this when edges are inserted (to
+     */
+    private void edgeChangedCallback() {
+        initConnections();
     }
   
     void authCheck() {
         if (Controller.getIsAdmin()) {
-            auth_btn.setText("Logout");
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
             edit_btn.setVisible(true);
             newRoom_btn.setVisible(true);
 
@@ -180,7 +252,7 @@ public class HomeController extends MapController {
             }
         } else {
             System.out.println("not an admin anymore");
-            auth_btn.setText("Log In");
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
             if (top_nav.getChildren().contains(edit_btn)) {
                 top_nav.getChildren().remove(edit_btn);
             }
@@ -369,7 +441,35 @@ public class HomeController extends MapController {
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
         stage.sizeToScene();
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
+    }
+
+    @FXML
+    void callElevatorAction(ActionEvent e) {
+        System.out.println("i was just called");
+        JFXButton btn = (JFXButton) e.getSource();
+        char test = btn.getText().charAt(btn.getText().length()-1);
+        switch (test) {
+            case '1':
+                elev.data[2] = 1;
+                elev.data[3] = 1;
+                break;
+            case '2':
+                elev.data[2] = 1;
+                elev.data[3] = 2;
+                break;
+            case '3':
+                elev.data[2] = 1;
+                elev.data[3] = 3;
+                break;
+            case '4':
+                elev.data[2] = 1;
+                elev.data[3] = 4;
+                break;
+                default:
+                    break;
+
+        }
     }
 
     /**
@@ -520,7 +620,7 @@ public class HomeController extends MapController {
                 edit_long.getText(),
                 edit_short.getText()
         );
-        if (dbs.updateNode(myNode)) {
+        if (DatabaseService.getDatabaseService().updateNode(myNode)) {
             System.out.println("Here is the Old Node");
             System.out.println(oldNode);
             System.out.println("NEW NODE");
@@ -583,9 +683,9 @@ public class HomeController extends MapController {
     void repopulateList() {
         System.out.println("Repopulation of listView");
         if (Controller.getIsAdmin()) {
-            allNodes = dbs.getAllNodes();
+            allNodes = DatabaseService.getDatabaseService().getAllNodes();
         } else {
-            allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
+            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
         }
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();
