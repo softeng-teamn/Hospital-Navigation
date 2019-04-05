@@ -25,6 +25,7 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
+import model.Edge;
 import model.Elevator;
 import model.MapNode;
 import model.Node;
@@ -58,7 +59,6 @@ public class HomeController extends MapController {
     private Label edit_id, new_room1, new_room2, cur_el_floor;
     @FXML
     private JFXListView<Node> list_view;
-
 
     public Group zoomGroup;
     Node restRoom = new Node("BREST00102",2177,1010,"2","45 Francis","REST","Restroom 1 Level 2","REST B0102");
@@ -126,11 +126,28 @@ public class HomeController extends MapController {
 
     public static void initConnections() {
         System.out.println("creating hashmap ...");
-        connections = new HashMap<String, ArrayList<Node>>();
-        ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
-        for (Node n : allNodes) {
-            connections.put(n.getNodeID(), DatabaseService.getDatabaseService().getNodesConnectedTo(n));
+        connections = new HashMap<>();
+        ArrayList<Edge> allEdges = DatabaseService.getDatabaseService().getAllEdges();
+
+        for (Edge e : allEdges) {
+            if (connections.containsKey(e.getNode1().getNodeID())) {
+                connections.get(e.getNode1().getNodeID()).add(e.getNode2());
+            } else {
+                ArrayList<Node> newList = new ArrayList<>();
+                newList.add(e.getNode2());
+                connections.put(e.getNode1().getNodeID(), newList);
+            }
+
+
+            if (connections.containsKey(e.getNode2().getNodeID())) {
+                connections.get(e.getNode2().getNodeID()).add(e.getNode1());
+            } else {
+                ArrayList<Node> newList = new ArrayList<>();
+                newList.add(e.getNode1());
+                connections.put(e.getNode2().getNodeID(), newList);
+            }
         }
+
         System.out.println("the hashmap is MADE!");
     }
 
@@ -152,8 +169,8 @@ public class HomeController extends MapController {
             return null;
         });
 
-        elev.registerCallback(aDouble -> {
-            this.elevCallback(aDouble);
+        DatabaseService.getDatabaseService().registerEdgeCallback(aVoid -> {
+            HomeController.this.edgeChangedCallback();
             return null;
         });
 
@@ -204,7 +221,6 @@ public class HomeController extends MapController {
      * DatabaseService calls this when nodes are inserted, modified, deleted
      */
     private void nodeChangedCallback() {
-        System.err.println("Node Changed received in home!");
         initConnections();
         repopulateList();
     }

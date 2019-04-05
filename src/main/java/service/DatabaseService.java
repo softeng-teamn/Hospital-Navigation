@@ -23,6 +23,7 @@ public class DatabaseService {
 
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
+    private ArrayList<Function<Void, Void>> edgeCallbacks;
 
     /**
      * Construct a DatabaseService
@@ -95,6 +96,7 @@ public class DatabaseService {
         }
 
         nodeCallbacks = new ArrayList<>();
+        edgeCallbacks = new ArrayList<>();
     }
 
 
@@ -153,7 +155,7 @@ public class DatabaseService {
     }
 
     // Default start fresh to false
-    public static synchronized  DatabaseService getDatabaseService() {
+    public static synchronized DatabaseService getDatabaseService() {
         return getDatabaseService(false);
     }
 
@@ -161,9 +163,21 @@ public class DatabaseService {
     /**
      * Delete DB Files
      */
-    public static void wipeOutFiles() {
-        FileUtil.removeDirectory(new File(DATABASE_NAME));
+    public static void wipeOutFiles(File f) {
+        if (f.isDirectory()) {
+            for (File c : f.listFiles())
+                wipeOutFiles(c);
+        }
+        f.delete();
     }
+
+    public static void wipeOutFiles() {
+        if(_dbs != null) {
+            _dbs.close();
+        }
+        wipeOutFiles(new File(DATABASE_NAME));
+    }
+
 
     /**
      */
@@ -426,7 +440,9 @@ public class DatabaseService {
         String node1ID = e.getNode1().getNodeID();
         String node2ID = e.getNode2().getNodeID();
 
-        return executeInsert(insertStatement, e.getEdgeID(), node1ID, node2ID);
+        boolean successful = executeInsert(insertStatement, e.getEdgeID(), node1ID, node2ID);
+        if (successful) executeEdgeCallbacks();
+        return successful;
     }
 
     /** get an edge. This also pulls out the nodes that edge connects.
@@ -457,7 +473,8 @@ public class DatabaseService {
     }
 
     public ArrayList<Edge> getAllEdges(){
-        return new ArrayList<Edge>();
+        String query = "Select * FROM EDGE";
+        return (ArrayList<Edge>)(List<?>) executeGetMultiple(query, Edge.class, new Object[]{});
     }
 
     /** Inserts a new reservation into the database.
@@ -883,7 +900,7 @@ public class DatabaseService {
         }
         return insertStatus;
     }
-  
+
     /** returns an object from the database based on a given ID
      * @param query the query to
      * @param cls the class of object to return
@@ -1063,6 +1080,17 @@ public class DatabaseService {
 
     public void registerNodeCallback(Function<Void, Void> callback) {
         nodeCallbacks.add(callback);
+    }
+
+
+    private void executeEdgeCallbacks() {
+        for (Function<Void, Void> callback : edgeCallbacks) {
+            callback.apply(null);
+        }
+    }
+
+    public void registerEdgeCallback(Function<Void, Void> callback) {
+        edgeCallbacks.add(callback);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
