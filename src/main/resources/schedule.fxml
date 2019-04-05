@@ -45,7 +45,8 @@
                   <JFXDatePicker fx:id="datePicker" promptText="Choose a date" />
                   <JFXTimePicker fx:id="startTimePicker" promptText="Choose a start time" />
                   <JFXTimePicker fx:id="endTimePicker" promptText="Choose an end time" />
-                  <JFXButton fx:id="filterBtn" onAction="#filterRooms" text="Filter by Availability" />
+                  <JFXButton fx:id="availRoomsBtn" onAction="#availRooms" text="Show Available Rooms" />
+                  <JFXButton fx:id="bookedRoomsBtn" onAction="#bookedRooms" text="Show Booked Rooms" />
                   <Label fx:id="errorLbl" text="Error" wrapText="true" />
                   <Region prefHeight="707.0" prefWidth="316.0" />
                </children>

@@ -37,7 +37,7 @@ import service.StageManager;
 public class ScheduleController extends Controller {
 
     @FXML
-    public JFXButton homeBtn, filterRoomBtn, makeReservationBtn, filterBtn;
+    public JFXButton homeBtn, makeReservationBtn, availRoomsBtn, bookedRoomsBtn;
 
     @FXML
     public JFXButton submitBtn;
@@ -286,7 +286,7 @@ public class ScheduleController extends Controller {
     @FXML
     public void makeReservation() {
         makeTimeValid();
-        boolean valid = validTimes();
+        boolean valid = validTimes(true);
 
         confErrorLbl.setVisible(false);
         String id = employeeID.getText();
@@ -360,7 +360,7 @@ public class ScheduleController extends Controller {
      *      Be in the future. TODO
      * @return true if the selected times are valid, false otherwise
      */
-    private boolean validTimes() {
+    private boolean validTimes(boolean forRes) {
         boolean valid = true;
         // Get the selected times
         int start = startTimePicker.getValue().getHour();
@@ -376,16 +376,17 @@ public class ScheduleController extends Controller {
             valid = false;
         }
 
-        // For each time in the reservation, check whether it is already booked
-        for (int i = index; i < endIndex; i++) {
-            if (currentSchedule.get(i) == 1) {
-                valid = false;
+        if (forRes) {
+            // For each time in the reservation, check whether it is already booked
+            for (int i = index; i < endIndex; i++) {
+                if (currentSchedule.get(i) == 1) {
+                    valid = false;
+                }
             }
         }
 
         if (!valid) {
-            errorLbl.setText("Please enter valid start and end times " +
-                    "for this location.");
+            errorLbl.setText("Please enter valid start and end times.");
             errorLbl.setVisible(true);
         }
         return valid;
@@ -464,45 +465,99 @@ public class ScheduleController extends Controller {
 
     /**
      * Filter rooms by currently selected date and times
-     * Only displays rooms without reservations that overlap those times
+     * Displays rooms without reservations that overlap those times
      */
-    public void filterRooms() {
-        // Get selected times
-        LocalDate chosenDate = datePicker.getValue();
-        LocalTime startTime = startTimePicker.getValue();
-        LocalTime endTime = endTimePicker.getValue();
-        GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
-        GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
+    public void availRooms() {
+        errorLbl.setVisible(false);
+        boolean valid = validTimes(false);
+        if (valid) {
+            // Get selected times
+            LocalDate chosenDate = datePicker.getValue();
+            LocalTime startTime = startTimePicker.getValue();
+            LocalTime endTime = endTimePicker.getValue();
+            GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
+            GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
 
-        int startSize = resSpaces.size();
+            // Get reservations between selected times
+            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(gcalStart, gcalEnd);
 
-        // Get reservations between selected times
-        ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(gcalStart, gcalEnd);
-
-        for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
-            for (int j = 0; j < startSize; j++) {    // Go through all the spaces to remove that space from the list
-                if (resSpaces.get(j).getSpaceID().equals(reservationsBetween.get(i).getLocationID())) {
-                    resSpaces.remove(j);
-                    startSize--;
-                    j--;
+            int startSize = resSpaces.size();
+            for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
+                for (int j = 0; j < startSize; j++) {    // Go through all the spaces to remove that space from the list
+                    if (resSpaces.get(j).getSpaceID().equals(reservationsBetween.get(i).getLocationID())) {
+                        resSpaces.remove(j);
+                        startSize--;
+                        j--;
+                    }
                 }
             }
+
+            // Set button
+            availRoomsBtn.setOnAction(EventHandler -> {
+                clearFilter(availRoomsBtn, "Show Available Rooms");
+            });
+            availRoomsBtn.setText("Clear filter");
+
+            // Clear the current schedule
+            schedule.getChildren().clear();
+            checks.getChildren().clear();
+            currentSchedule.clear();
+            bookedRoomsBtn.setDisable(true);
         }
+    }
 
-        // Clear the current schedule
-        schedule.getChildren().clear();
-        checks.getChildren().clear();
-        currentSchedule.clear();
+    /**
+     * Display booked rooms for currently selected date and times
+     */
+    public void bookedRooms() {
+        errorLbl.setVisible(false);
+        boolean valid = validTimes(false);
+        if (valid) {
+            // Get selected times
+            LocalDate chosenDate = datePicker.getValue();
+            LocalTime startTime = startTimePicker.getValue();
+            LocalTime endTime = endTimePicker.getValue();
+            GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
+            GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
 
-        // Set button
-        filterBtn.setOnAction(EventHandler -> {clearFilter();} );
-        filterBtn.setText("Clear filter");
+            ObservableList<ReservableSpace> bookedSpaces = FXCollections.observableArrayList();
+
+            // Get reservations between selected times
+            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(gcalStart, gcalEnd);
+
+            int startSize = resSpaces.size();
+            for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
+                for (int j = 0; j < startSize; j++) {    // Go through all the spaces to remove that space from the list
+                    if (resSpaces.get(j).getSpaceID().equals(reservationsBetween.get(i).getLocationID())) {
+                        bookedSpaces.add(resSpaces.get(j));
+                        resSpaces.remove(j);
+                        startSize--;
+                        j--;
+                    }
+                }
+            }
+
+            resSpaces.clear();
+            resSpaces.addAll(bookedSpaces);
+
+            // Set button
+            bookedRoomsBtn.setOnAction(EventHandler -> {
+                clearFilter(bookedRoomsBtn, "Show Booked Rooms");
+            });
+            bookedRoomsBtn.setText("Clear filter");
+
+            // Clear the current schedule
+            schedule.getChildren().clear();
+            checks.getChildren().clear();
+            currentSchedule.clear();
+            availRoomsBtn.setDisable(true);
+        }
     }
 
     /**
      * Reset display to show all spaces
      */
-    public void clearFilter() {
+    public void clearFilter(JFXButton btn, String text) {
         // Set list to all spaces
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
         resSpaces.clear();
@@ -513,9 +568,15 @@ public class ScheduleController extends Controller {
         checks.getChildren().clear();
         currentSchedule.clear();
 
-        // Set button
-        filterBtn.setOnAction(EventHandler -> {filterRooms();});
-        filterBtn.setText("Filter by Availability");
+        if (availRoomsBtn.getText().contains("Clear")) {
+            availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
+        }
+        else {
+            bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
+        }
+        btn.setText(text);
+        availRoomsBtn.setDisable(false);
+        bookedRoomsBtn.setDisable(false);
     }
 
 
