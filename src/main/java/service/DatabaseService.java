@@ -243,7 +243,7 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
 
-            statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
+            statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
 
             statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
 
@@ -488,7 +488,7 @@ public class DatabaseService {
      * @return true or false based on whether the insert succeeded or not
      */
     public boolean insertReservation(Reservation reservation) {
-        String insertStatement = ("INSERT INTO RESERVATION(EVENTNAME, LOCATIONID, STARTTIME, ENDTIME, PRIVACYLEVEL, EMPLOYEEID) VALUES(?, ?, ?, ?, ?, ?)");
+        String insertStatement = ("INSERT INTO RESERVATION(EVENTNAME, spaceID, STARTTIME, ENDTIME, PRIVACYLEVEL, EMPLOYEEID) VALUES(?, ?, ?, ?, ?, ?)");
         return executeInsert(insertStatement, reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
     }
 
@@ -514,7 +514,7 @@ public class DatabaseService {
      * @return true or false based on whether the insert succeeded or not
      */
     public boolean updateReservation(Reservation reservation) {
-        String query = "UPDATE RESERVATION SET eventName=?, locationID=?, startTime=?, endTime=?, privacyLevel=?, employeeID=? WHERE (eventID = ?)";
+        String query = "UPDATE RESERVATION SET eventName=?, spaceID=?, startTime=?, endTime=?, privacyLevel=?, employeeID=? WHERE (eventID = ?)";
         return executeUpdate(query, reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(),
                 reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId(), reservation.getEventID());
     }
@@ -534,7 +534,7 @@ public class DatabaseService {
      * @return a list of the requested reservations
      */
     public List<Reservation> getReservationsBySpaceId(String id) {
-        String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ?)";
+        String query = "SELECT * FROM RESERVATION WHERE (spaceID = ?)";
         return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, id);
     }
 
@@ -546,7 +546,7 @@ public class DatabaseService {
      * @return a list of the requested reservations
      */
     public List<Reservation> getReservationsBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
-        String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
+        String query = "SELECT * FROM RESERVATION WHERE (spaceID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
         System.out.println(id);
         System.out.println("dbs" + from.get(Calendar.YEAR) +  " " + from.get(Calendar.MONTH) + " " + from.get(Calendar.DATE) + " " + from.get(Calendar.HOUR));
         System.out.println(to.get(Calendar.YEAR) +  " " + to.get(Calendar.MONTH) + " " + to.get(Calendar.DATE)+ " " + to.get(Calendar.HOUR));
@@ -1012,7 +1012,7 @@ public class DatabaseService {
         // Extract data
         int eventID = rs.getInt("eventID");
         String eventName = rs.getString("eventName");
-        String locationID = rs.getString("locationID");
+        String locationID = rs.getString("spaceID");
         Date startTime = new Date(rs.getTimestamp("startTime").getTime());
         Date endTime = new Date(rs.getTimestamp("endTime").getTime());
         int privacyLevel = rs.getInt("privacyLevel");
