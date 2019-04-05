@@ -25,8 +25,10 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
+import model.Elevator;
 import model.MapNode;
 import model.Node;
+import service.DatabaseService;
 import service.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -68,6 +70,8 @@ public class HomeController extends MapController {
     private Circle destCircle = new Circle();
     private Circle kioskCircle = new Circle();
     private int addNodeState = 0;
+
+    static Elevator elev;
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
@@ -112,19 +116,38 @@ public class HomeController extends MapController {
         StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
     }
 
+    public static void initializeElevator() {
+        try {
+            elev = Elevator.get("MyRobotName");
+        } catch ( Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void initConnections() {
+        System.out.println("creating hashmap ...");
+        connections = new HashMap<String, ArrayList<Node>>();
+        ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
+        for (Node n : allNodes) {
+            connections.put(n.getNodeID(), DatabaseService.getDatabaseService().getNodesConnectedTo(n));
+        }
+        System.out.println("the hashmap is MADE!");
+    }
 
     /**
      * initializes the home controller
      */
     @FXML
     void initialize() {
+        initConnections();
+        initializeElevator();
 
         // Hide the edit window
         hideEditor();
 
         authCheck();
 
-        dbs.registerNodeCallback(aVoid -> {
+        DatabaseService.getDatabaseService().registerNodeCallback(aVoid -> {
             HomeController.this.nodeChangedCallback();
             return null;
         });
@@ -178,9 +201,11 @@ public class HomeController extends MapController {
     }
 
     /**
-     * TBD
+     * DatabaseService calls this when nodes are inserted, modified, deleted
      */
     private void nodeChangedCallback() {
+        System.err.println("Node Changed received in home!");
+        initConnections();
         repopulateList();
     }
   
@@ -566,7 +591,7 @@ public class HomeController extends MapController {
                 edit_long.getText(),
                 edit_short.getText()
         );
-        if (dbs.updateNode(myNode)) {
+        if (DatabaseService.getDatabaseService().updateNode(myNode)) {
             System.out.println("Here is the Old Node");
             System.out.println(oldNode);
             System.out.println("NEW NODE");
@@ -629,9 +654,9 @@ public class HomeController extends MapController {
     void repopulateList() {
         System.out.println("Repopulation of listView");
         if (Controller.getIsAdmin()) {
-            allNodes = dbs.getAllNodes();
+            allNodes = DatabaseService.getDatabaseService().getAllNodes();
         } else {
-            allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
+            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
         }
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();

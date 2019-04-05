@@ -1,6 +1,6 @@
 package service;
 
-import controller.CSVController;
+import service.CSVService;
 import controller.Controller;
 import model.MapNode;
 import model.Node;
@@ -34,9 +34,6 @@ public class PathFindingServiceIntegrationTest {
 
     @Before
     public void setUp() throws IOException {
-        CSVController.wipeTables();
-        CSVController.importNodes();
-        CSVController.importEdges();
 
     }
 

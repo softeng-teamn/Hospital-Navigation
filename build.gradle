@@ -159,7 +159,7 @@ dependencies {
             [group: 'org.testfx', name: 'testfx-core', version: '4.0.+'],
             [group: 'org.testfx', name: 'testfx-junit', version: '4.0.+'],
             [group: 'org.loadui', name: 'testFx', version: '3.1.2'],
-            [group: 'org.mockito', name: 'mockito-core', 'version': '2.7.22'],
+            [group: 'org.mockito', name: 'mockito-core', 'version': '2.9.0'],
             [group: 'com.github.spotbugs', name: 'spotbugs-annotations', version: '3.1.3'],
             [group: 'commons-io', name: 'commons-io', version: '2.6'],
             [group: 'me.xdrop', name:'fuzzywuzzy', version: '1.2.0'],
