@@ -241,7 +241,6 @@ public class ScheduleControllerTest extends ApplicationTest {
 
     }
 
-
     @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
