@@ -47,7 +47,7 @@ task fastTest(type: Test) {
         includeCategories 'testclassifications.FastTest'
         excludeCategories 'testclassifications.UiTest'
         excludeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.IntegrationTest'
+        excludeCategories 'testclassifications.RegressionTest'
         excludeCategories 'testclassifications.SpecialTest'
         excludeCategories 'testclassifications.ElevatorTest'
     }
@@ -60,7 +60,7 @@ task slowTest(type: Test) {
         includeCategories 'testclassifications.SlowTest'
         excludeCategories 'testclassifications.UiTest'
         excludeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.IntegrationTest'
+        excludeCategories 'testclassifications.RegressionTest'
         excludeCategories 'testclassifications.SpecialTest'
         excludeCategories 'testclassifications.ElevatorTest'
     }
@@ -73,11 +73,12 @@ task uiFastTest(type: Test) {
         includeCategories 'testclassifications.UiTest'
         excludeCategories 'testclassifications.SlowTest'
         excludeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.IntegrationTest'
+        excludeCategories 'testclassifications.RegressionTest'
         excludeCategories 'testclassifications.SpecialTest'
         excludeCategories 'testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
+    forkEvery = 1
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -86,11 +87,12 @@ task uiSlowTest(type: Test) {
         includeCategories 'testclassifications.UiTest'
         excludeCategories 'testclassifications.FastTest'
         excludeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.IntegrationTest'
+        excludeCategories 'testclassifications.RegressionTest'
         excludeCategories 'testclassifications.SpecialTest'
         excludeCategories 'testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
+    forkEvery = 1
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -112,9 +114,9 @@ task elevatorTest(type: Test) {
 }
 
 //noinspection GroovyAssignabilityCheck
-task integrationTest(type: Test) {
+task regressionTest(type: Test) {
     useJUnit {
-        includeCategories 'testclassifications.IntegrationTest'
+        includeCategories 'testclassifications.RegressionTest'
         excludeCategories 'testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
@@ -134,7 +136,7 @@ test {
         includeCategories 'testclassifications.FastTest'
         includeCategories 'testclassifications.SlowTest'
         includeCategories 'testclassifications.UiTest'
-        includeCategories 'testclassifications.IntegrationTest'
+        excludeCategories 'testclassifications.RegressionTest'
         excludeCategories 'testclassifications.LocalTest'
         excludeCategories 'testclassifications.SpecialTest'
         excludeCategories 'testclassifications.ElevatorTest'

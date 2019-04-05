@@ -224,6 +224,13 @@ public class HomeController extends MapController {
         initConnections();
         repopulateList();
     }
+
+    /**
+     * DatabaseService calls this when edges are inserted (to
+     */
+    private void edgeChangedCallback() {
+        initConnections();
+    }
   
     void authCheck() {
         if (Controller.getIsAdmin()) {

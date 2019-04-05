@@ -18,9 +18,6 @@ public class DatabaseService {
     public static final Integer DATABASE_VERSION = 6;
     private static DatabaseService _dbs;
 
-
-
-
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
     private ArrayList<Function<Void, Void>> edgeCallbacks;
@@ -163,12 +160,17 @@ public class DatabaseService {
     /**
      * Delete DB Files
      */
-    public static void wipeOutFiles(File f) {
+    private static void wipeOutFiles(File f) {
+        if (f == null) return;
         if (f.isDirectory()) {
-            for (File c : f.listFiles())
-                wipeOutFiles(c);
+            File[] children = f.listFiles();
+            if (children != null)
+                for (File c : children)
+                    wipeOutFiles(c);
         }
-        f.delete();
+        boolean deleted = f.delete();
+        if(!deleted)
+            System.err.println("File not deleted: " + f.getPath());
     }
 
     public static void wipeOutFiles() {
