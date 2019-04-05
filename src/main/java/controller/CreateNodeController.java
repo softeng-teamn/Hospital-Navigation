@@ -19,6 +19,7 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import model.Edge;
 import model.Node;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -295,6 +296,11 @@ public class CreateNodeController extends Controller {
 
     // STATE: populate the database with our info
     void submitNewNode() {
+        // send info to dbs
+        DatabaseService.getDatabaseService().insertNode(myCreatedNode);
+        for (Edge e : edges) {
+            DatabaseService.getDatabaseService().insertEdge(e);
+        }
         // show instructions
         instruction_label.setText("Node Successfully Created!");
         next_btn.setDisable(false);
@@ -303,7 +309,10 @@ public class CreateNodeController extends Controller {
         anchor_pane.getChildren().remove(map_scrollpane);
         anchor_pane.getChildren().remove(zoom_slider);
         // add the narwhal
-        anchor_pane.getChildren().add(narnar_vbox);
+        if (!anchor_pane.getChildren().contains(narnar_vbox)) {
+            anchor_pane.getChildren().add(narnar_vbox);
+        }
+
     }
 
     // remove textfields from screen
@@ -376,7 +385,7 @@ public class CreateNodeController extends Controller {
 
     String genNodeNumber() {
         String str = "%3d";
-        int numNodes = dbs.getNumNodeTypeByFloor(node_type, node_floor);
+        int numNodes = DatabaseService.getDatabaseService().getNumNodeTypeByFloor(node_type, node_floor);
         return String.format(str, numNodes);
     }
 
@@ -391,7 +400,7 @@ public class CreateNodeController extends Controller {
     }
 
     void showAllNodes() {
-        ArrayList<Node> allNodes = dbs.getAllNodes();
+        ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
         for (Node node : allNodes) {
             // create circle
             Circle nodeCircle = new Circle();

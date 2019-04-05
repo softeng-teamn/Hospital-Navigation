@@ -4,81 +4,186 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
+import org.apache.derby.iapi.services.io.FileUtil;
 
+import java.io.File;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
 import java.util.function.Function;
 
-@SuppressWarnings("ALL")
 public class DatabaseService {
 
+    public static final String DATABASE_NAME = "hospital-db";
     public static final Integer DATABASE_VERSION = 6;
+    private static DatabaseService _dbs;
 
     private Connection connection;
-
-    private String databaseName;
-
-    private boolean newlyCreated;
-
     private ArrayList<Function<Void, Void>> nodeCallbacks;
-
-    private DatabaseService(Connection connection) {
-        this.connection = connection;
-        nodeCallbacks = new ArrayList<>();
-    }
-
-    public void registerNodeCallback(Function<Void, Void> callback) {
-        nodeCallbacks.add(callback);
-    }
-
+    private ArrayList<Function<Void, Void>> edgeCallbacks;
 
     /**
-     * Tries to connect to an existing database, if one does not exist, creates and populates a new one.
-     * @param dbName
-     * @return a DatabaseService object, to be used by other functions to access the database.
-     * @throws SQLException
-     * @throws MismatchedDatabaseVersionException
+     * Construct a DatabaseService
+     * @param startFresh if true, blow away any database existing on disk
+     * @param loadCSVs if true, load the CSVs
+     * @throws SQLException on DB connection creation error
      */
-    public static DatabaseService init(String dbName) throws SQLException, MismatchedDatabaseVersionException {
+    private DatabaseService(boolean startFresh, boolean loadCSVs) throws SQLException {
         DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-        Connection connection;
         boolean createFlag = false;
 
-        try {
-            connection = DriverManager.getConnection("jdbc:derby:"+dbName+";");
-        } catch (SQLException e) {
-            if (e.getMessage().contains("Database '" + dbName + "' not found")) {
-                System.out.print("No existing database found, creating database...");
-                System.out.flush();
-                connection = DriverManager.getConnection("jdbc:derby:" + dbName + ";create=true");
-                System.out.println("Database created");
+        // Start by trying to open connection with existing database
+        Connection conn = openConnection(false);
+
+        if (conn != null) { // Database exists on file
+            if (startFresh) { // We don't want to use an existing database
+                // Close initial connection
+                conn.close();
+
+                // Open a connection to issue shutdown
+                Connection closeConnection = DriverManager.getConnection(
+                        "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
+                closeConnection.close();
+
+                // Nuke files
+                wipeOutFiles();
+
+                // Open a new connection allowing creation of database
+                conn = openConnection(true);
                 createFlag = true;
-            } else {
-                throw e;
+            }
+        } else { // No database exists on disk, so create a new one
+            conn = openConnection(true);
+            createFlag = true;
+        }
+
+        if (!createFlag) {
+            this.connection = conn;
+            boolean valid = validateVersion();
+            if (!valid) { // Not valid. Nuke it and try again
+                conn.close();
+                this.connection = null;
+
+                // Open a connection to issue shutdown
+                Connection closeConnection = DriverManager.getConnection(
+                        "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
+                closeConnection.close();
+
+                // Nuke files
+                wipeOutFiles();
+
+                // Open a new connection allowing creation of database
+                conn = openConnection(true);
+                createFlag = true;
+            }
+
+        }
+
+        this.connection = conn;
+
+        if(createFlag) {
+            this.createTables();
+
+            if (loadCSVs) {
+                CSVService.importNodes();
+                CSVService.importEdges();
+                CSVService.importEmployees();
+                CSVService.importReservableSpaces();
             }
         }
 
-        DatabaseService myDB = new DatabaseService(connection);
-
-        myDB.databaseName = dbName;
-
-        if(createFlag){
-            myDB.createTables();
-        } else {
-            myDB.validateVersion();
-        }
-
-        myDB.newlyCreated = createFlag;
-
-        return myDB;
+        nodeCallbacks = new ArrayList<>();
+        edgeCallbacks = new ArrayList<>();
     }
 
+
+
+    private static Connection openConnection(boolean allowCreate) throws SQLException {
+        try {
+            if (!allowCreate) {
+                return DriverManager.getConnection("jdbc:derby:" + DATABASE_NAME + ";");
+            } else {
+                return DriverManager.getConnection("jdbc:derby:" + DATABASE_NAME + ";create=true");
+            }
+        } catch (SQLException e) {
+            if (e.getMessage().contains("Database '" + DATABASE_NAME + "' not found")) { // Expected issue: no existing DB
+                return null;
+            } else { // Unexpected issue, throw it
+                throw e;
+            }
+        }
+    }
+
+
     /**
-     * Throws an exception if myDB has an invalid version
-     * @throws MismatchedDatabaseVersionException
+     * This overrides the global dbs - only use to mock the database!!
+     * @param dbs
      */
-    private void validateVersion() throws MismatchedDatabaseVersionException {
+    public static void setDatabaseForMocking(DatabaseService dbs) {
+        _dbs = dbs;
+    }
+
+    public static synchronized DatabaseService getDatabaseService(boolean startFresh, boolean loadCSVs) {
+        // Case 1: Database already exists in memory and we want to start fresh
+        // Execute later if statement as well
+        if (startFresh && _dbs != null) {
+            _dbs.close();
+            _dbs = null;
+            wipeOutFiles();
+        }
+
+        // Create a new database service, telling it to start over if necessary
+        if (_dbs == null) {
+            try {
+                _dbs = new DatabaseService(startFresh, loadCSVs);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("WARNING!");
+                System.out.println("Database not created due to the above error!");
+            }
+        }
+
+        return _dbs;
+    }
+
+    // Default loadCSVs to true
+    public static synchronized DatabaseService getDatabaseService(boolean startFresh) {
+        return getDatabaseService(startFresh, true);
+    }
+
+    // Default start fresh to false
+    public static synchronized DatabaseService getDatabaseService() {
+        return getDatabaseService(false);
+    }
+
+
+    /**
+     * Delete DB Files
+     */
+    private static void wipeOutFiles(File f) {
+        if (f == null) return;
+        if (f.isDirectory()) {
+            File[] children = f.listFiles();
+            if (children != null)
+                for (File c : children)
+                    wipeOutFiles(c);
+        }
+        boolean deleted = f.delete();
+        if(!deleted)
+            System.err.println("File not deleted: " + f.getPath());
+    }
+
+    public static void wipeOutFiles() {
+        if(_dbs != null) {
+            _dbs.close();
+        }
+        wipeOutFiles(new File(DATABASE_NAME));
+    }
+
+
+    /**
+     */
+    private boolean validateVersion() {
         String query = "SELECT * FROM META_DB_VER";
 
         ResultSet rs = null;
@@ -86,26 +191,28 @@ public class DatabaseService {
         try {
             versionStatement = connection.createStatement();
 
+            // Loaded db has no version table, invalid
             try {
                 rs = versionStatement.executeQuery(query);
             } catch (SQLSyntaxErrorException e) {
                 closeAll(versionStatement, rs);
-                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + getDatabaseVersion());
+                return false;
             }
 
             boolean hasNext = rs.next();
 
-            // If no version identifier exists, assume bad database
+            // If no version table entry exists, invalid
             if (!hasNext) {
                 closeAll(versionStatement, rs);
-                throw new MismatchedDatabaseVersionException("Database loaded with no version! Expected: " + getDatabaseVersion());
+                return false;
             }
 
             int existingVersion = rs.getInt("version");
 
+            // Version entry doesn't match out version, invalid
             if (existingVersion != getDatabaseVersion()) {
                 closeAll(versionStatement, rs);
-                throw new MismatchedDatabaseVersionException("Existing database version: " + existingVersion + ", expected: " + getDatabaseVersion());
+                return false;
             }
 
             rs.close();
@@ -113,16 +220,8 @@ public class DatabaseService {
         } catch (SQLException e) {
             closeAll(versionStatement, rs);
         }
-    }
 
-    /**
-     * runs init with a default name
-     * @return an initialized DatabaseService
-     * @throws SQLException
-     * @throws MismatchedDatabaseVersionException
-     */
-    public static DatabaseService init() throws SQLException, MismatchedDatabaseVersionException {
-        return init("hospital-db");
+        return true;
     }
 
     /**
@@ -134,31 +233,23 @@ public class DatabaseService {
         try {
             statement = connection.createStatement();
             // Check to see if the tables have already been created, if they have, do not create them a second time.
-            if(!tableExists("NODE")){
-                statement.addBatch("CREATE TABLE NODE (nodeID varchar(255) PRIMARY KEY, xcoord int, ycoord int, floor varchar(255), building varchar(255), nodeType varchar(255), longName varchar(255), shortName varchar(255))");
-            }
-            if(!tableExists("EDGE")){
-                statement.addBatch("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
-            }
-            if(!tableExists("EMPLOYEE")){
-                statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean, password varchar(50))");
-            }
-            if(!tableExists("ITREQUEST")){
-                statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
-            }
-            if(!tableExists("MEDICINEREQUEST")){
-                statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
-            }
-            if(!tableExists("RESERVATION")){
-                statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
-            }
-            if(!tableExists("RESERVABLESPACE")){
-                statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
-            }
-            if(!tableExists("META_DB_VER")){
-                statement.addBatch("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
-                statement.addBatch("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
-            }
+            statement.addBatch("CREATE TABLE NODE (nodeID varchar(255) PRIMARY KEY, xcoord int, ycoord int, floor varchar(255), building varchar(255), nodeType varchar(255), longName varchar(255), shortName varchar(255))");
+
+            statement.addBatch("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
+
+            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean, password varchar(50))");
+
+            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
+
+            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
+
+            statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
+
+            statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
+
+            statement.addBatch("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
+            statement.addBatch("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
+
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
             // constraints that matter less but will be fully implemented later
@@ -177,10 +268,7 @@ public class DatabaseService {
         }
     }
 
-
-
     // NODE FUNCTIONS
-
     /**
      * Attempt to insert a node into the database. Will not succeed if n.nodeID is not unique
      * @param n A {@link Node} to insert into the database
@@ -188,7 +276,9 @@ public class DatabaseService {
      */
     public boolean insertNode(Node n){
         String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-        return executeInsert(nodeStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
+        boolean successful = executeInsert(nodeStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
+        if (successful) executeNodeCallbacks();
+        return successful;
     }
 
     /**
@@ -198,8 +288,10 @@ public class DatabaseService {
      */
     public boolean updateNode(Node n) {
         String query = "UPDATE NODE SET xcoord=?, ycoord=?, floor=?, building=?, nodeType=?, longName=?, shortName=? WHERE (nodeID = ?)";
-        return executeUpdate(query, n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(),
+        boolean successful = executeUpdate(query, n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(),
                 n.getLongName(), n.getShortName(), n.getNodeID());
+        if (successful) executeNodeCallbacks();
+        return successful;
     }
 
     /**
@@ -209,7 +301,9 @@ public class DatabaseService {
      */
     public boolean deleteNode(Node n) {
         String query = "DELETE FROM NODE WHERE (nodeID = ?)";
-        return executeUpdate(query, n.getNodeID());
+        boolean successful = executeUpdate(query, n.getNodeID());
+        if (successful) executeNodeCallbacks();
+        return successful;
     }
 
     /** retrieves the given node from the database
@@ -223,7 +317,6 @@ public class DatabaseService {
 
     public boolean insertAllNodes(List<Node> nodes) {
         String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-        boolean successful = true;
         PreparedStatement insertStatement = null;
 
         // Track the status of the insert
@@ -242,9 +335,7 @@ public class DatabaseService {
                 // Execute
                 insertStatement.executeBatch();
 
-                for (Function<Void, Void> callback : nodeCallbacks) {
-                    callback.apply(null);
-                }
+                executeNodeCallbacks();
 
                 // If we made it this far, we're successful!
                 insertStatus = true;
@@ -337,25 +428,8 @@ public class DatabaseService {
      */
     // get edges from a specific floor
     public static Collection<Edge> getEdges(int floor) {
-
-        ArrayList<Edge> edges = new ArrayList<>();
-        Node a = new Node(0,0);
-        Node b = new Node(0,1);
-        Node c = new Node(1,1);
-        Node d = new Node(2,0);
-        Node e = new Node(2,2);
-        Node f = new Node(3,2);
-        Node g = new Node(3,3);
-        edges.add(new Edge(a, b));
-        edges.add(new Edge(b, c));
-        edges.add(new Edge(c, d));
-        edges.add(new Edge(c, e));
-        edges.add(new Edge(e, f));
-        edges.add(new Edge(d, f));
-        edges.add(new Edge(f, g));
-
-        return edges;
-
+        // DEPRECATED
+        return null;
     }
 
     /** insert an edge. The method will fail and return false if the two nodes it points to
@@ -368,7 +442,9 @@ public class DatabaseService {
         String node1ID = e.getNode1().getNodeID();
         String node2ID = e.getNode2().getNodeID();
 
-        return executeInsert(insertStatement, e.getEdgeID(), node1ID, node2ID);
+        boolean successful = executeInsert(insertStatement, e.getEdgeID(), node1ID, node2ID);
+        if (successful) executeEdgeCallbacks();
+        return successful;
     }
 
     /** get an edge. This also pulls out the nodes that edge connects.
@@ -386,7 +462,9 @@ public class DatabaseService {
      */
     public boolean updateEdge(Edge e){
         String query = "UPDATE EDGE SET edgeID=?, NODE1=?, NODE2=? WHERE(EDGEID = ?)";
-        return executeUpdate(query, e.getEdgeID(), e.getNode1().getNodeID(), e.getNode2().getNodeID(), e.getEdgeID());
+        boolean successful = executeUpdate(query, e.getEdgeID(), e.getNode1().getNodeID(), e.getNode2().getNodeID(), e.getEdgeID());
+        if (successful) executeEdgeCallbacks();
+        return successful;
     }
 
     /** Deletes an edge from the database.
@@ -395,11 +473,14 @@ public class DatabaseService {
      */
     public boolean deleteEdge(Edge e){
         String query = "DELETE FROM EDGE WHERE (edgeID = ?)";
-        return executeUpdate(query, e.getEdgeID());
+        boolean successful = executeUpdate(query, e.getEdgeID());
+        if (successful) executeEdgeCallbacks();
+        return successful;
     }
 
     public ArrayList<Edge> getAllEdges(){
-        return new ArrayList<Edge>();
+        String query = "Select * FROM EDGE";
+        return (ArrayList<Edge>)(List<?>) executeGetMultiple(query, Edge.class, new Object[]{});
     }
 
     /** Inserts a new reservation into the database.
@@ -464,8 +545,12 @@ public class DatabaseService {
      * @param to end of the window
      * @return a list of the requested reservations
      */
-    public List<Reservation> getReservationBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
+    public List<Reservation> getReservationsBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
         String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
+        System.out.println(id);
+        System.out.println("dbs" + from.get(Calendar.YEAR) +  " " + from.get(Calendar.MONTH) + " " + from.get(Calendar.DATE) + " " + from.get(Calendar.HOUR));
+        System.out.println(to.get(Calendar.YEAR) +  " " + to.get(Calendar.MONTH) + " " + to.get(Calendar.DATE)+ " " + to.get(Calendar.HOUR));
+
         return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, id, from, to, from, to);
     }
 
@@ -685,10 +770,10 @@ public class DatabaseService {
         try {
             connection.close();
             Connection closeConnection = DriverManager.getConnection(
-                    "jdbc:derby:" + databaseName + ";shutdown=true");
+                    "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
             closeConnection.close();
         } catch (SQLNonTransientConnectionException e) {
-            System.out.println("Database '" + databaseName + "' shutdown successfully!");
+            System.out.println("Database '" + DATABASE_NAME + "' shutdown successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -723,6 +808,7 @@ public class DatabaseService {
             statement.addBatch("DROP TABLE MEDICINEREQUEST");
             statement.addBatch("DROP TABLE RESERVATION");
             statement.addBatch("DROP TABLE RESERVABLESPACE");
+            statement.addBatch("DROP TABLE META_DB_VER");
             statement.executeBatch();
 
             this.createTables();
@@ -820,7 +906,7 @@ public class DatabaseService {
         }
         return insertStatus;
     }
-  
+
     /** returns an object from the database based on a given ID
      * @param query the query to
      * @param cls the class of object to return
@@ -988,6 +1074,35 @@ public class DatabaseService {
     ////////////////END EXTRACTION METHODS /////////////////////////////////////////////////////////////////////////////
     //</editor-fold>
 
+
+    /////////////////////////////////////// CALLBACKS //////////////////////////////////////////////////////////////////
+
+
+    private void executeNodeCallbacks() {
+        for (Function<Void, Void> callback : nodeCallbacks) {
+            callback.apply(null);
+        }
+    }
+
+    public void registerNodeCallback(Function<Void, Void> callback) {
+        nodeCallbacks.add(callback);
+    }
+
+
+    private void executeEdgeCallbacks() {
+        for (Function<Void, Void> callback : edgeCallbacks) {
+            callback.apply(null);
+        }
+    }
+
+    public void registerEdgeCallback(Function<Void, Void> callback) {
+        edgeCallbacks.add(callback);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
     /**
      * Set the values of a prepared statement. The number of variables in the prepared statement and the number of
      * values must match.
@@ -1017,9 +1132,5 @@ public class DatabaseService {
 
     public static int getDatabaseVersion() {
         return DATABASE_VERSION.intValue();
-    }
-
-    public boolean isNewlyCreated() {
-        return newlyCreated;
     }
 }

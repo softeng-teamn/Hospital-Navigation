@@ -1,10 +1,15 @@
+import org.apache.commons.io.FileUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.testfx.api.FxRobot;
+import service.DatabaseService;
 import testclassifications.*;
 
 import javafx.stage.Window;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -14,7 +19,13 @@ import static org.junit.Assert.*;
 public class MainTest {
 
     private static final int EXPECTED_INITIAL_WINDOWS = 1;
-    private static final int ALLOWABLE_STARTUP_DELAY = 10000; // milliseconds
+    private static final int ALLOWABLE_STARTUP_DELAY = 240_000; // seconds
+    private static final int CHECK_INTERVAL = 10_000; // seconds
+
+    @Before
+    public void setup() throws IOException {
+        DatabaseService.wipeOutFiles();
+    }
 
     @Test
     @Category({SlowTest.class})
@@ -51,21 +62,29 @@ public class MainTest {
             fail();
         }
 
-        // Give the application a bit to startup
-        try {
-            Thread.sleep(ALLOWABLE_STARTUP_DELAY);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        for (int i = 0; i < ALLOWABLE_STARTUP_DELAY/CHECK_INTERVAL; i++) {
+            // Give the application a bit to startup
+            System.err.println("Waiting for Check: " + i);
+            try {
+                Thread.sleep(CHECK_INTERVAL);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        // Test: verify that there are the current number of windows
-        try {
-            windows = robot.listWindows();
-            assertThat(windows.size(), is(EXPECTED_INITIAL_WINDOWS));
-        } catch (AssertionError ae) {
-            ae.printStackTrace();
-            thread.interrupt();
-            fail();
+            System.err.println("Executing Check: " + i);
+
+            // Test: verify that there are the current number of windows
+            try {
+                windows = robot.listWindows();
+                assertThat(windows.size(), is(EXPECTED_INITIAL_WINDOWS));
+                break;
+            } catch (AssertionError ae) {
+                ae.printStackTrace();
+                if (i >= (ALLOWABLE_STARTUP_DELAY/CHECK_INTERVAL - 1)) {
+                    thread.interrupt();
+                    fail();
+                }
+            }
         }
 
         // Kill the application thread

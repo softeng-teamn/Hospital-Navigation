@@ -11,6 +11,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Employee;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -60,18 +61,20 @@ public class AdminLoginController extends Controller implements Initializable {
         String id = idText.getText();
         String password = passwordField.getText();
         int intID = Integer.parseInt(id);
-        Employee user = dbs.getEmployee(intID);
+        Employee user = DatabaseService.getDatabaseService().getEmployee(intID);
 
         try {
             if(user.isAdmin()){
                 if (password.equals(user.getPassword())){
                     Controller.setIsAdmin(true);
                     showHome();
+                } else {
+                    passwordField.getStyleClass().add("wrong-credentials");
                 }
             }
         } catch (Exception e) {
-            passwordField.getStyleClass().add("wrong-credentials");
             idText.getStyleClass().add("wrong-credentials");
+            passwordField.getStyleClass().add("wrong-credentials");
         }
 
 //        if(user.isAdmin()){
