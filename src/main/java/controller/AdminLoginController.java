@@ -11,6 +11,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Employee;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -60,7 +61,7 @@ public class AdminLoginController extends Controller implements Initializable {
         String id = idText.getText();
         String password = passwordField.getText();
         int intID = Integer.parseInt(id);
-        Employee user = dbs.getEmployee(intID);
+        Employee user = DatabaseService.getDatabaseService().getEmployee(intID);
 
         try {
             if(user.isAdmin()){
