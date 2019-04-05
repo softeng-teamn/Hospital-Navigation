@@ -408,7 +408,7 @@ public class ScheduleController extends Controller {
     }
 
     /**
-     * searches for room
+     * Searches for room
      * @param e
      */
     @FXML
