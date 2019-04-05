@@ -83,7 +83,7 @@
       </HBox>
       <HBox fx:id="hbox_container" VBox.vgrow="ALWAYS">
          <children>
-            <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" prefWidth="520.0" HBox.hgrow="ALWAYS" />
+            <fx:include source="searchResult.fxml" fx:id="searchResult"/>
             <VBox fx:id="edit_VBox">
                <children>
                   <Label contentDisplay="CENTER" text="Editor">
