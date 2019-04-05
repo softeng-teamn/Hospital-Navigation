@@ -337,10 +337,6 @@ public class ScheduleController extends Controller {
         // Create the new reservation
         Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),gcalStart,gcalEnd);
         DatabaseService.getDatabaseService().insertReservation(newRes);
-        closeError();
-        showRoomSchedule();
-        closeConf();
-    }
 
         // Reset the screen
         showRoomSchedule();
