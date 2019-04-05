@@ -5,6 +5,7 @@ import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -57,6 +58,12 @@ public class RequestControllerTest {
         DatabaseService.getDatabaseService().insertMedicineRequest(medReqR);
         DatabaseService.getDatabaseService().insertITRequest(ITReqA);
         DatabaseService.getDatabaseService().insertITRequest(ITReqB);
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        DatabaseService.getDatabaseService().close();
+        DatabaseService.wipeOutFiles();
     }
 
     private ArrayList<MedicineRequest> medList = new ArrayList<>();

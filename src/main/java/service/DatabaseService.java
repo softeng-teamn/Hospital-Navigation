@@ -18,11 +18,9 @@ public class DatabaseService {
     public static final Integer DATABASE_VERSION = 6;
     private static DatabaseService _dbs;
 
-
-
-
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
+    private ArrayList<Function<Void, Void>> edgeCallbacks;
 
     /**
      * Construct a DatabaseService
@@ -95,6 +93,7 @@ public class DatabaseService {
         }
 
         nodeCallbacks = new ArrayList<>();
+        edgeCallbacks = new ArrayList<>();
     }
 
 
@@ -153,7 +152,7 @@ public class DatabaseService {
     }
 
     // Default start fresh to false
-    public static synchronized  DatabaseService getDatabaseService() {
+    public static synchronized DatabaseService getDatabaseService() {
         return getDatabaseService(false);
     }
 
@@ -161,9 +160,26 @@ public class DatabaseService {
     /**
      * Delete DB Files
      */
-    public static void wipeOutFiles() {
-        FileUtil.removeDirectory(new File(DATABASE_NAME));
+    private static void wipeOutFiles(File f) {
+        if (f == null) return;
+        if (f.isDirectory()) {
+            File[] children = f.listFiles();
+            if (children != null)
+                for (File c : children)
+                    wipeOutFiles(c);
+        }
+        boolean deleted = f.delete();
+        if(!deleted)
+            System.err.println("File not deleted: " + f.getPath());
     }
+
+    public static void wipeOutFiles() {
+        if(_dbs != null) {
+            _dbs.close();
+        }
+        wipeOutFiles(new File(DATABASE_NAME));
+    }
+
 
     /**
      */
@@ -426,7 +442,9 @@ public class DatabaseService {
         String node1ID = e.getNode1().getNodeID();
         String node2ID = e.getNode2().getNodeID();
 
-        return executeInsert(insertStatement, e.getEdgeID(), node1ID, node2ID);
+        boolean successful = executeInsert(insertStatement, e.getEdgeID(), node1ID, node2ID);
+        if (successful) executeEdgeCallbacks();
+        return successful;
     }
 
     /** get an edge. This also pulls out the nodes that edge connects.
@@ -444,7 +462,9 @@ public class DatabaseService {
      */
     public boolean updateEdge(Edge e){
         String query = "UPDATE EDGE SET edgeID=?, NODE1=?, NODE2=? WHERE(EDGEID = ?)";
-        return executeUpdate(query, e.getEdgeID(), e.getNode1().getNodeID(), e.getNode2().getNodeID(), e.getEdgeID());
+        boolean successful = executeUpdate(query, e.getEdgeID(), e.getNode1().getNodeID(), e.getNode2().getNodeID(), e.getEdgeID());
+        if (successful) executeEdgeCallbacks();
+        return successful;
     }
 
     /** Deletes an edge from the database.
@@ -453,11 +473,14 @@ public class DatabaseService {
      */
     public boolean deleteEdge(Edge e){
         String query = "DELETE FROM EDGE WHERE (edgeID = ?)";
-        return executeUpdate(query, e.getEdgeID());
+        boolean successful = executeUpdate(query, e.getEdgeID());
+        if (successful) executeEdgeCallbacks();
+        return successful;
     }
 
     public ArrayList<Edge> getAllEdges(){
-        return new ArrayList<Edge>();
+        String query = "Select * FROM EDGE";
+        return (ArrayList<Edge>)(List<?>) executeGetMultiple(query, Edge.class, new Object[]{});
     }
 
     /** Inserts a new reservation into the database.
@@ -883,7 +906,7 @@ public class DatabaseService {
         }
         return insertStatus;
     }
-  
+
     /** returns an object from the database based on a given ID
      * @param query the query to
      * @param cls the class of object to return
@@ -1063,6 +1086,17 @@ public class DatabaseService {
 
     public void registerNodeCallback(Function<Void, Void> callback) {
         nodeCallbacks.add(callback);
+    }
+
+
+    private void executeEdgeCallbacks() {
+        for (Function<Void, Void> callback : edgeCallbacks) {
+            callback.apply(null);
+        }
+    }
+
+    public void registerEdgeCallback(Function<Void, Void> callback) {
+        edgeCallbacks.add(callback);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
