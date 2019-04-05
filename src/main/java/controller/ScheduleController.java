@@ -462,8 +462,12 @@ public class ScheduleController extends Controller {
         return from.stream().map(func).collect(Collectors.toList());
     }
 
-    // TODO
+    /**
+     * Filter rooms by currently selected date and times
+     * Only displays rooms without reservations that overlap those times
+     */
     public void filterRooms() {
+        // Get selected times
         LocalDate chosenDate = datePicker.getValue();
         LocalTime startTime = startTimePicker.getValue();
         LocalTime endTime = endTimePicker.getValue();
@@ -471,39 +475,47 @@ public class ScheduleController extends Controller {
         GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
 
         int startSize = resSpaces.size();
+
+        // Get reservations between selected times
         ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(gcalStart, gcalEnd);
 
-        System.out.println(reservationsBetween);
-
-        for (int i = 0; i < reservationsBetween.size(); i++) {
-            System.out.println("outside loop" + startSize);
-            for (int j = 0; j < startSize; j++) {
+        for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
+            for (int j = 0; j < startSize; j++) {    // Go through all the spaces to remove that space from the list
                 if (resSpaces.get(j).getSpaceID().equals(reservationsBetween.get(i).getLocationID())) {
                     resSpaces.remove(j);
                     startSize--;
                     j--;
-                    System.out.println("decrement" + startSize);
                 }
             }
         }
 
+        // Clear the current schedule
         schedule.getChildren().clear();
         checks.getChildren().clear();
         currentSchedule.clear();
 
+        // Set button
         filterBtn.setOnAction(EventHandler -> {clearFilter();} );
+        filterBtn.setText("Clear filter");
     }
 
+    /**
+     * Reset display to show all spaces
+     */
     public void clearFilter() {
+        // Set list to all spaces
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
         resSpaces.clear();
         resSpaces.addAll(dbResSpaces);
 
+        // Clear schedule
         schedule.getChildren().clear();
         checks.getChildren().clear();
         currentSchedule.clear();
 
+        // Set button
         filterBtn.setOnAction(EventHandler -> {filterRooms();});
+        filterBtn.setText("Filter by Availability");
     }
 
 
