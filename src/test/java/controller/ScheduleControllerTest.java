@@ -220,13 +220,6 @@ public class ScheduleControllerTest extends ApplicationTest {
     @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
-    public void makeReservation() {
-
-    }
-
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
     public void createReservation() {
         sc.datePicker.setValue(LocalDate.now());
         sc.startTimePicker.setValue(LocalTime.of(9,0));

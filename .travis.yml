@@ -14,15 +14,15 @@ before_script:
 jobs:
       include:
             - if: branch = master
-              script: ./gradlew clean check regressionTest spotbugsMain spotbugsTest jar; if [[ $TRAVIS_COMMIT_MESSAGE == *"trigger regression"* ]]; then ./gradlew clean regressionTest ; fi ;
+              script: ./gradlew clean check regressionTest spotbugsMain spotbugsTest jar
             - if: branch = dev
-              script: ./gradlew clean check regressionTest spotbugsMain spotbugsTest jar; if [[ $TRAVIS_COMMIT_MESSAGE == *"trigger regression"* ]]; then ./gradlew clean regressionTest ; fi ;
+              script: ./gradlew clean check regressionTest spotbugsMain spotbugsTest jar
             - if: branch =~ /^testing.*$/
-              script: ./gradlew clean check spotbugsMain spotbugsTest; if [[ $TRAVIS_COMMIT_MESSAGE == *"trigger regression"* ]]; then ./gradlew clean regressionTest ; fi ;
+              script: ./gradlew clean check spotbugsMain spotbugsTest
             - if: branch = ui
-              script: ./gradlew clean fastTest uiFastTest uiSlowTest spotbugsMain spotbugsTest; if [[ $TRAVIS_COMMIT_MESSAGE == *"trigger regression"* ]]; then ./gradlew clean regressionTest ; fi ;
+              script: ./gradlew clean fastTest uiFastTest uiSlowTest spotbugsMain spotbugsTest
             - if: branch != master AND branch != dev AND branch != ui AND NOT(branch =~ /^testing.*$/)
-              script: ./gradlew clean fastTest uiFastTest spotbugsMain spotbugsTest; if [[ $TRAVIS_COMMIT_MESSAGE == *"trigger regression"* ]]; then ./gradlew clean regressionTest ; fi ;
+              script: ./gradlew clean fastTest uiFastTest spotbugsMain spotbugsTest
 
 env:
       global:
