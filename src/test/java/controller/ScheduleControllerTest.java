@@ -53,11 +53,7 @@ public class ScheduleControllerTest extends ApplicationTest {
     private ArrayList<Reservation> reservationsA = new ArrayList<Reservation>();
     private ArrayList<Reservation> reservationsB = new ArrayList<Reservation>();
 
-    final static String instrP = "#instructionsPane";
-    final static String instrBtn = "#instructionsBtn";
     final static String homeBtn = "#homeBtn";
-    final static String closeInstrBrn = "#closeInstructionsBtn";
-
 
     private Reservation reservA = new Reservation(23, 0, 1337, "Cancer Seminar",
             "TFB", gc, gc);
@@ -302,8 +298,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         }
         assertFalse(vis);
     }
-
-
+  
     @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
@@ -311,8 +306,8 @@ public class ScheduleControllerTest extends ApplicationTest {
         clickOn("#");
         Thread.sleep(200);
         //TODO: need a valid home screen w/ something to ID
-        TitledPane pane = (TitledPane) GuiTest.find(instrP);
-        assertTrue(pane.isVisible());
+        //TitledPane pane = (TitledPane) GuiTest.find();
+        //assertTrue(pane.isVisible());
     }
 
 //    @Test
