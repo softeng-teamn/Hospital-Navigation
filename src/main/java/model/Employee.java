@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Employee {
     int ID;
-    String job;
+    JobType job;
     boolean isAdmin;
     String password;
 
@@ -18,7 +18,7 @@ public class Employee {
         return password;
     }
 
-    public Employee(int ID, String username, String job, boolean isAdmin, String password) {
+    public Employee(int ID, String username, JobType job, boolean isAdmin, String password) {
         this.username = username;
         this.ID = ID;
         this.job = job;
@@ -30,7 +30,7 @@ public class Employee {
         return ID;
     }
 
-    public String getJob() {
+    public JobType getJob() {
         return job;
     }
 
@@ -42,7 +42,7 @@ public class Employee {
         this.ID = ID;
     }
 
-    public void setJob(String job) {
+    public void setJob(JobType job) {
         this.job = job;
     }
 

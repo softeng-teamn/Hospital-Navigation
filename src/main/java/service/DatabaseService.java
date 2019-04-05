@@ -237,7 +237,7 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
 
-            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255), job varchar(25), isAdmin boolean, password varchar(50))");
+            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER')))");
 
             statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
 
@@ -560,7 +560,7 @@ public class DatabaseService {
      */
     public boolean insertEmployee(Employee employee) {
         String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertStatement, employee.getID(), employee.getUsername(), employee.getJob(), employee.isAdmin(), employee.getPassword());
+        return executeInsert(insertStatement, employee.getID(), employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getPassword());
     }
 
     /**
@@ -586,7 +586,7 @@ public class DatabaseService {
      */
     public boolean updateEmployee(Employee employee) {
         String query = "UPDATE EMPLOYEE SET username=?, job=?, isAdmin=? WHERE (employeeID = ?)";
-        return executeUpdate(query, employee.getUsername(), employee.getJob(), employee.isAdmin(), employee.getID());
+        return executeUpdate(query, employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getID());
     }
 
     /**
@@ -1030,10 +1030,37 @@ public class DatabaseService {
     private Employee extractEmployee(ResultSet rs) throws SQLException {
         // Extract data
         int empID = rs.getInt("employeeID");
-        String job = rs.getString("job");
+        String jobString = rs.getString("job");
         boolean isAdmin = rs.getBoolean("isAdmin");
         String password = rs.getString("password");
         String username = rs.getString("username");
+
+        JobType job;
+
+        switch (jobString) {
+            case "ADMINISTRATOR":
+                job = JobType.ADMINISTRATOR;
+                break;
+            case "DOCTOR":
+                job = JobType.DOCTOR;
+                break;
+            case "JANITOR":
+                job = JobType.JANITOR;
+                break;
+            case "NURSE":
+                job = JobType.NURSE;
+                break;
+            case "MAINTENANCE_WORKER":
+                job = JobType.MAINTENANCE_WORKER;
+                break;
+            case "SECURITY_PERSONNEL":
+                job = JobType.SECURITY_PERSONNEL;
+                break;
+            default:
+                System.out.println("Invalid employee job entry (on DBS.extractEmployee): " + jobString);
+                job = null;
+                break; // the loop
+        }
 
         return new Employee(empID, username, job, isAdmin, password);
     }

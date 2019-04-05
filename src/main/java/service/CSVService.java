@@ -1,12 +1,7 @@
 package service;
 
 import controller.Controller;
-import model.Edge;
-import model.Employee;
-import model.Node;
-import model.ReservableSpace;
-import service.DatabaseService;
-import service.ResourceLoader;
+import model.*;
 
 import java.io.*;
 import java.text.ParseException;
@@ -148,7 +143,7 @@ public class CSVService extends Controller {
             for (Employee emp : DatabaseService.getDatabaseService().getAllEmployees()) {
                 writer.write(emp.getID() + ",");
                 writer.write(emp.getUsername() + ",");
-                writer.write(emp.getJob() + ",");
+                writer.write(emp.getJob().name() + ",");
                 writer.write(emp.isAdmin() + ",");
                 writer.write(emp.getPassword() + "\n");
             }
@@ -352,7 +347,33 @@ public class CSVService extends Controller {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
-                Employee emp = new Employee(Integer.parseInt(data[0]), data[1], data[2], Boolean.parseBoolean(data[3]),data[4]);
+                JobType job;
+
+                switch (data[2]) {
+                    case "ADMINISTRATOR":
+                        job = JobType.ADMINISTRATOR;
+                        break;
+                    case "DOCTOR":
+                        job = JobType.DOCTOR;
+                        break;
+                    case "JANITOR":
+                        job = JobType.JANITOR;
+                        break;
+                    case "NURSE":
+                        job = JobType.NURSE;
+                        break;
+                    case "MAINTENANCE_WORKER":
+                        job = JobType.MAINTENANCE_WORKER;
+                        break;
+                    case "SECURITY_PERSONNEL":
+                        job = JobType.SECURITY_PERSONNEL;
+                        break;
+                    default:
+                        System.out.println("Invalid employee entry: " + line);
+                        continue; // the loop
+                }
+
+                Employee emp = new Employee(Integer.parseInt(data[0]), data[1], job, Boolean.parseBoolean(data[3]),data[4]);
 
                 //Add edge to the database
                 DatabaseService.getDatabaseService().insertEmployee(emp);
