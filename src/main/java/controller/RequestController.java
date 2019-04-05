@@ -17,6 +17,7 @@ import model.RequestType;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
+import model.request.RequestFacade;
 import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -43,8 +44,8 @@ public class RequestController extends Controller implements Initializable {
     private Collection<Request> requests;
     private Collection<Request> pendingRequests;
 
-    ArrayList<Node> allNodes;
-    ObservableList<Node> allNodesObservable;
+    private ArrayList<Node> allNodes;
+    private ObservableList<Node> allNodesObservable;
 
     /**
      * switches window to home screen
@@ -110,23 +111,34 @@ public class RequestController extends Controller implements Initializable {
      * submits request to database
      * "confirm" button
      */
+    // get information from user input, send to Facade
     @FXML
     public void makeRequest() {
-        JFXToggleNode selected = (JFXToggleNode) requestType.getSelectedToggle();
 
+
+
+        JFXToggleNode selected = (JFXToggleNode) requestType.getSelectedToggle();
         String description = textArea.getText();
         Node requestLocation = (Node) list_view.getSelectionModel().getSelectedItem();
 
+        // make sure fields are filled in
         if (requestLocation == null) {
             textArea.setText("Please select location");
         } else if (selected == null) {
             textArea.setText("Please select type");
-        } else if (selected.getText().contains("Medicine")) {
-            MedicineRequest newMedicineRequest = new MedicineRequest(-1, description, requestLocation, false);
-            DatabaseService.getDatabaseService().insertMedicineRequest(newMedicineRequest);
+        }
+
+
+        // new Facade object
+        RequestFacade reqFacade = new RequestFacade(selected,description, requestLocation) ;
+        // pass text inputs into facade object?
+        // call a makeRequest() and/or a fulfillRequest()
+
+
+        if (selected.getText().contains("Medicine")) {
+            reqFacade.makeMedRequest();
         } else if (selected.getText().contains("IT")) {
-            ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
-            DatabaseService.getDatabaseService().insertITRequest(newITRequest);
+            reqFacade.makeITRequest();
 
         }
         textArea.clear();
@@ -165,19 +177,14 @@ public class RequestController extends Controller implements Initializable {
      * @param byWho
      */
     void fufillRequest(Request type, String byWho) {
+        RequestFacade reqFacade = new RequestFacade(type,byWho);
         RequestType rType = type.getRequestType();
         switch (rType.getrType()) {
             case ITS:
-                ITRequest ITReq = (ITRequest) type;
-                ITReq.setCompleted(true);
-                ITReq.setCompletedBy(byWho);
-                DatabaseService.getDatabaseService().updateITRequest(ITReq);
+                reqFacade.fillITRequest();
                 break;
             case MED:
-                MedicineRequest MedReq = (MedicineRequest) type;
-                MedReq.setCompleted(true);
-                MedReq.setCompletedBy(byWho);
-                DatabaseService.getDatabaseService().updateMedicineRequest(MedReq);
+                reqFacade.fillMedRequest();
                 break;
             case ABS:
                 //do nothing
