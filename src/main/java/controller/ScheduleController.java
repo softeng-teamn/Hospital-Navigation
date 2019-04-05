@@ -422,7 +422,7 @@ public class ScheduleController extends Controller {
      */
     private void filterList(String findStr) {
         ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) dbs.getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
         resSpaces.addAll(dbResSpaces);
         if (findStr.equals("")) {
             reservableList.getItems().clear();
