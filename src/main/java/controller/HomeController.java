@@ -1,8 +1,13 @@
 package controller;
 
 import javafx.fxml.FXML;
+import model.HomeState;
 
-public class HomeController {
+import java.util.Observable;
+
+public class HomeController extends Observable {
+
+    private HomeState state;
 
     @FXML
     private MapView mapViewController;
@@ -14,6 +19,15 @@ public class HomeController {
     @FXML
     void initialize() {
 
+    }
+
+
+
+    // DUMMY METHOD
+    public void changeLoggedIn() {
+        this.state.setLoggedIn(!state.isLoggedIn());
+        setChanged();
+        notifyObservers(state);
     }
 
 }

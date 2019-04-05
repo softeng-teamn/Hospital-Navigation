@@ -8,12 +8,17 @@ import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
+import model.HomeState;
 import model.Node;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
-public class SearchResults {
+public class SearchResults implements Observer {
 
+
+    public HomeState state;
     @FXML
     private JFXListView<Node> list_view;
 
@@ -73,4 +78,8 @@ public class SearchResults {
 //        timeline.play();
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+
+    }
 }

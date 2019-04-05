@@ -3,7 +3,10 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
-public class MapView {
+import java.util.Observable;
+import java.util.Observer;
+
+public class MapView implements Observer {
 
     void initialize() {
 
@@ -12,6 +15,11 @@ public class MapView {
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
+
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
 
     }
 }
