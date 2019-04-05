@@ -8,6 +8,8 @@ public class HomeController {
     private MapView mapViewController;
     @FXML
     private SearchResults searchResultsController;
+    @FXML
+    private TopNav topNavController;
 
     @FXML
     void initialize() {

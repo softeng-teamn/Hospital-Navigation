@@ -20,6 +20,7 @@
 
 <VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <children>
+      <fx:include fx:id="topNav" source="topNav.fxml"/>
       <HBox fx:id="hbox_container" VBox.vgrow="ALWAYS">
          <children>
             <fx:include source="searchResults.fxml" fx:id="searchResults"/>
