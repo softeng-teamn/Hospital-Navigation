@@ -3,6 +3,7 @@ package service;
 import controller.MapController;
 import model.MapNode;
 import model.Node;
+import model.Path;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
@@ -22,7 +23,8 @@ public class PathFindingService {
      * @param dest
      * @return Returns null on fail
      * */
-    public ArrayList<Node> genPath(MapNode start, MapNode dest) {
+    public Path genPath(MapNode start, MapNode dest) {
+        int numMinutes = 0;
         MapNode target = aStar(start, dest);
         if (target != null) {
             ArrayList<Node> path = new ArrayList<Node>();
@@ -30,13 +32,18 @@ public class PathFindingService {
                 //System.out.println("im still in the loop");
                 //System.out.println(target.getData().getNodeID());
                 // add every item to beginning of list
+                numMinutes += gToMinutes(target.getG());
                 path.add(0, target.getData());
                 target = target.getParent();
             }
-            return path;
+            return new Path(path, numMinutes);
         }
         // PATH NOT FOUND
         return null;
+    }
+
+    public int gToMinutes(int g) {
+        return g * 4;
     }
 
     /**
