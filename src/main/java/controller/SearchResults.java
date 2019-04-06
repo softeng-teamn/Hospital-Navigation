@@ -2,44 +2,73 @@ package controller;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import model.*;
+import service.DatabaseService;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SearchResults {
 
-    Event event;
+    Event event = new Event();
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
     private JFXListView<Node> list_view;
 
+    private Node destNode;
+    private ArrayList<Line> drawnLines = new ArrayList<Line>();
+    ObservableList<Node> allNodesObservable;
+
+
 
     @FXML
     void initialize() {
+
         eventBus.register(this);
+
+        repopulateList(false);
     }
 
     @Subscribe
     private void eventListener(Event event) {
 
+        this.event = event;
+
         switch (event.getEventName()) {
             case "node-selected":
-                event.getNodeSelected();
+                list_view.scrollTo(event.getNodeSelected());
+                list_view.getSelectionModel().select(event.getNodeSelected());
                 break;
+            case "login":
+                if(event.isAdmin()){
+                    repopulateList(true);
+                }
+                break;
+            case "search-query":
+                filterList(event.getSearchBarQuery());
+
         }
 
-        this.event = event;
+
     }
 
 
@@ -51,43 +80,101 @@ public class SearchResults {
      */
     @FXML
     public void listViewClicked(MouseEvent e) {
+        Node selectedNode = list_view.getSelectionModel().getSelectedItem();
+        System.out.println("You clicked on: " + selectedNode.getNodeID());
 
-//        if (isAdmin) {
-//            edit_id.setText("Node: " + destNode.getNodeID());
-//            edit_x.setText(String.valueOf(destNode.getXcoord()));
-//            edit_y.setText(String.valueOf(destNode.getYcoord()));
-//            edit_floor.setText(destNode.getFloor());
-//            edit_building.setText(destNode.getBuilding());
-//            edit_type.setText(destNode.getNodeType());
-//            edit_long.setText(destNode.getLongName());
-//            edit_short.setText(destNode.getShortName());
-//        }
+        // set destination node
+        destNode = selectedNode;
+
+        event.setNodeSelected(destNode);
+        event.setEventName("node-select");
+        eventBus.post(event);
+    }
 
 
-//        Node selectedNode = list_view.getSelectionModel().getSelectedItem();
-//        System.out.println("You clicked on: " + selectedNode.getNodeID());
-//
-//        // Remove last path from screen
-//        removeLines();
-//        // clear lines cash
-//        drawnLines = new ArrayList<Line>();
-//        // Un-hide Navigation button
-//        navigate_btn.setVisible(true);
-//        if (Controller.getIsAdmin()) {
-//            edit_btn.setVisible(true);
-//        } else {
-//            edit_btn.setVisible(false);
-//        }
-//        // hide editor
-//        if (Controller.getIsAdmin()) {
-//            hideEditor();
-//        }
-//        // set destination node
-//        destNode = selectedNode;
-//
+
+    void repopulateList(boolean isAdmin) {
+        ArrayList<Node> allNodes;
+
+
+        System.out.println("Repopulation of listView");
+        if (isAdmin) {
+            allNodes = DatabaseService.getDatabaseService().getAllNodes();
+        } else {
+            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
+        }
+        // wipe old observable
+        allNodesObservable = FXCollections.observableArrayList();
+
+        // repopulate
+        allNodesObservable.addAll(allNodes);
+        // clear listVIEW
+        if (list_view == null) {
+            System.out.println("LIST VIEW IS NULL");
+            return;
+        }
+        list_view.getItems().clear();
+        // add to listView
+        list_view.getItems().addAll(allNodesObservable);
+
+        list_view.setCellFactory(param -> new JFXListCell<Node>() {
+            @Override
+            protected  void updateItem(Node item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNodeID() == null ) {
+                    setText(null);
+                } else {
+                    setText(item.getLongName());
+                }
+            }
+        });
+    }
+
+
+    /**
+     *Filters the ListView based on the string
+     */
+    private void filterList(String findStr) {
+        if (findStr.equals("")) {
+            list_view.getItems().clear();
+            list_view.getItems().addAll(allNodesObservable);
+        }
+        else {
+            //Get List of all nodes
+            ObservableList<Node> original = allNodesObservable;
+
+            //Get Sorted list of nodes based on search value
+            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, Node::getLongName),75);
+
+            // Map to nodes based on index
+            Stream<Node> stream = filtered.stream().map(er -> {
+                return original.get(er.getIndex());
+            });
+
+            // Convert to list and then to observable list
+            List<Node> filteredNodes = stream.collect(Collectors.toList());
+            ObservableList<Node> toShow = FXCollections.observableList(filteredNodes);
+
+            // Add to view
+            list_view.getItems().clear();
+            list_view.getItems().addAll(toShow);
+        }
+    }
+
+    /**
+     *for lists
+     */
+    private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
+        return from.stream().map(func).collect(Collectors.toList());
+    }
+
+
+}
+
+
+// old code to show the selected location on the map and auto scroll to that
 //        // Draw Circle on Map
 //        showDestination(selectedNode);
-//
 //        // animation scroll to new position
 //        double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
 //        double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
@@ -99,6 +186,3 @@ public class SearchResults {
 //        final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
 //        timeline.getKeyFrames().add(kf);
 //        timeline.play();
-    }
-
-}
