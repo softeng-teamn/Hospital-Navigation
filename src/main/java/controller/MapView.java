@@ -1,12 +1,14 @@
 package controller;
 
+import com.google.common.eventbus.Subscribe;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import model.HomeState;
 
 import java.util.Observable;
 import java.util.Observer;
 
-public class MapView implements Observer {
+public class MapView {
 
     void initialize() {
 
@@ -18,8 +20,9 @@ public class MapView implements Observer {
 
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-
+    @Subscribe
+    public void homeStateEvent(HomeState state) {
+        System.out.println("map view recieved the state");
     }
+
 }

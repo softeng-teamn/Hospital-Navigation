@@ -1,13 +1,13 @@
 package controller;
 
+import com.google.common.eventbus.EventBus;
 import javafx.fxml.FXML;
 import model.HomeState;
 
-import java.util.Observable;
-
-public class HomeController extends Observable {
+public class HomeController {
 
     private HomeState state;
+    public EventBus eventBus;
 
     @FXML
     private MapView mapViewController;
@@ -18,16 +18,9 @@ public class HomeController extends Observable {
 
     @FXML
     void initialize() {
-
-    }
-
+        eventBus = new EventBus();
 
 
-    // DUMMY METHOD
-    public void changeLoggedIn() {
-        this.state.setLoggedIn(!state.isLoggedIn());
-        setChanged();
-        notifyObservers(state);
     }
 
 }

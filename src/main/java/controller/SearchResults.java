@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-public class SearchResults implements Observer {
+public class SearchResults {
 
 
     public HomeState state;
@@ -78,8 +78,4 @@ public class SearchResults implements Observer {
 //        timeline.play();
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-
-    }
 }
