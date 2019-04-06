@@ -17,14 +17,14 @@ public class DBInitTests {
     DatabaseService myDB;
     DatabaseService altDB;
 
-    @Ignore
-    @Test
-    @Category(FastTest.class)
-    public void initBase() {
-        boolean testor;
-        myDB = DatabaseService.getDatabaseService(true);
-        assertTrue(myDB.tableExists("NODE"));
-    }
+//    @Ignore
+//    @Test
+//    @Category(FastTest.class)
+//    public void initBase() {
+//        boolean testor;
+//        myDB = DatabaseService.getDatabaseService(true);
+//        assertTrue(myDB.tableExists("NODE"));
+//    }
 
 //    @Test
 //    @Category(FastTest.class)
