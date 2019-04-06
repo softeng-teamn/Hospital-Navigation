@@ -190,8 +190,11 @@ public class FulfillRequestController extends Controller implements Initializabl
     //Show Requests based on Job
     private ObservableList<Request> showProperRequest(ObservableList<Request> newRequestList, ArrayList<MedicineRequest> allMedReqList,ArrayList<ITRequest> allITReqList){
 
+        //Add request radio button
         typeVBox.getChildren().removeAll(medicineRadio,ITRadio);
 
+
+        //Add requests to proper jobs
         switch (Controller.getCurrentJob()) {
             case ADMINISTRATOR:
                 newRequestList.addAll(allMedReqList);
