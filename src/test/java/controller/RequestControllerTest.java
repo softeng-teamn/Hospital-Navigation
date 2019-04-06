@@ -27,6 +27,8 @@ public class RequestControllerTest {
 
     @Before
     public void setupTest() {
+        RequestController.myDBS.insertNode(n);
+
         medList.add(medReqM);
         medList.add(medReqR);
         ITList.add(ITReqA);
