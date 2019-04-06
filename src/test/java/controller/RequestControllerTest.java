@@ -45,9 +45,11 @@ public class RequestControllerTest {
     public void setupTest() {
 //        when(mockRequestController.initialize()).thenReturn();
 
-        DatabaseService.getDatabaseService(true);
+        DatabaseService.getDatabaseService();
 
         DatabaseService.getDatabaseService().insertNode(n);
+
+
 
         medList.add(medReqM);
         medList.add(medReqR);

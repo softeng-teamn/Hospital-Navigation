@@ -128,6 +128,8 @@ public class RequestController extends Controller implements Initializable {
         // new Facade object
         RequestFacade reqFacade = new RequestFacade(selected,description, requestLocation) ;
 
+
+
         // if feilds are populted and are of type:
         if ((selected != null) && (selected.getText().contains("Medicine"))) {
             reqFacade.makeMedRequest();

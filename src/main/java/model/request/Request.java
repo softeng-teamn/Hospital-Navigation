@@ -17,7 +17,7 @@ public abstract class Request {
     private String notes;
     private Node location;
     private boolean completed;
-    RequestType requestType;
+    private RequestType requestType;
     private String completedBy;
 
     public Request(int id, String notes, Node location, boolean completed, RequestType requestType) {
@@ -37,6 +37,9 @@ public abstract class Request {
         this.requestType = new RequestType(ABS);
         this.completedBy = "";
     }
+
+    public abstract void  makeRequest() ;
+    public abstract void fillRequest() ;
 
     public int getId() {
         return id;
@@ -78,6 +81,8 @@ public abstract class Request {
         this.completedBy = completedBy;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,10 +114,13 @@ public abstract class Request {
                 ", notes='" + notes + '\'' +
                 ", location=" + location +
                 ", completed=" + completed +
-                ", requestType=" + requestType +
+               // ", requestType=" + requestType +
                 ", completedBy='" + completedBy + '\'' +
                 '}';
     }
+
+
+
 
 
 }

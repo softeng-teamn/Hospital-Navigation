@@ -6,6 +6,15 @@ import service.DatabaseService;
 
 public class RequestFacade {
 
+
+    private ITRequest itRequest ;
+    private MedicineRequest medRequest ;
+
+    public RequestFacade(ITRequest itRequest, MedicineRequest medRequest) {
+        this.itRequest = itRequest;
+        this.medRequest = medRequest;
+    }
+
     private JFXToggleNode selected;
     private String description;
     private Node requestLocation;
@@ -27,35 +36,24 @@ public class RequestFacade {
 
     // to make  a new IT Request
     public void makeITRequest(){
-      ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
-      DatabaseService.getDatabaseService().insertITRequest(newITRequest);
-
+        itRequest.makeRequest() ;
 
     }
 
     // to make a new medicine Request
     public void makeMedRequest(){
-
-        MedicineRequest newMedicineRequest = new MedicineRequest(-1, description, requestLocation, false);
-        DatabaseService.getDatabaseService().insertMedicineRequest(newMedicineRequest);
-
+        medRequest.makeRequest() ;
     }
 
     // to fulfill an existing IT Request
     public void fillITRequest(){
-        
-        requestType.setCompleted(true);
-        requestType.setCompletedBy(byWho);
-        DatabaseService.getDatabaseService().updateITRequest((ITRequest)requestType);
-        
-        
+        itRequest.fillRequest() ;
+
     }
 
     // to fulfill an existing medicine Request
     public void fillMedRequest(){
-        requestType.setCompleted(true);
-        requestType.setCompletedBy(byWho);
-        DatabaseService.getDatabaseService().updateMedicineRequest((MedicineRequest) requestType);
+        medRequest.fillRequest() ;
     }
 
 
