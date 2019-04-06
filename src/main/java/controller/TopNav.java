@@ -83,23 +83,24 @@ public class TopNav {
     private void eventListener(Event event) {
 
         switch (event.getEventName()) {
-            case "node-selected":
+            case "node-select":
+                this.event.setNodeSelected(event.getNodeSelected());
                 event.getNodeSelected();
                 // show navigation button
                 // navigate_btn.setVisible(true);
                 //showNavigationBtn(event);
                 showNavigationBtn();        // will make nav btn visible, fill search with node
-
+                System.out.println("search result received search");
                 break;
 
             case "login":     // receives from AdminLoginContoller?
+                this.event.setLoggedIn(event.isLoggedIn());
+                this.event.setAdmin(event.isAdmin());
                 if(event.isAdmin()){
                     resetBtn(true);
                 }
                 break;
         }
-
-        this.event = event;
     }
 
     private void resetBtn(boolean isAdmin) {
@@ -129,7 +130,7 @@ public class TopNav {
     //      show navigation button
     //      show node-selected in search
     @FXML
-    void showNavigationBtn(/*ActionEvent e*/) { // but how do i do this for node-selected?
+    void showNavigationBtn() { // but how do i do this for node-selected?
         // create new event
         //event.setEventName("navigate-btn-on");
         // make change
@@ -138,8 +139,8 @@ public class TopNav {
         //eventBus.post(event);   -- dont need to alert if visible, just if is selected
 
         // show node-selected in search
-        String fillNodeinSearch = event.getNodeSelected().getLongName() ; // change to short name?
-        search_bar.setText(fillNodeinSearch) ;
+        String fillNodeinSearch = event.getNodeSelected().getLongName(); // change to short name?
+        search_bar.setText(fillNodeinSearch);
 
     }
 

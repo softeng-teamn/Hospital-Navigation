@@ -64,10 +64,13 @@ public class SearchResults {
                 if(event.isAdmin()){
                     repopulateList(true);
                 }
+
                 break;
             case "search-query":
                 this.event.setSearchBarQuery(event.getSearchBarQuery());
                 filterList(event.getSearchBarQuery());
+                System.out.println("search result received search");
+                break;
 
         }
 
