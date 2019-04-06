@@ -373,7 +373,6 @@ public class CSVService extends Controller {
                         break;
                     case "IT":
                         job = JobType.IT;
-                        System.out.println("Made IT");
                         break;
                     default:
                         System.out.println("Invalid employee entry: " + line);
