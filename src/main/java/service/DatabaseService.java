@@ -38,52 +38,52 @@ public class DatabaseService {
     private DatabaseService() {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-        createFlag = false;
+            createFlag = false;
 
-        // Start by trying to open connection with existing database
-        Connection conn;
-        conn = openConnection(false);
+            // Start by trying to open connection with existing database
+            Connection conn;
+            conn = openConnection(false);
 
-        if (conn == null) { // No database exists on disk, so create a new one
-            try {
-                conn = openConnection(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            createFlag = true;
-        }
-
-        if (!createFlag) {
-            this.connection = conn;
-            boolean valid = validateVersion();
-            if (!valid) { // Not valid. Nuke it and try again
-                conn.close();
-                this.connection = null;
-
-                // Open a connection to issue shutdown
-                Connection closeConnection = DriverManager.getConnection(
-                        "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
-                closeConnection.close();
-
-                // Nuke files
-                wipeOutFiles();
-
-                // Open a new connection allowing creation of database
-                conn = openConnection(true);
-                this.connection = conn;
+            if (conn == null) { // No database exists on disk, so create a new one
+                try {
+                    conn = openConnection(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 createFlag = true;
             }
 
-        }
+            if (!createFlag) {
+                this.connection = conn;
+                boolean valid = validateVersion();
+                if (!valid) { // Not valid. Nuke it and try again
+                    conn.close();
+                    this.connection = null;
 
-        this.connection = conn;
+                    // Open a connection to issue shutdown
+                    Connection closeConnection = DriverManager.getConnection(
+                            "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
+                    closeConnection.close();
 
-        if (createFlag) {
-            this.createTables();
-        }
+                    // Nuke files
+                    wipeOutFiles();
 
-        nodeCallbacks = new ArrayList<>();
-        edgeCallbacks = new ArrayList<>();
+                    // Open a new connection allowing creation of database
+                    conn = openConnection(true);
+
+                    createFlag = true;
+                }
+
+            }
+
+            this.connection = conn;
+
+            if (createFlag) {
+                this.createTables();
+            }
+
+            nodeCallbacks = new ArrayList<>();
+            edgeCallbacks = new ArrayList<>();
         } catch (SQLException e) {
             e.printStackTrace();
         }

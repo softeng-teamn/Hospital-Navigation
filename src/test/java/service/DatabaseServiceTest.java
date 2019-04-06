@@ -40,8 +40,6 @@ public class DatabaseServiceTest {
 
     @AfterClass
     public static void tearDownAfterClass() throws IOException {
-        myDBS.close();
-        FileUtils.deleteDirectory(new File("hospital-db"));
     }
 
     @Test
