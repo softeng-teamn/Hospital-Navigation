@@ -4,6 +4,7 @@ import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import org.apache.commons.io.FileUtils;
+import org.apache.derby.iapi.db.Database;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -423,6 +424,7 @@ public class DatabaseServiceTest {
         // First verify that these reservations are null
         value = DatabaseService.getDatabaseService().getReservation(1);
         assertThat(value, is(nullValue()));
+        Employee testEmployee = new Employee(23,"JJohnson",JobType.DOCTOR,false,"douglas");
 
         // Create a reservation
         GregorianCalendar reservationStart = new GregorianCalendar();
@@ -430,15 +432,16 @@ public class DatabaseServiceTest {
         GregorianCalendar reservationEnd = new GregorianCalendar();
         reservationEnd.setTime(new Date());
         reservationEnd.add(Calendar.HOUR, 1);
-        Reservation reservation1 = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
+        Reservation reservation1 = new Reservation(1, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
 
         // successful insert because of constraints
-        boolean insertRes = DatabaseService.getDatabaseService().insertReservation(reservation1);
-        assertTrue(insertRes);
+        assertFalse(DatabaseService.getDatabaseService().insertReservation(reservation1)); // No matching employee yet
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(testEmployee));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(reservation1));
 
         // Verify successful get
         expected = reservation1;
-        value = DatabaseService.getDatabaseService().getReservation(0);
+        value = DatabaseService.getDatabaseService().getReservation(1); // Expect 1 because of failed insert
         assertEquals(expected, value);
     }
 
@@ -451,6 +454,9 @@ public class DatabaseServiceTest {
         // No reservations should exist yet
         reservationList = DatabaseService.getDatabaseService().getAllReservations();
         assertThat(reservationList.size(), is(0));
+
+        Employee testEmployee = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(testEmployee));
 
         // Create some reservations
         GregorianCalendar res1Start = new GregorianCalendar();
@@ -466,8 +472,8 @@ public class DatabaseServiceTest {
         res3Start.setTime(new Date(now));
         res3End.setTime(new Date(now + 1000));
         Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
-        Reservation res1 = new Reservation(1, 0, 43, "Event 1", "XYZ", res2Start, res2End);
-        Reservation res2 = new Reservation(2, 2, 12, "Event 2", "LMNO", res3Start, res3End);
+        Reservation res1 = new Reservation(1, 0, 23, "Event 1", "XYZ", res2Start, res2End);
+        Reservation res2 = new Reservation(2, 2, 23, "Event 2", "LMNO", res3Start, res3End);
 
         // Insert two
         assertTrue(DatabaseService.getDatabaseService().insertReservation(res0));
@@ -497,7 +503,11 @@ public class DatabaseServiceTest {
         GregorianCalendar reservationEnd = new GregorianCalendar();
         reservationEnd.setTime(new Date());
         reservationEnd.add(Calendar.HOUR, 1);
-        Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+        Reservation reservation = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
+
+
+        Employee testEmployee = new Employee(23,"CatPlanet", JobType.DOCTOR,false,"douglas");
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(testEmployee));
 
         assertTrue(DatabaseService.getDatabaseService().insertReservation(reservation));
         assertEquals(reservation, DatabaseService.getDatabaseService().getReservation(0));
@@ -519,7 +529,10 @@ public class DatabaseServiceTest {
         GregorianCalendar reservationEnd = new GregorianCalendar();
         reservationEnd.setTime(new Date());
         reservationEnd.add(Calendar.HOUR, 1);
-        Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+        Reservation reservation = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
+
+        Employee testEmployee = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(testEmployee));
 
         assertTrue(DatabaseService.getDatabaseService().insertReservation(reservation));
         assertEquals(reservation, DatabaseService.getDatabaseService().getReservation(0));
@@ -555,6 +568,16 @@ public class DatabaseServiceTest {
         Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
         Reservation res1 = new Reservation(1, 0, 43, "Event 1", "XYZ", res2Start, res2End);
         Reservation res2 = new Reservation(2, 2, 12, "Event 2", "ABCD", res3Start, res3End);
+
+
+        Employee testEmployee1 = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(testEmployee1));
+
+        Employee testEmployee2 = new Employee(43,"CatPlanet1",JobType.DOCTOR,false,"douglas");
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(testEmployee2));
+
+        Employee testEmployee3 = new Employee(12,"CatPlanet2",JobType.DOCTOR,false,"douglas");
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(testEmployee3));
 
         // Insert two
         assertTrue(DatabaseService.getDatabaseService().insertReservation(res0));
@@ -598,6 +621,13 @@ public class DatabaseServiceTest {
         Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
         Reservation res1 = new Reservation(1, 0, 43, "Event 1", "ABCD", res2Start, res2End);
         Reservation res2 = new Reservation(2, 0, 43, "Event 1", "LMNO", res2Start, res2End);
+
+
+        Employee testEmployee1 = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(testEmployee1));
+
+        Employee testEmployee2 = new Employee(43,"CatPlanet1",JobType.DOCTOR,false,"douglas");
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(testEmployee2));
 
         // Insert two
         assertTrue(DatabaseService.getDatabaseService().insertReservation(res0));
