@@ -752,7 +752,6 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void getAllReservableSpaces() {
         // Assume an empty DB (ensured by setUp())
-
         ReservableSpace value, expected;
 
         // First verify that the ReservableSpace is null
@@ -801,6 +800,10 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void getBookedReservableSpacesBetween() {
+        // Create employee
+        Employee emp = new Employee(1234, "JOe", JobType.DOCTOR, false, "pass");
+        DatabaseService.getDatabaseService().insertEmployee(emp);
+
         // Create a ReservableSpace
         GregorianCalendar openTime = new GregorianCalendar();
         openTime.set(Calendar.HOUR, 7);
@@ -870,6 +873,10 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void getAvailableReservableSpacesBetween() {
+        // Create employee
+        Employee emp = new Employee(1234, "JOe", JobType.DOCTOR, false, "pass");
+        DatabaseService.getDatabaseService().insertEmployee(emp);
+
         // Create a ReservableSpace
         GregorianCalendar openTime = new GregorianCalendar();
         GregorianCalendar closeTime = new GregorianCalendar();
