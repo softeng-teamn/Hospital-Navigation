@@ -21,80 +21,74 @@ public class DatabaseService {
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
     private ArrayList<Function<Void, Void>> edgeCallbacks;
+    private boolean createFlag;
+
+    private static class SingletonHelper {
+        private static final DatabaseService dbs = new DatabaseService();
+    }
+
+    public static DatabaseService getDatabaseService() {
+        return SingletonHelper.dbs;
+    }
 
     /**
      * Construct a DatabaseService
-     * @param startFresh if true, blow away any database existing on disk
-     * @param loadCSVs if true, load the CSVs
      * @throws SQLException on DB connection creation error
      */
-    private DatabaseService(boolean startFresh, boolean loadCSVs) throws SQLException {
-        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-        boolean createFlag = false;
+    private DatabaseService() {
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+            createFlag = false;
 
-        // Start by trying to open connection with existing database
-        Connection conn = openConnection(false);
+            // Start by trying to open connection with existing database
+            Connection conn;
+            conn = openConnection(false);
 
-        if (conn != null) { // Database exists on file
-            if (startFresh) { // We don't want to use an existing database
-                // Close initial connection
-                conn.close();
-
-                // Open a connection to issue shutdown
-                Connection closeConnection = DriverManager.getConnection(
-                        "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
-                closeConnection.close();
-
-                // Nuke files
-                wipeOutFiles();
-
-                // Open a new connection allowing creation of database
-                conn = openConnection(true);
+            if (conn == null) { // No database exists on disk, so create a new one
+                try {
+                    conn = openConnection(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 createFlag = true;
             }
-        } else { // No database exists on disk, so create a new one
-            conn = openConnection(true);
-            createFlag = true;
-        }
 
-        if (!createFlag) {
+            if (!createFlag) {
+                this.connection = conn;
+                boolean valid = validateVersion();
+                if (!valid) { // Not valid. Nuke it and try again
+                    conn.close();
+                    this.connection = null;
+
+                    // Open a connection to issue shutdown
+                    Connection closeConnection = DriverManager.getConnection(
+                            "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
+                    closeConnection.close();
+
+                    // Nuke files
+                    wipeOutFiles();
+
+                    // Open a new connection allowing creation of database
+                    conn = openConnection(true);
+
+                    createFlag = true;
+                }
+
+            }
+
             this.connection = conn;
-            boolean valid = validateVersion();
-            if (!valid) { // Not valid. Nuke it and try again
-                conn.close();
-                this.connection = null;
 
-                // Open a connection to issue shutdown
-                Connection closeConnection = DriverManager.getConnection(
-                        "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
-                closeConnection.close();
-
-                // Nuke files
-                wipeOutFiles();
-
-                // Open a new connection allowing creation of database
-                conn = openConnection(true);
-                createFlag = true;
+            if (createFlag) {
+                this.createTables();
             }
 
+            nodeCallbacks = new ArrayList<>();
+            edgeCallbacks = new ArrayList<>();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        this.connection = conn;
-
-        if(createFlag) {
-            this.createTables();
-
-            if (loadCSVs) {
-                CSVService.importNodes();
-                CSVService.importEdges();
-                CSVService.importEmployees();
-                CSVService.importReservableSpaces();
-            }
-        }
-
-        nodeCallbacks = new ArrayList<>();
-        edgeCallbacks = new ArrayList<>();
     }
+
 
 
 
@@ -115,45 +109,13 @@ public class DatabaseService {
     }
 
 
-    /**
-     * This overrides the global dbs - only use to mock the database!!
-     * @param dbs
-     */
-    public static void setDatabaseForMocking(DatabaseService dbs) {
-        _dbs = dbs;
-    }
-
-    public static synchronized DatabaseService getDatabaseService(boolean startFresh, boolean loadCSVs) {
-        // Case 1: Database already exists in memory and we want to start fresh
-        // Execute later if statement as well
-        if (startFresh && _dbs != null) {
-            _dbs.close();
-            _dbs = null;
-            wipeOutFiles();
+    public void loadFromCSVsIfNecessary() {
+        if(createFlag) {
+            CSVService.importNodes();
+            CSVService.importEdges();
+            CSVService.importEmployees();
+            CSVService.importReservableSpaces();
         }
-
-        // Create a new database service, telling it to start over if necessary
-        if (_dbs == null) {
-            try {
-                _dbs = new DatabaseService(startFresh, loadCSVs);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("WARNING!");
-                System.out.println("Database not created due to the above error!");
-            }
-        }
-
-        return _dbs;
-    }
-
-    // Default loadCSVs to true
-    public static synchronized DatabaseService getDatabaseService(boolean startFresh) {
-        return getDatabaseService(startFresh, true);
-    }
-
-    // Default start fresh to false
-    public static synchronized DatabaseService getDatabaseService() {
-        return getDatabaseService(false);
     }
 
 
@@ -239,25 +201,28 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER')))");
 
-            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
+            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, description varchar(300))");
 
-            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
+            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
 
             statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
 
             statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
 
+            // DATABASE CONSTRAINTS
             statement.addBatch("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
             statement.addBatch("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
-
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
             // constraints that matter less but will be fully implemented later
-            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (LOCATIONID) REFERENCES RESERVABLESPACE(SPACEID)");
-            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
-
-
+            statement.addBatch("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
+            // constraints on service requests
+            statement.addBatch("ALTER TABLE ITREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
+            statement.addBatch("ALTER TABLE MEDICINEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
+            // creates an index to optimize querying.
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
+
+            //LCC,,. PUT IN CONSTRAINTS FOR SIMPLE SERVICES HERE
 
 
             statement.executeBatch();
@@ -625,14 +590,27 @@ public class DatabaseService {
     }
 
     /**
-     * @param from gregorian calendar start time
-     * @param to gregorian calendar end time
-     * @return a list of reservations  between start and end times
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces with any reservation in the given time frame
      */
-    public List<Reservation> getReservationsBetween(GregorianCalendar from, GregorianCalendar to) {
-        String query = "SELECT * FROM RESERVATION WHERE ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?))";
+    public List<ReservableSpace> getBookedReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
 
-        return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, from, from, from, to);
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
+    }
+
+    /**
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces without any reservations in the given time frame
+     */
+    public List<ReservableSpace> getAvailableReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID Not In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
+
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
     }
 
     /**
@@ -812,14 +790,20 @@ public class DatabaseService {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.addBatch("DROP TABLE EDGE");
-            statement.addBatch("DROP TABLE NODE");
-            statement.addBatch("DROP TABLE EMPLOYEE");
-            statement.addBatch("DROP TABLE ITREQUEST");
-            statement.addBatch("DROP TABLE MEDICINEREQUEST");
-            statement.addBatch("DROP TABLE RESERVATION");
-            statement.addBatch("DROP TABLE RESERVABLESPACE");
-            statement.addBatch("DROP TABLE META_DB_VER");
+            // these must be wiped first to prevent constraint issues
+            statement.addBatch("DELETE FROM EDGE");
+            statement.addBatch("DELETE FROM RESERVATION");
+            statement.addBatch("DELETE FROM ITREQUEST");
+            statement.addBatch("DELETE FROM MEDICINEREQUEST");
+            // these can be wiped in any order
+            statement.addBatch("DELETE FROM NODE");
+            statement.addBatch("DELETE FROM EMPLOYEE");
+            statement.addBatch("DELETE FROM RESERVABLESPACE");
+
+            // restart the auto-generated keys
+            statement.addBatch("ALTER TABLE ITREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE MEDICINEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE RESERVATION ALTER COLUMN eventID RESTART WITH 0");
             statement.executeBatch();
 
             this.createTables();
@@ -829,6 +813,8 @@ public class DatabaseService {
             closeStatement(statement);
         }
     }
+
+
 
 
     //<editor-fold desc="Generic Execution Methods">

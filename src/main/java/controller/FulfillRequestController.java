@@ -3,6 +3,7 @@ package controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXToggleNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,10 +13,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import javafx.stage.Stage;
+import model.Node;
 import model.RequestType;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
+import model.request.RequestFacade;
 import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -43,6 +46,8 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     private JFXRadioButton uncRadio;
 
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+    
     /**switches window to home screen
      * @throws Exception
      */
@@ -56,6 +61,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     /**
      * sets a request as completed in the database
      */
+
     @FXML
     public void fulfillRequest(){
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
@@ -69,11 +75,11 @@ public class FulfillRequestController extends Controller implements Initializabl
         switch(rType.getrType()){
             case ITS:
                 ITupdate = (ITRequest) selected;
-                DatabaseService.getDatabaseService().updateITRequest(ITupdate);
+                myDBS.updateITRequest(ITupdate);
                 break;
             case MED:
                 medupdate = (MedicineRequest) selected;
-                DatabaseService.getDatabaseService().updateMedicineRequest(medupdate);
+                myDBS.updateMedicineRequest(medupdate);
                 break;
             case ABS:
                 //do nothing
@@ -82,6 +88,8 @@ public class FulfillRequestController extends Controller implements Initializabl
         reloadList();
 
     }
+
+
 
     /**
      * TBD
@@ -108,28 +116,28 @@ public class FulfillRequestController extends Controller implements Initializabl
         ObservableList<Request> newRequestlist = FXCollections.observableArrayList();
         if (allRadio.isSelected()){
             if(allTypeRadio.isSelected()){
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllITRequests();
                 newRequestlist.addAll(allMedReqList);
                 newRequestlist.addAll(allITReqList);
             }else if (medicineRadio.isSelected()){
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
                 newRequestlist.addAll(allMedReqList);
             }else if (ITRadio.isSelected()){
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllITRequests();
                 newRequestlist.addAll(allITReqList);
             }
         }else if (uncRadio.isSelected()){
             if(allTypeRadio.isSelected()){
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllIncompleteITRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests();
                 newRequestlist.addAll(allMedReqList);
                 newRequestlist.addAll(allITReqList);
             }else if (medicineRadio.isSelected()){
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests();
                 newRequestlist.addAll(allMedReqList);
             }else if (ITRadio.isSelected()){
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllIncompleteITRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests();
                 newRequestlist.addAll(allITReqList);
             }
         }
@@ -185,11 +193,10 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         ObservableList<Request> requestlist = FXCollections.observableArrayList();
 
-        ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
-        ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
+        ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
+        ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) myDBS.getAllITRequests();
 
         requestlist.addAll(medicineReq);
         requestlist.addAll(itReq);

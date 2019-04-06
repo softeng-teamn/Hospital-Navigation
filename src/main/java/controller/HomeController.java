@@ -3,6 +3,7 @@ package controller;
 import com.jfoenix.controls.*;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -74,6 +75,7 @@ public class HomeController extends MapController {
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     /**
      * pulls up the editor for user interaction
@@ -125,10 +127,8 @@ public class HomeController extends MapController {
         */
     }
 
-    public static void initConnections() {
-        System.out.println("creating hashmap ...");
+    public static void initConnections(List<Edge> allEdges) {
         connections = new HashMap<>();
-        ArrayList<Edge> allEdges = DatabaseService.getDatabaseService().getAllEdges();
 
         for (Edge e : allEdges) {
             if (connections.containsKey(e.getNode1().getNodeID())) {
@@ -157,7 +157,7 @@ public class HomeController extends MapController {
      */
     @FXML
     void initialize() {
-        initConnections();
+        initConnections(myDBS.getAllEdges());
         initializeElevator();
 
         // Hide the edit window
@@ -165,12 +165,12 @@ public class HomeController extends MapController {
 
         authCheck();
 
-        DatabaseService.getDatabaseService().registerNodeCallback(aVoid -> {
+        myDBS.registerNodeCallback(aVoid -> {
             HomeController.this.nodeChangedCallback();
             return null;
         });
 
-        DatabaseService.getDatabaseService().registerEdgeCallback(aVoid -> {
+        myDBS.registerEdgeCallback(aVoid -> {
             HomeController.this.edgeChangedCallback();
             return null;
         });
@@ -222,7 +222,7 @@ public class HomeController extends MapController {
      * DatabaseService calls this when nodes are inserted, modified, deleted
      */
     private void nodeChangedCallback() {
-        initConnections();
+        initConnections(myDBS.getAllEdges());
         repopulateList();
     }
 
@@ -230,7 +230,7 @@ public class HomeController extends MapController {
      * DatabaseService calls this when edges are inserted (to
      */
     private void edgeChangedCallback() {
-        initConnections();
+        initConnections(myDBS.getAllEdges());
     }
   
     void authCheck() {
@@ -484,6 +484,7 @@ public class HomeController extends MapController {
             Node current;
             for (int i = 1; i < path.size(); i++) {
                 current = path.get(i);
+                System.out.println(current);
                 Line line = new Line();
 
                 line.setStartX(current.getXcoord());
@@ -617,7 +618,7 @@ public class HomeController extends MapController {
                 edit_long.getText(),
                 edit_short.getText()
         );
-        if (DatabaseService.getDatabaseService().updateNode(myNode)) {
+        if (myDBS.updateNode(myNode)) {
             System.out.println("Here is the Old Node");
             System.out.println(oldNode);
             System.out.println("NEW NODE");
@@ -680,9 +681,9 @@ public class HomeController extends MapController {
     void repopulateList() {
         System.out.println("Repopulation of listView");
         if (Controller.getIsAdmin()) {
-            allNodes = DatabaseService.getDatabaseService().getAllNodes();
+            allNodes = myDBS.getAllNodes();
         } else {
-            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
+            allNodes = myDBS.getNodesFilteredByType("STAI", "HALL");
         }
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();
