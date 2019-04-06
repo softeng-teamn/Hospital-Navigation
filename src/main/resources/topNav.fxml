@@ -13,9 +13,10 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import com.jfoenix.controls.JFXSlider?>
 
-    <HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="1385.0" spacing="5.0" styleClass="header" xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="controller.TopNav">
+<?import com.jfoenix.controls.JFXToggleNode?>
+<HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="1385.0" spacing="5.0" styleClass="header" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.TopNav">
         <children>
             <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2">
                 <HBox.margin>
@@ -28,7 +29,15 @@
                 <HBox.margin>
                     <Insets right="8.0" />
                 </HBox.margin></JFXButton>
-            <JFXButton fx:id="newRoom_btn" contentDisplay="GRAPHIC_ONLY" prefHeight="80.0" prefWidth="80.0" text="New Room">
+            <JFXToggleNode fx:id="accessibilityButton" maxHeight="80.0" maxWidth="80.0" prefHeight="0.0" prefWidth="80.0" styleClass="accessiblity-toggle-node">
+                <graphic>
+                    <FontAwesomeIconView glyphName="WHEELCHAIR" size="50" styleClass="jfx-toggle-node" />
+                </graphic>
+                <HBox.margin>
+                    <Insets right="8.0" />
+                </HBox.margin>
+            </JFXToggleNode>
+            <JFXButton fx:id="newNode_btn" contentDisplay="GRAPHIC_ONLY" onAction="#showNewNode" prefHeight="80.0" prefWidth="80.0" text="New Node">
                 <graphic>
                     <FontAwesomeIconView glyphName="PLUS" size="60" />
                 </graphic>
