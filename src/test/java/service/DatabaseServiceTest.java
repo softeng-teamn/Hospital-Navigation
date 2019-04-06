@@ -426,7 +426,7 @@ public class DatabaseServiceTest {
         GregorianCalendar reservationEnd = new GregorianCalendar();
         reservationEnd.setTime(new Date());
         reservationEnd.add(Calendar.HOUR, 1);
-        Reservation reservation1 = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
+        Reservation reservation1 = new Reservation(1, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
 
         // successful insert because of constraints
         assertFalse(DatabaseService.getDatabaseService().insertReservation(reservation1)); // No matching employee yet
@@ -435,7 +435,7 @@ public class DatabaseServiceTest {
 
         // Verify successful get
         expected = reservation1;
-        value = DatabaseService.getDatabaseService().getReservation(0);
+        value = DatabaseService.getDatabaseService().getReservation(1); // Expect 1 because of failed insert
         assertEquals(expected, value);
     }
 
