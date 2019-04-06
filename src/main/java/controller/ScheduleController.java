@@ -179,6 +179,7 @@ public class ScheduleController extends Controller {
             else if (bookedRoomsBtn.getText().contains("ear")) {
                 bookedRooms();
             }
+            showRoomSchedule();
 
             // Display the current information
             changeResInfo();

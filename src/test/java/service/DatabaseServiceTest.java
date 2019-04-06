@@ -14,11 +14,16 @@ import testclassifications.FastTest;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
@@ -34,13 +39,13 @@ public class DatabaseServiceTest {
 
     @After
     public void tearDown() {
-        DatabaseService.getDatabaseService().wipeTables();
+        //DatabaseService.getDatabaseService().wipeTables();
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws IOException {
-        DatabaseService.getDatabaseService().close();
-        FileUtils.deleteDirectory(new File("hospital-db"));
+        //DatabaseService.getDatabaseService().close();
+        //FileUtils.deleteDirectory(new File("hospital-db"));
     }
 
     @Test
@@ -791,6 +796,174 @@ public class DatabaseServiceTest {
         assertEquals(space1, allReservableSpaces.get(0));
         assertEquals(space2, allReservableSpaces.get(1));
         assertEquals(space3, allReservableSpaces.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getReservationsBetween() {
+        // TODO
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getBookedReservableSpacesBetween() {
+        // Create a ReservableSpace
+        GregorianCalendar openTime = new GregorianCalendar();
+        openTime.set(Calendar.HOUR, 7);
+        openTime.set(Calendar.MINUTE, 0);
+        GregorianCalendar closeTime = new GregorianCalendar();
+        closeTime.set(Calendar.HOUR, 23);
+        closeTime.set(Calendar.MINUTE, 00);
+
+        ReservableSpace space1 = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
+        ReservableSpace space2 = new ReservableSpace("XYZ", "Space 2", "WKRS", "XYZ10011", openTime, closeTime);
+        ReservableSpace space3 = new ReservableSpace("LMNO", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space1));
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space2));
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space3));
+
+        // Query times
+        GregorianCalendar betweenStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(9, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar betweenEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(11, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        ArrayList<ReservableSpace> value;
+
+        // First verify that the query returns null
+        value = (ArrayList) DatabaseService.getDatabaseService().getBookedReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(0));
+
+        // Create a Reservation
+        GregorianCalendar resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(9, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(10, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        Reservation res1 = new Reservation(-1, 0, 1234, "Test", "ABCD", resStart, resEnd);
+        Reservation res2 = new Reservation(-1, 0, 1234, "Test", "XYZ", resStart, resEnd);
+
+        // Insert reservation
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res1));
+
+        // Now the query should return only Space1
+        value = (ArrayList) DatabaseService.getDatabaseService().getBookedReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(1));
+        assertThat(value.get(0), is(space1));
+
+        // Insert reservation
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res2));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) DatabaseService.getDatabaseService().getBookedReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(2));
+        assertThat(value.get(0), is(space1));
+        assertThat(value.get(1), is(space2));
+
+        // Create a Reservation
+        GregorianCalendar fakeStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(19, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar fakeEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(20, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        Reservation res3 = new Reservation(-1, 0, 1234, "Test", "ABCD", fakeStart, fakeEnd);
+
+        // Insert reservation
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res3));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) DatabaseService.getDatabaseService().getBookedReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(2));
+        assertThat(value.get(0), is(space1));
+        assertThat(value.get(1), is(space2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAvailableReservableSpacesBetween() {
+        // Create a ReservableSpace
+        GregorianCalendar openTime = new GregorianCalendar();
+        GregorianCalendar closeTime = new GregorianCalendar();
+
+        ReservableSpace space1 = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
+        ReservableSpace space2 = new ReservableSpace("XYZ", "Space 2", "WKRS", "XYZ10011", openTime, closeTime);
+        ReservableSpace space3 = new ReservableSpace("LMNO", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+        ReservableSpace space4 = new ReservableSpace("0001", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+        ReservableSpace space5 = new ReservableSpace("0002", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+        ReservableSpace space6 = new ReservableSpace("0003", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space1));
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space2));
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space3));
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space4));
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space5));
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space6));
+
+        // Query times
+        GregorianCalendar betweenStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(9, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar betweenEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(12, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        ArrayList<ReservableSpace> value;
+
+        // First verify that the query returns null
+        value = (ArrayList) DatabaseService.getDatabaseService().getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(6));
+        assertThat(value.get(0), is(space1));
+        assertThat(value.get(1), is(space2));
+        assertThat(value.get(2), is(space3));
+
+        // Create a Reservation
+        GregorianCalendar resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(9, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(10, 0)).atZone(ZoneId.of("America/New_York"))));
+        Reservation res1 = new Reservation(-1, 0, 1234, "Test", "ABCD", resStart, resEnd);
+
+        resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(8, 0)).atZone(ZoneId.of("America/New_York"))));
+        resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(11, 30)).atZone(ZoneId.of("America/New_York"))));
+        Reservation res2 = new Reservation(-1, 0, 1234, "Test", "XYZ", resStart, resEnd);
+
+        resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(11, 30)).atZone(ZoneId.of("America/New_York"))));
+        resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(18, 00)).atZone(ZoneId.of("America/New_York"))));
+        Reservation res3 = new Reservation(-1, 0, 1234, "Test", "0001", resStart, resEnd);
+
+        resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(7, 0)).atZone(ZoneId.of("America/New_York"))));
+        resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(13, 00)).atZone(ZoneId.of("America/New_York"))));
+        Reservation res4 = new Reservation(-1, 0, 1234, "Test", "0002", resStart, resEnd);
+
+        // Insert reservation
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res1));
+
+        // Now the query should return only Space1
+        value = (ArrayList) DatabaseService.getDatabaseService().getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(5));
+        assertThat(value.get(0), is(space2));
+        assertThat(value.get(4), is(space6));
+
+        // Insert reservation
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res2));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) DatabaseService.getDatabaseService().getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(4));
+        assertThat(value.get(0), is(space3));
+
+        // Create a Reservation
+        GregorianCalendar fakeStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(19, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar fakeEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(20, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        Reservation res5 = new Reservation(-1, 0, 1234, "Test", "ABCD", fakeStart, fakeEnd);
+
+        // Insert reservation
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res5));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) DatabaseService.getDatabaseService().getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(4));
+        assertThat(value.get(0), is(space3));
+
+        // Insert reservation
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res3));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res4));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) DatabaseService.getDatabaseService().getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(2));
+        assertThat(value.get(0), is(space3));
+        assertThat(value.get(1), is(space6));
     }
 
     @Test

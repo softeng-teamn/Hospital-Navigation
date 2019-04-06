@@ -636,6 +636,30 @@ public class DatabaseService {
     }
 
     /**
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces with any reservation in the given time frame
+     */
+    public List<ReservableSpace> getBookedReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
+
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
+    }
+
+    /**
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces without any reservations in the given time frame
+     */
+    public List<ReservableSpace> getAvailableReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID Not In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
+
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
+    }
+
+    /**
      * @param space the reservable space to update in the database
      * @return true if the update succeeds and false if otherwise
      */
