@@ -83,13 +83,13 @@ public class TopNav {
     private void eventListener(Event event) {
 
         switch (event.getEventName()) {
-            case "node-selected":
+            case "node-select":
+                System.out.println("1");
                 event.getNodeSelected();
                 // show navigation button
                 // navigate_btn.setVisible(true);
                 //showNavigationBtn(event);
                 showNavigationBtn();        // will make nav btn visible, fill search with node
-
                 break;
 
             case "login":     // receives from AdminLoginContoller?
