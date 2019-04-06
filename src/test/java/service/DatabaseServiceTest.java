@@ -39,13 +39,13 @@ public class DatabaseServiceTest {
 
     @After
     public void tearDown() {
-        //DatabaseService.getDatabaseService().wipeTables();
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws IOException {
-        //DatabaseService.getDatabaseService().close();
-        //FileUtils.deleteDirectory(new File("hospital-db"));
+        DatabaseService.getDatabaseService().close();
+        FileUtils.deleteDirectory(new File("hospital-db"));
     }
 
     @Test
@@ -796,12 +796,6 @@ public class DatabaseServiceTest {
         assertEquals(space1, allReservableSpaces.get(0));
         assertEquals(space2, allReservableSpaces.get(1));
         assertEquals(space3, allReservableSpaces.get(2));
-    }
-
-    @Test
-    @Category(FastTest.class)
-    public void getReservationsBetween() {
-        // TODO
     }
 
     @Test
