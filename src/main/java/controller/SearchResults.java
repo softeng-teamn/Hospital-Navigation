@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXListView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -40,7 +41,8 @@ public class SearchResults {
     private Node destNode;
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
     ObservableList<Node> allNodesObservable;
-    ArrayList<Node> allNodes;
+    ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
+    ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
 
 
 
@@ -62,14 +64,24 @@ public class SearchResults {
                 list_view.getSelectionModel().select(newEvent.getNodeSelected());
                 break;
             case "login":
-                System.out.println("receive login");
                 event.setLoggedIn(newEvent.isLoggedIn());
                 event.setAdmin(newEvent.isAdmin());
+                //for functions that have threading issue, use this and it will be solved
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        repopulateList(event.isAdmin());
+                    }
+                });
                 break;
             case "search-query":
                 event.setSearchBarQuery(newEvent.getSearchBarQuery());
-                filterList(newEvent.getSearchBarQuery());
-
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        filterList(newEvent.getSearchBarQuery());
+                    }
+                });
         }
 
 
@@ -101,16 +113,19 @@ public class SearchResults {
     void repopulateList(boolean isAdmin) {
 
         System.out.println("Repopulation of listView" + isAdmin);
-        if (isAdmin) {
-            allNodes = DatabaseService.getDatabaseService().getAllNodes();
-        } else {
-            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
-        }
+
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();
 
+        if (isAdmin) {
+            allNodesObservable.addAll(allNodes);
+        } else {
+            allNodesObservable.addAll(filteredNodes);
+        }
+
+
         // repopulate
-        allNodesObservable.addAll(allNodes);
+
         // clear listVIEW
         if (list_view == null) {
             System.out.println("LIST VIEW IS NULL");

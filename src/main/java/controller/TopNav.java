@@ -29,10 +29,20 @@ public class TopNav {
     // events I send out/control
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
-        Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
-        Stage stage = (Stage) auth_btn.getScene().getWindow();
-        StageManager.changeExistingWindow(stage, root, "Admin Login");
+        if (event.isAdmin()) {
+            Event sendEvent = new Event();
+            sendEvent.setEventName("login");
+            eventBus.post(sendEvent);
+            resetBtn();
+
+        } else {
+            Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
+            Stage stage = (Stage) navigate_btn.getScene().getWindow();
+            StageManager.changeExistingWindow(stage, root, "Admin Login");
+        }
     }
+
+
 
 
     @FXML
@@ -67,7 +77,7 @@ public class TopNav {
         // SHOULD THIS GO HERE? (was in intialize of old map controller)
         navigate_btn.setVisible(false);
 
-        resetBtn(event.isAdmin());
+        resetBtn();
 
     }
 
@@ -97,8 +107,8 @@ public class TopNav {
 
     }
 
-    private void resetBtn(boolean isAdmin) {
-        if(isAdmin){
+    private void resetBtn() {
+        if(event.isAdmin()){
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
         } else {
@@ -140,4 +150,6 @@ public class TopNav {
 
     }
 
+    public void startNavigation(ActionEvent actionEvent) {
+    }
 }

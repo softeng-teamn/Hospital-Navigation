@@ -17,11 +17,11 @@
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="controller.TopNav">
         <children>
-            <JFXTextField fx:id="search_bar" labelFloat="true" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2">
+            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2">
                 <HBox.margin>
                     <Insets right="8.0" />
                 </HBox.margin></JFXTextField>
-            <JFXButton fx:id="navigate_btn" contentDisplay="GRAPHIC_ONLY" prefHeight="80.0" prefWidth="80.0" text="Navigate Here">
+            <JFXButton fx:id="navigate_btn" contentDisplay="GRAPHIC_ONLY" onAction="#startNavigation" prefHeight="80.0" prefWidth="80.0" text="Navigate Here">
                 <graphic>
                     <MaterialIconView glyphName="DIRECTIONS" size="60" />
                 </graphic>
