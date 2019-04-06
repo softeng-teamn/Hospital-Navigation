@@ -1,7 +1,6 @@
 package controller;
 
 import com.jfoenix.controls.*;
-import com.sun.javafx.font.Glyph;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.animation.KeyFrame;
@@ -15,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -29,7 +27,6 @@ import javafx.util.Duration;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import model.Edge;
-import model.Elevator;
 import model.MapNode;
 import model.Node;
 import service.DatabaseService;
@@ -42,8 +39,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.io.IOException;
 import java.util.ArrayList;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 
 public class HomeController extends MapController {
 
@@ -76,8 +71,6 @@ public class HomeController extends MapController {
     private Circle destCircle = new Circle();
     private Circle kioskCircle = new Circle();
     private int addNodeState = 0;
-
-    static Elevator elev;
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
@@ -123,11 +116,13 @@ public class HomeController extends MapController {
     }
 
     public static void initializeElevator() {
+       /*
         try {
             elev = Elevator.get("MyRobotName");
         } catch ( Exception e) {
             e.printStackTrace();
         }
+        */
     }
 
     public static void initConnections() {
@@ -216,8 +211,8 @@ public class HomeController extends MapController {
             @Override
             public void run() {
                 // if you change the UI, do it here !
-                cur_el_floor.setText("" + elev.data[0]);
-                System.out.println(elev.data[0]);
+               // cur_el_floor.setText("" + elev.data[0]);
+              //  System.out.println(elev.data[0]);
             }
         });
 
@@ -446,6 +441,7 @@ public class HomeController extends MapController {
 
     @FXML
     void callElevatorAction(ActionEvent e) {
+        /*
         System.out.println("i was just called");
         JFXButton btn = (JFXButton) e.getSource();
         char test = btn.getText().charAt(btn.getText().length()-1);
@@ -470,6 +466,7 @@ public class HomeController extends MapController {
                     break;
 
         }
+        */
     }
 
     /**
