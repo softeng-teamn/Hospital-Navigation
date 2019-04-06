@@ -62,16 +62,27 @@ public class AdminLoginController extends Controller implements Initializable {
         String password = passwordField.getText();
         int intID = Integer.parseInt(id);
         Employee user = DatabaseService.getDatabaseService().getEmployee(intID);
+        if(user == null){
+            System.out.println("Null employee");
+        }
+        else
+        {
+            System.out.println(user.isAdmin());
+            System.out.println(user.getPassword());
+        }
+
 
         try {
-            if(user.isAdmin()){
                 if (password.equals(user.getPassword())){
-                    Controller.setIsAdmin(true);
+                    Controller.setIsEmployee(true);
+                    if(user.isAdmin()) {
+                        Controller.setIsAdmin(true);
+                    }
                     showHome();
                 } else {
                     passwordField.getStyleClass().add("wrong-credentials");
                 }
-            }
+
         } catch (Exception e) {
             idText.getStyleClass().add("wrong-credentials");
             passwordField.getStyleClass().add("wrong-credentials");

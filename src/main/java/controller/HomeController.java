@@ -246,10 +246,18 @@ public class HomeController extends MapController {
 
             if (!top_nav.getChildren().contains(edit_btn)) {
                 edit_btn.setVisible(false);
-                top_nav.getChildren().add(top_nav.getChildren().indexOf(navigate_btn)+1, edit_btn);
+                top_nav.getChildren().add(top_nav.getChildren().indexOf(navigate_btn) + 1, edit_btn);
                 top_nav.getChildren().add(1, newRoom_btn);
-                top_nav.getChildren().add(top_nav.getChildren().indexOf(bookBtn)-1, fulfillBtn);
+                top_nav.getChildren().add(top_nav.getChildren().indexOf(bookBtn) - 1, fulfillBtn);
             }
+        }else if (Controller.getIsEmployee()){
+
+            if (!top_nav.getChildren().contains(fulfillBtn)) {
+                edit_btn.setVisible(false);
+                newRoom_btn.setVisible(false);
+                top_nav.getChildren().add(top_nav.getChildren().indexOf(bookBtn) - 1, fulfillBtn);
+            }
+
         } else {
             System.out.println("not an admin anymore");
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
@@ -403,8 +411,9 @@ public class HomeController extends MapController {
     @FXML
     // switches window to map editor screen.
     public void showAdminLogin() throws Exception {
-        if (Controller.getIsAdmin()) {
+        if (Controller.getIsAdmin() || Controller.getIsEmployee()) {
             Controller.setIsAdmin(false);
+            Controller.setIsEmployee(false);
             authCheck();
             repopulateList();
         } else {

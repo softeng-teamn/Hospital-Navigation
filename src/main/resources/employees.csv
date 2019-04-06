@@ -1,6 +1,6 @@
 ID,job,isAdmin,password
-1,ww,DOCTOR,true,wong
-2,dan,NURSE,false,duff
-3,bennett,NURSE,false,bennett
-1234,admin,ADMINISTRATOR,true,test
-42,staff,ADMINISTRATOR,true,staff
+1,Doctor,true,wong
+2,Nurse,false,duff
+3,Nurse,false,bennett
+4,Janitor,false,clean
+1234,Admin,true,test

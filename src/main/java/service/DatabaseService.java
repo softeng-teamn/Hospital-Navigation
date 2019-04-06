@@ -85,6 +85,7 @@ public class DatabaseService {
             this.createTables();
 
             if (loadCSVs) {
+                System.out.println("Pleasse Work");
                 CSVService.importNodes();
                 CSVService.importEdges();
                 CSVService.importEmployees();
@@ -135,6 +136,7 @@ public class DatabaseService {
         // Create a new database service, telling it to start over if necessary
         if (_dbs == null) {
             try {
+                System.out.println("Creating database");
                 _dbs = new DatabaseService(startFresh, loadCSVs);
             } catch (SQLException e) {
                 e.printStackTrace();
