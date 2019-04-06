@@ -47,6 +47,7 @@ public class RequestController extends Controller implements Initializable {
     private ArrayList<Node> allNodes;
     private ObservableList<Node> allNodesObservable;
 
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
     /**
      * switches window to home screen
      *
@@ -135,7 +136,6 @@ public class RequestController extends Controller implements Initializable {
             reqFacade.makeMedRequest();
         } else if ((selected != null) && (selected.getText().contains("IT"))) {
             reqFacade.makeITRequest();
-
         }
         textArea.clear();
     }
@@ -151,14 +151,14 @@ public class RequestController extends Controller implements Initializable {
         switch (rType.getrType()) {
             case ITS:
                 ITRequest ITType = (ITRequest) type;
-                if (DatabaseService.getDatabaseService().getITRequest(ITType.getId()) == null) {
-                    DatabaseService.getDatabaseService().insertITRequest(ITType);
+                if (myDBS.getITRequest(ITType.getId()) == null) {
+                    myDBS.insertITRequest(ITType);
                 }
                 break;
             case MED:
                 MedicineRequest medReq = (MedicineRequest) type;
-                if (DatabaseService.getDatabaseService().getMedicineRequest(medReq.getId()) == null) {
-                    DatabaseService.getDatabaseService().insertMedicineRequest(medReq);
+                if (myDBS.getMedicineRequest(medReq.getId()) == null) {
+                    myDBS.insertMedicineRequest(medReq);
                 }
                 break;
             case ABS:
@@ -194,8 +194,8 @@ public class RequestController extends Controller implements Initializable {
      */
     public Collection<Request> getPendingRequests() {
         ArrayList<Request> requests = new ArrayList<>();
-        requests.addAll(DatabaseService.getDatabaseService().getAllIncompleteITRequests());
-        requests.addAll(DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests());
+        requests.addAll(myDBS.getAllIncompleteITRequests());
+        requests.addAll(myDBS.getAllIncompleteMedicineRequests());
         return requests;
     }
 
@@ -217,9 +217,9 @@ public class RequestController extends Controller implements Initializable {
     void repopulateList() {
         System.out.println("Repopulation of listView");
         if (Controller.getIsAdmin()) {
-            allNodes = DatabaseService.getDatabaseService().getAllNodes();
+            allNodes = myDBS.getAllNodes();
         } else {
-            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
+            allNodes = myDBS.getNodesFilteredByType("STAI", "HALL");
         }
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();

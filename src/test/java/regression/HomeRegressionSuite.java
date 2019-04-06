@@ -37,7 +37,7 @@ public class HomeRegressionSuite extends ApplicationTest {
     @Override
     public void start(Stage stage) throws Exception {
         System.out.println("start");
-        DatabaseService.getDatabaseService(true);
+
         try {
             Parent root = FXMLLoader.load(ResourceLoader.home);
             StageManager.changeWindow(stage, root, "Home");

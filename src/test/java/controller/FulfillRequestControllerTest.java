@@ -48,7 +48,7 @@ public class FulfillRequestControllerTest {
         when(dbs.updateITRequest(itR)).thenReturn(true);
         when(dbs.getITRequest(1337)).thenReturn(itR);
 
-        DatabaseService.setDatabaseForMocking(dbs);
+        FulfillRequestController.myDBS = dbs;
     }
     Node a = new Node (0, 0, "nodeID", "Floor1", "building", "hallway", "longName", "shortName") ;
 
