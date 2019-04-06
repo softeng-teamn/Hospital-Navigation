@@ -815,16 +815,20 @@ public class DatabaseService {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            // these must be dropped first to prevent constraint issues
-            statement.addBatch("DROP TABLE EDGE");
-            statement.addBatch("DROP TABLE RESERVATION");
-            statement.addBatch("DROP TABLE ITREQUEST");
-            statement.addBatch("DROP TABLE MEDICINEREQUEST");
-            // these can be dropped in any order
-            statement.addBatch("DROP TABLE NODE");
-            statement.addBatch("DROP TABLE EMPLOYEE");
-            statement.addBatch("DROP TABLE RESERVABLESPACE");
-            statement.addBatch("DROP TABLE META_DB_VER");
+            // these must be wiped first to prevent constraint issues
+            statement.addBatch("DELETE FROM EDGE");
+            statement.addBatch("DELETE FROM RESERVATION");
+            statement.addBatch("DELETE FROM ITREQUEST");
+            statement.addBatch("DELETE FROM MEDICINEREQUEST");
+            // these can be wiped in any order
+            statement.addBatch("DELETE FROM NODE");
+            statement.addBatch("DELETE FROM EMPLOYEE");
+            statement.addBatch("DELETE FROM RESERVABLESPACE");
+            statement.addBatch("DELETE FROM META_DB_VER");
+            // restart the auto-generated keys
+            statement.addBatch("ALTER TABLE ITREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE MEDICINEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE RESERVATION ALTER COLUMN eventID RESTART WITH 0");
             statement.executeBatch();
 
             this.createTables();
