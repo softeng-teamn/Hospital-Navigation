@@ -17,6 +17,7 @@ import model.RequestType;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -122,10 +123,10 @@ public class RequestController extends Controller implements Initializable {
             textArea.setText("Please select type");
         } else if (selected.getText().contains("Medicine")) {
             MedicineRequest newMedicineRequest = new MedicineRequest(-1, description, requestLocation, false);
-            dbs.insertMedicineRequest(newMedicineRequest);
+            DatabaseService.getDatabaseService().insertMedicineRequest(newMedicineRequest);
         } else if (selected.getText().contains("IT")) {
             ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
-            dbs.insertITRequest(newITRequest);
+            DatabaseService.getDatabaseService().insertITRequest(newITRequest);
 
         }
         textArea.clear();
@@ -142,14 +143,14 @@ public class RequestController extends Controller implements Initializable {
         switch (rType.getrType()) {
             case ITS:
                 ITRequest ITType = (ITRequest) type;
-                if (dbs.getITRequest(ITType.getId()) == null) {
-                    dbs.insertITRequest(ITType);
+                if (DatabaseService.getDatabaseService().getITRequest(ITType.getId()) == null) {
+                    DatabaseService.getDatabaseService().insertITRequest(ITType);
                 }
                 break;
             case MED:
                 MedicineRequest medReq = (MedicineRequest) type;
-                if (dbs.getMedicineRequest(medReq.getId()) == null) {
-                    dbs.insertMedicineRequest(medReq);
+                if (DatabaseService.getDatabaseService().getMedicineRequest(medReq.getId()) == null) {
+                    DatabaseService.getDatabaseService().insertMedicineRequest(medReq);
                 }
                 break;
             case ABS:
@@ -170,13 +171,13 @@ public class RequestController extends Controller implements Initializable {
                 ITRequest ITReq = (ITRequest) type;
                 ITReq.setCompleted(true);
                 ITReq.setCompletedBy(byWho);
-                dbs.updateITRequest(ITReq);
+                DatabaseService.getDatabaseService().updateITRequest(ITReq);
                 break;
             case MED:
                 MedicineRequest MedReq = (MedicineRequest) type;
                 MedReq.setCompleted(true);
                 MedReq.setCompletedBy(byWho);
-                dbs.updateMedicineRequest(MedReq);
+                DatabaseService.getDatabaseService().updateMedicineRequest(MedReq);
                 break;
             case ABS:
                 //do nothing
@@ -190,8 +191,8 @@ public class RequestController extends Controller implements Initializable {
      */
     public Collection<Request> getPendingRequests() {
         ArrayList<Request> requests = new ArrayList<>();
-        requests.addAll(this.dbs.getAllIncompleteITRequests());
-        requests.addAll(this.dbs.getAllIncompleteMedicineRequests());
+        requests.addAll(DatabaseService.getDatabaseService().getAllIncompleteITRequests());
+        requests.addAll(DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests());
         return requests;
     }
 
@@ -213,9 +214,9 @@ public class RequestController extends Controller implements Initializable {
     void repopulateList() {
         System.out.println("Repopulation of listView");
         if (Controller.getIsAdmin()) {
-            allNodes = dbs.getAllNodes();
+            allNodes = DatabaseService.getDatabaseService().getAllNodes();
         } else {
-            allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
+            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
         }
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();

@@ -4,6 +4,7 @@ import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,11 +14,8 @@ import testclassifications.FastTest;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -25,42 +23,46 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class DatabaseServiceTest {
-    private DatabaseService myDBS;
-
     @Before
-    public void setUp() throws SQLException, MismatchedDatabaseVersionException {
-        myDBS = DatabaseService.init("hospital-db-test");
+    public void setUp() {
+        DatabaseService.getDatabaseService(true, false);
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
     @After
     public void tearDown() {
-        myDBS.wipeTables();
-        myDBS.close();
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws IOException {
-        FileUtils.deleteDirectory(new File("hospital-db-test"));
+        DatabaseService.getDatabaseService().close();
+        FileUtils.deleteDirectory(new File("hospital-db"));
     }
 
     @Test
     @Category(FastTest.class)
     public void insertNode() {
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerNodeCallback(callback);
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         // make sure that the new node is successfully inserted
-        assertThat(myDBS.insertNode(testNode), is(true));
+        assertThat(DatabaseService.getDatabaseService().insertNode(testNode), is(true));
+        verify(callback, times(1)).apply(null);
+
         // make sure that the same node cannot be inserted a second time
-        assertThat(myDBS.insertNode(testNode), is(false));
+        assertThat(DatabaseService.getDatabaseService().insertNode(testNode), is(false));
     }
 
     @Test
     @Category(FastTest.class)
     public void getNode(){
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode);
-        Node toGet = myDBS.getNode("ACONF00102");
+        DatabaseService.getDatabaseService().insertNode(testNode);
+        Node toGet = DatabaseService.getDatabaseService().getNode("ACONF00102");
         assertThat(toGet.getNodeID(),is("ACONF00102"));
         assertThat(toGet.getXcoord(),is(1580));
         assertThat(toGet.getYcoord(),is(2538));
@@ -75,17 +77,20 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void getNodeFail() {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode);
-        assertThat(myDBS.getNode("NOTINFIELD"), is(nullValue()));
+        DatabaseService.getDatabaseService().insertNode(testNode);
+        assertThat(DatabaseService.getDatabaseService().getNode("NOTINFIELD"), is(nullValue()));
     }
 
     @Test
     @Category(FastTest.class)
     public void updateNode() {
-        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode);
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerNodeCallback(callback);
 
-        Node toGet = myDBS.getNode("ACONF00102");
+        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        DatabaseService.getDatabaseService().insertNode(testNode);
+
+        Node toGet = DatabaseService.getDatabaseService().getNode("ACONF00102");
         assertThat(toGet.getNodeID(),is("ACONF00102"));
         assertThat(toGet.getXcoord(),is(1580));
         assertThat(toGet.getYcoord(),is(2538));
@@ -97,9 +102,10 @@ public class DatabaseServiceTest {
 
 
         testNode = new Node("ACONF00102", 1582, 2540, "3", "BTM", "CONF", "Halla", "Halls");
-        myDBS.updateNode(testNode);
+        DatabaseService.getDatabaseService().updateNode(testNode);
+        verify(callback, times(2)).apply(null); // Cumulative
 
-        toGet = myDBS.getNode("ACONF00102");
+        toGet = DatabaseService.getDatabaseService().getNode("ACONF00102");
         assertThat(toGet.getNodeID(),is("ACONF00102"));
         assertThat(toGet.getXcoord(),is(1582));
         assertThat(toGet.getYcoord(),is(2540));
@@ -113,14 +119,19 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void deleteNode() {
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerNodeCallback(callback);
+
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode);
+        DatabaseService.getDatabaseService().insertNode(testNode);
         // make sure it can be got
-        assertThat(myDBS.getNode("ACONF00102").getNodeID(), is("ACONF00102"));
+        assertThat(DatabaseService.getDatabaseService().getNode("ACONF00102").getNodeID(), is("ACONF00102"));
         // delete the node from the database successfully
-        assertThat(myDBS.deleteNode(testNode),is(true));
+        assertThat(DatabaseService.getDatabaseService().deleteNode(testNode),is(true));
+        verify(callback, times(2)).apply(null);
+
         //make sure that it is not in the database
-        assertThat((myDBS.getNode("ACONF00102")), is(nullValue()));
+        assertThat((DatabaseService.getDatabaseService().getNode("ACONF00102")), is(nullValue()));
         //delete is like update so trying to delete a record that isn't there doesn't cause problems. No case needed for that.
     }
 
@@ -129,17 +140,17 @@ public class DatabaseServiceTest {
     public void getAllNodes() {
         // insert nodes
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode);
+        DatabaseService.getDatabaseService().insertNode(testNode);
         testNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        myDBS.insertNode(testNode);
-        ArrayList<Node> allNodes = myDBS.getAllNodes();
+        DatabaseService.getDatabaseService().insertNode(testNode);
+        ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
         assertThat(allNodes.size(),is(2));
         assertThat(allNodes.get(0).getNodeID(),is("ACONF00102"));
         assertThat(allNodes.get(1).getNodeID(),is("ACONF00103"));
 
         testNode = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        myDBS.insertNode(testNode);
-        allNodes = myDBS.getAllNodes();
+        DatabaseService.getDatabaseService().insertNode(testNode);
+        allNodes = DatabaseService.getDatabaseService().getAllNodes();
         assertThat(allNodes.size(),is(3));
         assertThat(allNodes.get(0).getNodeID(),is("ACONF00102"));
         assertThat(allNodes.get(1).getNodeID(),is("ACONF00103"));
@@ -148,65 +159,117 @@ public class DatabaseServiceTest {
 
     @Test
     @Category(FastTest.class)
+    public void insertAllNodes() {
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerNodeCallback(callback);
+
+        assertThat(DatabaseService.getDatabaseService().getAllNodes().size(), is(0));
+        ArrayList<Node> nodes = new ArrayList<>();
+
+        for (int i = 0; i < 10001; i ++) {
+            nodes.add(new Node("" + i, i, i, "2", "BTM", "HALL", "Hall", "Hall"));
+        }
+
+        assertTrue(DatabaseService.getDatabaseService().insertAllNodes(nodes));
+
+        verify(callback, times(11)).apply(null);
+
+        assertThat(DatabaseService.getDatabaseService().getAllNodes().size(), is(10001));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getNumNodeTypeByFloor() {
+        Node testNode1 = new Node("XCONF00101", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node testNode2 = new Node("XCONF00102", 1648, 2968, "2", "BTM", "STAI", "BTM Conference Center", "BTM Conference");
+        Node testNode3 = new Node("XCONF00103", 1648, 2968, "2", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode4 = new Node("XCONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+
+        Node testNode5 = new Node("XCONF00105", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode6 = new Node("XCONF00106", 1648, 2968, "1", "BTM", "DEPT", "BTM Conference Center", "BTM Conference");
+        Node testNode7 = new Node("XCONF00107", 1580, 2538, "1", "BTM", "LABS", "Hall", "Hall");
+        Node testNode8 = new Node("XCONF00108", 1648, 2968, "1", "BTM", "LABS", "BTM Conference Center", "BTM Conference");
+        Node testNode9 = new Node("XCONF00109", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        assertTrue(DatabaseService.getDatabaseService().insertNode(testNode1));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(testNode2));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(testNode3));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(testNode4));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(testNode5));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(testNode6));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(testNode7));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(testNode8));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(testNode9));
+
+        assertEquals(2, DatabaseService.getDatabaseService().getNumNodeTypeByFloor("HALL","2"));
+        assertEquals(1, DatabaseService.getDatabaseService().getNumNodeTypeByFloor("STAI","2"));
+        assertEquals(0, DatabaseService.getDatabaseService().getNumNodeTypeByFloor("HALL","1"));
+        assertEquals(2, DatabaseService.getDatabaseService().getNumNodeTypeByFloor("LABS","1"));
+        assertEquals(1, DatabaseService.getDatabaseService().getNumNodeTypeByFloor("DEPT","1"));
+    }
+
+    @Test
+    @Category(FastTest.class)
     public void getNodesByFloor() {
         Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode1);
+        DatabaseService.getDatabaseService().insertNode(testNode1);
         Node testNode2 = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        myDBS.insertNode(testNode2);
+        DatabaseService.getDatabaseService().insertNode(testNode2);
         Node testNode3 = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        myDBS.insertNode(testNode3);
-        ArrayList<Node> getByFloor = myDBS.getNodesByFloor("3");
+        DatabaseService.getDatabaseService().insertNode(testNode3);
+        ArrayList<Node> getByFloor = DatabaseService.getDatabaseService().getNodesByFloor("3");
         assertThat(getByFloor.size(), is(2));
         assertEquals(getByFloor.get(0),testNode2);
         assertEquals(getByFloor.get(1),testNode3);
     }
-  
+
+    @Test
+    @Category(FastTest.class)
     public void getNodesFilteredByType() {
         Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode1);
+        DatabaseService.getDatabaseService().insertNode(testNode1);
         Node testNode2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "STAI", "Hall", "Hall");
-        myDBS.insertNode(testNode2);
+        DatabaseService.getDatabaseService().insertNode(testNode2);
         Node testNode3 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "CONF", "Hall", "Hall");
-        myDBS.insertNode(testNode3);
+        DatabaseService.getDatabaseService().insertNode(testNode3);
         Node testNode4 = new Node("ACONF00105", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode4);
+        DatabaseService.getDatabaseService().insertNode(testNode4);
         Node testNode5 = new Node("ACONF00106", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode5);
+        DatabaseService.getDatabaseService().insertNode(testNode5);
 
         Node[] nodes0 = {testNode2, testNode3};
-        assertThat(myDBS.getNodesFilteredByType("HALL"), containsInAnyOrder(nodes0));
+        assertThat(DatabaseService.getDatabaseService().getNodesFilteredByType("HALL"), containsInAnyOrder(nodes0));
 
         Node[] nodes1 = {testNode1, testNode2, testNode4, testNode5};
-        assertThat(myDBS.getNodesFilteredByType("CONF"), containsInAnyOrder(nodes1));
+        assertThat(DatabaseService.getDatabaseService().getNodesFilteredByType("CONF"), containsInAnyOrder(nodes1));
 
         Node[] nodes2 = {testNode3};
-        assertThat(myDBS.getNodesFilteredByType("HALL", "STAI"), containsInAnyOrder(nodes2));
+        assertThat(DatabaseService.getDatabaseService().getNodesFilteredByType("HALL", "STAI"), containsInAnyOrder(nodes2));
     }
 
     @Test
     @Category(FastTest.class)
     public void getNodesConnectedTo(){
         Node testNode1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode1);
+        DatabaseService.getDatabaseService().insertNode(testNode1);
         Node testNode2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode2);
+        DatabaseService.getDatabaseService().insertNode(testNode2);
         Node testNode3 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode3);
+        DatabaseService.getDatabaseService().insertNode(testNode3);
         Node testNode4 = new Node("ACONF00105", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode4);
+        DatabaseService.getDatabaseService().insertNode(testNode4);
         Node testNode5 = new Node("ACONF00106", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        myDBS.insertNode(testNode5);
+        DatabaseService.getDatabaseService().insertNode(testNode5);
         Edge testEdge1 = new Edge("ACONF00102-ACONF00103", testNode1,testNode2);
-        myDBS.insertEdge(testEdge1);
+        DatabaseService.getDatabaseService().insertEdge(testEdge1);
         Edge testEdge2 = new Edge("ACONF00102-ACONF00104", testNode1,testNode3);
-        myDBS.insertEdge(testEdge2);
+        DatabaseService.getDatabaseService().insertEdge(testEdge2);
         Edge testEdge3 = new Edge("ACONF00105-ACONF00102", testNode4,testNode1);
-        myDBS.insertEdge(testEdge3);
+        DatabaseService.getDatabaseService().insertEdge(testEdge3);
         Edge testEdge4 = new Edge("ACONF00105-ACONF00106", testNode4,testNode5);
-        myDBS.insertEdge(testEdge4);
+        DatabaseService.getDatabaseService().insertEdge(testEdge4);
         Edge testEdge5 = new Edge("ACONF00106-ACONF00102", testNode5,testNode1);
-        myDBS.insertEdge(testEdge5);
-        ArrayList<Node> connectedNodes = myDBS.getNodesConnectedTo(testNode1);
+        DatabaseService.getDatabaseService().insertEdge(testEdge5);
+        ArrayList<Node> connectedNodes = DatabaseService.getDatabaseService().getNodesConnectedTo(testNode1);
         assertThat(connectedNodes.get(0).getNodeID(), is(testNode2.getNodeID()));
         assertThat(connectedNodes.get(1).getNodeID(), is(testNode3.getNodeID()));
         assertThat(connectedNodes.get(2).getNodeID(), is(testNode4.getNodeID()));
@@ -224,10 +287,10 @@ public class DatabaseServiceTest {
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
-        myDBS.insertNode(testNode);
-        myDBS.insertNode(otherNode);
-        myDBS.insertEdge(newEdge);
-        Edge gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
+        DatabaseService.getDatabaseService().insertNode(testNode);
+        DatabaseService.getDatabaseService().insertNode(otherNode);
+        DatabaseService.getDatabaseService().insertEdge(newEdge);
+        Edge gotEdge = DatabaseService.getDatabaseService().getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newEdge.getNode1().getNodeID()));
         assertThat(gotEdge.getNode2().getNodeID(), is(newEdge.getNode2().getNodeID()));
@@ -237,62 +300,72 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void insertEdge(){
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerEdgeCallback(callback);
+
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
-        assertFalse(myDBS.insertEdge(newEdge));
-        myDBS.insertNode(testNode);
-        assertFalse(myDBS.insertEdge(newEdge));
-        myDBS.insertNode(otherNode);
-        assertTrue(myDBS.insertEdge(newEdge));
+        assertFalse(DatabaseService.getDatabaseService().insertEdge(newEdge));
+        verify(callback, times(0)).apply(null);
+
+        DatabaseService.getDatabaseService().insertNode(testNode);
+        assertFalse(DatabaseService.getDatabaseService().insertEdge(newEdge));
+        verify(callback, times(0)).apply(null);
+
+        DatabaseService.getDatabaseService().insertNode(otherNode);
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(newEdge));
+        verify(callback, times(1)).apply(null);
     }
 
     @Test
     @Category(FastTest.class)
     public void updateEdge(){
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerEdgeCallback(callback);
         // set up the DB
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Node anotherNode = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
-        myDBS.insertNode(testNode);
-        myDBS.insertNode(otherNode);
-        myDBS.insertEdge(newEdge);
-        myDBS.insertNode(anotherNode);
+        DatabaseService.getDatabaseService().insertNode(testNode);
+        DatabaseService.getDatabaseService().insertNode(otherNode);
+        DatabaseService.getDatabaseService().insertEdge(newEdge);
+        DatabaseService.getDatabaseService().insertNode(anotherNode);
         // get the edge and confirm its initial values
-        Edge gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
+        Edge gotEdge = DatabaseService.getDatabaseService().getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newEdge.getNode1().getNodeID()));
         assertThat(gotEdge.getNode2().getNodeID(), is(newEdge.getNode2().getNodeID()));
-        Edge newerEdge = new Edge("ACONF00102-ACONF00104", testNode, anotherNode);
+        Edge newerEdge = new Edge("ACONF00102-ACONF00103", testNode, anotherNode);
         // update the values and confirm that they were changed
-        assertTrue(myDBS.updateEdge(newerEdge));
-        gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
+        assertTrue(DatabaseService.getDatabaseService().updateEdge(newerEdge));
+        gotEdge = DatabaseService.getDatabaseService().getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge,is(notNullValue()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newerEdge.getNode1().getNodeID()));
 
-
-
+        verify(callback, times(2)).apply(null);
     }
 
     @Test
     @Category(FastTest.class)
     public void deleteEdge(){
+        final Function callback = mock(Function.class);
+        DatabaseService.getDatabaseService().registerEdgeCallback(callback);
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
-        myDBS.insertNode(testNode);
-        myDBS.insertNode(otherNode);
-        myDBS.insertEdge(newEdge);
-        myDBS.insertNode(testNode);
-        Edge gotEdge = myDBS.getEdge("ACONF00102-ACONF00103");
+        DatabaseService.getDatabaseService().insertNode(testNode);
+        DatabaseService.getDatabaseService().insertNode(otherNode);
+        DatabaseService.getDatabaseService().insertEdge(newEdge);
+        Edge gotEdge = DatabaseService.getDatabaseService().getEdge("ACONF00102-ACONF00103");
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         // delete it
-        myDBS.deleteEdge(gotEdge);
+        DatabaseService.getDatabaseService().deleteEdge(gotEdge);
+        verify(callback, times(2)).apply(null);
+
         //make sure that it's not there
-        assertThat((myDBS.getEdge("ACONF00102-ACONF00103")), is(nullValue()));
-
-
+        assertThat((DatabaseService.getDatabaseService().getEdge("ACONF00102-ACONF00103")), is(nullValue()));
     }
 
 
@@ -305,14 +378,33 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void tableExists() {
-        assertTrue(myDBS.tableExists("NODE"));
-        assertFalse(myDBS.tableExists("NOTPRESENT"));
+        assertTrue(DatabaseService.getDatabaseService().tableExists("NODE"));
+        assertFalse(DatabaseService.getDatabaseService().tableExists("NOTPRESENT"));
 
 
     }
 
     @Test
+    @Category(FastTest.class)
     public void getAllEdges() {
+        Node n1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node n2 = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node n3 = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge e1 = new Edge("ACONF00102-ACONF00103", n1, n2);
+        Edge e2 = new Edge("ACONF00102-ACONF00104", n1, n3);
+        Edge e3 = new Edge("ACONF00103-ACONF00104", n2, n3);
+        assertTrue(DatabaseService.getDatabaseService().insertNode(n1));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(n2));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(n3));
+
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(e1));
+
+        assertThat(DatabaseService.getDatabaseService().getAllEdges(), Matchers.contains(e1));
+
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(e2));
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(e3));
+
+        assertThat(DatabaseService.getDatabaseService().getAllEdges(), Matchers.contains(e1, e2, e3));
     }
 
     @Test
@@ -324,7 +416,7 @@ public class DatabaseServiceTest {
         Reservation value, expected;
 
         // First verify that these reservations are null
-        value = myDBS.getReservation(23);
+        value = DatabaseService.getDatabaseService().getReservation(1);
         assertThat(value, is(nullValue()));
 
         // Create a reservation
@@ -335,24 +427,13 @@ public class DatabaseServiceTest {
         reservationEnd.add(Calendar.HOUR, 1);
         Reservation reservation1 = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
 
-        // This insertion will fail because there exists no employee zero in the system to make the reservation
-       // boolean insertRes = myDBS.insertReservation(reservation1);
-       // assertFalse(insertRes);
-
-        // Insert Employee in to make sure the reservation will work
-        //Employee employee = new Employee(23, "Doctor", false);
-        //myDBS.insertEmployee(employee);
-
         // successful insert because of constraints
-        boolean insertRes = myDBS.insertReservation(reservation1);
+        boolean insertRes = DatabaseService.getDatabaseService().insertReservation(reservation1);
         assertTrue(insertRes);
-
-
-
 
         // Verify successful get
         expected = reservation1;
-        value = myDBS.getReservation(0);
+        value = DatabaseService.getDatabaseService().getReservation(0);
         assertEquals(expected, value);
     }
 
@@ -363,7 +444,7 @@ public class DatabaseServiceTest {
         List<Reservation> reservationList;
 
         // No reservations should exist yet
-        reservationList = myDBS.getAllReservations();
+        reservationList = DatabaseService.getDatabaseService().getAllReservations();
         assertThat(reservationList.size(), is(0));
 
         // Create some reservations
@@ -384,19 +465,19 @@ public class DatabaseServiceTest {
         Reservation res2 = new Reservation(2, 2, 12, "Event 2", "LMNO", res3Start, res3End);
 
         // Insert two
-        assertTrue(myDBS.insertReservation(res0));
-        assertTrue(myDBS.insertReservation(res1));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res0));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res1));
 
         // Check that there are two and only two, and that they are the right two
-        reservationList = myDBS.getAllReservations();
+        reservationList = DatabaseService.getDatabaseService().getAllReservations();
         assertThat(reservationList.size(), is(2));
         assertEquals(res0, reservationList.get(0));
         assertEquals(res1, reservationList.get(1));
 
         // Insert #3, and rerun checks
-        assertTrue(myDBS.insertReservation(res2));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res2));
 
-        reservationList = myDBS.getAllReservations();
+        reservationList = DatabaseService.getDatabaseService().getAllReservations();
         assertThat(reservationList.size(), is(3));
         assertEquals(res0, reservationList.get(0));
         assertEquals(res1, reservationList.get(1));
@@ -413,16 +494,16 @@ public class DatabaseServiceTest {
         reservationEnd.add(Calendar.HOUR, 1);
         Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
 
-        assertTrue(myDBS.insertReservation(reservation));
-        assertEquals(reservation, myDBS.getReservation(0));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(reservation));
+        assertEquals(reservation, DatabaseService.getDatabaseService().getReservation(0));
 
         reservation.setPrivacyLevel(1);
         reservation.setLocationID("ABCD");
         reservationEnd.add(Calendar.MINUTE, 30);
         reservation.setEndTime(reservationEnd);
 
-        assertTrue(myDBS.updateReservation(reservation));
-        assertEquals(reservation, myDBS.getReservation(0));
+        assertTrue(DatabaseService.getDatabaseService().updateReservation(reservation));
+        assertEquals(reservation, DatabaseService.getDatabaseService().getReservation(0));
     }
 
     @Test
@@ -435,11 +516,11 @@ public class DatabaseServiceTest {
         reservationEnd.add(Calendar.HOUR, 1);
         Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
 
-        assertTrue(myDBS.insertReservation(reservation));
-        assertEquals(reservation, myDBS.getReservation(0));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(reservation));
+        assertEquals(reservation, DatabaseService.getDatabaseService().getReservation(0));
 
-        assertTrue(myDBS.deleteReservation(reservation));
-        assertNull(myDBS.getReservation(0));
+        assertTrue(DatabaseService.getDatabaseService().deleteReservation(reservation));
+        assertNull(DatabaseService.getDatabaseService().getReservation(0));
     }
 
     @Test
@@ -450,7 +531,7 @@ public class DatabaseServiceTest {
         List<Reservation> reservationList;
 
         // No reservations should exist yet
-        reservationList = myDBS.getAllReservations();
+        reservationList = DatabaseService.getDatabaseService().getAllReservations();
         assertThat(reservationList.size(), is(0));
 
         // Create some reservations
@@ -471,18 +552,18 @@ public class DatabaseServiceTest {
         Reservation res2 = new Reservation(2, 2, 12, "Event 2", "ABCD", res3Start, res3End);
 
         // Insert two
-        assertTrue(myDBS.insertReservation(res0));
-        assertTrue(myDBS.insertReservation(res1));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res0));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res1));
 
         // Check that only the res with the ABCD location is retrieved
-        reservationList = myDBS.getReservationsBySpaceId("ABCD");
+        reservationList = DatabaseService.getDatabaseService().getReservationsBySpaceId("ABCD");
         assertThat(reservationList.size(), is(1));
         assertEquals(res0, reservationList.get(0));
 
         // Insert #3, and rerun checks
-        assertTrue(myDBS.insertReservation(res2));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res2));
 
-        reservationList = myDBS.getReservationsBySpaceId("ABCD");
+        reservationList = DatabaseService.getDatabaseService().getReservationsBySpaceId("ABCD");
         assertThat(reservationList.size(), is(2));
         assertEquals(res0, reservationList.get(0));
         assertEquals(res2, reservationList.get(1));
@@ -496,7 +577,7 @@ public class DatabaseServiceTest {
         List<Reservation> reservationList;
 
         // No reservations should exist yet
-        reservationList = myDBS.getAllReservations();
+        reservationList = DatabaseService.getDatabaseService().getAllReservations();
         assertThat(reservationList.size(), is(0));
 
 
@@ -511,19 +592,28 @@ public class DatabaseServiceTest {
         res2End.setTime(new Date(now + 110000));
         Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
         Reservation res1 = new Reservation(1, 0, 43, "Event 1", "ABCD", res2Start, res2End);
+        Reservation res2 = new Reservation(2, 0, 43, "Event 1", "LMNO", res2Start, res2End);
 
         // Insert two
-        assertTrue(myDBS.insertReservation(res0));
-        assertTrue(myDBS.insertReservation(res1));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res0));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res1));
+        assertTrue(DatabaseService.getDatabaseService().insertReservation(res2));
 
+        GregorianCalendar gapStart = new GregorianCalendar();
+        GregorianCalendar gapEnd = new GregorianCalendar();
+        gapStart.setTime(new Date(now - 6000));
+        gapEnd.setTime(new Date(now + 200));
 
         // Check that only one is retrieved (small time block)
-        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", new Date(now - 6000), new Date(now + 200));
+        reservationList = DatabaseService.getDatabaseService().getReservationsBySpaceIdBetween("ABCD", gapStart, gapEnd);
         assertThat(reservationList.size(), is(1));
         assertEquals(res0, reservationList.get(0));
 
+        gapStart.setTime(new Date(now - 1000000));
+        gapEnd.setTime(new Date(now + 1100000));
+
         // Check that both are retrieved (large time block)
-        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", new Date(now - 1000000), new Date(now + 1100000));
+        reservationList = DatabaseService.getDatabaseService().getReservationsBySpaceIdBetween("ABCD", gapStart, gapEnd);
         assertThat(reservationList.size(), is(2));
         assertEquals(res0, reservationList.get(0));
         assertEquals(res1, reservationList.get(1));
@@ -537,19 +627,19 @@ public class DatabaseServiceTest {
         Employee value, expected;
 
         // First verify that the Employee is null
-        value = myDBS.getEmployee(0);
+        value = DatabaseService.getDatabaseService().getEmployee(0);
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee = new Employee(0, "Doctor", false, "douglas");
+        Employee employee = new Employee(0, "mrdoctor", JobType.DOCTOR, false, "douglas");
 
         // Verify successful insertion
-        boolean insertRes = myDBS.insertEmployee(employee);
+        boolean insertRes = DatabaseService.getDatabaseService().insertEmployee(employee);
         assertTrue(insertRes);
 
         // Verify successful get
         expected = employee;
-        value = myDBS.getEmployee(employee.getID());
+        value = DatabaseService.getDatabaseService().getEmployee(employee.getID());
         assertEquals(expected, value);
     }
 
@@ -559,34 +649,36 @@ public class DatabaseServiceTest {
         Employee value, expected;
 
         // First verify that the Employees are null
-        value = myDBS.getEmployee(0);
+        value = DatabaseService.getDatabaseService().getEmployee(0);
         assertThat(value, is(nullValue()));
-        value = myDBS.getEmployee(1);
+        value = DatabaseService.getDatabaseService().getEmployee(1);
         assertThat(value, is(nullValue()));
-        value = myDBS.getEmployee(2);
+        value = DatabaseService.getDatabaseService().getEmployee(2);
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee1 = new Employee(0, "Doctor", false, "douglas");
-        Employee employee2 = new Employee(1, "Nurse", false, "tyler");
-        Employee employee3 = new Employee(2, "Admin", true, "joshua");
+        Employee employee1 = new Employee(0, "douglas", JobType.DOCTOR, false, "douglas");
+        Employee employee2 = new Employee(1, "tferrara", JobType.NURSE, false, "tyler");
+        Employee employee3 = new Employee(2, "josh", JobType.ADMINISTRATOR, true, "joshua");
+        Employee tylerImpersonator = new Employee(3, "tferrara", JobType.NURSE, true, "tyler");
 
         // Verify successful insertion
-        boolean insertRes = myDBS.insertEmployee(employee1);
+        boolean insertRes = DatabaseService.getDatabaseService().insertEmployee(employee1);
         assertTrue(insertRes);
-        insertRes = myDBS.insertEmployee(employee2);
+        insertRes = DatabaseService.getDatabaseService().insertEmployee(employee2);
         assertTrue(insertRes);
+        assertFalse(DatabaseService.getDatabaseService().insertEmployee(tylerImpersonator));
 
         // Check that there are two and only two, and that they are the right two
-        List<Employee> employeeList = myDBS.getAllEmployees();
+        List<Employee> employeeList = DatabaseService.getDatabaseService().getAllEmployees();
         assertThat(employeeList.size(), is(2));
         assertEquals(employee1, employeeList.get(0));
         assertEquals(employee2, employeeList.get(1));
 
         // Insert #3, and rerun checks
-        assertTrue(myDBS.insertEmployee(employee3));
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(employee3));
 
-        employeeList = myDBS.getAllEmployees();
+        employeeList = DatabaseService.getDatabaseService().getAllEmployees();
         assertThat(employeeList.size(), is(3));
         assertEquals(employee1, employeeList.get(0));
         assertEquals(employee2, employeeList.get(1));
@@ -596,28 +688,28 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void updateEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "Douglas");
+        Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "123456");
 
-        assertTrue(myDBS.insertEmployee(employee));
-        assertEquals(employee, myDBS.getEmployee(0));
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(employee));
+        assertEquals(employee, DatabaseService.getDatabaseService().getEmployee(0));
 
         employee.setAdmin(true);
-        employee.setJob("Department head");
+        employee.setJob(JobType.ADMINISTRATOR);
 
-        assertTrue(myDBS.updateEmployee(employee));
-        assertEquals(employee, myDBS.getEmployee(0));
+        assertTrue(DatabaseService.getDatabaseService().updateEmployee(employee));
+        assertEquals(employee, DatabaseService.getDatabaseService().getEmployee(0));
     }
 
     @Test
     @Category(FastTest.class)
     public void deleteEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "CatPlanet");
+        Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "password");
 
-        assertTrue(myDBS.insertEmployee(employee));
-        assertEquals(employee, myDBS.getEmployee(0));
+        assertTrue(DatabaseService.getDatabaseService().insertEmployee(employee));
+        assertEquals(employee, DatabaseService.getDatabaseService().getEmployee(0));
 
-        assertTrue(myDBS.deleteEmployee(employee));
-        assertNull(myDBS.getEmployee(0));
+        assertTrue(DatabaseService.getDatabaseService().deleteEmployee(employee));
+        assertNull(DatabaseService.getDatabaseService().getEmployee(0));
     }
 
     @Test
@@ -628,7 +720,7 @@ public class DatabaseServiceTest {
         ReservableSpace value, expected;
 
         // First verify that the ReservableSpace is null
-        value = myDBS.getReservableSpace("ABCD");
+        value = DatabaseService.getDatabaseService().getReservableSpace("ABCD");
         assertThat(value, is(nullValue()));
 
 
@@ -642,12 +734,12 @@ public class DatabaseServiceTest {
         ReservableSpace space = new ReservableSpace("ABCD", "Space 1", "CONF", "LMNO10011", openTime, closeTime);
 
         // Verify successful insertion
-        boolean insertRes = myDBS.insertReservableSpace(space);
+        boolean insertRes = DatabaseService.getDatabaseService().insertReservableSpace(space);
         assertTrue(insertRes);
 
         // Verify successful get
         expected = space;
-        value = myDBS.getReservableSpace(space.getSpaceID());
+        value = DatabaseService.getDatabaseService().getReservableSpace(space.getSpaceID());
         assertEquals(expected, value);
     }
 
@@ -659,11 +751,11 @@ public class DatabaseServiceTest {
         ReservableSpace value, expected;
 
         // First verify that the ReservableSpace is null
-        value = myDBS.getReservableSpace("ABCD");
+        value = DatabaseService.getDatabaseService().getReservableSpace("ABCD");
         assertThat(value, is(nullValue()));
-        value = myDBS.getReservableSpace("XYZ");
+        value = DatabaseService.getDatabaseService().getReservableSpace("XYZ");
         assertThat(value, is(nullValue()));
-        value = myDBS.getReservableSpace("LMNO");
+        value = DatabaseService.getDatabaseService().getReservableSpace("LMNO");
         assertThat(value, is(nullValue()));
 
 
@@ -680,21 +772,21 @@ public class DatabaseServiceTest {
         ReservableSpace space3 = new ReservableSpace("LMNO", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
 
         // Verify successful insertion
-        boolean insertRes = myDBS.insertReservableSpace(space1);
+        boolean insertRes = DatabaseService.getDatabaseService().insertReservableSpace(space1);
         assertTrue(insertRes);
-        insertRes = myDBS.insertReservableSpace(space2);
+        insertRes = DatabaseService.getDatabaseService().insertReservableSpace(space2);
         assertTrue(insertRes);
 
         // Check that there are two and only two, and that they are the right two
-        List<ReservableSpace> allReservableSpaces = myDBS.getAllReservableSpaces();
+        List<ReservableSpace> allReservableSpaces = DatabaseService.getDatabaseService().getAllReservableSpaces();
         assertThat(allReservableSpaces.size(), is(2));
         assertEquals(space1, allReservableSpaces.get(0));
         assertEquals(space2, allReservableSpaces.get(1));
 
         // Insert #3, and rerun checks
-        assertTrue(myDBS.insertReservableSpace(space3));
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space3));
 
-        allReservableSpaces = myDBS.getAllReservableSpaces();
+        allReservableSpaces = DatabaseService.getDatabaseService().getAllReservableSpaces();
         assertThat(allReservableSpaces.size(), is(3));
         assertEquals(space1, allReservableSpaces.get(0));
         assertEquals(space2, allReservableSpaces.get(1));
@@ -713,15 +805,15 @@ public class DatabaseServiceTest {
 
         ReservableSpace space = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
 
-        assertTrue(myDBS.insertReservableSpace(space));
-        assertEquals(space, myDBS.getReservableSpace("ABCD"));
+        assertTrue(DatabaseService.getDatabaseService().insertReservableSpace(space));
+        assertEquals(space, DatabaseService.getDatabaseService().getReservableSpace("ABCD"));
 
         space.setSpaceName("Named Room");
         openTime.add(Calendar.MINUTE, -30);
         space.setTimeOpen(openTime);
 
-        assertTrue(myDBS.updateReservableSpace(space));
-        assertEquals(space, myDBS.getReservableSpace("ABCD"));
+        assertTrue(DatabaseService.getDatabaseService().updateReservableSpace(space));
+        assertEquals(space, DatabaseService.getDatabaseService().getReservableSpace("ABCD"));
     }
 
     @Test
@@ -743,7 +835,7 @@ public class DatabaseServiceTest {
         ITRequest value, expected;
 
         // First verify that the request is null
-        value = myDBS.getITRequest(0);
+        value = DatabaseService.getDatabaseService().getITRequest(0);
         assertThat(value, is(nullValue()));
 
         // Create a request
@@ -751,13 +843,13 @@ public class DatabaseServiceTest {
         ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
 
         // Verify successful insertion
-        assertTrue(myDBS.insertNode(node));
-        boolean insertRes = myDBS.insertITRequest(req);
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        boolean insertRes = DatabaseService.getDatabaseService().insertITRequest(req);
         assertTrue(insertRes);
 
         // Verify successful get
         expected = req;
-        value = myDBS.getITRequest(0);
+        value = DatabaseService.getDatabaseService().getITRequest(0);
         assertEquals(expected, value);
     }
 
@@ -769,11 +861,11 @@ public class DatabaseServiceTest {
         ITRequest value;
 
         // First verify that these requests are null
-        value = myDBS.getITRequest(0);
+        value = DatabaseService.getDatabaseService().getITRequest(0);
         assertThat(value, is(nullValue()));
-        value = myDBS.getITRequest(1);
+        value = DatabaseService.getDatabaseService().getITRequest(1);
         assertThat(value, is(nullValue()));
-        value = myDBS.getITRequest(2);
+        value = DatabaseService.getDatabaseService().getITRequest(2);
         assertThat(value, is(nullValue()));
 
 
@@ -784,20 +876,25 @@ public class DatabaseServiceTest {
         ITRequest req3 = new ITRequest(2, "Notes go here", node, false, "Help me");
 
         // Verify successful insertion
-        assertTrue(myDBS.insertNode(node));
-        assertTrue(myDBS.insertITRequest(req1));
-        assertTrue(myDBS.insertITRequest(req2));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        assertTrue(DatabaseService.getDatabaseService().insertITRequest(req1));
+        assertTrue(DatabaseService.getDatabaseService().insertITRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
 
         // Check that there are two and only two, and that they are the right two
-        List<ITRequest> allITRequests = myDBS.getAllITRequests();
+        List<ITRequest> allITRequests = DatabaseService.getDatabaseService().getAllITRequests();
         assertThat(allITRequests.size(), is(2));
         assertEquals(req1, allITRequests.get(0));
         assertEquals(req2, allITRequests.get(1));
 
         // Insert #3, and rerun checks
-        assertTrue(myDBS.insertITRequest(req3));
+        assertTrue(DatabaseService.getDatabaseService().insertITRequest(req3));
 
-        allITRequests = myDBS.getAllITRequests();
+        req3.setId(2);
+
+        allITRequests = DatabaseService.getDatabaseService().getAllITRequests();
         assertThat(allITRequests.size(), is(3));
         assertEquals(req1, allITRequests.get(0));
         assertEquals(req2, allITRequests.get(1));
@@ -810,15 +907,15 @@ public class DatabaseServiceTest {
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
 
-        assertTrue(myDBS.insertNode(node));
-        assertTrue(myDBS.insertITRequest(req));
-        assertEquals(req, myDBS.getITRequest(0));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        assertTrue(DatabaseService.getDatabaseService().insertITRequest(req));
+        assertEquals(req, DatabaseService.getDatabaseService().getITRequest(0));
 
         req.setDescription("Two new mouses needed");
         req.setCompleted(true);
 
-        assertTrue(myDBS.updateITRequest(req));
-        assertEquals(req, myDBS.getITRequest(0));
+        assertTrue(DatabaseService.getDatabaseService().updateITRequest(req));
+        assertEquals(req, DatabaseService.getDatabaseService().getITRequest(0));
     }
 
     @Test
@@ -827,12 +924,12 @@ public class DatabaseServiceTest {
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
 
-        assertTrue(myDBS.insertNode(node));
-        assertTrue(myDBS.insertITRequest(req));
-        assertEquals(req, myDBS.getITRequest(0));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        assertTrue(DatabaseService.getDatabaseService().insertITRequest(req));
+        assertEquals(req, DatabaseService.getDatabaseService().getITRequest(0));
 
-        assertTrue(myDBS.deleteITRequest(req));
-        assertNull(myDBS.getITRequest(0));
+        assertTrue(DatabaseService.getDatabaseService().deleteITRequest(req));
+        assertNull(DatabaseService.getDatabaseService().getITRequest(0));
     }
 
     @Test
@@ -843,11 +940,11 @@ public class DatabaseServiceTest {
         ITRequest value;
 
         // First verify that these requests are null
-        value = myDBS.getITRequest(0);
+        value = DatabaseService.getDatabaseService().getITRequest(0);
         assertThat(value, is(nullValue()));
-        value = myDBS.getITRequest(1);
+        value = DatabaseService.getDatabaseService().getITRequest(1);
         assertThat(value, is(nullValue()));
-        value = myDBS.getITRequest(2);
+        value = DatabaseService.getDatabaseService().getITRequest(2);
         assertThat(value, is(nullValue()));
 
 
@@ -858,19 +955,19 @@ public class DatabaseServiceTest {
         ITRequest req3 = new ITRequest(2, "Notes go here", node, false, "Help me");
 
         // Verify successful insertion
-        assertTrue(myDBS.insertNode(node));
-        assertTrue(myDBS.insertITRequest(req1));
-        assertTrue(myDBS.insertITRequest(req2));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        assertTrue(DatabaseService.getDatabaseService().insertITRequest(req1));
+        assertTrue(DatabaseService.getDatabaseService().insertITRequest(req2));
 
         // Check that there are two and only two, and that they are the right two
-        List<ITRequest> allITRequests = myDBS.getAllIncompleteITRequests();
+        List<ITRequest> allITRequests = DatabaseService.getDatabaseService().getAllIncompleteITRequests();
         assertThat(allITRequests.size(), is(1));
         assertEquals(req1, allITRequests.get(0));
 
         // Insert #3, and rerun checks
-        assertTrue(myDBS.insertITRequest(req3));
+        assertTrue(DatabaseService.getDatabaseService().insertITRequest(req3));
 
-        allITRequests = myDBS.getAllIncompleteITRequests();
+        allITRequests = DatabaseService.getDatabaseService().getAllIncompleteITRequests();
         assertThat(allITRequests.size(), is(2));
         assertEquals(req1, allITRequests.get(0));
         assertEquals(req3, allITRequests.get(1));
@@ -884,7 +981,7 @@ public class DatabaseServiceTest {
         MedicineRequest value, expected;
 
         // First verify that the request is null
-        value = myDBS.getMedicineRequest(0);
+        value = DatabaseService.getDatabaseService().getMedicineRequest(0);
         assertThat(value, is(nullValue()));
 
         // Create a request
@@ -892,13 +989,13 @@ public class DatabaseServiceTest {
         MedicineRequest req = new MedicineRequest(0, "Quickly please", node, false, "Ibuprofen", 2.5);
 
         // Verify successful insertion
-        assertTrue(myDBS.insertNode(node));
-        boolean insertRes = myDBS.insertMedicineRequest(req);
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        boolean insertRes = DatabaseService.getDatabaseService().insertMedicineRequest(req);
         assertTrue(insertRes);
 
         // Verify successful get
         expected = req;
-        value = myDBS.getMedicineRequest(0);
+        value = DatabaseService.getDatabaseService().getMedicineRequest(0);
         assertEquals(expected, value);
     }
 
@@ -910,11 +1007,11 @@ public class DatabaseServiceTest {
         MedicineRequest value;
 
         // First verify that these requests are null
-        value = myDBS.getMedicineRequest(0);
+        value = DatabaseService.getDatabaseService().getMedicineRequest(0);
         assertThat(value, is(nullValue()));
-        value = myDBS.getMedicineRequest(1);
+        value = DatabaseService.getDatabaseService().getMedicineRequest(1);
         assertThat(value, is(nullValue()));
-        value = myDBS.getMedicineRequest(2);
+        value = DatabaseService.getDatabaseService().getMedicineRequest(2);
         assertThat(value, is(nullValue()));
 
 
@@ -925,20 +1022,20 @@ public class DatabaseServiceTest {
         MedicineRequest req3 = new MedicineRequest(2, "Notes go here", node, false, "Some other medicine", 1);
 
         // Verify successful insertion
-        assertTrue(myDBS.insertNode(node));
-        assertTrue(myDBS.insertMedicineRequest(req1));
-        assertTrue(myDBS.insertMedicineRequest(req2));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        assertTrue(DatabaseService.getDatabaseService().insertMedicineRequest(req1));
+        assertTrue(DatabaseService.getDatabaseService().insertMedicineRequest(req2));
 
         // Check that there are two and only two, and that they are the right two
-        List<MedicineRequest> allMedicineRequests = myDBS.getAllMedicineRequests();
+        List<MedicineRequest> allMedicineRequests = DatabaseService.getDatabaseService().getAllMedicineRequests();
         assertThat(allMedicineRequests.size(), is(2));
         assertEquals(req1, allMedicineRequests.get(0));
         assertEquals(req2, allMedicineRequests.get(1));
 
         // Insert #3, and rerun checks
-        assertTrue(myDBS.insertMedicineRequest(req3));
+        assertTrue(DatabaseService.getDatabaseService().insertMedicineRequest(req3));
 
-        allMedicineRequests = myDBS.getAllMedicineRequests();
+        allMedicineRequests = DatabaseService.getDatabaseService().getAllMedicineRequests();
         assertThat(allMedicineRequests.size(), is(3));
         assertEquals(req1, allMedicineRequests.get(0));
         assertEquals(req2, allMedicineRequests.get(1));
@@ -951,15 +1048,15 @@ public class DatabaseServiceTest {
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         MedicineRequest req = new MedicineRequest(0, "No notes", node, false, "Ibuprofen", 3.75);
 
-        assertTrue(myDBS.insertNode(node));
-        assertTrue(myDBS.insertMedicineRequest(req));
-        assertEquals(req, myDBS.getMedicineRequest(0));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        assertTrue(DatabaseService.getDatabaseService().insertMedicineRequest(req));
+        assertEquals(req, DatabaseService.getDatabaseService().getMedicineRequest(0));
 
         req.setNotes("Capsules");
         req.setQuantity(5.333);
 
-        assertTrue(myDBS.updateMedicineRequest(req));
-        assertEquals(req, myDBS.getMedicineRequest(0));
+        assertTrue(DatabaseService.getDatabaseService().updateMedicineRequest(req));
+        assertEquals(req, DatabaseService.getDatabaseService().getMedicineRequest(0));
     }
 
     @Test
@@ -968,12 +1065,12 @@ public class DatabaseServiceTest {
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         MedicineRequest req = new MedicineRequest(0, "No notes", node, false, "Ibuprofen", 3.75);
 
-        assertTrue(myDBS.insertNode(node));
-        assertTrue(myDBS.insertMedicineRequest(req));
-        assertEquals(req, myDBS.getMedicineRequest(0));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        assertTrue(DatabaseService.getDatabaseService().insertMedicineRequest(req));
+        assertEquals(req, DatabaseService.getDatabaseService().getMedicineRequest(0));
 
-        assertTrue(myDBS.deleteMedicineRequest(req));
-        assertNull(myDBS.getMedicineRequest(0));
+        assertTrue(DatabaseService.getDatabaseService().deleteMedicineRequest(req));
+        assertNull(DatabaseService.getDatabaseService().getMedicineRequest(0));
     }
 
     @Test
@@ -984,11 +1081,11 @@ public class DatabaseServiceTest {
         MedicineRequest value;
 
         // First verify that these requests are null
-        value = myDBS.getMedicineRequest(0);
+        value = DatabaseService.getDatabaseService().getMedicineRequest(0);
         assertThat(value, is(nullValue()));
-        value = myDBS.getMedicineRequest(1);
+        value = DatabaseService.getDatabaseService().getMedicineRequest(1);
         assertThat(value, is(nullValue()));
-        value = myDBS.getMedicineRequest(2);
+        value = DatabaseService.getDatabaseService().getMedicineRequest(2);
         assertThat(value, is(nullValue()));
 
 
@@ -999,19 +1096,19 @@ public class DatabaseServiceTest {
         MedicineRequest req3 = new MedicineRequest(2, "Notes go here", node, false, "Some other medicine", 1);
 
         // Verify successful insertion
-        assertTrue(myDBS.insertNode(node));
-        assertTrue(myDBS.insertMedicineRequest(req1));
-        assertTrue(myDBS.insertMedicineRequest(req2));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(node));
+        assertTrue(DatabaseService.getDatabaseService().insertMedicineRequest(req1));
+        assertTrue(DatabaseService.getDatabaseService().insertMedicineRequest(req2));
 
         // Check that there are two and only two, and that they are the right two
-        List<MedicineRequest> allMedicineRequests = myDBS.getAllIncompleteMedicineRequests();
+        List<MedicineRequest> allMedicineRequests = DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
         assertThat(allMedicineRequests.size(), is(1));
         assertEquals(req1, allMedicineRequests.get(0));
 
         // Insert #3, and rerun checks
-        assertTrue(myDBS.insertMedicineRequest(req3));
+        assertTrue(DatabaseService.getDatabaseService().insertMedicineRequest(req3));
 
-        allMedicineRequests = myDBS.getAllIncompleteMedicineRequests();
+        allMedicineRequests = DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
         assertThat(allMedicineRequests.size(), is(2));
         assertEquals(req1, allMedicineRequests.get(0));
         assertEquals(req3, allMedicineRequests.get(1));

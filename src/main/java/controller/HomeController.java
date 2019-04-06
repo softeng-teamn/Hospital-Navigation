@@ -1,6 +1,9 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import com.sun.javafx.font.Glyph;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -25,8 +28,11 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
+import model.Edge;
+import model.Elevator;
 import model.MapNode;
 import model.Node;
+import service.DatabaseService;
 import service.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -34,9 +40,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 
 public class HomeController extends MapController {
 
@@ -56,7 +63,8 @@ public class HomeController extends MapController {
     private Label edit_id, new_room1, new_room2, cur_el_floor;
     @FXML
     private JFXListView<Node> list_view;
-
+    @FXML
+    private FontAwesomeIconView lock_icon;
 
     public Group zoomGroup;
     Node restRoom = new Node("BREST00102",2177,1010,"2","45 Francis","REST","Restroom 1 Level 2","REST B0102");
@@ -68,6 +76,8 @@ public class HomeController extends MapController {
     private Circle destCircle = new Circle();
     private Circle kioskCircle = new Circle();
     private int addNodeState = 0;
+
+    static Elevator elev;
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
@@ -112,25 +122,61 @@ public class HomeController extends MapController {
         StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
     }
 
+    public static void initializeElevator() {
+        try {
+            elev = Elevator.get("MyRobotName");
+        } catch ( Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void initConnections() {
+        System.out.println("creating hashmap ...");
+        connections = new HashMap<>();
+        ArrayList<Edge> allEdges = DatabaseService.getDatabaseService().getAllEdges();
+
+        for (Edge e : allEdges) {
+            if (connections.containsKey(e.getNode1().getNodeID())) {
+                connections.get(e.getNode1().getNodeID()).add(e.getNode2());
+            } else {
+                ArrayList<Node> newList = new ArrayList<>();
+                newList.add(e.getNode2());
+                connections.put(e.getNode1().getNodeID(), newList);
+            }
+
+
+            if (connections.containsKey(e.getNode2().getNodeID())) {
+                connections.get(e.getNode2().getNodeID()).add(e.getNode1());
+            } else {
+                ArrayList<Node> newList = new ArrayList<>();
+                newList.add(e.getNode1());
+                connections.put(e.getNode2().getNodeID(), newList);
+            }
+        }
+
+        System.out.println("the hashmap is MADE!");
+    }
 
     /**
      * initializes the home controller
      */
     @FXML
     void initialize() {
+        initConnections();
+        initializeElevator();
 
         // Hide the edit window
         hideEditor();
 
         authCheck();
 
-        dbs.registerNodeCallback(aVoid -> {
+        DatabaseService.getDatabaseService().registerNodeCallback(aVoid -> {
             HomeController.this.nodeChangedCallback();
             return null;
         });
 
-        elev.registerCallback(aDouble -> {
-            this.elevCallback(aDouble);
+        DatabaseService.getDatabaseService().registerEdgeCallback(aVoid -> {
+            HomeController.this.edgeChangedCallback();
             return null;
         });
 
@@ -178,15 +224,23 @@ public class HomeController extends MapController {
     }
 
     /**
-     * TBD
+     * DatabaseService calls this when nodes are inserted, modified, deleted
      */
     private void nodeChangedCallback() {
+        initConnections();
         repopulateList();
+    }
+
+    /**
+     * DatabaseService calls this when edges are inserted (to
+     */
+    private void edgeChangedCallback() {
+        initConnections();
     }
   
     void authCheck() {
         if (Controller.getIsAdmin()) {
-            auth_btn.setText("Logout");
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
             edit_btn.setVisible(true);
             newRoom_btn.setVisible(true);
 
@@ -198,7 +252,7 @@ public class HomeController extends MapController {
             }
         } else {
             System.out.println("not an admin anymore");
-            auth_btn.setText("Log In");
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
             if (top_nav.getChildren().contains(edit_btn)) {
                 top_nav.getChildren().remove(edit_btn);
             }
@@ -387,7 +441,7 @@ public class HomeController extends MapController {
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
         stage.sizeToScene();
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
     }
 
     @FXML
@@ -566,7 +620,7 @@ public class HomeController extends MapController {
                 edit_long.getText(),
                 edit_short.getText()
         );
-        if (dbs.updateNode(myNode)) {
+        if (DatabaseService.getDatabaseService().updateNode(myNode)) {
             System.out.println("Here is the Old Node");
             System.out.println(oldNode);
             System.out.println("NEW NODE");
@@ -629,9 +683,9 @@ public class HomeController extends MapController {
     void repopulateList() {
         System.out.println("Repopulation of listView");
         if (Controller.getIsAdmin()) {
-            allNodes = dbs.getAllNodes();
+            allNodes = DatabaseService.getDatabaseService().getAllNodes();
         } else {
-            allNodes = dbs.getNodesFilteredByType("STAI", "HALL");
+            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
         }
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();
