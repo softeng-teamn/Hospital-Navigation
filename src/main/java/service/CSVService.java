@@ -328,7 +328,7 @@ public class CSVService extends Controller {
     }
 
     /**
-     * Import the Edges table
+     * Import the Employees table
      */
     public static void importEmployees() {
 
