@@ -41,7 +41,7 @@ public class DatabaseService {
         createFlag = false;
 
         // Start by trying to open connection with existing database
-        Connection conn = null;
+        Connection conn;
         conn = openConnection(false);
 
         if (conn == null) { // No database exists on disk, so create a new one
@@ -70,6 +70,7 @@ public class DatabaseService {
 
                 // Open a new connection allowing creation of database
                 conn = openConnection(true);
+                this.connection = conn;
                 createFlag = true;
             }
 
