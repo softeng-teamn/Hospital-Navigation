@@ -1,7 +1,9 @@
 package model.request;
 
+import com.jfoenix.controls.JFXToggleNode;
 import model.Node;
 import model.RequestType;
+import service.DatabaseService;
 
 import static model.RequestType.RType.ITS;
 import static model.RequestType.RType.MED;
@@ -59,14 +61,6 @@ public class MedicineRequest extends Request {
         return Objects.hash(super.hashCode(), medicineType, quantity);
     }
 
-
-
-    // *************************
-   // @Override
-   // public void makeRequest() {}
-
-   // @Override
-    //public void fulfillRequest () {}
 
 
 

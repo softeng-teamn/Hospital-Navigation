@@ -114,10 +114,6 @@ public abstract class Request {
                 '}';
     }
 
-    // *******************************
-    public void makeRequest(JFXToggleNode selection, String description, Node requestLocation) {}
-    public void fulfillRequest(Request type, String byWho) {}
-
 
 }
 

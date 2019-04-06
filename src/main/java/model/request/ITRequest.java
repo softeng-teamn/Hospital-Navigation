@@ -48,21 +48,6 @@ public class ITRequest extends Request {
     }
 
 
-    // *************************
-    @Override
-    public void makeRequest(JFXToggleNode selection, String description, Node requestLocation) {
-        ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
-        DatabaseService.getDatabaseService().insertITRequest(newITRequest);
-    }
-
-
-    @Override
-    public void fulfillRequest (Request type, String byWho) {
-        type.setCompleted(true);
-        type.setCompletedBy(byWho);
-        DatabaseService.getDatabaseService().updateITRequest((ITRequest)type);
-    }
-
 
 }
 
