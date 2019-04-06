@@ -239,24 +239,28 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER')))");
 
-            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
+            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, description varchar(300))");
 
-            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
+            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
 
             statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
 
             statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
 
+            // DATABASE CONSTRAINTS
             statement.addBatch("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
             statement.addBatch("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
-
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
             // constraints that matter less but will be fully implemented later
-            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (LOCATIONID) REFERENCES RESERVABLESPACE(SPACEID)");
             statement.addBatch("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
+            // constraints on service requests
+            statement.addBatch("ALTER TABLE ITREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
+            statement.addBatch("ALTER TABLE MEDICINEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             // creates an index to optimize querying.
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
+
+            //LCC,,. PUT IN CONSTRAINTS FOR SIMPLE SERVICES HERE
 
 
             statement.executeBatch();
@@ -811,12 +815,14 @@ public class DatabaseService {
         Statement statement = null;
         try {
             statement = connection.createStatement();
+            // these must be dropped first to prevent constraint issues
             statement.addBatch("DROP TABLE EDGE");
             statement.addBatch("DROP TABLE RESERVATION");
-            statement.addBatch("DROP TABLE NODE");
-            statement.addBatch("DROP TABLE EMPLOYEE");
             statement.addBatch("DROP TABLE ITREQUEST");
             statement.addBatch("DROP TABLE MEDICINEREQUEST");
+            // these can be dropped in any order
+            statement.addBatch("DROP TABLE NODE");
+            statement.addBatch("DROP TABLE EMPLOYEE");
             statement.addBatch("DROP TABLE RESERVABLESPACE");
             statement.addBatch("DROP TABLE META_DB_VER");
             statement.executeBatch();
@@ -828,6 +834,8 @@ public class DatabaseService {
             closeStatement(statement);
         }
     }
+
+
 
 
     //<editor-fold desc="Generic Execution Methods">

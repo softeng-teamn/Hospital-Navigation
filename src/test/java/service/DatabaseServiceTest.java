@@ -4,6 +4,7 @@ import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import org.apache.commons.io.FileUtils;
+import org.apache.derby.iapi.db.Database;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -418,7 +419,7 @@ public class DatabaseServiceTest {
         // First verify that these reservations are null
         value = DatabaseService.getDatabaseService().getReservation(1);
         assertThat(value, is(nullValue()));
-        Employee testEmployee = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        Employee testEmployee = new Employee(23,"JJohnson",JobType.DOCTOR,false,"douglas");
 
         // Create a reservation
         GregorianCalendar reservationStart = new GregorianCalendar();
