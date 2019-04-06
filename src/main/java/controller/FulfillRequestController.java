@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.JobType;
 import model.RequestType;
@@ -43,6 +44,8 @@ public class FulfillRequestController extends Controller implements Initializabl
     private JFXRadioButton allRadio;
     @FXML
     private JFXRadioButton uncRadio;
+    @FXML
+    private VBox typeVBox;
 
     /**
      * switches window to home screen
@@ -187,28 +190,32 @@ public class FulfillRequestController extends Controller implements Initializabl
     //Show Requests based on Job
     private ObservableList<Request> showProperRequest(ObservableList<Request> newRequestList, ArrayList<MedicineRequest> allMedReqList,ArrayList<ITRequest> allITReqList){
 
+        typeVBox.getChildren().removeAll(medicineRadio,ITRadio);
+
         switch (Controller.getCurrentJob()) {
             case ADMINISTRATOR:
                 newRequestList.addAll(allMedReqList);
                 newRequestList.addAll(allITReqList);
+                typeVBox.getChildren().addAll(medicineRadio,ITRadio);
+
                 break;
             case DOCTOR:
                 newRequestList.addAll(allMedReqList);
+                typeVBox.getChildren().addAll(medicineRadio);
                 break;
             case NURSE:
                 newRequestList.addAll(allMedReqList);
+                typeVBox.getChildren().addAll(medicineRadio);
                 break;
             case IT:
                 newRequestList.addAll(allITReqList);
+                typeVBox.getChildren().addAll(ITRadio);
                 break;
             case SECURITY_PERSONNEL:
-
                 break;
             case JANITOR:
-
                 break;
             case MAINTENANCE_WORKER:
-
                 break;
             default:
                 break;
