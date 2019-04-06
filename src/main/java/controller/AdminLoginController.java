@@ -40,6 +40,7 @@ public class AdminLoginController extends Controller implements Initializable {
 
     Event event = new Event();
     private EventBus eventBus = EventBusFactory.getEventBus();
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
 
     @FXML
@@ -65,7 +66,7 @@ public class AdminLoginController extends Controller implements Initializable {
         String id = idText.getText();
         String password = passwordField.getText();
         int intID = Integer.parseInt(id);
-        Employee user = DatabaseService.getDatabaseService().getEmployee(intID);
+        Employee user = myDBS.getEmployee(intID);
 
         try {
             if(user.isAdmin()){
