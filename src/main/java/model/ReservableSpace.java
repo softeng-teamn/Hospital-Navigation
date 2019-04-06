@@ -3,7 +3,7 @@ package model;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
-public class ReservableSpace {
+public class ReservableSpace implements Comparable<ReservableSpace>{
     String spaceID, spaceName, spaceType, locationNodeID;
     GregorianCalendar timeOpen, timeClosed;
 
@@ -101,5 +101,10 @@ public class ReservableSpace {
                 ", timeOpen=" + timeOpen +
                 ", timeClosed=" + timeClosed +
                 '}';
+    }
+
+    @Override
+    public int compareTo(ReservableSpace other) {
+        return this.spaceName.compareTo(other.spaceName);
     }
 }

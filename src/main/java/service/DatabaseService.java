@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class DatabaseService {
 
     public static final String DATABASE_NAME = "hospital-db";
-    public static final Integer DATABASE_VERSION = 6;
+    public static final Integer DATABASE_VERSION = 7;
     private static DatabaseService _dbs;
 
     private Connection connection;
@@ -237,27 +237,30 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
 
-            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, job varchar(25), isAdmin boolean, password varchar(50))");
+            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER')))");
 
-            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
+            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, description varchar(300))");
 
-            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
+            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
 
-            statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), locationID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
+            statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
 
             statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
 
+            // DATABASE CONSTRAINTS
             statement.addBatch("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
             statement.addBatch("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
-
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
             // constraints that matter less but will be fully implemented later
-            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (LOCATIONID) REFERENCES RESERVABLESPACE(SPACEID)");
-            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
+            statement.addBatch("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
+            // constraints on service requests
+            statement.addBatch("ALTER TABLE ITREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
+            statement.addBatch("ALTER TABLE MEDICINEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
+            // creates an index to optimize querying.
+            statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
-
-            statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (locationID)");
+            //LCC,,. PUT IN CONSTRAINTS FOR SIMPLE SERVICES HERE
 
 
             statement.executeBatch();
@@ -452,7 +455,7 @@ public class DatabaseService {
      * @return the edge corresponding to the given ID
      */
     public Edge getEdge(String edgeID){
-        String query = "SELECT * FROM EDGE WHERE (EDGEID = ?)";
+        String query = "SELECT e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID WHERE (EDGEID = ?)";
         return (Edge) executeGetById(query, Edge.class, edgeID);
     }
 
@@ -479,7 +482,7 @@ public class DatabaseService {
     }
 
     public ArrayList<Edge> getAllEdges(){
-        String query = "Select * FROM EDGE";
+        String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID";
         return (ArrayList<Edge>)(List<?>) executeGetMultiple(query, Edge.class, new Object[]{});
     }
 
@@ -488,7 +491,7 @@ public class DatabaseService {
      * @return true or false based on whether the insert succeeded or not
      */
     public boolean insertReservation(Reservation reservation) {
-        String insertStatement = ("INSERT INTO RESERVATION(EVENTNAME, LOCATIONID, STARTTIME, ENDTIME, PRIVACYLEVEL, EMPLOYEEID) VALUES(?, ?, ?, ?, ?, ?)");
+        String insertStatement = ("INSERT INTO RESERVATION(EVENTNAME, spaceID, STARTTIME, ENDTIME, PRIVACYLEVEL, EMPLOYEEID) VALUES(?, ?, ?, ?, ?, ?)");
         return executeInsert(insertStatement, reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(), reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId());
     }
 
@@ -514,7 +517,7 @@ public class DatabaseService {
      * @return true or false based on whether the insert succeeded or not
      */
     public boolean updateReservation(Reservation reservation) {
-        String query = "UPDATE RESERVATION SET eventName=?, locationID=?, startTime=?, endTime=?, privacyLevel=?, employeeID=? WHERE (eventID = ?)";
+        String query = "UPDATE RESERVATION SET eventName=?, spaceID=?, startTime=?, endTime=?, privacyLevel=?, employeeID=? WHERE (eventID = ?)";
         return executeUpdate(query, reservation.getEventName(), reservation.getLocationID(), reservation.getStartTime(),
                 reservation.getEndTime(), reservation.getPrivacyLevel(), reservation.getEmployeeId(), reservation.getEventID());
     }
@@ -534,7 +537,7 @@ public class DatabaseService {
      * @return a list of the requested reservations
      */
     public List<Reservation> getReservationsBySpaceId(String id) {
-        String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ?)";
+        String query = "SELECT * FROM RESERVATION WHERE (spaceID = ?)";
         return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, id);
     }
 
@@ -546,7 +549,7 @@ public class DatabaseService {
      * @return a list of the requested reservations
      */
     public List<Reservation> getReservationsBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
-        String query = "SELECT * FROM RESERVATION WHERE (LOCATIONID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
+        String query = "SELECT * FROM RESERVATION WHERE (spaceID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
         System.out.println(id);
         System.out.println("dbs" + from.get(Calendar.YEAR) +  " " + from.get(Calendar.MONTH) + " " + from.get(Calendar.DATE) + " " + from.get(Calendar.HOUR));
         System.out.println(to.get(Calendar.YEAR) +  " " + to.get(Calendar.MONTH) + " " + to.get(Calendar.DATE)+ " " + to.get(Calendar.HOUR));
@@ -559,8 +562,8 @@ public class DatabaseService {
      * @return true if the insert succeeded or false if otherwise.
      */
     public boolean insertEmployee(Employee employee) {
-        String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?)");
-        return executeInsert(insertStatement, employee.getID(), employee.getJob(), employee.isAdmin(), employee.getPassword());
+        String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertStatement, employee.getID(), employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getPassword());
     }
 
     /**
@@ -585,8 +588,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateEmployee(Employee employee) {
-        String query = "UPDATE EMPLOYEE SET job=?, isAdmin=? WHERE (employeeID = ?)";
-        return executeUpdate(query, employee.getJob(), employee.isAdmin(), employee.getID());
+        String query = "UPDATE EMPLOYEE SET username=?, job=?, isAdmin=? WHERE (employeeID = ?)";
+        return executeUpdate(query, employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getID());
     }
 
     /**
@@ -622,6 +625,30 @@ public class DatabaseService {
     public List<ReservableSpace> getAllReservableSpaces() {
         String query = "Select * FROM RESERVABLESPACE";
         return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, new Object[]{});
+    }
+
+    /**
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces with any reservation in the given time frame
+     */
+    public List<ReservableSpace> getBookedReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
+
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
+    }
+
+    /**
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces without any reservations in the given time frame
+     */
+    public List<ReservableSpace> getAvailableReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID Not In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
+
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
     }
 
     /**
@@ -801,14 +828,20 @@ public class DatabaseService {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.addBatch("DROP TABLE EDGE");
-            statement.addBatch("DROP TABLE NODE");
-            statement.addBatch("DROP TABLE EMPLOYEE");
-            statement.addBatch("DROP TABLE ITREQUEST");
-            statement.addBatch("DROP TABLE MEDICINEREQUEST");
-            statement.addBatch("DROP TABLE RESERVATION");
-            statement.addBatch("DROP TABLE RESERVABLESPACE");
-            statement.addBatch("DROP TABLE META_DB_VER");
+            // these must be wiped first to prevent constraint issues
+            statement.addBatch("DELETE FROM EDGE");
+            statement.addBatch("DELETE FROM RESERVATION");
+            statement.addBatch("DELETE FROM ITREQUEST");
+            statement.addBatch("DELETE FROM MEDICINEREQUEST");
+            // these can be wiped in any order
+            statement.addBatch("DELETE FROM NODE");
+            statement.addBatch("DELETE FROM EMPLOYEE");
+            statement.addBatch("DELETE FROM RESERVABLESPACE");
+            statement.addBatch("DELETE FROM META_DB_VER");
+            // restart the auto-generated keys
+            statement.addBatch("ALTER TABLE ITREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE MEDICINEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE RESERVATION ALTER COLUMN eventID RESTART WITH 0");
             statement.executeBatch();
 
             this.createTables();
@@ -818,6 +851,8 @@ public class DatabaseService {
             closeStatement(statement);
         }
     }
+
+
 
 
     //<editor-fold desc="Generic Execution Methods">
@@ -984,25 +1019,27 @@ public class DatabaseService {
         return result;
     }
 
-    private Node extractNode(ResultSet rs) throws SQLException {
-        String newNodeID = rs.getString("nodeID");
-        int newxcoord = rs.getInt("xcoord");
-        int newycoord = rs.getInt("ycoord");
-        String newFloor = rs.getString("floor");
-        String newBuilding = rs.getString("building");
-        String newNodeType = rs.getString("nodeType");
-        String newLongName = rs.getString("longName");
-        String newShortName = rs.getString("shortName");
+    private Node extractNode(ResultSet rs, String name) throws SQLException {
+        String newNodeID = rs.getString(name + "nodeID");
+        int newxcoord = rs.getInt(name + "xcoord");
+        int newycoord = rs.getInt(name + "ycoord");
+        String newFloor = rs.getString(name + "floor");
+        String newBuilding = rs.getString(name + "building");
+        String newNodeType = rs.getString(name + "nodeType");
+        String newLongName = rs.getString(name + "longName");
+        String newShortName = rs.getString(name + "shortName");
         // construct the new node and return it
         return new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
     }
 
+    private Node extractNode(ResultSet rs) throws SQLException {
+        return extractNode(rs, "");
+    }
+
     private Edge extractEdge(ResultSet rs) throws SQLException {
         String newEdgeID = rs.getString("edgeID");
-        String node1Name = rs.getString("NODE1");
-        String node2Name = rs.getString("NODE2");
-        Node node1 = getNode(node1Name);
-        Node node2 = getNode(node2Name);
+        Node node1 = extractNode(rs, "n1");
+        Node node2 = extractNode(rs, "n2");
         return new Edge (newEdgeID, node1, node2);
     }
 
@@ -1010,7 +1047,7 @@ public class DatabaseService {
         // Extract data
         int eventID = rs.getInt("eventID");
         String eventName = rs.getString("eventName");
-        String locationID = rs.getString("locationID");
+        String locationID = rs.getString("spaceID");
         Date startTime = new Date(rs.getTimestamp("startTime").getTime());
         Date endTime = new Date(rs.getTimestamp("endTime").getTime());
         int privacyLevel = rs.getInt("privacyLevel");
@@ -1028,11 +1065,39 @@ public class DatabaseService {
     private Employee extractEmployee(ResultSet rs) throws SQLException {
         // Extract data
         int empID = rs.getInt("employeeID");
-        String job = rs.getString("job");
+        String jobString = rs.getString("job");
         boolean isAdmin = rs.getBoolean("isAdmin");
         String password = rs.getString("password");
+        String username = rs.getString("username");
 
-        return new Employee(empID, job, isAdmin, password);
+        JobType job;
+
+        switch (jobString) {
+            case "ADMINISTRATOR":
+                job = JobType.ADMINISTRATOR;
+                break;
+            case "DOCTOR":
+                job = JobType.DOCTOR;
+                break;
+            case "JANITOR":
+                job = JobType.JANITOR;
+                break;
+            case "NURSE":
+                job = JobType.NURSE;
+                break;
+            case "MAINTENANCE_WORKER":
+                job = JobType.MAINTENANCE_WORKER;
+                break;
+            case "SECURITY_PERSONNEL":
+                job = JobType.SECURITY_PERSONNEL;
+                break;
+            default:
+                System.out.println("Invalid employee job entry (on DBS.extractEmployee): " + jobString);
+                job = null;
+                break; // the loop
+        }
+
+        return new Employee(empID, username, job, isAdmin, password);
     }
 
     private ReservableSpace extractReservableSpace(ResultSet rs) throws SQLException {

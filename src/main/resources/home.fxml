@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXSlider?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -23,14 +18,32 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
+<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <children>
-      <HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="101.0" prefWidth="1385.0" spacing="5.0">
+      <HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="1385.0" spacing="5.0" styleClass="header">
          <children>
-            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2" />
-            <JFXButton fx:id="newRoom_btn" onAction="#newRoomAction" text="New Room" />
-            <JFXButton fx:id="navigate_btn" onAction="#startNavigation" text="Navigate Here" />
-            <JFXButton fx:id="edit_btn" onAction="#editAction" text="Edit" />
+            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></JFXTextField>
+            <JFXButton fx:id="navigate_btn" contentDisplay="GRAPHIC_ONLY" onAction="#startNavigation" prefHeight="80.0" prefWidth="80.0" text="Navigate Here">
+               <graphic>
+                  <MaterialIconView glyphName="DIRECTIONS" size="60" />
+               </graphic>
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></JFXButton>
+            <JFXButton fx:id="newRoom_btn" contentDisplay="GRAPHIC_ONLY" onAction="#newRoomAction" prefHeight="80.0" prefWidth="80.0" text="New Room">
+               <graphic>
+                  <FontAwesomeIconView glyphName="PLUS" size="60" />
+               </graphic>
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></JFXButton>
+            <JFXButton fx:id="edit_btn" contentDisplay="GRAPHIC_ONLY" onAction="#editAction" prefHeight="80.0" prefWidth="80.0" text="Edit">
+               <graphic>
+                  <FontAwesomeIconView glyphName="PENCIL" size="60" />
+               </graphic></JFXButton>
             <Region HBox.hgrow="ALWAYS" />
             <JFXButton onAction="#zoomOut" text="-" />
             <JFXSlider fx:id="zoom_slider" />
@@ -38,10 +51,31 @@
                <HBox.margin>
                   <Insets right="40.0" />
                </HBox.margin></JFXButton>
-            <JFXButton fx:id="fulfillBtn" contentDisplay="CENTER" onAction="#showFulfillRequest" text="Fulfill Request" />
-            <JFXButton fx:id="bookBtn" onAction="#showSchedule" text="Book Room" />
-            <JFXButton onAction="#showRequest" text="Service Request" />
-            <JFXButton fx:id="auth_btn" onAction="#showAdminLogin" text="Logout" />
+            <JFXButton fx:id="fulfillBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showFulfillRequest" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
+               <graphic>
+                  <FontAwesomeIconView glyphName="CHECK" size="60" />
+               </graphic>
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></JFXButton>
+            <JFXButton fx:id="bookBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showSchedule" prefHeight="80.0" prefWidth="80.0" text="Book Room">
+               <graphic>
+                  <FontAwesomeIconView glyphName="CALENDAR" size="60" />
+               </graphic>
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></JFXButton>
+            <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#showRequest" prefHeight="80.0" prefWidth="80.0" text="Service Request">
+               <graphic>
+                  <FontAwesomeIconView glyphName="WRENCH" size="60" />
+               </graphic>
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></JFXButton>
+            <JFXButton fx:id="auth_btn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" onAction="#showAdminLogin" prefHeight="80.0" prefWidth="80.0" text="Login">
+               <graphic>
+                  <FontAwesomeIconView fx:id="lock_icon" glyphName="LOCK" size="60" />
+               </graphic></JFXButton>
          </children>
          <VBox.margin>
             <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
@@ -49,7 +83,7 @@
       </HBox>
       <HBox fx:id="hbox_container" VBox.vgrow="ALWAYS">
          <children>
-            <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" prefWidth="256.0" HBox.hgrow="ALWAYS" />
+            <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" prefWidth="520.0" HBox.hgrow="ALWAYS" />
             <VBox fx:id="edit_VBox">
                <children>
                   <Label contentDisplay="CENTER" text="Editor">
