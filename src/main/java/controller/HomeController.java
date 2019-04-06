@@ -7,7 +7,7 @@ import model.HomeState;
 
 public class HomeController {
 
-    public EventBus eventBus = EventBusFactory.getEventBus();
+    private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
     private MapView mapViewController;

@@ -1,18 +1,36 @@
 package controller;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import model.HomeState;
+import javafx.scene.Group;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import model.*;
+import service.PathFindingService;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
 public class MapView {
 
-    void initialize() {
+    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event = new Event();
 
-    }
+    private Group zoomGroup;
+    private Circle startCircle;
+    private Circle selectCircle;
+    private ArrayList<Line> lineCollection;
+
+    @FXML
+    private ScrollPane map_scrollpane;
+    @FXML
+    private Slider zoom_slider;
 
     // ELEVATOR CALL BUTTONS
     @FXML
@@ -20,9 +38,146 @@ public class MapView {
 
     }
 
-    @Subscribe
-    public void homeStateEvent(HomeState state) {
-        System.out.println("map view recieved the state");
+    @FXML
+    void initialize() {
+        // listen to changes
+        eventBus.register(this);
+
+        // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
+        Group contentGroup = new Group();
+        zoomGroup = new Group();
+        contentGroup.getChildren().add(zoomGroup);
+        zoomGroup.getChildren().add(map_scrollpane.getContent());
+        map_scrollpane.setContent(contentGroup);
+
+        // Setup collection of lines
+        lineCollection = new ArrayList<Line>();
+
+        // Set start circle
+        startCircle = new Circle();
+
+        // Setting Up Circle Destination Point
+        startCircle.setCenterX(event.getDefaultNode().getXcoord());
+        startCircle.setCenterY(event.getDefaultNode().getYcoord());
+        startCircle.setRadius(20);
+        startCircle.setFill(Color.BLUE);
+        zoomGroup.getChildren().add(startCircle);
+
+
+        // Setting View Scrolling
+        zoom_slider.setMin(0.3);
+        zoom_slider.setMax(0.9);
+        zoom_slider.setValue(0.3);
+        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
+        zoom(0.3);
     }
+
+    @Subscribe
+    void eventListener(Event event) {
+        switch (event.getEventName()) {
+            case "navigation":
+                navigationHandler();
+                break;
+            case "node-select":
+                drawPoint();
+                break;
+            default:
+                break;
+        }
+        this.event = event;
+    }
+
+    private void drawPoint() {
+        // remove old selected Circle
+        if (zoomGroup.getChildren().contains(selectCircle)) {
+            zoomGroup.getChildren().remove(selectCircle);
+        }
+        // create new Circle
+        selectCircle = new Circle();
+        selectCircle.setCenterX(event.getNodeSelected().getXcoord());
+        selectCircle.setCenterY(event.getNodeSelected().getYcoord());
+        selectCircle.setRadius(20);
+        selectCircle.setFill(Color.RED);
+        zoomGroup.getChildren().add(selectCircle);
+    }
+
+    // generate path on the screen
+    private void navigationHandler() {
+        PathFindingService pathFinder = new PathFindingService();
+        ArrayList<Node> path;
+        // check if the path need to be 'accessible'
+//        if (event.isAccessiblePath()) {
+//            // do something special
+//        } else {
+            // not accessible
+            MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
+            MapNode dest = new MapNode(event.getNodeSelected().getXcoord(), event.getNodeSelected().getYcoord(), event.getNodeSelected());
+            path = pathFinder.genPath(start, dest);
+//        }
+
+        drawPath(path);
+
+    }
+
+    // draw path on the screen
+    private void drawPath(ArrayList<Node> path) {
+        if (path != null && path.size() > 1) {
+            Node last = path.get(0);
+            Node current;
+            for (int i = 1; i < path.size(); i++) {
+                current = path.get(i);
+                Line line = new Line();
+
+                line.setStartX(current.getXcoord());
+                line.setStartY(current.getYcoord());
+
+                line.setEndX(last.getXcoord());
+                line.setEndY(last.getYcoord());
+
+                line.setFill(Color.BLACK);
+                line.setStrokeWidth(10.0);
+                zoomGroup.getChildren().add(line);
+                lineCollection.add(line);
+                last = current;
+            }
+        }
+
+    }
+
+    /**
+     * zooms in the map
+     * @param event
+     */
+    @FXML
+    void zoomIn(ActionEvent event) {
+        double sliderVal = zoom_slider.getValue();
+        zoom_slider.setValue(sliderVal += 0.05);
+    }
+
+    /**
+     * zooms out the map
+     * @param event
+     */
+    @FXML
+    void zoomOut(ActionEvent event) {
+        double sliderVal = zoom_slider.getValue();
+        zoom_slider.setValue(sliderVal + -0.05);
+    }
+
+    /**
+     * scales zoom grouping based on given value
+     * @param scaleValue
+     */
+    private void zoom(double scaleValue) {
+//    System.out.println("airportapp.Controller.zoom, scaleValue: " + scaleValue);
+        double scrollH = map_scrollpane.getHvalue();
+        double scrollV = map_scrollpane.getVvalue();
+        zoomGroup.setScaleX(scaleValue);
+        zoomGroup.setScaleY(scaleValue);
+        map_scrollpane.setHvalue(scrollH);
+        map_scrollpane.setVvalue(scrollV);
+    }
+
+
 
 }
