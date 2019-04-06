@@ -99,7 +99,7 @@ public class AdminLoginController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        eventBus.register(this);
 
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String text = change.getText();

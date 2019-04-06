@@ -26,10 +26,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.Thread.sleep;
+
 public class SearchResults {
 
-    Event event = new Event();
+    private Event event = EventBusFactory.getEvent();
     private EventBus eventBus = EventBusFactory.getEventBus();
+
 
     @FXML
     private JFXListView<Node> list_view;
@@ -37,6 +40,7 @@ public class SearchResults {
     private Node destNode;
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
     ObservableList<Node> allNodesObservable;
+    ArrayList<Node> allNodes;
 
 
 
@@ -45,29 +49,26 @@ public class SearchResults {
 
         eventBus.register(this);
 
-        repopulateList(false);
+
+        repopulateList(event.isAdmin());
     }
 
     @Subscribe
-    private void eventListener(Event event) {
-
-
-        switch (event.getEventName()) {
-            case "node-selected":
-                this.event.setNodeSelected(event.getNodeSelected());
-                list_view.scrollTo(event.getNodeSelected());
-                list_view.getSelectionModel().select(event.getNodeSelected());
+    private void eventListener(Event newEvent) throws InterruptedException {
+        switch (newEvent.getEventName()) {
+            case "node-select":
+                event.setNodeSelected(newEvent.getNodeSelected());
+                list_view.scrollTo(newEvent.getNodeSelected());
+                list_view.getSelectionModel().select(newEvent.getNodeSelected());
                 break;
             case "login":
-                this.event.setLoggedIn(event.isLoggedIn());
-                this.event.setAdmin(event.isAdmin());
-                if(event.isAdmin()){
-                    repopulateList(true);
-                }
+                System.out.println("receive login");
+                event.setLoggedIn(newEvent.isLoggedIn());
+                event.setAdmin(newEvent.isAdmin());
                 break;
             case "search-query":
-                this.event.setSearchBarQuery(event.getSearchBarQuery());
-                filterList(event.getSearchBarQuery());
+                event.setSearchBarQuery(newEvent.getSearchBarQuery());
+                filterList(newEvent.getSearchBarQuery());
 
         }
 
@@ -84,23 +85,22 @@ public class SearchResults {
     @FXML
     public void listViewClicked(MouseEvent e) {
         Node selectedNode = list_view.getSelectionModel().getSelectedItem();
-        System.out.println("You clicked on: " + selectedNode.getNodeID());
+        System.out.println("You clicked on: " + selectedNode.getLongName());
 
         // set destination node
         destNode = selectedNode;
 
-        event.setNodeSelected(destNode);
-        event.setEventName("node-select");
-        eventBus.post(event);
+        Event sendEvent = new Event();
+        sendEvent.setNodeSelected(destNode);
+        sendEvent.setEventName("node-select");
+        eventBus.post(sendEvent);
     }
 
 
 
     void repopulateList(boolean isAdmin) {
-        ArrayList<Node> allNodes;
 
-
-        System.out.println("Repopulation of listView");
+        System.out.println("Repopulation of listView" + isAdmin);
         if (isAdmin) {
             allNodes = DatabaseService.getDatabaseService().getAllNodes();
         } else {
