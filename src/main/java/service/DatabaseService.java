@@ -254,9 +254,8 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
             // constraints that matter less but will be fully implemented later
             //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (LOCATIONID) REFERENCES RESERVABLESPACE(SPACEID)");
-            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
-
-
+            statement.addBatch("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
+            // creates an index to optimize querying.
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
 
@@ -813,11 +812,11 @@ public class DatabaseService {
         try {
             statement = connection.createStatement();
             statement.addBatch("DROP TABLE EDGE");
+            statement.addBatch("DROP TABLE RESERVATION");
             statement.addBatch("DROP TABLE NODE");
             statement.addBatch("DROP TABLE EMPLOYEE");
             statement.addBatch("DROP TABLE ITREQUEST");
             statement.addBatch("DROP TABLE MEDICINEREQUEST");
-            statement.addBatch("DROP TABLE RESERVATION");
             statement.addBatch("DROP TABLE RESERVABLESPACE");
             statement.addBatch("DROP TABLE META_DB_VER");
             statement.executeBatch();
