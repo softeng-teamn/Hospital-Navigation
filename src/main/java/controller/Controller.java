@@ -12,9 +12,6 @@ public class Controller {
     static boolean isAdmin = false;
     static HashMap<String, ArrayList<Node>> connections;
 
-    static {
-        initConnections();
-    }
 
     public static boolean getIsAdmin() {
         return isAdmin;

@@ -173,8 +173,8 @@ public class MapView {
      */
     @FXML
     void zoomIn(ActionEvent event) {
-        double sliderVal = zoom_slider.getValue();
-        zoom_slider.setValue(sliderVal += 0.05);
+        zoom_slider.setValue(zoom_slider.getValue() + 0.05);
+        zoom_slider.setValue(zoom_slider.getValue());
     }
 
     /**
@@ -183,8 +183,8 @@ public class MapView {
      */
     @FXML
     void zoomOut(ActionEvent event) {
-        double sliderVal = zoom_slider.getValue();
-        zoom_slider.setValue(sliderVal + -0.05);
+        zoom_slider.setValue(zoom_slider.getValue() - 0.05);
+        zoom_slider.setValue(zoom_slider.getValue());
     }
 
     /**

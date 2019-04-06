@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import model.EventBusFactory;
 import model.HomeState;
 
+import static controller.Controller.initConnections;
+
 public class HomeController {
 
     private EventBus eventBus = EventBusFactory.getEventBus();
@@ -16,5 +18,9 @@ public class HomeController {
     @FXML
     private TopNav topNavController;
 
+    @FXML
+    void initialize() {
+        initConnections();
+    }
 
 }

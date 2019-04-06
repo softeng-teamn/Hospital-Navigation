@@ -114,6 +114,8 @@ public class TopNav {
             case "login":     // receives from AdminLoginContoller?
                 event.setAdmin(newEvent.isAdmin());
                 break;
+            default:
+                break;
         }
 
     }

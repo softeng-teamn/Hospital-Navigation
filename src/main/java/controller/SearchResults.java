@@ -80,6 +80,9 @@ public class SearchResults {
                         filterList(event.getSearchBarQuery());
                     }
                 });
+                break;
+            default:
+                break;
         }
 
 
