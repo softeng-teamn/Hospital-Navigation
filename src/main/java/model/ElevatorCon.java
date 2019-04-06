@@ -48,7 +48,7 @@ public class ElevatorCon {
     public String getFloor(String elevator) throws MalformedURLException,
             ProtocolException, IOException {
         String URL = "https://aldenhallpianos.com/softEngGet.php";
-        String urlParameters = "elevator=" + elevator;
+        String urlParameters = "elevator=" + elevator + "&isESP=false";
         return post(URL, urlParameters);
     }
 
