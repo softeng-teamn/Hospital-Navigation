@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoRule;
 import testclassifications.FastTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 
@@ -126,7 +127,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n6);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn6), is(expected));
+        assertThat(mockPF.genPath(mn1, mn6).nodes, is(expected));
     }
 
     @Test
@@ -136,7 +137,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n6);
         expected.add(0, n2);
         expected.add(0, n3);
-        assertThat(mockPF.genPath(mn3, mn6), is(expected));
+        assertThat(mockPF.genPath(mn3, mn6).nodes, is(expected));
     }
 
     @Test
@@ -147,7 +148,13 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n2);
         expected.add(0, n3);
         expected.add(0, n4);
-        assertThat(mockPF.genPath(mn4, mn1), is(expected));
+        assertThat(mockPF.genPath(mn4, mn1).nodes, is(expected));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void testTime() {
+        assertThat(mockPF.genPath(mn4, mn1).time, instanceOf(Double.class));
     }
 
 }

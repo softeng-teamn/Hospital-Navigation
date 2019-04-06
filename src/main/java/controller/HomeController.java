@@ -28,10 +28,7 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
-import model.Edge;
-import model.Elevator;
-import model.MapNode;
-import model.Node;
+import model.*;
 import service.DatabaseService;
 import service.PathFindingService;
 import service.ResourceLoader;
@@ -481,7 +478,9 @@ public class HomeController extends MapController {
         MapNode pStart = new MapNode(start.getXcoord(), start.getYcoord(), start);
         MapNode pDest = new MapNode(dest.getXcoord(), dest.getYcoord(), dest);
         PathFindingService pathFindingService = new PathFindingService();
-        ArrayList<Node> path = pathFindingService.genPath(pStart, pDest).nodes;
+        Path myPath = pathFindingService.genPath(pStart, pDest);
+        System.out.println("TIME ARRIVAL: " + myPath.time + "minutes");
+        ArrayList<Node> path = myPath.nodes;
         if (path != null && path.size() > 1) {
             Node last = path.get(0);
             Node current;

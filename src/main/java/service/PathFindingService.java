@@ -24,7 +24,7 @@ public class PathFindingService {
      * @return Returns null on fail
      * */
     public Path genPath(MapNode start, MapNode dest) {
-        int numMinutes = 0;
+        double numMinutes = 0.0;
         MapNode target = aStar(start, dest);
         if (target != null) {
             ArrayList<Node> path = new ArrayList<Node>();
@@ -42,8 +42,8 @@ public class PathFindingService {
         return null;
     }
 
-    public int gToMinutes(int g) {
-        return g * 4;
+    public double gToMinutes(double g) {
+        return (double) g * 0.00004;
     }
 
     /**

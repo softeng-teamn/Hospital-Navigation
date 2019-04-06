@@ -181,14 +181,15 @@ public class PathFindingServiceAdvancedTest {
         expected.add(0, n3);
         expected.add(0, n9);
         expected.add(0, n10);
-        assertThat(mockPF.genPath(mn10, mn8), is(expected));
+        assertThat(mockPF.genPath(mn10, mn8).nodes, is(expected));
         mockingGetChildren();
         expected = new ArrayList<Node>();
         expected.add(0, n8);
         expected.add(0, n7);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn8), is(expected));
+        assertThat(mockPF.genPath(mn1, mn8).nodes, is(expected));
     }
+
 
 }
