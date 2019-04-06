@@ -593,7 +593,6 @@ public class ScheduleController extends Controller {
 
             reservableList.setItems(resSpaces);
 
-
             // Clear the current schedule
             reservableList.getSelectionModel().select(0);
             reservableList.getFocusModel().focus(0);
