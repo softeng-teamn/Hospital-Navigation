@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -11,6 +12,8 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Employee;
+import model.Event;
+import model.EventBusFactory;
 import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -35,7 +38,8 @@ public class AdminLoginController extends Controller implements Initializable {
     @FXML
     private Text passwordPrompt;
 
-
+    Event event = new Event();
+    private EventBus eventBus = EventBusFactory.getEventBus();
 
 
     @FXML
@@ -66,7 +70,10 @@ public class AdminLoginController extends Controller implements Initializable {
         try {
             if(user.isAdmin()){
                 if (password.equals(user.getPassword())){
-                    Controller.setIsAdmin(true);
+                    event.setLoggedIn(true);
+                    event.setAdmin(true);
+                    event.setEventName("login");
+                    eventBus.post(event);
                     showHome();
                 } else {
                     passwordField.getStyleClass().add("wrong-credentials");
@@ -92,6 +99,8 @@ public class AdminLoginController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String text = change.getText();
 
