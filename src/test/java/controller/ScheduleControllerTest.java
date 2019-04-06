@@ -9,6 +9,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.Employee;
+import model.JobType;
 import model.ReservableSpace;
 import model.Reservation;
 import org.junit.After;
@@ -100,7 +101,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         when(dbs.getAllReservableSpaces()).thenReturn(spaces);
         when(dbs.getReservationsBySpaceIdBetween("Room A",gcalStart,gcalStart)).thenReturn(reservationsA);
         when(dbs.getReservationsBySpaceIdBetween("Room B",gcalStart,gcalStart)).thenReturn(reservationsB);
-        when(dbs.getEmployee(123)).thenReturn(new Employee(123, "Janitor", false, "password"));
+        when(dbs.getEmployee(123)).thenReturn(new Employee(123, "username", JobType.JANITOR, false, "password"));
         when(dbs.getEmployee(77)).thenReturn(null);
 
 
@@ -239,18 +240,6 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getStartTime().equals(r.getStartTime()));
         assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEndTime().equals(r.getEndTime()));
 
-    }
-
-
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void showConf() throws InterruptedException {
-        clickOn("#");
-        Thread.sleep(200);
-        //TODO: need a valid home screen w/ something to ID
-        //TitledPane pane = (TitledPane) GuiTest.find();
-        //assertTrue(pane.isVisible());
     }
 
 //    @Test

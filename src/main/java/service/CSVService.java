@@ -1,12 +1,7 @@
 package service;
 
 import controller.Controller;
-import model.Edge;
-import model.Employee;
-import model.Node;
-import model.ReservableSpace;
-import service.DatabaseService;
-import service.ResourceLoader;
+import model.*;
 
 import java.io.*;
 import java.text.ParseException;
@@ -25,7 +20,7 @@ public class CSVService extends Controller {
     private static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
     private static final String SPACE_HEADER = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n";
-    private static final String EMPLOYEE_HEADER ="ID,job,isAdmin,password\n";
+    private static final String EMPLOYEE_HEADER ="ID,username,job,isAdmin,password\n";
 
     /**
      * Export the Nodes table
@@ -147,10 +142,10 @@ public class CSVService extends Controller {
             // Write out each node
             for (Employee emp : DatabaseService.getDatabaseService().getAllEmployees()) {
                 writer.write(emp.getID() + ",");
-                writer.write(emp.getJob() + ",");
+                writer.write(emp.getUsername() + ",");
+                writer.write(emp.getJob().name() + ",");
                 writer.write(emp.isAdmin() + ",");
                 writer.write(emp.getPassword() + "\n");
-
             }
 
             // Close the writer
@@ -352,13 +347,36 @@ public class CSVService extends Controller {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
+                JobType job;
 
+                switch (data[2]) {
+                    case "ADMINISTRATOR":
+                        job = JobType.ADMINISTRATOR;
+                        break;
+                    case "DOCTOR":
+                        job = JobType.DOCTOR;
+                        break;
+                    case "JANITOR":
+                        job = JobType.JANITOR;
+                        break;
+                    case "NURSE":
+                        job = JobType.NURSE;
+                        break;
+                    case "MAINTENANCE_WORKER":
+                        job = JobType.MAINTENANCE_WORKER;
+                        break;
+                    case "SECURITY_PERSONNEL":
+                        job = JobType.SECURITY_PERSONNEL;
+                        break;
+                    default:
+                        System.out.println("Invalid employee entry: " + line);
+                        continue; // the loop
+                }
 
-                Employee emp = new Employee(Integer.parseInt(data[0]),data[1], Boolean.parseBoolean(data[2]),data[3]);
+                Employee emp = new Employee(Integer.parseInt(data[0]), data[1], job, Boolean.parseBoolean(data[3]),data[4]);
 
                 //Add edge to the database
                 DatabaseService.getDatabaseService().insertEmployee(emp);
-
             }
 
             //close reader
@@ -374,6 +392,5 @@ public class CSVService extends Controller {
                 }
             }
         }
-
     }
 }
