@@ -29,7 +29,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class RequestControllerTest extends ApplicationTest {
+public class RequestControllerTest {
     private Node n = new Node(1, 1 , "ABCD","","","","","");
     private RequestController RC = new RequestController();
     private Request request;
@@ -46,17 +46,6 @@ public class RequestControllerTest extends ApplicationTest {
     Request newReq ;
 
 //    RequestController mockRequestController = spy(new RequestController());
-
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        Parent mainNode = FXMLLoader.load(ResourceLoader.request);
-        stage.setScene(new Scene(mainNode));
-        stage.show();
-        stage.toFront();
-        stage.sizeToScene();
-        stage.setFullScreen(true);
-    }
 
     @Before
     public void setupTest() {
