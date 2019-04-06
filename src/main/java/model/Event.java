@@ -2,16 +2,31 @@ package model;
 
 public class Event {
 
+    Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
+
     String eventName = "";      // one of the event names below
                                 // signifies field change
 
 
     String searchBarQuery = ""; // search-query
+    Node nodeStart = DEFAULT_NODE; // node-start
     Node nodeSelected = null;   // node-select
     boolean isLoggedIn = false; // login
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
     // To know when to genPath           navigation
+
+    public Node getDefaultNode() {
+        return DEFAULT_NODE;
+    }
+
+    public Node getNodeStart() {
+        return nodeStart;
+    }
+
+    public void setNodeStart(Node nodeStart) {
+        this.nodeStart = nodeStart;
+    }
 
     public String getEventName() {
         return eventName;
@@ -23,6 +38,14 @@ public class Event {
 
     public String getSearchBarQuery() {
         return searchBarQuery;
+    }
+
+    public boolean isAccessiblePath() {
+        return isAccessiblePath;
+    }
+
+    public void setAccessiblePath(boolean accessiblePath) {
+        isAccessiblePath = accessiblePath;
     }
 
     public void setSearchBarQuery(String searchBarQuery) {
