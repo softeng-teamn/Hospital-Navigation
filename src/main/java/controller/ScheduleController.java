@@ -179,6 +179,7 @@ public class ScheduleController extends Controller {
             else if (bookedRoomsBtn.getText().contains("ear")) {
                 bookedRooms();
             }
+            showRoomSchedule();
 
             // Display the current information
             changeResInfo();
@@ -544,19 +545,7 @@ public class ScheduleController extends Controller {
             // Get selected times
             ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
             // Get reservations between selected times
-            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(cals.get(0), cals.get(1));
-            ArrayList<ReservableSpace> allSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
-
-            int startSize = allSpaces.size();
-            for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
-                for (int j = 0; j < startSize; j++) {    // Go through all the spaces to remove that space from the list
-                    if (allSpaces.get(j).getSpaceID().equals(reservationsBetween.get(i).getLocationID())) {
-                        allSpaces.remove(j);
-                        startSize--;
-                        j--;
-                    }
-                }
-            }
+            ArrayList<ReservableSpace> availBetween = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAvailableReservableSpacesBetween(cals.get(0), cals.get(1));
 
             // Set button
             availRoomsBtn.setOnAction(EventHandler -> {
@@ -566,11 +555,10 @@ public class ScheduleController extends Controller {
             bookedRoomsBtn.setText(bookedRoomsText);
             bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
 
-            Collections.sort(allSpaces);
+            Collections.sort(availBetween);
             resSpaces.clear();
-            resSpaces.addAll(allSpaces);
+            resSpaces.addAll(availBetween);
             reservableList.setItems(resSpaces);
-
 
             // Clear the current schedule
             reservableList.getSelectionModel().select(0);
@@ -587,27 +575,13 @@ public class ScheduleController extends Controller {
         if (valid) {
             // Get selected times
             ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
-            ArrayList<ReservableSpace> bookedSpaces = new ArrayList<>();
-            ArrayList<ReservableSpace> allSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
 
             // Get reservations between selected times
-            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(cals.get(0), cals.get(1));
+            ArrayList<ReservableSpace> bookedBetween = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getBookedReservableSpacesBetween(cals.get(0), cals.get(1));
 
-            int startSize = allSpaces.size();
-            for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
-                for (int j = 0; j < startSize; j++) {    // Go through all the spaces to remove that space from the list
-                    if (allSpaces.get(j).getSpaceID().equals(reservationsBetween.get(i).getLocationID())) {
-                        bookedSpaces.add(allSpaces.get(j));
-                        allSpaces.remove(j);
-                        startSize--;
-                        j--;
-                    }
-                }
-            }
-
-            Collections.sort(bookedSpaces);
+            Collections.sort(bookedBetween);
             resSpaces.clear();
-            resSpaces.addAll(bookedSpaces);
+            resSpaces.addAll(bookedBetween);
 
             // Set button
             bookedRoomsBtn.setOnAction(EventHandler -> {
@@ -618,7 +592,6 @@ public class ScheduleController extends Controller {
             availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
 
             reservableList.setItems(resSpaces);
-
 
             // Clear the current schedule
             reservableList.getSelectionModel().select(0);

@@ -628,14 +628,27 @@ public class DatabaseService {
     }
 
     /**
-     * @param from gregorian calendar start time
-     * @param to gregorian calendar end time
-     * @return a list of reservations  between start and end times
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces with any reservation in the given time frame
      */
-    public List<Reservation> getReservationsBetween(GregorianCalendar from, GregorianCalendar to) {
-        String query = "SELECT * FROM RESERVATION WHERE ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?))";
+    public List<ReservableSpace> getBookedReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
 
-        return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, from, from, from, to);
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
+    }
+
+    /**
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces without any reservations in the given time frame
+     */
+    public List<ReservableSpace> getAvailableReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID Not In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
+
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
     }
 
     /**
