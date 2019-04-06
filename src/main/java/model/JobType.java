@@ -11,7 +11,8 @@ public enum JobType {
     SECURITY_PERSONNEL,
     JANITOR,
     MAINTENANCE_WORKER,
-    GUEST;
+    GUEST,
+    IT;
 
 
 }
