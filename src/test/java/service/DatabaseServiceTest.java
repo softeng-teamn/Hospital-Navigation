@@ -4,6 +4,7 @@ import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -365,8 +366,6 @@ public class DatabaseServiceTest {
 
         //make sure that it's not there
         assertThat((DatabaseService.getDatabaseService().getEdge("ACONF00102-ACONF00103")), is(nullValue()));
-
-
     }
 
 
@@ -386,7 +385,26 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void getAllEdges() {
+        Node n1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node n2 = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node n3 = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge e1 = new Edge("ACONF00102-ACONF00103", n1, n2);
+        Edge e2 = new Edge("ACONF00102-ACONF00104", n1, n3);
+        Edge e3 = new Edge("ACONF00103-ACONF00104", n2, n3);
+        assertTrue(DatabaseService.getDatabaseService().insertNode(n1));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(n2));
+        assertTrue(DatabaseService.getDatabaseService().insertNode(n3));
+
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(e1));
+
+        assertThat(DatabaseService.getDatabaseService().getAllEdges(), Matchers.contains(e1));
+
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(e2));
+        assertTrue(DatabaseService.getDatabaseService().insertEdge(e3));
+
+        assertThat(DatabaseService.getDatabaseService().getAllEdges(), Matchers.contains(e1, e2, e3));
     }
 
     @Test
@@ -613,7 +631,7 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee = new Employee(0, "Doctor", false, "douglas");
+        Employee employee = new Employee(0, "mrdoctor", JobType.DOCTOR, false, "douglas");
 
         // Verify successful insertion
         boolean insertRes = DatabaseService.getDatabaseService().insertEmployee(employee);
@@ -639,15 +657,17 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee1 = new Employee(0, "Doctor", false, "douglas");
-        Employee employee2 = new Employee(1, "Nurse", false, "tyler");
-        Employee employee3 = new Employee(2, "Admin", true, "joshua");
+        Employee employee1 = new Employee(0, "douglas", JobType.DOCTOR, false, "douglas");
+        Employee employee2 = new Employee(1, "tferrara", JobType.NURSE, false, "tyler");
+        Employee employee3 = new Employee(2, "josh", JobType.ADMINISTRATOR, true, "joshua");
+        Employee tylerImpersonator = new Employee(3, "tferrara", JobType.NURSE, true, "tyler");
 
         // Verify successful insertion
         boolean insertRes = DatabaseService.getDatabaseService().insertEmployee(employee1);
         assertTrue(insertRes);
         insertRes = DatabaseService.getDatabaseService().insertEmployee(employee2);
         assertTrue(insertRes);
+        assertFalse(DatabaseService.getDatabaseService().insertEmployee(tylerImpersonator));
 
         // Check that there are two and only two, and that they are the right two
         List<Employee> employeeList = DatabaseService.getDatabaseService().getAllEmployees();
@@ -668,13 +688,13 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void updateEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "123456");
+        Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "123456");
 
         assertTrue(DatabaseService.getDatabaseService().insertEmployee(employee));
         assertEquals(employee, DatabaseService.getDatabaseService().getEmployee(0));
 
         employee.setAdmin(true);
-        employee.setJob("Department head");
+        employee.setJob(JobType.ADMINISTRATOR);
 
         assertTrue(DatabaseService.getDatabaseService().updateEmployee(employee));
         assertEquals(employee, DatabaseService.getDatabaseService().getEmployee(0));
@@ -683,7 +703,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void deleteEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "password");
+        Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "password");
 
         assertTrue(DatabaseService.getDatabaseService().insertEmployee(employee));
         assertEquals(employee, DatabaseService.getDatabaseService().getEmployee(0));
