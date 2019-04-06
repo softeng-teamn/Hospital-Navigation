@@ -35,7 +35,7 @@ public class AdminLoginController extends Controller implements Initializable {
     @FXML
     private Text passwordPrompt;
 
-    static DatabaseService myDBS;
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
 
     @FXML
@@ -92,8 +92,6 @@ public class AdminLoginController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        myDBS = DatabaseService.getDatabaseService();
-
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String text = change.getText();
 

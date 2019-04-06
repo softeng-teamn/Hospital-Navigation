@@ -26,11 +26,10 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class DatabaseServiceTest {
-    static DatabaseService myDBS;
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
     
     @Before
     public void setUp() {
-        myDBS = DatabaseService.getDatabaseService();
         myDBS.wipeTables();
     }
 

@@ -70,12 +70,10 @@ public class CreateNodeController extends Controller {
     // Collection of lines
     ArrayList<Line> lineCollection;
 
-    static DatabaseService myDBS;
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @FXML
     void initialize() {
-        myDBS = DatabaseService.getDatabaseService();
-
         // start state at 0
         stateIterator = 0;
 

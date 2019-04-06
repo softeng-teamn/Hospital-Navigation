@@ -75,15 +75,13 @@ public class ScheduleController extends Controller {
 
     private String timeErrorText, availRoomsText, bookedRoomsText, clearFilterText;
 
-    static DatabaseService myDBS;
-    
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
     /**
      * Set up scheduler page.
      */
     @FXML
     public void initialize() {
-        myDBS = DatabaseService.getDatabaseService();
-        
         timeErrorText = "Please enter valid start and end times.";
         availRoomsText = "Show Available Spaces";
         bookedRoomsText = "Show Booked Spaces";

@@ -46,8 +46,7 @@ public class RequestController extends Controller implements Initializable {
     ArrayList<Node> allNodes;
     ObservableList<Node> allNodesObservable;
 
-    static DatabaseService myDBS;
-    
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
     /**
      * switches window to home screen
      *
@@ -207,7 +206,6 @@ public class RequestController extends Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        myDBS = DatabaseService.getDatabaseService();
         repopulateList();
     }
 

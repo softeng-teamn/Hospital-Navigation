@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import com.sun.javafx.font.Glyph;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -81,7 +82,7 @@ public class HomeController extends MapController {
 
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
 
-    static DatabaseService myDBS;
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     /**
      * pulls up the editor for user interaction
@@ -131,10 +132,8 @@ public class HomeController extends MapController {
         }
     }
 
-    public void initConnections() {
-        System.out.println("creating hashmap ...");
+    public static void initConnections(List<Edge> allEdges) {
         connections = new HashMap<>();
-        ArrayList<Edge> allEdges = myDBS.getAllEdges();
 
         for (Edge e : allEdges) {
             if (connections.containsKey(e.getNode1().getNodeID())) {
@@ -163,9 +162,7 @@ public class HomeController extends MapController {
      */
     @FXML
     void initialize() {
-        myDBS = DatabaseService.getDatabaseService();
-
-        initConnections();
+        initConnections(myDBS.getAllEdges());
         initializeElevator();
 
         // Hide the edit window
@@ -230,7 +227,7 @@ public class HomeController extends MapController {
      * DatabaseService calls this when nodes are inserted, modified, deleted
      */
     private void nodeChangedCallback() {
-        initConnections();
+        initConnections(myDBS.getAllEdges());
         repopulateList();
     }
 
@@ -238,7 +235,7 @@ public class HomeController extends MapController {
      * DatabaseService calls this when edges are inserted (to
      */
     private void edgeChangedCallback() {
-        initConnections();
+        initConnections(myDBS.getAllEdges());
     }
   
     void authCheck() {

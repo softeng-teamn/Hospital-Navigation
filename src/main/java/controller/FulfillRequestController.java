@@ -43,7 +43,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     private JFXRadioButton uncRadio;
 
-    static DatabaseService myDBS;
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
     
     /**switches window to home screen
      * @throws Exception
@@ -188,8 +188,6 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        myDBS = DatabaseService.getDatabaseService();
-
         ObservableList<Request> requestlist = FXCollections.observableArrayList();
 
         ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
