@@ -4,9 +4,11 @@ import java.util.Objects;
 
 public class Employee {
     int ID;
-    String job;
+    JobType job;
     boolean isAdmin;
     String password;
+
+    String username;
 
     public void setPassword(String password) {
         this.password = password;
@@ -16,7 +18,8 @@ public class Employee {
         return password;
     }
 
-    public Employee(int ID, String job, boolean isAdmin, String password) {
+    public Employee(int ID, String username, JobType job, boolean isAdmin, String password) {
+        this.username = username;
         this.ID = ID;
         this.job = job;
         this.isAdmin = isAdmin;
@@ -27,7 +30,7 @@ public class Employee {
         return ID;
     }
 
-    public String getJob() {
+    public JobType getJob() {
         return job;
     }
 
@@ -39,7 +42,7 @@ public class Employee {
         this.ID = ID;
     }
 
-    public void setJob(String job) {
+    public void setJob(JobType job) {
         this.job = job;
     }
 
@@ -47,28 +50,12 @@ public class Employee {
         isAdmin = admin;
     }
 
-    /**
-     * checks if two employees are the same employee
-     * @param o
-     * @return
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Employee employee = (Employee) o;
-        return ID == employee.ID &&
-                isAdmin == employee.isAdmin &&
-                Objects.equals(job, employee.job);
+    public String getUsername() {
+        return username;
     }
 
-    /**
-     * TBD
-     * @return
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(ID, job, isAdmin);
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -78,6 +65,24 @@ public class Employee {
                 ", job='" + job + '\'' +
                 ", isAdmin=" + isAdmin +
                 ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return ID == employee.ID &&
+                isAdmin == employee.isAdmin &&
+                Objects.equals(job, employee.job) &&
+                Objects.equals(password, employee.password) &&
+                Objects.equals(username, employee.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ID, job, isAdmin, password, username);
     }
 }
