@@ -57,15 +57,14 @@ public class SearchResults {
 
     @Subscribe
     private void eventListener(Event newEvent) throws InterruptedException {
-        switch (newEvent.getEventName()) {
+        // set new event
+        event = newEvent;
+        switch (event.getEventName()) {
             case "node-select":
-                event.setNodeSelected(newEvent.getNodeSelected());
-                list_view.scrollTo(newEvent.getNodeSelected());
-                list_view.getSelectionModel().select(newEvent.getNodeSelected());
+                list_view.scrollTo(event.getNodeSelected());
+                list_view.getSelectionModel().select(event.getNodeSelected());
                 break;
             case "login":
-                event.setLoggedIn(newEvent.isLoggedIn());
-                event.setAdmin(newEvent.isAdmin());
                 //for functions that have threading issue, use this and it will be solved
                 Platform.runLater(new Runnable() {
                     @Override
@@ -75,11 +74,10 @@ public class SearchResults {
                 });
                 break;
             case "search-query":
-                event.setSearchBarQuery(newEvent.getSearchBarQuery());
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        filterList(newEvent.getSearchBarQuery());
+                        filterList(event.getSearchBarQuery());
                     }
                 });
         }
@@ -99,13 +97,14 @@ public class SearchResults {
         Node selectedNode = list_view.getSelectionModel().getSelectedItem();
         System.out.println("You clicked on: " + selectedNode.getLongName());
 
+
         // set destination node
         destNode = selectedNode;
 
-        Event sendEvent = new Event();
-        sendEvent.setNodeSelected(destNode);
-        sendEvent.setEventName("node-select");
-        eventBus.post(sendEvent);
+        event.setNodeSelected(destNode);
+        event.setEventName("node-select");
+        eventBus.post(event);
+
     }
 
 

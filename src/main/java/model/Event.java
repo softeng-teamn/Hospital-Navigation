@@ -14,10 +14,16 @@ public class Event {
     boolean isLoggedIn = false; // login
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
+    boolean isChangingStart = false;  // start-change
 
 
+    public boolean isChangingStart() {
+        return isChangingStart;
+    }
 
-
+    public void setChangingStart(boolean changingStart) {
+        isChangingStart = changingStart;
+    }
 
     public Node getDefaultNode() {
         return DEFAULT_NODE;
@@ -78,10 +84,6 @@ public class Event {
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
-
-    public boolean isAccessiblePath() { return isAccessiblePath; }
-
-    public void setAccessiblePath(boolean accessiblePath) { isAccessiblePath = accessiblePath; }
 
 
 }

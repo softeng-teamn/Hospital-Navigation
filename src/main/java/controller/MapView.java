@@ -2,6 +2,11 @@ package controller;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.jfoenix.controls.JFXButton;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -10,6 +15,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
 import model.*;
 import service.PathFindingService;
 
@@ -20,7 +26,7 @@ import java.util.Observer;
 public class MapView {
 
     private EventBus eventBus = EventBusFactory.getEventBus();
-    private Event event = new Event();
+    private Event event = EventBusFactory.getEvent();
 
     private Group zoomGroup;
     private Circle startCircle;
@@ -60,7 +66,7 @@ public class MapView {
         startCircle.setCenterX(event.getDefaultNode().getXcoord());
         startCircle.setCenterY(event.getDefaultNode().getYcoord());
         startCircle.setRadius(20);
-        startCircle.setFill(Color.BLUE);
+        startCircle.setFill(Color.rgb(67, 70, 76));
         zoomGroup.getChildren().add(startCircle);
 
 
@@ -74,31 +80,48 @@ public class MapView {
 
     @Subscribe
     void eventListener(Event event) {
-        switch (event.getEventName()) {
-            case "navigation":
-                navigationHandler();
-                break;
-            case "node-select":
-                drawPoint();
-                break;
-            default:
-                break;
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                switch (event.getEventName()) {
+                    case "navigation":
+                        navigationHandler();
+                        break;
+                    case "node-select":
+                        drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
         this.event = event;
     }
 
-    private void drawPoint() {
+    private void drawPoint(Node node, Circle circle, Color color) {
+        // remove points
+        for (Line line : lineCollection) {
+            if (zoomGroup.getChildren().contains(line)) {
+                zoomGroup.getChildren().remove(line);
+            }
+        }
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(selectCircle)) {
+            System.out.println("we found new Selected Circles");
             zoomGroup.getChildren().remove(selectCircle);
         }
         // create new Circle
-        selectCircle = new Circle();
-        selectCircle.setCenterX(event.getNodeSelected().getXcoord());
-        selectCircle.setCenterY(event.getNodeSelected().getYcoord());
-        selectCircle.setRadius(20);
-        selectCircle.setFill(Color.RED);
-        zoomGroup.getChildren().add(selectCircle);
+        circle = new Circle();
+        circle.setCenterX(node.getXcoord());
+        circle.setCenterY(node.getYcoord());
+        circle.setRadius(20);
+        circle.setFill(color);
+        zoomGroup.getChildren().add(circle);
+        // set circle to selected
+        selectCircle = circle;
+        // Scroll to new point
+        scrollTo(event.getNodeSelected());
+
     }
 
     // generate path on the screen
@@ -178,6 +201,18 @@ public class MapView {
         map_scrollpane.setVvalue(scrollV);
     }
 
-
+    private void scrollTo(Node node) {
+        // animation scroll to new position
+        double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
+        double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
+        double scrollH = (Double) (node.getXcoord() / mapWidth);
+        double scrollV = (Double) (node.getYcoord() / mapHeight);
+        final Timeline timeline = new Timeline();
+        final KeyValue kv1 = new KeyValue(map_scrollpane.hvalueProperty(), scrollH);
+        final KeyValue kv2 = new KeyValue(map_scrollpane.vvalueProperty(), scrollV);
+        final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
 
 }

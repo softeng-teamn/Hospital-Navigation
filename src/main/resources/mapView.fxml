@@ -30,17 +30,28 @@
                     </Pane>
                 </content>
             </ScrollPane>
-      <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="60.0" StackPane.alignment="TOP_RIGHT">
+      <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="230.0" prefWidth="124.0" stylesheets="@theme.css" StackPane.alignment="TOP_RIGHT">
          <children>
-            <Slider fx:id="zoom_slider" orientation="VERTICAL" />
+            <VBox alignment="TOP_CENTER" prefHeight="232.0" prefWidth="124.0">
+               <children>
+                  <Slider fx:id="zoom_slider" orientation="VERTICAL">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Slider>
+               </children>
+            </VBox>
          </children>
          <StackPane.margin>
-            <Insets top="10.0" />
+            <Insets right="20.0" top="10.0" />
          </StackPane.margin>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
       </Pane>
             <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="290.0" prefWidth="290.0" StackPane.alignment="BOTTOM_RIGHT">
                 <children>
-                    <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">
+                    <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;" stylesheets="@theme.css">
                         <children>
                             <Label text="Call Elevator" />
                             <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" text="Level 1">

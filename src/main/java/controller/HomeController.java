@@ -16,12 +16,5 @@ public class HomeController {
     @FXML
     private TopNav topNavController;
 
-    @FXML
-    void initialize() {
-
-        eventBus.register(this);
-
-    }
-
 
 }

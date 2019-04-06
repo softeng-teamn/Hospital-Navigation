@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import model.*;
 import service.ResourceLoader;
@@ -21,6 +22,8 @@ public class TopNav {
     private Event event = EventBusFactory.getEvent();
     private EventBus eventBus = EventBusFactory.getEventBus();
 
+    @FXML
+    private Label time_label;
     @FXML
     private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn;
     @FXML
@@ -41,9 +44,6 @@ public class TopNav {
             StageManager.changeExistingWindow(stage, root, "Admin Login");
         }
     }
-
-
-
 
     @FXML
     // switches window to map editor screen.
@@ -79,6 +79,8 @@ public class TopNav {
 
         resetBtn();
 
+        // set Default time
+//        time_label.setText();
     }
 
     void handleFindPath() {
