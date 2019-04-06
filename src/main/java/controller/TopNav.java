@@ -2,53 +2,83 @@ package controller;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import model.Event;
-import model.EventBusFactory;
-import model.HomeState;
-import model.LoginEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
+import model.*;
+import service.ResourceLoader;
+import service.StageManager;
+
+import java.io.IOException;
+
 
 public class TopNav {
 
-    private Event event;
+    private Event event = EventBusFactory.getEvent();
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    void showAdminLogin(ActionEvent e) {
-        // Creating a new event
-        event.setEventName("admin-login");
-        // Make change
-        event.setAdmin(false);
-        // share to the world!
-        eventBus.post(event);
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn;
+    @FXML
+    private JFXTextField search_bar ;
+
+    // events I send out/control
+    @FXML
+    void showAdminLogin(ActionEvent e) throws Exception {
+        if (event.isAdmin()) {
+            Event sendEvent = new Event();
+            sendEvent.setEventName("login");
+            eventBus.post(sendEvent);
+            resetBtn();
+
+        } else {
+            Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
+            Stage stage = (Stage) navigate_btn.getScene().getWindow();
+            StageManager.changeExistingWindow(stage, root, "Admin Login");
+        }
+    }
+
+
+
+
+    @FXML
+    // switches window to map editor screen.
+    public void showFulfillRequest() throws Exception {
+        Stage stage = (Stage) fulfillBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
+        StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
     }
 
     @FXML
-    void showFulfillRequest(ActionEvent e) {
-
+    void showSchedule(ActionEvent e) throws Exception {
+        Stage stage = (Stage) bookBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.scheduler);
+        StageManager.changeExistingWindow(stage, root, "Scheduler");
+        stage.sizeToScene();
+        stage.setFullScreen(true);
     }
+
 
     @FXML
-    void showSchedule(ActionEvent e) {
-
-    }
-
-
-    @FXML
-    void showRequest(ActionEvent e) {
-
-    }
-
-    @Subscribe
-    void eventListener(Event event) {
-
-        this.event = event;
+    void showRequest(ActionEvent e) throws Exception {
+        Stage stage = (Stage) navigate_btn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.request);
+        StageManager.changeExistingWindow(stage, root, "Service Request");
     }
 
     @FXML
     void initialize() {
         eventBus.register(this);
+
+        // SHOULD THIS GO HERE? (was in intialize of old map controller)
+        navigate_btn.setVisible(false);
+
+        resetBtn();
+
     }
 
     void handleFindPath() {
@@ -56,4 +86,70 @@ public class TopNav {
     }
 
 
+    // events I care about: am "subscribed" to
+    @Subscribe
+    private void eventListener(Event newEvent) {
+
+        switch (newEvent.getEventName()) {
+            case "node-select":
+                event.setNodeSelected(newEvent.getNodeSelected());
+                // show navigation button
+                // navigate_btn.setVisible(true);
+                //showNavigationBtn(event);
+                showNavigationBtn(newEvent.getNodeSelected());        // will make nav btn visible, fill search with node
+                break;
+
+            case "login":     // receives from AdminLoginContoller?
+                event.setAdmin(newEvent.isAdmin());
+                break;
+        }
+
+    }
+
+    private void resetBtn() {
+        if(event.isAdmin()){
+            fulfillBtn.setVisible(true);
+            edit_btn.setVisible(true);
+        } else {
+            fulfillBtn.setVisible(false);
+            edit_btn.setVisible(false);
+        }
+    }
+
+
+    /**
+     * searches for room
+     * @param e
+     */
+    @FXML
+    public void searchBarEnter(ActionEvent e) {
+        String search = search_bar.getText();
+
+        Event sendEvent = new Event();
+        sendEvent.setSearchBarQuery(search);
+        sendEvent.setEventName("search-query");
+        eventBus.post(sendEvent);
+    }
+
+    // when event comes in with a node-selected:
+    //      show navigation button
+    //      show node-selected in search
+    @FXML
+    void showNavigationBtn(Node selected) {
+        // make change
+        navigate_btn.setVisible(true);
+
+        // show node-selected in search
+        String fillNodeinSearch = selected.getLongName();
+        search_bar.setText(fillNodeinSearch);
+
+    }
+
+    public void startNavigation(ActionEvent actionEvent) {
+        Event sendEvent = new Event();
+        sendEvent.setNodeSelected(event.getNodeSelected());
+        sendEvent.setAccessiblePath(false);
+        sendEvent.setEventName("navigation");
+        eventBus.post(sendEvent);
+    }
 }

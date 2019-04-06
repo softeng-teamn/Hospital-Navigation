@@ -14,4 +14,8 @@ public class EventBusFactory {
         return eventBus;
     }
 
+    private static Event event = new Event();
+
+    public static Event getEvent(){ return event; }
+
 }
