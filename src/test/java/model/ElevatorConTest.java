@@ -29,7 +29,6 @@ public class ElevatorConTest {
     public void getTest(){
         String floor = "";
         ElevatorCon e = new ElevatorCon();
-        GregorianCalendar cal = new GregorianCalendar();
         try {
             floor = e.getFloor("S");
         }catch (IOException ioe){

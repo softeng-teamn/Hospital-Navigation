@@ -106,7 +106,6 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     public void reloadList(){
         ObservableList<Request> newRequestlist = FXCollections.observableArrayList();
-
         if (allRadio.isSelected()){
             if(allTypeRadio.isSelected()){
                 ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
