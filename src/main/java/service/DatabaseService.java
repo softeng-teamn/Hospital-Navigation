@@ -21,39 +21,35 @@ public class DatabaseService {
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
     private ArrayList<Function<Void, Void>> edgeCallbacks;
+    private boolean createFlag;
+
+    private static class SingletonHelper {
+        private static final DatabaseService dbs = new DatabaseService();
+    }
+
+    public static DatabaseService getDatabaseService() {
+        return SingletonHelper.dbs;
+    }
 
     /**
      * Construct a DatabaseService
-     * @param startFresh if true, blow away any database existing on disk
-     * @param loadCSVs if true, load the CSVs
      * @throws SQLException on DB connection creation error
      */
-    private DatabaseService(boolean startFresh, boolean loadCSVs) throws SQLException {
-        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-        boolean createFlag = false;
+    private DatabaseService() {
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+        createFlag = false;
 
         // Start by trying to open connection with existing database
-        Connection conn = openConnection(false);
+        Connection conn = null;
+        conn = openConnection(false);
 
-        if (conn != null) { // Database exists on file
-            if (startFresh) { // We don't want to use an existing database
-                // Close initial connection
-                conn.close();
-
-                // Open a connection to issue shutdown
-                Connection closeConnection = DriverManager.getConnection(
-                        "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
-                closeConnection.close();
-
-                // Nuke files
-                wipeOutFiles();
-
-                // Open a new connection allowing creation of database
+        if (conn == null) { // No database exists on disk, so create a new one
+            try {
                 conn = openConnection(true);
-                createFlag = true;
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } else { // No database exists on disk, so create a new one
-            conn = openConnection(true);
             createFlag = true;
         }
 
@@ -81,20 +77,17 @@ public class DatabaseService {
 
         this.connection = conn;
 
-        if(createFlag) {
+        if (createFlag) {
             this.createTables();
-
-            if (loadCSVs) {
-                CSVService.importNodes();
-                CSVService.importEdges();
-                CSVService.importEmployees();
-                CSVService.importReservableSpaces();
-            }
         }
 
         nodeCallbacks = new ArrayList<>();
         edgeCallbacks = new ArrayList<>();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
 
 
 
@@ -115,45 +108,13 @@ public class DatabaseService {
     }
 
 
-    /**
-     * This overrides the global dbs - only use to mock the database!!
-     * @param dbs
-     */
-    public static void setDatabaseForMocking(DatabaseService dbs) {
-        _dbs = dbs;
-    }
-
-    public static synchronized DatabaseService getDatabaseService(boolean startFresh, boolean loadCSVs) {
-        // Case 1: Database already exists in memory and we want to start fresh
-        // Execute later if statement as well
-        if (startFresh && _dbs != null) {
-            _dbs.close();
-            _dbs = null;
-            wipeOutFiles();
+    public void loadFromCSVsIfNecessary() {
+        if(createFlag) {
+            CSVService.importNodes();
+            CSVService.importEdges();
+            CSVService.importEmployees();
+            CSVService.importReservableSpaces();
         }
-
-        // Create a new database service, telling it to start over if necessary
-        if (_dbs == null) {
-            try {
-                _dbs = new DatabaseService(startFresh, loadCSVs);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("WARNING!");
-                System.out.println("Database not created due to the above error!");
-            }
-        }
-
-        return _dbs;
-    }
-
-    // Default loadCSVs to true
-    public static synchronized DatabaseService getDatabaseService(boolean startFresh) {
-        return getDatabaseService(startFresh, true);
-    }
-
-    // Default start fresh to false
-    public static synchronized DatabaseService getDatabaseService() {
-        return getDatabaseService(false);
     }
 
 

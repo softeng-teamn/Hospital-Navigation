@@ -1,5 +1,9 @@
 package controller;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import model.Node;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
@@ -9,7 +13,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.testfx.framework.junit.ApplicationTest;
 import service.DatabaseService;
+import service.ResourceLoader;
 import testclassifications.FastTest;
 
 import java.util.ArrayList;
@@ -23,7 +29,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class RequestControllerTest {
+public class RequestControllerTest extends ApplicationTest {
     private Node n = new Node(1, 1 , "ABCD","","","","","");
     private RequestController RC = new RequestController();
     private Request request;
@@ -41,28 +47,35 @@ public class RequestControllerTest {
 
 //    RequestController mockRequestController = spy(new RequestController());
 
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent mainNode = FXMLLoader.load(ResourceLoader.request);
+        stage.setScene(new Scene(mainNode));
+        stage.show();
+        stage.toFront();
+        stage.sizeToScene();
+        stage.setFullScreen(true);
+    }
+
     @Before
     public void setupTest() {
 //        when(mockRequestController.initialize()).thenReturn();
-
-        DatabaseService.getDatabaseService(true);
-
-        DatabaseService.getDatabaseService().insertNode(n);
 
         medList.add(medReqM);
         medList.add(medReqR);
         ITList.add(ITReqA);
         ITList.add(ITReqB);
 
-        DatabaseService.getDatabaseService().insertMedicineRequest(medReqM);
-        DatabaseService.getDatabaseService().insertMedicineRequest(medReqR);
-        DatabaseService.getDatabaseService().insertITRequest(ITReqA);
-        DatabaseService.getDatabaseService().insertITRequest(ITReqB);
+        RC.myDBS.insertMedicineRequest(medReqM);
+        RC.myDBS.insertMedicineRequest(medReqR);
+        RC.myDBS.insertITRequest(ITReqA);
+        RC.myDBS.insertITRequest(ITReqB);
+        RC.myDBS.insertNode(n);
     }
 
     @AfterClass
     public static void cleanup() {
-        DatabaseService.getDatabaseService().close();
         DatabaseService.wipeOutFiles();
     }
 
@@ -82,17 +95,17 @@ public class RequestControllerTest {
     @Test
     @Category(FastTest.class)
     public void makeITRequestTest () {
-        List<ITRequest> requests = DatabaseService.getDatabaseService().getAllIncompleteITRequests();
+        List<ITRequest> requests = RequestController.myDBS.getAllIncompleteITRequests();
         requests.add(ITReqA);
         RC.makeRequest(ITReqA);
-        List<ITRequest> requests1 = DatabaseService.getDatabaseService().getAllIncompleteITRequests();
-        //System.out.println(requests);
-        //System.out.println(requests1);
+        List<ITRequest> requests1 = RequestController.myDBS.getAllIncompleteITRequests();
+        System.out.println(requests);
+        System.out.println(requests1);
         assertThat(requests.containsAll(requests1), equalTo(true));
         requests = requests1;
         //don't make two of the same exact req
         RC.makeRequest(ITReqA);
-        requests1 = DatabaseService.getDatabaseService().getAllIncompleteITRequests();
+        requests1 = RequestController.myDBS.getAllIncompleteITRequests();
         System.out.println(requests);
         System.out.println(requests1);
         assertEquals(requests.size(), requests1.size());
@@ -101,10 +114,10 @@ public class RequestControllerTest {
     @Test
     @Category(FastTest.class)
     public void makeMedRequestTest () {
-        List<MedicineRequest> requests = DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
+        List<MedicineRequest> requests = RequestController.myDBS.getAllIncompleteMedicineRequests();
         requests.add(medReqM);
         RC.makeRequest(medReqM);
-        List<MedicineRequest> requests1 = DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
+        List<MedicineRequest> requests1 = RequestController.myDBS.getAllIncompleteMedicineRequests();
 
         System.out.println(requests);
 
@@ -114,7 +127,7 @@ public class RequestControllerTest {
         requests = requests1;
         //don't make two of the same exact req
         RC.makeRequest(ITReqA);
-        requests1 = DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
+        requests1 = RequestController.myDBS.getAllIncompleteMedicineRequests();
         assertThat(requests.size() == requests1.size(), equalTo(true));
 
     }

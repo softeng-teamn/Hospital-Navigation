@@ -35,7 +35,7 @@ public class AdminLoginController extends Controller implements Initializable {
     @FXML
     private Text passwordPrompt;
 
-
+    static DatabaseService myDBS;
 
 
     @FXML
@@ -61,7 +61,7 @@ public class AdminLoginController extends Controller implements Initializable {
         String id = idText.getText();
         String password = passwordField.getText();
         int intID = Integer.parseInt(id);
-        Employee user = DatabaseService.getDatabaseService().getEmployee(intID);
+        Employee user = myDBS.getEmployee(intID);
 
         try {
             if(user.isAdmin()){
@@ -92,6 +92,8 @@ public class AdminLoginController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        myDBS = DatabaseService.getDatabaseService();
+
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String text = change.getText();
 

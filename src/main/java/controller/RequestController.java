@@ -46,6 +46,8 @@ public class RequestController extends Controller implements Initializable {
     ArrayList<Node> allNodes;
     ObservableList<Node> allNodesObservable;
 
+    static DatabaseService myDBS;
+    
     /**
      * switches window to home screen
      *
@@ -123,10 +125,10 @@ public class RequestController extends Controller implements Initializable {
             textArea.setText("Please select type");
         } else if (selected.getText().contains("Medicine")) {
             MedicineRequest newMedicineRequest = new MedicineRequest(-1, description, requestLocation, false);
-            DatabaseService.getDatabaseService().insertMedicineRequest(newMedicineRequest);
+            myDBS.insertMedicineRequest(newMedicineRequest);
         } else if (selected.getText().contains("IT")) {
             ITRequest newITRequest = new ITRequest(-1, description, requestLocation, false);
-            DatabaseService.getDatabaseService().insertITRequest(newITRequest);
+            myDBS.insertITRequest(newITRequest);
 
         }
         textArea.clear();
@@ -143,14 +145,14 @@ public class RequestController extends Controller implements Initializable {
         switch (rType.getrType()) {
             case ITS:
                 ITRequest ITType = (ITRequest) type;
-                if (DatabaseService.getDatabaseService().getITRequest(ITType.getId()) == null) {
-                    DatabaseService.getDatabaseService().insertITRequest(ITType);
+                if (myDBS.getITRequest(ITType.getId()) == null) {
+                    myDBS.insertITRequest(ITType);
                 }
                 break;
             case MED:
                 MedicineRequest medReq = (MedicineRequest) type;
-                if (DatabaseService.getDatabaseService().getMedicineRequest(medReq.getId()) == null) {
-                    DatabaseService.getDatabaseService().insertMedicineRequest(medReq);
+                if (myDBS.getMedicineRequest(medReq.getId()) == null) {
+                    myDBS.insertMedicineRequest(medReq);
                 }
                 break;
             case ABS:
@@ -171,13 +173,13 @@ public class RequestController extends Controller implements Initializable {
                 ITRequest ITReq = (ITRequest) type;
                 ITReq.setCompleted(true);
                 ITReq.setCompletedBy(byWho);
-                DatabaseService.getDatabaseService().updateITRequest(ITReq);
+                myDBS.updateITRequest(ITReq);
                 break;
             case MED:
                 MedicineRequest MedReq = (MedicineRequest) type;
                 MedReq.setCompleted(true);
                 MedReq.setCompletedBy(byWho);
-                DatabaseService.getDatabaseService().updateMedicineRequest(MedReq);
+                myDBS.updateMedicineRequest(MedReq);
                 break;
             case ABS:
                 //do nothing
@@ -191,8 +193,8 @@ public class RequestController extends Controller implements Initializable {
      */
     public Collection<Request> getPendingRequests() {
         ArrayList<Request> requests = new ArrayList<>();
-        requests.addAll(DatabaseService.getDatabaseService().getAllIncompleteITRequests());
-        requests.addAll(DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests());
+        requests.addAll(myDBS.getAllIncompleteITRequests());
+        requests.addAll(myDBS.getAllIncompleteMedicineRequests());
         return requests;
     }
 
@@ -205,6 +207,7 @@ public class RequestController extends Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        myDBS = DatabaseService.getDatabaseService();
         repopulateList();
     }
 
@@ -214,9 +217,9 @@ public class RequestController extends Controller implements Initializable {
     void repopulateList() {
         System.out.println("Repopulation of listView");
         if (Controller.getIsAdmin()) {
-            allNodes = DatabaseService.getDatabaseService().getAllNodes();
+            allNodes = myDBS.getAllNodes();
         } else {
-            allNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
+            allNodes = myDBS.getNodesFilteredByType("STAI", "HALL");
         }
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();

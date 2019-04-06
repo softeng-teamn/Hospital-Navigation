@@ -70,8 +70,12 @@ public class CreateNodeController extends Controller {
     // Collection of lines
     ArrayList<Line> lineCollection;
 
+    static DatabaseService myDBS;
+
     @FXML
     void initialize() {
+        myDBS = DatabaseService.getDatabaseService();
+
         // start state at 0
         stateIterator = 0;
 
@@ -297,9 +301,9 @@ public class CreateNodeController extends Controller {
     // STATE: populate the database with our info
     void submitNewNode() {
         // send info to dbs
-        DatabaseService.getDatabaseService().insertNode(myCreatedNode);
+        myDBS.insertNode(myCreatedNode);
         for (Edge e : edges) {
-            DatabaseService.getDatabaseService().insertEdge(e);
+            myDBS.insertEdge(e);
         }
         // show instructions
         instruction_label.setText("Node Successfully Created!");
@@ -385,7 +389,7 @@ public class CreateNodeController extends Controller {
 
     String genNodeNumber() {
         String str = "%3d";
-        int numNodes = DatabaseService.getDatabaseService().getNumNodeTypeByFloor(node_type, node_floor);
+        int numNodes = myDBS.getNumNodeTypeByFloor(node_type, node_floor);
         return String.format(str, numNodes);
     }
 
@@ -400,7 +404,7 @@ public class CreateNodeController extends Controller {
     }
 
     void showAllNodes() {
-        ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
+        ArrayList<Node> allNodes = myDBS.getAllNodes();
         for (Node node : allNodes) {
             // create circle
             Circle nodeCircle = new Circle();

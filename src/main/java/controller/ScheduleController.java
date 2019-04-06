@@ -75,11 +75,15 @@ public class ScheduleController extends Controller {
 
     private String timeErrorText, availRoomsText, bookedRoomsText, clearFilterText;
 
+    static DatabaseService myDBS;
+    
     /**
      * Set up scheduler page.
      */
     @FXML
     public void initialize() {
+        myDBS = DatabaseService.getDatabaseService();
+        
         timeErrorText = "Please enter valid start and end times.";
         availRoomsText = "Show Available Spaces";
         bookedRoomsText = "Show Booked Spaces";
@@ -118,7 +122,7 @@ public class ScheduleController extends Controller {
         endTimePicker.setValue(endTime);
 
         //  Pull spaces from database, sort, add to list and listview
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
         Collections.sort(dbResSpaces);
         resSpaces.addAll(dbResSpaces);
         reservableList.setItems(resSpaces);
@@ -232,7 +236,7 @@ public class ScheduleController extends Controller {
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
 
         // Get reservations for this space and these times
-        ArrayList<Reservation> reservations = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
+        ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
 
         // clear the previous schedule
         schedule.getChildren().clear();
@@ -349,7 +353,7 @@ public class ScheduleController extends Controller {
         }
         // TODO: validate id
         // If the ID number is bad, display an error message.
-        else if (badId /*|| DatabaseService.getDatabaseService().getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
+        else if (badId /*|| myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
             confErrorLbl.setText("Error: Please provide a valid employee ID number.");
             confErrorLbl.setVisible(true);
         }
@@ -378,7 +382,7 @@ public class ScheduleController extends Controller {
 
         // Create the new reservation
         Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),gcalStart,gcalEnd);
-        DatabaseService.getDatabaseService().insertReservation(newRes);
+        myDBS.insertReservation(newRes);
 
         // Reset the screen
         showRoomSchedule();
@@ -466,7 +470,7 @@ public class ScheduleController extends Controller {
      */
     private void filterList(String findStr) {
         ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
         resSpaces.addAll(dbResSpaces);
         if (findStr.equals("")) {
             reservableList.getItems().clear();
@@ -517,8 +521,8 @@ public class ScheduleController extends Controller {
             GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
 
             // Get reservations between selected times
-            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(gcalStart, gcalEnd);
-            ArrayList<ReservableSpace> allSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) myDBS.getReservationsBetween(gcalStart, gcalEnd);
+            ArrayList<ReservableSpace> allSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
 
             int startSize = allSpaces.size();
             for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
@@ -567,10 +571,10 @@ public class ScheduleController extends Controller {
             GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
 
             ArrayList<ReservableSpace> bookedSpaces = new ArrayList<>();
-            ArrayList<ReservableSpace> allSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+            ArrayList<ReservableSpace> allSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
 
             // Get reservations between selected times
-            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(gcalStart, gcalEnd);
+            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) myDBS.getReservationsBetween(gcalStart, gcalEnd);
 
             int startSize = allSpaces.size();
             for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
@@ -612,7 +616,7 @@ public class ScheduleController extends Controller {
     public void clearFilter() {
         errorLbl.setVisible(false);
         // Set list to all spaces
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
         Collections.sort(dbResSpaces);
         resSpaces.clear();
         resSpaces.addAll(dbResSpaces);
