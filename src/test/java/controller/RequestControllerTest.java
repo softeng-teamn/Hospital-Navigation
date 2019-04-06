@@ -1,66 +1,44 @@
 package controller;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import model.Node;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
-import model.request.Request;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.testfx.framework.junit.ApplicationTest;
 import service.DatabaseService;
-import service.ResourceLoader;
 import testclassifications.FastTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.junit.MatcherAssert.assertThat;
 
 public class RequestControllerTest {
     private Node n = new Node(1, 1 , "ABCD","","","","","");
     private RequestController RC = new RequestController();
-    private Request request;
-    private MedicineRequest mReq;
     private MedicineRequest medReqR = new MedicineRequest(2,"Fast",n,false);
     private MedicineRequest medReqM = new MedicineRequest(2,"take your time", n, false, "Morphine", 200.0);
     private ITRequest ITReqA = new ITRequest(2,"3/31/2019 1:21 PM",n,false,"Hard Drive Broke When I peed on it");
     private ITRequest ITReqB = new ITRequest(3,"4/1/2019 2:30 PM", n, false, "Can't wifi");
-    private MedicineRequest c;
-    private ITRequest itReq;
-
-    RequestController reqCrl1 ;
-    RequestController reqCrl2 ;
-    Request newReq ;
-
-//    RequestController mockRequestController = spy(new RequestController());
 
     @Before
     public void setupTest() {
-//        when(mockRequestController.initialize()).thenReturn();
-
         medList.add(medReqM);
         medList.add(medReqR);
         ITList.add(ITReqA);
         ITList.add(ITReqB);
 
-        RC.myDBS.insertMedicineRequest(medReqM);
-        RC.myDBS.insertMedicineRequest(medReqR);
-        RC.myDBS.insertITRequest(ITReqA);
-        RC.myDBS.insertITRequest(ITReqB);
-        RC.myDBS.insertNode(n);
+        RC = new RequestController();
+
+        RequestController.myDBS.insertMedicineRequest(medReqM);
+        RequestController.myDBS.insertMedicineRequest(medReqR);
+        RequestController.myDBS.insertITRequest(ITReqA);
+        RequestController.myDBS.insertITRequest(ITReqB);
+        RequestController.myDBS.insertNode(n);
     }
 
     @AfterClass
@@ -71,33 +49,28 @@ public class RequestControllerTest {
     private ArrayList<MedicineRequest> medList = new ArrayList<>();
     private ArrayList<ITRequest> ITList = new ArrayList<>();
 
-
-    // test showHome()
-//    @Test
-//    @Category(FastTest.class)
-//    public void showHomeTest () {
-//        // test if switching screens
-//        // will do research, UI help?!
-//    }
-
     // test makeRequest()
     @Test
     @Category(FastTest.class)
     public void makeITRequestTest () {
         List<ITRequest> requests = RequestController.myDBS.getAllIncompleteITRequests();
+
+        assertThat(requests, is(notNullValue()));
+
         requests.add(ITReqA);
+
         RC.makeRequest(ITReqA);
         List<ITRequest> requests1 = RequestController.myDBS.getAllIncompleteITRequests();
-        System.out.println(requests);
-        System.out.println(requests1);
+
+        assertThat(requests1, is(notNullValue()));
+
         assertThat(requests.containsAll(requests1), equalTo(true));
         requests = requests1;
         //don't make two of the same exact req
         RC.makeRequest(ITReqA);
         requests1 = RequestController.myDBS.getAllIncompleteITRequests();
-        System.out.println(requests);
-        System.out.println(requests1);
-        assertEquals(requests.size(), requests1.size());
+
+        assertThat(requests.size(), is(requests1.size()));
     }
 
     @Test
