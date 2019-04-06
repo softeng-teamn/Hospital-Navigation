@@ -799,7 +799,7 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM NODE");
             statement.addBatch("DELETE FROM EMPLOYEE");
             statement.addBatch("DELETE FROM RESERVABLESPACE");
-            statement.addBatch("DELETE FROM META_DB_VER");
+
             // restart the auto-generated keys
             statement.addBatch("ALTER TABLE ITREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE MEDICINEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
