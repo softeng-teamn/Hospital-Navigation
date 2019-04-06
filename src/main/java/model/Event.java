@@ -11,7 +11,10 @@ public class Event {
     boolean isLoggedIn = false; // login
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
-    // To know when to genPath           navigation
+
+
+
+
 
     public String getEventName() {
         return eventName;
@@ -52,6 +55,10 @@ public class Event {
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
+
+    public boolean isAccessiblePath() { return isAccessiblePath; }
+
+    public void setAccessiblePath(boolean accessiblePath) { isAccessiblePath = accessiblePath; }
 
 
 }
