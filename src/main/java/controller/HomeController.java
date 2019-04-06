@@ -2,12 +2,12 @@ package controller;
 
 import com.google.common.eventbus.EventBus;
 import javafx.fxml.FXML;
+import model.EventBusFactory;
 import model.HomeState;
 
 public class HomeController {
 
-    private HomeState state;
-    public EventBus eventBus;
+    public EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
     private MapView mapViewController;
@@ -18,9 +18,10 @@ public class HomeController {
 
     @FXML
     void initialize() {
-        eventBus = new EventBus();
 
+        eventBus.register(this);
 
     }
+
 
 }

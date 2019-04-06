@@ -1,5 +1,7 @@
 package controller;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXListView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -8,8 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
-import model.HomeState;
-import model.Node;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -17,10 +18,32 @@ import java.util.Observer;
 
 public class SearchResults {
 
+    Event event;
+    private EventBus eventBus = EventBusFactory.getEventBus();
 
-    public HomeState state;
     @FXML
     private JFXListView<Node> list_view;
+
+
+    @FXML
+    void initialize() {
+        eventBus.register(this);
+    }
+
+    @Subscribe
+    private void eventListener(Event event) {
+
+        switch (event.getEventName()) {
+            case "node-selected":
+                event.getNodeSelected();
+                break;
+        }
+
+        this.event = event;
+    }
+
+
+
 
     /**
      * Runs when user clicks a location
