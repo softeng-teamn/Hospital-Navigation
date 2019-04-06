@@ -28,10 +28,7 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
-import model.Edge;
-import model.Elevator;
-import model.MapNode;
-import model.Node;
+import model.*;
 import service.DatabaseService;
 import service.PathFindingService;
 import service.ResourceLoader;
@@ -414,6 +411,7 @@ public class HomeController extends MapController {
         if (Controller.getIsAdmin() || Controller.getIsEmployee()) {
             Controller.setIsAdmin(false);
             Controller.setIsEmployee(false);
+            Controller.setCurrentJob(JobType.GUEST);
             authCheck();
             repopulateList();
         } else {

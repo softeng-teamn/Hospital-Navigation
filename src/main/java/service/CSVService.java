@@ -349,7 +349,7 @@ public class CSVService extends Controller {
 
                 JobType job;
 
-                switch (data[2]) {
+                switch (data[2].toUpperCase()) {
                     case "ADMINISTRATOR":
                         job = JobType.ADMINISTRATOR;
                         break;

@@ -69,12 +69,14 @@ public class AdminLoginController extends Controller implements Initializable {
         {
             System.out.println(user.isAdmin());
             System.out.println(user.getPassword());
+            System.out.println(password);
         }
 
 
         try {
                 if (password.equals(user.getPassword())){
                     Controller.setIsEmployee(true);
+                    Controller.setCurrentJob(user.getJob());
                     if(user.isAdmin()) {
                         Controller.setIsAdmin(true);
                     }

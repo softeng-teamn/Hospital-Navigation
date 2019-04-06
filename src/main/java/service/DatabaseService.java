@@ -1069,6 +1069,9 @@ public class DatabaseService {
             case "SECURITY_PERSONNEL":
                 job = JobType.SECURITY_PERSONNEL;
                 break;
+            case "GUEST":
+                job = JobType.GUEST;
+                break;
             default:
                 System.out.println("Invalid employee job entry (on DBS.extractEmployee): " + jobString);
                 job = null;
