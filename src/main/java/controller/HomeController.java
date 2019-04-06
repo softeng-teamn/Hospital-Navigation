@@ -496,6 +496,7 @@ public class HomeController extends MapController {
             Node current;
             for (int i = 1; i < path.size(); i++) {
                 current = path.get(i);
+                System.out.println(current);
                 Line line = new Line();
 
                 line.setStartX(current.getXcoord());
