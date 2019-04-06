@@ -51,19 +51,22 @@ public class SearchResults {
     @Subscribe
     private void eventListener(Event event) {
 
-        this.event = event;
 
         switch (event.getEventName()) {
             case "node-selected":
+                this.event.setNodeSelected(event.getNodeSelected());
                 list_view.scrollTo(event.getNodeSelected());
                 list_view.getSelectionModel().select(event.getNodeSelected());
                 break;
             case "login":
+                this.event.setLoggedIn(event.isLoggedIn());
+                this.event.setAdmin(event.isAdmin());
                 if(event.isAdmin()){
                     repopulateList(true);
                 }
                 break;
             case "search-query":
+                this.event.setSearchBarQuery(event.getSearchBarQuery());
                 filterList(event.getSearchBarQuery());
 
         }
