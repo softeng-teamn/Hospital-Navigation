@@ -22,7 +22,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, schedulerBtn, edit_btn;
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn;
     @FXML
     private JFXTextField search_bar ;
 
@@ -55,7 +55,7 @@ public class TopNav {
 
     @FXML
     void showSchedule(ActionEvent e) throws Exception {
-        Stage stage = (Stage) schedulerBtn.getScene().getWindow();
+        Stage stage = (Stage) bookBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
         stage.sizeToScene();
@@ -93,7 +93,6 @@ public class TopNav {
         switch (newEvent.getEventName()) {
             case "node-select":
                 event.setNodeSelected(newEvent.getNodeSelected());
-                event.getNodeSelected();
                 // show navigation button
                 // navigate_btn.setVisible(true);
                 //showNavigationBtn(event);
@@ -137,12 +136,8 @@ public class TopNav {
     //      show node-selected in search
     @FXML
     void showNavigationBtn(Node selected) {
-        // create new event
-        //event.setEventName("navigate-btn-on");
         // make change
         navigate_btn.setVisible(true);
-        // share
-        //eventBus.post(event);   -- dont need to alert if visible, just if is selected
 
         // show node-selected in search
         String fillNodeinSearch = selected.getLongName();
@@ -151,5 +146,10 @@ public class TopNav {
     }
 
     public void startNavigation(ActionEvent actionEvent) {
+        Event sendEvent = new Event();
+        sendEvent.setNodeSelected(event.getNodeSelected());
+        sendEvent.setAccessiblePath(false);
+        sendEvent.setEventName("navigation");
+        eventBus.post(sendEvent);
     }
 }
