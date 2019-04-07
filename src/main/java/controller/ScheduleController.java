@@ -352,9 +352,9 @@ public class ScheduleController extends Controller {
             inputErrorLbl.setVisible(true);
             valid = false;
         }
-        // TODO: validate id
+
         // If the ID number is bad, display an error message.
-        if (badId /*|| myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
+        if (badId || myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null) {
             inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
             inputErrorLbl.setVisible(true);
             valid = false;
