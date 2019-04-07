@@ -136,9 +136,9 @@ public class RequestController extends Controller implements Initializable {
 
         // if feilds are populted and are of type:
         if ((selected != null) && (selected.getText().contains("Medicine"))) {
-            reqFacade.makeMedRequest();
+            reqFacade.makeRequest();
         } else if ((selected != null) && (selected.getText().contains("IT"))) {
-            reqFacade.makeITRequest();
+            reqFacade.makeRequest();
         }
         textArea.clear();
     }
@@ -180,10 +180,10 @@ public class RequestController extends Controller implements Initializable {
         RequestType rType = type.getRequestType();
         switch (rType.getrType()) {
             case ITS:
-                reqFacade.fillITRequest();
+                reqFacade.fillRequest();
                 break;
             case MED:
-                reqFacade.fillMedRequest();
+                reqFacade.fillRequest();
                 break;
             case ABS:
                 //do nothing

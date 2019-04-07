@@ -7,12 +7,11 @@ import service.DatabaseService;
 public class RequestFacade {
 
 
-    private ITRequest itRequest ;
-    private MedicineRequest medRequest ;
+    private Request request;
 
-    public RequestFacade(ITRequest itRequest, MedicineRequest medRequest) {
-        this.itRequest = itRequest;
-        this.medRequest = medRequest;
+
+    public RequestFacade(Request request) {
+        this.request = request;
     }
 
     private JFXToggleNode selected;
@@ -35,25 +34,14 @@ public class RequestFacade {
 
 
     // to make  a new IT Request
-    public void makeITRequest(){
-        itRequest.makeRequest() ;
-
-    }
-
-    // to make a new medicine Request
-    public void makeMedRequest(){
-        medRequest.makeRequest() ;
-    }
-
-    // to fulfill an existing IT Request
-    public void fillITRequest(){
-        itRequest.fillRequest() ;
+    public void makeRequest(){
+        request.makeRequest() ;
 
     }
 
     // to fulfill an existing medicine Request
-    public void fillMedRequest(){
-        medRequest.fillRequest() ;
+    public void fillRequest(){
+        request.fillRequest() ;
     }
 
 
