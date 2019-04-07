@@ -9,6 +9,7 @@ public class ResourceLoader {
     public static final URL scheduler = service.ResourceLoader.class.getResource("/schedule.fxml");
     public static final URL request = service.ResourceLoader.class.getResource("/request.fxml");
     public static final URL createNode = service.ResourceLoader.class.getResource("/createNode.fxml");
+    public static final URL maintenanceRequest = service.ResourceLoader.class.getResource("/requests/maintenance_requests.fxml");
 
 
     public static final URL floristRequest = service.ResourceLoader.class.getResource("/requests/floristRequest.fxml");

@@ -4,8 +4,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.FastTest;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class ResourceLoaderTest {
@@ -20,6 +19,7 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.request, is(notNullValue()));
         assertThat(ResourceLoader.scheduler, is(notNullValue()));
         assertThat(ResourceLoader.reservablespaces, is(notNullValue()));
+        assertThat(ResourceLoader.maintenanceRequest, is(notNullValue()));
     }
 
 }
