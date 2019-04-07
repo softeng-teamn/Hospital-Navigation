@@ -461,7 +461,6 @@ public class ScheduleController extends Controller {
                 }
             }
         }
-
         return true;
     }
 
