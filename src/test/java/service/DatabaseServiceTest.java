@@ -3,6 +3,7 @@ package service;
 import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
+import model.request.ToyRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.derby.iapi.db.Database;
 import org.hamcrest.Matchers;
@@ -1425,12 +1426,190 @@ public class DatabaseServiceTest {
 
     //////////////////////// END REQUEST 11 TESTS //////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 12 TESTS /////////////////////////////////////////////////////////////////////////
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetToyRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        ToyRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getToyRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ToyRequest req = new ToyRequest(0, "No notes", node, false, "Xylophone");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertToyRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getToyRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllToyRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        ToyRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getToyRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getToyRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getToyRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ToyRequest req1 = new ToyRequest(0, "No notes", node, false, "Xylophone");
+        ToyRequest req2 = new ToyRequest(1, "Priority", node, true, "Buzz Lightyear");
+        ToyRequest req3 = new ToyRequest(2, "Notes go here", node, false, "Doll");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertToyRequest(req1));
+        assertTrue(myDBS.insertToyRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
+
+        // Check that there are two and only two, and that they are the right two
+        List<ToyRequest> allToyRequests = myDBS.getAllToyRequests();
+        assertThat(allToyRequests.size(), is(2));
+        assertEquals(req1, allToyRequests.get(0));
+        assertEquals(req2, allToyRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertToyRequest(req3));
+
+        req3.setId(2);
+
+        allToyRequests = myDBS.getAllToyRequests();
+        assertThat(allToyRequests.size(), is(3));
+        assertEquals(req1, allToyRequests.get(0));
+        assertEquals(req2, allToyRequests.get(1));
+        assertEquals(req3, allToyRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateToyRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ToyRequest req = new ToyRequest(0, "No notes", node, false, "Xylophone");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertToyRequest(req));
+        assertEquals(req, myDBS.getToyRequest(0));
+
+        req.setToyName("Mr. Potato Head");
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updateToyRequest(req));
+        assertEquals(req, myDBS.getToyRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteToyRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ToyRequest req = new ToyRequest(0, "No notes", node, false, "Xylophone");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertToyRequest(req));
+        assertEquals(req, myDBS.getToyRequest(0));
+
+        assertTrue(myDBS.deleteToyRequest(req));
+        assertNull(myDBS.getToyRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteToyRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        ToyRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getToyRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getToyRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getToyRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ToyRequest req1 = new ToyRequest(0, "No notes", node, false, "Xylophone");
+        ToyRequest req2 = new ToyRequest(1, "Priority", node, true, "Mr. Potato Head");
+        ToyRequest req3 = new ToyRequest(2, "Notes go here", node, false, "Woody");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertToyRequest(req1));
+        assertTrue(myDBS.insertToyRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<ToyRequest> allToyRequests = myDBS.getAllIncompleteToyRequests();
+        assertThat(allToyRequests.size(), is(1));
+        assertEquals(req1, allToyRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertToyRequest(req3));
+
+        allToyRequests = myDBS.getAllIncompleteToyRequests();
+        assertThat(allToyRequests.size(), is(2));
+        assertEquals(req1, allToyRequests.get(0));
+        assertEquals(req3, allToyRequests.get(1));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllCompleteToyRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        ToyRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getToyRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getToyRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getToyRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ToyRequest req1 = new ToyRequest(0, "No notes", node, false, "Xylophone");
+        ToyRequest req2 = new ToyRequest(1, "Priority", node, true, "Mr. Potato Head");
+        ToyRequest req3 = new ToyRequest(2, "Notes go here", node, false, "Woody");
 
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertToyRequest(req1));
+        assertTrue(myDBS.insertToyRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<ToyRequest> allToyRequests = myDBS.getAllCompleteToyRequests();
+        assertThat(allToyRequests.size(), is(1));
+        assertEquals(req2, allToyRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertToyRequest(req3));
+
+        allToyRequests = myDBS.getAllCompleteToyRequests();
+        assertThat(allToyRequests.size(), is(1));
+        assertEquals(req2, allToyRequests.get(0));
+    }
     //////////////////////// END REQUEST 12 TESTS //////////////////////////////////////////////////////////////////////
 }

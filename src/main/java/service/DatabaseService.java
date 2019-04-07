@@ -212,7 +212,7 @@ public class DatabaseService {
             // Request 9 Create table here
             // Request 10 Create table here
             // Request 11 Create table here
-            statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ...notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255)");
+            statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255))");
 
 
             statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
@@ -914,8 +914,13 @@ public class DatabaseService {
      * @return a list of every IT request that has not been completed yet.
      */
     public List<ToyRequest> getAllIncompleteToyRequests() {
-        String query = "Select * FROM ITREQUEST WHERE (completed = ?)";
+        String query = "Select * FROM TOYREQUEST WHERE (completed = ?)";
         return (List<ToyRequest>)(List<?>) executeGetMultiple(query, ToyRequest.class, false);
+    }
+
+    public List<ToyRequest> getAllCompleteToyRequests() {
+        String query = "Select * FROM TOYREQUEST WHERE (completed = ?)";
+        return (List<ToyRequest>)(List<?>) executeGetMultiple(query, ToyRequest.class, true);
     }
 
 
