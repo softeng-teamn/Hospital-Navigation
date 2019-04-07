@@ -11,6 +11,8 @@ public class ResourceLoader {
     public static final URL createNode = service.ResourceLoader.class.getResource("/createNode.fxml");
     public static final URL maintenanceRequest = service.ResourceLoader.class.getResource("/requests/maintenance_requests.fxml");
 
+    public static final URL patientInfoRequest = service.ResourceLoader.class.getResource("/requests/patientInfo.fxml");
+
     public static final URL edges = service.ResourceLoader.class.getResource("/edges.csv");
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");

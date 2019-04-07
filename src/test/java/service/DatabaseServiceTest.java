@@ -5,6 +5,7 @@ import model.request.ITRequest;
 import model.request.InternalTransportRequest;
 import model.request.MaintenanceRequest;
 import model.request.MedicineRequest;
+import model.request.PatientInfoRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.derby.iapi.db.Database;
 import org.hamcrest.Matchers;
@@ -1322,7 +1323,8 @@ public class DatabaseServiceTest {
 
 
 
-    // TODO: query methods here
+
+
     ///////////////////////// REQUEST 1 TESTS //////////////////////////////////////////////////////////////////////////
 
 
@@ -1378,12 +1380,192 @@ public class DatabaseServiceTest {
 
     //////////////////////// END REQUEST 6 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 7 TESTS //////////////////////////////////////////////////////////////////////////
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetPatientInfoRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        PatientInfoRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getPatientInfoRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        PatientInfoRequest req = new PatientInfoRequest(0, "No notes", node, false);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertPatientInfoRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getPatientInfoRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllPatientInfoRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        PatientInfoRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getPatientInfoRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getPatientInfoRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getPatientInfoRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        PatientInfoRequest req1 = new PatientInfoRequest(0, "No notes", node, false);
+        PatientInfoRequest req2 = new PatientInfoRequest(1, "Priority", node, true);
+        PatientInfoRequest req3 = new PatientInfoRequest(2, "Notes go here", node, false);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertPatientInfoRequest(req1));
+        assertTrue(myDBS.insertPatientInfoRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
+
+        // Check that there are two and only two, and that they are the right two
+        List<PatientInfoRequest> allPatientInfoRequests = myDBS.getAllPatientInfoRequests();
+        assertThat(allPatientInfoRequests.size(), is(2));
+        assertEquals(req1, allPatientInfoRequests.get(0));
+        assertEquals(req2, allPatientInfoRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertPatientInfoRequest(req3));
+
+        req3.setId(2);
+
+        allPatientInfoRequests = myDBS.getAllPatientInfoRequests();
+        assertThat(allPatientInfoRequests.size(), is(3));
+        assertEquals(req1, allPatientInfoRequests.get(0));
+        assertEquals(req2, allPatientInfoRequests.get(1));
+        assertEquals(req3, allPatientInfoRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updatePatientInfoRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        PatientInfoRequest req = new PatientInfoRequest(0, "No notes", node, false);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertPatientInfoRequest(req));
+        assertEquals(req, myDBS.getPatientInfoRequest(0));
+
+        req.setDescription("Two new mouses needed");
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updatePatientInfoRequest(req));
+        assertEquals(req, myDBS.getPatientInfoRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deletePatientInfoRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        PatientInfoRequest req = new PatientInfoRequest(0, "No notes", node, false);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertPatientInfoRequest(req));
+        assertEquals(req, myDBS.getPatientInfoRequest(0));
+
+        assertTrue(myDBS.deletePatientInfoRequest(req));
+        assertNull(myDBS.getPatientInfoRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompletePatientInfoRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        PatientInfoRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getPatientInfoRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getPatientInfoRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getPatientInfoRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        PatientInfoRequest req1 = new PatientInfoRequest(0, "No notes", node, false);
+        PatientInfoRequest req2 = new PatientInfoRequest(1, "Priority", node, true);
+        PatientInfoRequest req3 = new PatientInfoRequest(2, "Notes go here", node, false);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertPatientInfoRequest(req1));
+        assertTrue(myDBS.insertPatientInfoRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<PatientInfoRequest> allPatientInfoRequests = myDBS.getAllIncompletePatientInfoRequests();
+        assertThat(allPatientInfoRequests.size(), is(1));
+        assertEquals(req1, allPatientInfoRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertPatientInfoRequest(req3));
+
+        allPatientInfoRequests = myDBS.getAllIncompletePatientInfoRequests();
+        assertThat(allPatientInfoRequests.size(), is(2));
+        assertEquals(req1, allPatientInfoRequests.get(0));
+        assertEquals(req3, allPatientInfoRequests.get(1));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllCompletePatientInfoRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        PatientInfoRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getPatientInfoRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getPatientInfoRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getPatientInfoRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        PatientInfoRequest req1 = new PatientInfoRequest(0, "No notes", node, true);
+        PatientInfoRequest req2 = new PatientInfoRequest(1, "Priority", node, false);
+        PatientInfoRequest req3 = new PatientInfoRequest(2, "Notes go here", node, true);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertPatientInfoRequest(req1));
+        assertTrue(myDBS.insertPatientInfoRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<PatientInfoRequest> allPatientInfoRequests = myDBS.getAllCompletePatientInfoRequests();
+        assertThat(allPatientInfoRequests.size(), is(1));
+        assertEquals(req1, allPatientInfoRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertPatientInfoRequest(req3));
+
+        allPatientInfoRequests = myDBS.getAllCompletePatientInfoRequests();
+        assertThat(allPatientInfoRequests.size(), is(2));
+        assertEquals(req1, allPatientInfoRequests.get(0));
+        assertEquals(req3, allPatientInfoRequests.get(1));
+    }
 
     //////////////////////// END REQUEST 7 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 8 TESTS //////////////////////////////////////////////////////////////////////////

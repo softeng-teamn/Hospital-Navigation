@@ -165,6 +165,14 @@ public class RequestController extends Controller implements Initializable {
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.internalTransportRequest));
     }
 
+
+    @FXML
+    public void patientSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.patientInfoRequest));
+    }
+
+    @FXML
     public void maintenanceRequest(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.maintenanceRequest));
