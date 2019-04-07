@@ -25,12 +25,12 @@ public class PatientInfoRequest extends Request{
 
     @Override
     public void makeRequest() {
-
+        // TODO FILL OUT
     }
 
     @Override
     public void fillRequest() {
-
+        // TODO FILL OUT
     }
 
     public String getFirstName() {

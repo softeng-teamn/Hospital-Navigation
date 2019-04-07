@@ -133,7 +133,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Patient Info" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#patientSelect" prefHeight="256.0" prefWidth="256.0" text="Patient Info - Xinzhe" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="VCARD" styleClass="button-glyph-icon" />
                                  </graphic>
