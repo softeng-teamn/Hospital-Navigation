@@ -1,6 +1,7 @@
 package model.request;
 
 import model.Node;
+import service.DatabaseService;
 
 import java.util.Objects;
 
@@ -25,12 +26,13 @@ public class PatientInfoRequest extends Request{
 
     @Override
     public void makeRequest() {
-        // TODO FILL OUT
+        DatabaseService.getDatabaseService().insertPatientInfoRequest(this);
     }
 
     @Override
     public void fillRequest() {
-        // TODO FILL OUT
+        this.setCompleted(true);
+        DatabaseService.getDatabaseService().updatePatientInfoRequest(this);
     }
 
     public String getFirstName() {
