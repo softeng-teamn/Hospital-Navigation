@@ -3,6 +3,7 @@ package service;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
 import model.request.ITRequest;
+import model.request.InternalTransportRequest;
 import model.request.MaintenanceRequest;
 import model.request.MedicineRequest;
 import model.request.PatientInfoRequest;
@@ -207,6 +208,8 @@ public class DatabaseService {
             // Request 4 Create table here
             // Request 5 Create table here
             // Request 6 Create table here
+            // Request 7 Create table here
+            statement.addBatch("CREATE TABLE INTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar (255), completed boolean, transportType varchar(40))");
             statement.addBatch("CREATE TABLE PATIENTINFOREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, firstName varchar(255), lastName varchar(255), birthDay varchar(255), description varchar(255))");
             // Request 8 Create table here
             // Request 9 Create table here
@@ -238,6 +241,8 @@ public class DatabaseService {
             // Request 4 constraint here
             // Request 5 constraint here
             // Request 6 constraint here
+            // Request 7 constraint here
+            statement.addBatch("ALTER TABLE INTERNALTRANSPORTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             statement.addBatch("ALTER TABLE PATIENTINFOREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 8 constraint here
             // Request 9 constraint here
@@ -880,7 +885,65 @@ public class DatabaseService {
     ///////////////////////// REQUEST 8 QUERIES ////////////////////////////////////////////////////////////////////////
 
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertInternalTransportRequest(InternalTransportRequest req) {
+        String insertQuery = ("INSERT INTO INTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, transportType) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name());
+    }
 
+    /**
+     * @param id the id of the request to get from the database
+     * @return the InternalTransportRequest request object with the given ID
+     */
+    public InternalTransportRequest getInternalTransportRequest(int id) {
+        String query = "SELECT * FROM INTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
+        return (InternalTransportRequest) executeGetById(query, InternalTransportRequest.class, id);
+    }
+
+    /**
+     * @return all IT requests stored in the database in a List.
+     */
+    public List<InternalTransportRequest> getAllInternalTransportRequest() {
+        String query = "Select * FROM INTERNALTRANSPORTREQUEST";
+        return (List<InternalTransportRequest>)(List<?>) executeGetMultiple(query, InternalTransportRequest.class, new Object[]{});
+    }
+
+    /** updates a given IT request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateInternalTransportRequest(InternalTransportRequest req) {
+        String query = "UPDATE INTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, completed=?, transportType=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name(), req.getId());
+    }
+
+    /** deletes a given IT request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteInternalTransportRequest(InternalTransportRequest req) {
+        String query = "DELETE FROM INTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
+
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<InternalTransportRequest> getAllIncompleteInternalTransportRequests() {
+        String query = "Select * FROM INTERNALTRANSPORTREQUEST WHERE (completed = ?)";
+        return (List<InternalTransportRequest>)(List<?>) executeGetMultiple(query, InternalTransportRequest.class, false);
+    }
+
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<InternalTransportRequest> getAllCompleteInternalTransportRequests() {
+        String query = "Select * FROM INTERNALTRANSPORTREQUEST WHERE (completed = ?)";
+        return (List<InternalTransportRequest>)(List<?>) executeGetMultiple(query, InternalTransportRequest.class, true);
+    }
 
 
 
@@ -1047,6 +1110,8 @@ public class DatabaseService {
             // Request 4 delete here
             // Request 5 delete here
             // Request 6 delete here
+            // Request 7 delete here
+            statement.addBatch("DELETE FROM INTERNALTRANSPORTREQUEST");
             statement.addBatch("DELETE FROM PATIENTINFOREQUEST");
             // Request 8 delete here
             // Request 9 delete here
@@ -1067,6 +1132,8 @@ public class DatabaseService {
             // Request 4 restart here
             // Request 5 restart here
             // Request 6 restart here
+            // Request 7 restart here
+            statement.addBatch("ALTER TABLE INTERNALTRANSPORTREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE PATIENTINFOREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 8 restart here
             // Request 9 restart here
@@ -1074,8 +1141,8 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 12 restart here
 
-
             statement.addBatch("DELETE FROM NODE");
+
 
             statement.executeBatch();
         } catch (SQLException e) {
@@ -1245,6 +1312,8 @@ public class DatabaseService {
         // Request 4 else if here
         // Request 5 else if here
         // Request 6 else if here
+        // Request 7 else if here
+        else if (cls.equals(InternalTransportRequest.class)) return extractInternalTransportRequest(rs);
         else if (cls.equals(PatientInfoRequest.class)) return extractPatientInfoRequest(rs);
         // Request 8 else if here
         // Request 9 else if here
@@ -1327,7 +1396,33 @@ public class DatabaseService {
     ///////////////////////// REQUEST 8 EXTRACTION /////////////////////////////////////////////////////////////////////
 
 
+    private InternalTransportRequest extractInternalTransportRequest(ResultSet rs) throws SQLException {
+        // locationNodeID varchar (255), completed boolean, transportType varchar(40)
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String enumVal = rs.getString("transportType");
+        InternalTransportRequest.TransportType transportType;
 
+        switch (enumVal) {
+            case "Wheelchair":
+                transportType = InternalTransportRequest.TransportType.Wheelchair;
+                break;
+            case "MotorScooter":
+                transportType = InternalTransportRequest.TransportType.MotorScooter;
+                break;
+            case "Stretcher":
+                transportType = InternalTransportRequest.TransportType.Stretcher;
+                break;
+            default:
+                System.out.println("Invalid employee job entry (on DBS.extractEmployee): " + enumVal);
+                transportType = null;
+                break; // the loop
+        }
+
+        return new InternalTransportRequest(serviceID, notes, locationNode, completed, transportType);
+    }
 
 
 

@@ -2,6 +2,7 @@ package service;
 
 import model.*;
 import model.request.ITRequest;
+import model.request.InternalTransportRequest;
 import model.request.MaintenanceRequest;
 import model.request.MedicineRequest;
 import model.request.PatientInfoRequest;
@@ -1570,9 +1571,151 @@ public class DatabaseServiceTest {
     ///////////////////////// REQUEST 8 TESTS //////////////////////////////////////////////////////////////////////////
 
 
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetInternalTransportRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        InternalTransportRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getInternalTransportRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InternalTransportRequest req = new InternalTransportRequest(0, "No notes", node, false, InternalTransportRequest.TransportType.Stretcher);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertInternalTransportRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getInternalTransportRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllInternalTransportRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        InternalTransportRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getInternalTransportRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInternalTransportRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInternalTransportRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InternalTransportRequest req1 = new InternalTransportRequest(0, "No notes", node, false, InternalTransportRequest.TransportType.Wheelchair);
+        InternalTransportRequest req2 = new InternalTransportRequest(1, "Priority", node, true, InternalTransportRequest.TransportType.Stretcher);
+        InternalTransportRequest req3 = new InternalTransportRequest(2, "Notes go here", node, false, InternalTransportRequest.TransportType.MotorScooter);
 
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInternalTransportRequest(req1));
+        assertTrue(myDBS.insertInternalTransportRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
+
+        // Check that there are two and only two, and that they are the right two
+        List<InternalTransportRequest> allInternalTransportRequests = myDBS.getAllInternalTransportRequest();
+        assertThat(allInternalTransportRequests.size(), is(2));
+        assertEquals(req1, allInternalTransportRequests.get(0));
+        assertEquals(req2, allInternalTransportRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertInternalTransportRequest(req3));
+
+        req3.setId(2);
+
+        allInternalTransportRequests = myDBS.getAllInternalTransportRequest();
+        assertThat(allInternalTransportRequests.size(), is(3));
+        assertEquals(req1, allInternalTransportRequests.get(0));
+        assertEquals(req2, allInternalTransportRequests.get(1));
+        assertEquals(req3, allInternalTransportRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateInternalTransportRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InternalTransportRequest req = new InternalTransportRequest(0, "No notes", node, false, InternalTransportRequest.TransportType.MotorScooter);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInternalTransportRequest(req));
+        assertEquals(req, myDBS.getInternalTransportRequest(0));
+
+        req.setTransport(InternalTransportRequest.TransportType.Wheelchair);
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updateInternalTransportRequest(req));
+        assertEquals(req, myDBS.getInternalTransportRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteInternalTransportRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InternalTransportRequest req = new InternalTransportRequest(0, "No notes", node, false);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInternalTransportRequest(req));
+        assertEquals(req, myDBS.getInternalTransportRequest(0));
+
+        assertTrue(myDBS.deleteInternalTransportRequest(req));
+        assertNull(myDBS.getInternalTransportRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllInternalTransportRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        InternalTransportRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getInternalTransportRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInternalTransportRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInternalTransportRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InternalTransportRequest req1 = new InternalTransportRequest(0, "No notes", node, false);
+        InternalTransportRequest req2 = new InternalTransportRequest(1, "Priority", node, true);
+        InternalTransportRequest req3 = new InternalTransportRequest(2, "Notes go here", node, false);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInternalTransportRequest(req1));
+        assertTrue(myDBS.insertInternalTransportRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<InternalTransportRequest> allInternalTransportRequests = myDBS.getAllIncompleteInternalTransportRequests();
+        assertThat(allInternalTransportRequests.size(), is(1));
+        assertEquals(req1, allInternalTransportRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertInternalTransportRequest(req3));
+
+        allInternalTransportRequests = myDBS.getAllIncompleteInternalTransportRequests();
+        assertThat(allInternalTransportRequests.size(), is(2));
+        assertEquals(req1, allInternalTransportRequests.get(0));
+        assertEquals(req3, allInternalTransportRequests.get(1));
+    }
 
 
     //////////////////////// END REQUEST 8 TESTS ///////////////////////////////////////////////////////////////////////

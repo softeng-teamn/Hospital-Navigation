@@ -51,7 +51,8 @@ public class RequestController extends Controller implements Initializable {
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
-    static Node selectedNode = null;
+    @SuppressFBWarnings(value="MS_CANNOT_BE_FINAL", justification = "I need to")
+    public static Node selectedNode = null;
 
     /**
      * initializes the request controller
@@ -159,18 +160,27 @@ public class RequestController extends Controller implements Initializable {
         });
     }
 
+    @FXML
+    public void internalTransportSelect(ActionEvent e) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.internalTransportRequest));
+    }
+
 
     @FXML
     public void patientSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.patientInfoRequest));
     }
+
+    @FXML
     public void maintenanceRequest(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.maintenanceRequest));
     }
 
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "I need to")
+    @FXML
     public void locationSelected(MouseEvent mouseEvent) {
         selectedNode = (Node) list_view.getSelectionModel().getSelectedItem();
     }
