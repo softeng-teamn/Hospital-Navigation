@@ -186,7 +186,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         stage.show();
         stage.toFront();
         stage.sizeToScene();
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
     }
 
     @Ignore
