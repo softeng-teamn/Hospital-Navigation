@@ -38,7 +38,7 @@
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <JFXListView fx:id="list_view" prefWidth="384.0">
+            <JFXListView fx:id="list_view" prefWidth="384.0" onMouseClicked="#locationSelected">
                <HBox.margin>
                   <Insets right="50.0" />
                </HBox.margin></JFXListView>
@@ -92,7 +92,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Maintenance" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#maintenanceRequest" prefHeight="256.0" prefWidth="256.0" text="Maintenance (Sam)" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="WRENCH" styleClass="button-glyph-icon" text="" />
                                  </graphic>

@@ -2,6 +2,7 @@ package service;
 
 import model.*;
 import model.request.ITRequest;
+import model.request.MaintenanceRequest;
 import model.request.MedicineRequest;
 import model.request.ToyRequest;
 import org.apache.commons.io.FileUtils;
@@ -1322,10 +1323,6 @@ public class DatabaseServiceTest {
 
 
     // TODO: query methods here
-    // insertAndGet     - Verify id 0 doesn't exist, insert node, insert request, verify request with id 0 exists
-    // getAll           - Verify none exist, add 2, verify you get those 2, add one more, verify you get all 3
-    // update           - Add one, verify values with get, update a field, verify updated field with get
-    // delete           - verify id 0 doesn't exist, add request, verify request exists, delete request, verify id 0 doesn't exist
     ///////////////////////// REQUEST 1 TESTS //////////////////////////////////////////////////////////////////////////
 
 
@@ -1418,11 +1415,146 @@ public class DatabaseServiceTest {
     //////////////////////// END REQUEST 10 TESTS //////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 11 TESTS /////////////////////////////////////////////////////////////////////////
 
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetMaintenanceRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        MaintenanceRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getMaintenanceRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MaintenanceRequest req = new MaintenanceRequest(0, "Quickly please", node, false, MaintenanceRequest.MaintenanceType.Plumbing);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertMaintenanceRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getMaintenanceRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllMaintenanceRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        MaintenanceRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getMaintenanceRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getMaintenanceRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getMaintenanceRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MaintenanceRequest req1 = new MaintenanceRequest(0, "No notes", node, false, MaintenanceRequest.MaintenanceType.Electrical);
+        MaintenanceRequest req2 = new MaintenanceRequest(1, "Priority", node, true, MaintenanceRequest.MaintenanceType.Plumbing);
+        MaintenanceRequest req3 = new MaintenanceRequest(2, "Notes go here", node, false, MaintenanceRequest.MaintenanceType.Other);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMaintenanceRequest(req1));
+        assertTrue(myDBS.insertMaintenanceRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<MaintenanceRequest> allMaintenanceRequests = myDBS.getAllMaintenanceRequests();
+        assertThat(allMaintenanceRequests.size(), is(2));
+        assertEquals(req1, allMaintenanceRequests.get(0));
+        assertEquals(req2, allMaintenanceRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertMaintenanceRequest(req3));
+
+        allMaintenanceRequests = myDBS.getAllMaintenanceRequests();
+        assertThat(allMaintenanceRequests.size(), is(3));
+        assertEquals(req1, allMaintenanceRequests.get(0));
+        assertEquals(req2, allMaintenanceRequests.get(1));
+        assertEquals(req3, allMaintenanceRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteMaintenanceRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        MaintenanceRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getMaintenanceRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getMaintenanceRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getMaintenanceRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MaintenanceRequest req1 = new MaintenanceRequest(0, "No notes", node, false, MaintenanceRequest.MaintenanceType.Electrical);
+        MaintenanceRequest req2 = new MaintenanceRequest(1, "Priority", node, true, MaintenanceRequest.MaintenanceType.Plumbing);
+        MaintenanceRequest req3 = new MaintenanceRequest(2, "Notes go here", node, false, MaintenanceRequest.MaintenanceType.Other);
 
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMaintenanceRequest(req1));
+        assertTrue(myDBS.insertMaintenanceRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<MaintenanceRequest> allMaintenanceRequests = myDBS.getAllIncompleteMaintenanceRequests();
+        assertThat(allMaintenanceRequests.size(), is(1));
+        assertEquals(req1, allMaintenanceRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertMaintenanceRequest(req3));
+
+        allMaintenanceRequests = myDBS.getAllIncompleteMaintenanceRequests();
+        assertThat(allMaintenanceRequests.size(), is(2));
+        assertEquals(req1, allMaintenanceRequests.get(0));
+        assertEquals(req3, allMaintenanceRequests.get(1));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateMaintenanceRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MaintenanceRequest req = new MaintenanceRequest(0, "No notes", node, false, MaintenanceRequest.MaintenanceType.Electrical);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMaintenanceRequest(req));
+        assertEquals(req, myDBS.getMaintenanceRequest(0));
+
+        req.setNotes("Capsules");
+        req.setMaintenanceType(MaintenanceRequest.MaintenanceType.Plumbing);
+
+        assertTrue(myDBS.updateMaintenanceRequest(req));
+        assertEquals(req, myDBS.getMaintenanceRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteMaintenanceRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        MaintenanceRequest req = new MaintenanceRequest(0, "No notes", node, false, MaintenanceRequest.MaintenanceType.Electrical);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertMaintenanceRequest(req));
+        assertEquals(req, myDBS.getMaintenanceRequest(0));
+
+        assertTrue(myDBS.deleteMaintenanceRequest(req));
+        assertNull(myDBS.getMaintenanceRequest(0));
+    }
 
     //////////////////////// END REQUEST 11 TESTS //////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 12 TESTS /////////////////////////////////////////////////////////////////////////

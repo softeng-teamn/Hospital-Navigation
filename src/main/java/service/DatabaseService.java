@@ -3,6 +3,7 @@ package service;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
 import model.request.ITRequest;
+import model.request.MaintenanceRequest;
 import model.request.MedicineRequest;
 import model.request.ToyRequest;
 
@@ -199,7 +200,6 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
 
 
-            // TODO: create table for services here
             // statement.addBatch("CREATE TABLE <TableName>(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ... <you fields here>")
             // Request 1 Create table here
             // Request 2 Create table here
@@ -211,7 +211,7 @@ public class DatabaseService {
             // Request 8 Create table here
             // Request 9 Create table here
             // Request 10 Create table here
-            // Request 11 Create table here
+            statement.addBatch("CREATE TABLE MAINTENANCEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, maintenanceType varchar(30))");
             statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255))");
 
 
@@ -232,7 +232,6 @@ public class DatabaseService {
             // creates an index to optimize querying.
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
-            // TODO: add location constraint for tables here if required
             // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 1 constraint here
             // Request 2 constraint here
@@ -244,7 +243,7 @@ public class DatabaseService {
             // Request 8 constraint here
             // Request 9 constraint here
             // Request 10 constraint here
-            // Request 11 constraint here
+            statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
 
 
@@ -858,12 +857,65 @@ public class DatabaseService {
     //////////////////////// END REQUEST 10 QUERIES ////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 11 QUERIES ///////////////////////////////////////////////////////////////////////
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertMaintenanceRequest(MaintenanceRequest req) {
+        String insertQuery = ("INSERT INTO MAINTENANCEREQUEST(notes, locationNodeID, completed, maintenanceType) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMaintenanceType().name());
+    }
 
+    /**
+     * @param id the id of the request to get from the database
+     * @return the IT request object with the given ID
+     */
+    public MaintenanceRequest getMaintenanceRequest(int id) {
+        String query = "SELECT * FROM MAINTENANCEREQUEST WHERE (serviceID = ?)";
+        return (MaintenanceRequest) executeGetById(query, MaintenanceRequest.class, id);
+    }
 
+    /**
+     * @return all IT requests stored in the database in a List.
+     */
+    public List<MaintenanceRequest> getAllMaintenanceRequests() {
+        String query = "Select * FROM MAINTENANCEREQUEST";
+        return (List<MaintenanceRequest>)(List<?>) executeGetMultiple(query, MaintenanceRequest.class, new Object[]{});
+    }
 
+    /** updates a given IT request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateMaintenanceRequest(MaintenanceRequest req) {
+        String query = "UPDATE MAINTENANCEREQUEST SET notes=?, locationNodeID=?, completed=?, maintenanceType=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMaintenanceType().name(), req.getId());
+    }
 
+    /** deletes a given IT request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteMaintenanceRequest(MaintenanceRequest req) {
+        String query = "DELETE FROM MAINTENANCEREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
 
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<MaintenanceRequest> getAllIncompleteMaintenanceRequests() {
+        String query = "Select * FROM MAINTENANCEREQUEST WHERE (completed = ?)";
+        return (List<MaintenanceRequest>)(List<?>) executeGetMultiple(query, MaintenanceRequest.class, false);
+    }
 
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<MaintenanceRequest> getAllCompleteMaintenanceRequests() {
+        String query = "Select * FROM MAINTENANCEREQUEST WHERE (completed = ?)";
+        return (List<MaintenanceRequest>)(List<?>) executeGetMultiple(query, MaintenanceRequest.class, true);
+    }
     //////////////////////// END REQUEST 11 QUERIES ////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 12 QUERIES ///////////////////////////////////////////////////////////////////////
     /**
@@ -991,11 +1043,9 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM ITREQUEST");
             statement.addBatch("DELETE FROM MEDICINEREQUEST");
             // these can be wiped in any order
-            statement.addBatch("DELETE FROM NODE");
             statement.addBatch("DELETE FROM EMPLOYEE");
             statement.addBatch("DELETE FROM RESERVABLESPACE");
 
-            // TODO: add delete statement
             // statement.addBatch("DELETE FROM <TableName>");
             // Request 1 delete here
             // Request 2 delete here
@@ -1007,7 +1057,7 @@ public class DatabaseService {
             // Request 8 delete here
             // Request 9 delete here
             // Request 10 delete here
-            // Request 11 delete here
+            statement.addBatch("DELETE FROM MAINTENANCEREQUEST");
             statement.addBatch("DELETE FROM TOYREQUEST");
 
             // restart the auto-generated keys
@@ -1027,13 +1077,13 @@ public class DatabaseService {
             // Request 8 restart here
             // Request 9 restart here
             // Request 10 restart here
-            // Request 11 restart here
+            statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE TOYREQUEST ALTER COLUMN serviceID RESTART WITH 0");
 
 
-            statement.executeBatch();
+            statement.addBatch("DELETE FROM NODE");
 
-            this.createTables();
+            statement.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -1193,7 +1243,6 @@ public class DatabaseService {
         else if (cls.equals(ITRequest.class)) return extractITRequest(rs);
         else if (cls.equals(MedicineRequest.class)) return extractMedicineRequest(rs);
         else if (cls.equals(Employee.class)) return extractEmployee(rs);
-        // TODO: add if statement
         // else if (cls.equals(<RequestClassName>.class)) return extract<RequestName>(rs);
         // Request 1 else if here
         // Request 2 else if here
@@ -1205,12 +1254,11 @@ public class DatabaseService {
         // Request 8 else if here
         // Request 9 else if here
         // Request 10 else if here
-        // Request 11 else if here
+        else if (cls.equals(MaintenanceRequest.class)) return extractMaintenanceRequest(rs);
         else if (cls.equals(ToyRequest.class)) return extractToyRequest(rs);
         else return null;
     }
 
-    // TODO: extraction methods here
     ///////////////////////// REQUEST 1 EXTRACTION /////////////////////////////////////////////////////////////////////
 
 
@@ -1303,11 +1351,15 @@ public class DatabaseService {
     //////////////////////// END REQUEST 10 EXTRACTION /////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 11 EXTRACTION ////////////////////////////////////////////////////////////////////
 
+    private MaintenanceRequest extractMaintenanceRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String typeString = rs.getString("maintenanceType");
 
-
-
-
-
+        return new MaintenanceRequest(serviceID, notes, locationNode, completed, MaintenanceRequest.MaintenanceType.valueOf(typeString));
+    }
 
     //////////////////////// END REQUEST 11 EXTRACTION /////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 12 EXTRACTION ////////////////////////////////////////////////////////////////////
