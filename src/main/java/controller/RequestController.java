@@ -1,6 +1,7 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -163,6 +164,7 @@ public class RequestController extends Controller implements Initializable {
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.maintenanceRequest));
     }
 
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "I need to")
     public void locationSelected(MouseEvent mouseEvent) {
         selectedNode = (Node) list_view.getSelectionModel().getSelectedItem();
     }
