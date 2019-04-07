@@ -31,7 +31,7 @@ public class ElevatorCon {
             ProtocolException, IOException {
         String URL = "https://aldenhallpianos.com/softEngPost.php";
         //change into time since 12
-        String t = "" + (time.get(Calendar.HOUR)*3600 + time.get(Calendar.MINUTE)*60 + time.get(Calendar.SECOND));
+        String t = "" + time.getTimeInMillis()/1000;
 
         String urlParameters = "elevator=" + elevator + "&floor=" + floorNum + "&time=" + t;
         post(URL, urlParameters);
