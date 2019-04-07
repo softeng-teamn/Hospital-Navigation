@@ -1,6 +1,7 @@
 package model.request;
 
 import model.Node;
+import service.DatabaseService;
 
 import java.util.Objects;
 
@@ -19,13 +20,15 @@ public class ToyRequest extends Request {
     }
 
     @Override
-    public void makeRequest() {
-        //TODO fill out
+    public static void makeRequest() {
+        DatabaseService.getDatabaseService().insertToyRequest(this);
     }
 
     @Override
     public void fillRequest() {
-        //TODO fill out
+        this.setCompleted(true);
+        this.setCompletedBy(this.getCompletedBy());
+        DatabaseService.getDatabaseService().updateToyRequest((ToyRequest)this);
     }
 
     public String getToyName() {
