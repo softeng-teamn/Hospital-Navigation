@@ -1,6 +1,7 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
@@ -48,6 +50,9 @@ public class RequestController extends Controller implements Initializable {
     private ObservableList<Node> allNodesObservable;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    @SuppressFBWarnings(value="MS_CANNOT_BE_FINAL", justification = "I need to")
+    public static Node selectedNode = null;
 
     /**
      * initializes the request controller
@@ -159,5 +164,41 @@ public class RequestController extends Controller implements Initializable {
                 }
             }
         });
+    }
+
+    @FXML
+    public void internalTransportSelect(ActionEvent e) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.internalTransportRequest));
+    }
+
+
+    @FXML
+    public void patientSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.patientInfoRequest));
+    }
+
+    @FXML
+    public void maintenanceRequest(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.maintenanceRequest));
+    }
+
+    @FXML
+    public void floristSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.floristRequest));
+    }
+
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "I need to")
+    @FXML
+    public void locationSelected(MouseEvent mouseEvent) {
+        selectedNode = (Node) list_view.getSelectionModel().getSelectedItem();
+    }
+
+    public void toyRequestSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.ToyRequest));
     }
 }

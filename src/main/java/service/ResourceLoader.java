@@ -9,12 +9,18 @@ public class ResourceLoader {
     public static final URL scheduler = service.ResourceLoader.class.getResource("/schedule.fxml");
     public static final URL request = service.ResourceLoader.class.getResource("/request.fxml");
     public static final URL createNode = service.ResourceLoader.class.getResource("/createNode.fxml");
+    public static final URL maintenanceRequest = service.ResourceLoader.class.getResource("/requests/maintenance_requests.fxml");
+    public static final URL floristRequest = service.ResourceLoader.class.getResource("/requests/floristRequest.fxml");
+    public static final URL patientInfoRequest = service.ResourceLoader.class.getResource("/requests/patientInfo.fxml");
+
+    public static final URL ToyRequest = service.ResourceLoader.class.getResource("/Requests/ToyRequest.fxml");
 
     public static final URL securityRequest = service.ResourceLoader.class.getResource("/requests/securityRequest.fxml");
 
     public static final URL edges = service.ResourceLoader.class.getResource("/edges.csv");
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");
+    public static final URL internalTransportRequest = service.ResourceLoader.class.getResource("/requests/internalTransportRequest.fxml");
     public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
     public static final URL employees = service.ResourceLoader.class.getResource("/employees.csv");
 
