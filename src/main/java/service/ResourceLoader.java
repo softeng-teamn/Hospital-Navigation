@@ -2,7 +2,7 @@ package service;
 
 import java.net.URL;
 
-public class ResourceLoader {
+public class  ResourceLoader {
 
     public static final URL home = service.ResourceLoader.class.getResource("/home.fxml");
     public static final URL mapEdit = service.ResourceLoader.class.getResource("/mapEdit.fxml");
