@@ -72,7 +72,6 @@ public class DatabaseService {
 
                     createFlag = true;
                 }
-
             }
 
             this.connection = conn;
@@ -87,9 +86,6 @@ public class DatabaseService {
             e.printStackTrace();
         }
     }
-
-
-
 
     private static Connection openConnection(boolean allowCreate) throws SQLException {
         try {
@@ -107,7 +103,6 @@ public class DatabaseService {
         }
     }
 
-
     public void loadFromCSVsIfNecessary() {
         if(createFlag) {
             CSVService.importNodes();
@@ -116,7 +111,6 @@ public class DatabaseService {
             CSVService.importReservableSpaces();
         }
     }
-
 
     /**
      * Delete DB Files
@@ -140,7 +134,6 @@ public class DatabaseService {
         }
         wipeOutFiles(new File(DATABASE_NAME));
     }
-
 
     /**
      */
@@ -238,7 +231,7 @@ public class DatabaseService {
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
             // TODO: add location constraint for tables here if required
-            // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
+            // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 1 constraint here
             // Request 2 constraint here
             // Request 3 constraint here
@@ -766,10 +759,11 @@ public class DatabaseService {
 
 
     // TODO: query methods here
-    // get      - use executeGetById - "SELECT * FROM <TableName> WHERE (serviceID = ?)"
-    // insert   - use executeInsert - "INSERT INTO <TableName>(<all values except serviceID>) VALUES(<1 question mark for each value listed>)"
-    // update   - use executeUpdate - "UPDATE <TableName> SET <value=? for each value except serviceID> WHERE (serviceID = ?)"
-    // delete   - use executeUpdate - "DELETE FROM <TableName> WHERE (serviceID = ?)"
+    // get      - use executeGetById        - "SELECT * FROM <TableName> WHERE (serviceID = ?)"
+    // insert   - use executeInsert         - "INSERT INTO <TableName>(<all values except serviceID>) VALUES(<1 question mark for each value listed>)"
+    // update   - use executeUpdate         - "UPDATE <TableName> SET <value=? for each value except serviceID> WHERE (serviceID = ?)"
+    // delete   - use executeUpdate         - "DELETE FROM <TableName> WHERE (serviceID = ?)"
+    // getAll   - use executeGetMultiple    - "SELECT * FROM <TableName>
     ///////////////////////// REQUEST 1 QUERIES ////////////////////////////////////////////////////////////////////////
 
 
