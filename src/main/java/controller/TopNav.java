@@ -178,7 +178,6 @@ public class TopNav {
         Stage stage = (Stage) employeeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
         StageManager.changeExistingWindow(stage, root, "Edit Employees");
-        stage.sizeToScene();
         stage.setFullScreen(true);
     }
 }

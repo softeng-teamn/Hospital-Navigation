@@ -12,7 +12,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
@@ -23,10 +25,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 import model.Employee;
 import model.JobType;
 import service.DatabaseService;
+import service.ResourceLoader;
+import service.StageManager;
 
 import java.util.List;
 
@@ -34,10 +39,7 @@ public class EmployeeEditController {
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @FXML
-    private VBox root;
-
-    @FXML
-    private HBox hbox_container;
+    private Button homeBtn;
 
     @FXML
     private TableView<Employee> employee_table;
@@ -110,11 +112,11 @@ public class EmployeeEditController {
             loadData();
         });
 
-        // switch to edit mode on MouseClick
-        employee_table.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            TablePosition focusedCellPosition = employee_table.getFocusModel().getFocusedCell();
-            employee_table.edit(focusedCellPosition.getRow(), focusedCellPosition.getTableColumn());
-        });
+//        // switch to edit mode on MouseClick
+//        employee_table.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+//            TablePosition focusedCellPosition = employee_table.getFocusModel().getFocusedCell();
+//            employee_table.edit(focusedCellPosition.getRow(), focusedCellPosition.getTableColumn());
+//        });
     }
 
     private void loadData() {
@@ -140,5 +142,11 @@ public class EmployeeEditController {
         Employee employee = new Employee(max+1, new_username.getText(), new_job.getValue(), new_is_admin.isSelected(), new_password.getText());
         myDBS.insertEmployee(employee);
         loadData();
+    }
+
+    public void showHome(ActionEvent actionEvent) throws Exception {
+        Stage stage = (Stage) homeBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.home);
+        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 }

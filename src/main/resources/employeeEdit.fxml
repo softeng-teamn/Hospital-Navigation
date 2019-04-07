@@ -11,18 +11,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EmployeeEditController">
    <children>
       <HBox fx:id="hbox_container" alignment="CENTER" VBox.vgrow="ALWAYS">
          <children>
-            <VBox prefHeight="200.0" prefWidth="560.0">
+            <VBox prefHeight="200.0" prefWidth="802.0" alignment="CENTER">
                <children>
-                  <TableView fx:id="employee_table" editable="true" maxHeight="600.0" prefHeight="600.0" prefWidth="560.0">
+                  <TableView fx:id="employee_table" editable="false" maxHeight="600.0" prefHeight="600.0" prefWidth="800.0">
                      <columns>
                         <TableColumn fx:id="col_id" editable="false" prefWidth="70.0" text="ID" />
-                        <TableColumn fx:id="col_username" editable="true" prefWidth="120.0" text="Username" />
-                        <TableColumn fx:id="col_job" editable="true" prefWidth="160.0" text="Job" />
-                        <TableColumn fx:id="col_admin" editable="true" prefWidth="210.0" text="Is Kiosk Administrator?" />
+                        <TableColumn fx:id="col_username" editable="true" prefWidth="210.0" text="Username" />
+                        <TableColumn fx:id="col_job" editable="true" prefWidth="260.0" text="Job" />
+                        <TableColumn fx:id="col_admin" editable="true" prefWidth="260.0" text="Is Kiosk Administrator?" />
                      </columns>
                      <VBox.margin>
                         <Insets top="50.0" />
@@ -57,9 +58,13 @@
                         </JFXPasswordField>
                      </children>
                   </HBox>
-                  <JFXButton onAction="#addNewEmployee" prefHeight="69.0" prefWidth="562.0" text="Add" />
+                  <JFXButton onAction="#addNewEmployee" prefHeight="69.0" prefWidth="560.0" text="Add" />
                </children>
             </VBox>
+            <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
+               <graphic>
+                  <FontAwesomeIconView glyphName="HOME" size="60" />
+               </graphic></JFXButton>
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
