@@ -25,7 +25,7 @@ public class PatientInfo extends controller.RequestController {
         description = descriptionArea.getText();
 
         if (selectedNode != null) {
-            PatientInfoRequest newPatientInfoRequest = new PatientInfoRequest(-1, description, null, false, firstName, lastName, birthDay, description);
+            PatientInfoRequest newPatientInfoRequest = new PatientInfoRequest(-1, description, selectedNode, false, firstName, lastName, birthDay, description);
             newPatientInfoRequest.makeRequest();
         }
     }
