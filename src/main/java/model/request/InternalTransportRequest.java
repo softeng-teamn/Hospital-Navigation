@@ -2,7 +2,9 @@ package model.request;
 
 import com.sun.xml.internal.bind.v2.TODO;
 import model.Node;
+import service.DatabaseService;
 
+import javax.xml.crypto.Data;
 import java.util.Objects;
 
 public class InternalTransportRequest extends Request {
@@ -27,12 +29,13 @@ public class InternalTransportRequest extends Request {
 
     @Override
     public void makeRequest() {
-        /// TODO: 2019-04-07 FILL OUT
+        DatabaseService.getDatabaseService().insertInternalTransportRequest(this);
     }
 
     @Override
     public void fillRequest() {
-        // TODO: FILL OUT
+        this.setCompleted(true);
+        DatabaseService.getDatabaseService().updateInternalTransportRequest(this);
     }
 
     public TransportType getTransport() {

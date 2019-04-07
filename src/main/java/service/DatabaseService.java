@@ -207,7 +207,7 @@ public class DatabaseService {
             // Request 5 Create table here
             // Request 6 Create table here
             // Request 7 Create table here
-            statement.addBatch("CREATE TABLE INTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar (255), completed boolean, transportType varchar(40)");
+            statement.addBatch("CREATE TABLE INTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar (255), completed boolean, transportType varchar(40))");
             // Request 9 Create table here
             // Request 10 Create table here
             // Request 11 Create table here
@@ -881,6 +881,14 @@ public class DatabaseService {
         return (List<InternalTransportRequest>)(List<?>) executeGetMultiple(query, InternalTransportRequest.class, false);
     }
 
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<InternalTransportRequest> getAllCompleteInternalTransportRequests() {
+        String query = "Select * FROM INTERNALTRANSPORTREQUEST WHERE (completed = ?)";
+        return (List<InternalTransportRequest>)(List<?>) executeGetMultiple(query, InternalTransportRequest.class, true);
+    }
+
 
 
 
@@ -983,7 +991,6 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM ITREQUEST");
             statement.addBatch("DELETE FROM MEDICINEREQUEST");
             // these can be wiped in any order
-            statement.addBatch("DELETE FROM NODE");
             statement.addBatch("DELETE FROM EMPLOYEE");
             statement.addBatch("DELETE FROM RESERVABLESPACE");
 
@@ -1022,10 +1029,10 @@ public class DatabaseService {
             // Request 11 restart here
             // Request 12 restart here
 
+            statement.addBatch("DELETE FROM NODE");
 
             statement.executeBatch();
 
-            this.createTables();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -1273,7 +1280,6 @@ public class DatabaseService {
         String notes = rs.getString("notes");
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
-        String description = rs.getString("description");
         String enumVal = rs.getString("transportType");
         InternalTransportRequest.TransportType transportType;
 
