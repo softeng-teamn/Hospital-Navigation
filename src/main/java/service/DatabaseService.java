@@ -2,6 +2,7 @@ package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
+import model.request.FloristRequest;
 import model.request.ITRequest;
 import model.request.InternalTransportRequest;
 import model.request.MaintenanceRequest;
@@ -202,7 +203,7 @@ public class DatabaseService {
 
 
             // statement.addBatch("CREATE TABLE <TableName>(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ... <you fields here>")
-            // Request 1 Create table here
+            statement.addBatch("CREATE TABLE FLORISTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, bouquetType varchar(255), quantity int)");
             // Request 2 Create table here
             // Request 3 Create table here
             // Request 4 Create table here
@@ -235,7 +236,7 @@ public class DatabaseService {
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
             // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
-            // Request 1 constraint here
+            statement.addBatch("ALTER TABLE FLORISTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 2 constraint here
             // Request 3 constraint here
             // Request 4 constraint here
@@ -763,11 +764,45 @@ public class DatabaseService {
 
 
 
-
-    // getAll   - use executeGetMultiple    - "SELECT * FROM <TableName>
     ///////////////////////// REQUEST 1 QUERIES ////////////////////////////////////////////////////////////////////////
 
 
+    /**
+     * @param id the ID of the request to retrieve
+     * @return
+     */
+    public FloristRequest getFloristRequest(int id) {
+        String query = "SELECT * FROM FLORISTREQUEST WHERE (serviceID = ?)";
+        return (FloristRequest) executeGetById(query, FloristRequest.class, id);
+    }
+
+    /**
+     * @param req a florist request to insert into the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertFloristRequest(FloristRequest req) {
+        String insertQuery = ("INSERT INTO FLORISTREQUEST(notes, locationNodeID, completed, bouquetType, quantity) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getBouquetType(), req.getQuantity());
+    }
+
+    public boolean updateFloristRequest(FloristRequest req) {
+        String query = "UPDATE FLORISTREQUEST SET notes=?, locationNodeID=?, completed=?, bouquetType=?, quantity=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getBouquetType(), req.getQuantity(), req.getId());
+    }
+
+    /**
+     * @param req the given request to delete
+     * @return true if the delete succeeded and false if otherwise.
+     */
+    public boolean deleteFloristRequest(FloristRequest req) {
+        String query = "DELETE FROM FLORISTREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
+
+    public List<FloristRequest> getAllFloristRequests() {
+        String query = "Select * FROM FLORISTREQUEST";
+        return (List<FloristRequest>)(List<?>) executeGetMultiple(query, FloristRequest.class, new Object[]{});
+    }
 
 
 
@@ -1104,7 +1139,7 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM RESERVABLESPACE");
 
             // statement.addBatch("DELETE FROM <TableName>");
-            // Request 1 delete here
+            statement.addBatch("DELETE FROM FLORISTREQUEST");
             // Request 2 delete here
             // Request 3 delete here
             // Request 4 delete here
@@ -1124,9 +1159,8 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE MEDICINEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE RESERVATION ALTER COLUMN eventID RESTART WITH 0");
 
-
             // statement.addBatch("ALTER TABLE <TableName> ALTER COLUMN serviceID RESTART WITH 0");
-            // Request 1 restart here
+            statement.addBatch("ALTER TABLE FLORISTREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 2 restart here
             // Request 3 restart here
             // Request 4 restart here
@@ -1306,7 +1340,7 @@ public class DatabaseService {
         else if (cls.equals(Employee.class)) return extractEmployee(rs);
 
         // else if (cls.equals(<RequestClassName>.class)) return extract<RequestName>(rs);
-        // Request 1 else if here
+        else if (cls.equals(FloristRequest.class)) return extractFloristRequest(rs);
         // Request 2 else if here
         // Request 3 else if here
         // Request 4 else if here
@@ -1325,6 +1359,20 @@ public class DatabaseService {
 
 
     ///////////////////////// REQUEST 1 EXTRACTION /////////////////////////////////////////////////////////////////////
+    private FloristRequest extractFloristRequest(ResultSet rs, String name) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String bouquetType = rs.getString("bouquetType");
+        int quantity = rs.getInt("quantity");
+        // construct the new node and return it
+        return new FloristRequest(serviceID, notes, locationNode, completed, bouquetType, quantity);
+    }
+
+    private FloristRequest extractFloristRequest(ResultSet rs) throws SQLException {
+        return extractFloristRequest(rs, "");
+    }
 
 
 
