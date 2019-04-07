@@ -2,10 +2,13 @@ package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
+import model.request.FloristRequest;
 import model.request.ITRequest;
+import model.request.InternalTransportRequest;
 import model.request.MaintenanceRequest;
 import model.request.MedicineRequest;
 import model.request.ToyRequest;
+import model.request.PatientInfoRequest;
 
 import java.io.File;
 import java.sql.*;
@@ -201,13 +204,15 @@ public class DatabaseService {
 
 
             // statement.addBatch("CREATE TABLE <TableName>(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ... <you fields here>")
-            // Request 1 Create table here
+            statement.addBatch("CREATE TABLE FLORISTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, bouquetType varchar(255), quantity int)");
             // Request 2 Create table here
             // Request 3 Create table here
             // Request 4 Create table here
             // Request 5 Create table here
             // Request 6 Create table here
             // Request 7 Create table here
+            statement.addBatch("CREATE TABLE INTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar (255), completed boolean, transportType varchar(40))");
+            statement.addBatch("CREATE TABLE PATIENTINFOREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, firstName varchar(255), lastName varchar(255), birthDay varchar(255), description varchar(255))");
             // Request 8 Create table here
             // Request 9 Create table here
             // Request 10 Create table here
@@ -233,13 +238,15 @@ public class DatabaseService {
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
             // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
-            // Request 1 constraint here
+            statement.addBatch("ALTER TABLE FLORISTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 2 constraint here
             // Request 3 constraint here
             // Request 4 constraint here
             // Request 5 constraint here
             // Request 6 constraint here
             // Request 7 constraint here
+            statement.addBatch("ALTER TABLE INTERNALTRANSPORTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
+            statement.addBatch("ALTER TABLE PATIENTINFOREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 8 constraint here
             // Request 9 constraint here
             // Request 10 constraint here
@@ -759,15 +766,45 @@ public class DatabaseService {
 
 
 
-    // TODO: query methods here
-    // get      - use executeGetById        - "SELECT * FROM <TableName> WHERE (serviceID = ?)"
-    // insert   - use executeInsert         - "INSERT INTO <TableName>(<all values except serviceID>) VALUES(<1 question mark for each value listed>)"
-    // update   - use executeUpdate         - "UPDATE <TableName> SET <value=? for each value except serviceID> WHERE (serviceID = ?)"
-    // delete   - use executeUpdate         - "DELETE FROM <TableName> WHERE (serviceID = ?)"
-    // getAll   - use executeGetMultiple    - "SELECT * FROM <TableName>
     ///////////////////////// REQUEST 1 QUERIES ////////////////////////////////////////////////////////////////////////
 
 
+    /**
+     * @param id the ID of the request to retrieve
+     * @return
+     */
+    public FloristRequest getFloristRequest(int id) {
+        String query = "SELECT * FROM FLORISTREQUEST WHERE (serviceID = ?)";
+        return (FloristRequest) executeGetById(query, FloristRequest.class, id);
+    }
+
+    /**
+     * @param req a florist request to insert into the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertFloristRequest(FloristRequest req) {
+        String insertQuery = ("INSERT INTO FLORISTREQUEST(notes, locationNodeID, completed, bouquetType, quantity) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getBouquetType(), req.getQuantity());
+    }
+
+    public boolean updateFloristRequest(FloristRequest req) {
+        String query = "UPDATE FLORISTREQUEST SET notes=?, locationNodeID=?, completed=?, bouquetType=?, quantity=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getBouquetType(), req.getQuantity(), req.getId());
+    }
+
+    /**
+     * @param req the given request to delete
+     * @return true if the delete succeeded and false if otherwise.
+     */
+    public boolean deleteFloristRequest(FloristRequest req) {
+        String query = "DELETE FROM FLORISTREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
+
+    public List<FloristRequest> getAllFloristRequests() {
+        String query = "Select * FROM FLORISTREQUEST";
+        return (List<FloristRequest>)(List<?>) executeGetMultiple(query, FloristRequest.class, new Object[]{});
+    }
 
 
 
@@ -820,18 +857,130 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 6 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 7 QUERIES ////////////////////////////////////////////////////////////////////////
+    /**
+     * @param id the id of the request to get from the database
+     * @return the controller.PatientInfo request object with the given ID
+     */
+    public PatientInfoRequest getPatientInfoRequest(int id) {
+        String query = "SELECT * FROM PATIENTINFOREQUEST WHERE (serviceID = ?)";
+        return (PatientInfoRequest) executeGetById(query, PatientInfoRequest.class, id);
+    }
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertPatientInfoRequest(PatientInfoRequest req) {
+        String insertQuery = ("INSERT INTO PATIENTINFOREQUEST(notes, locationNodeID, completed, firstName, lastName, birthDay, description) VALUES(?, ?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription());
+    }
 
+    /** updates a given controller.PatientInfo request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updatePatientInfoRequest(PatientInfoRequest req) {
+        String query = "UPDATE PATIENTINFOREQUEST SET notes=?, locationNodeID=?, completed=?, firstName=?, lastName=?, birthDay=?, description=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription(), req.getId());
+    }
 
+    /** deletes a given controller.PatientInfo request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deletePatientInfoRequest(PatientInfoRequest req) {
+        String query = "DELETE FROM PATIENTINFOREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
 
+    /**
+     * @return all Patient Info requests stored in the database in a List.
+     */
+    public List<PatientInfoRequest> getAllPatientInfoRequests() {
+        String query = "Select * FROM PATIENTINFOREQUEST";
+        return (List<PatientInfoRequest>)(List<?>) executeGetMultiple(query, PatientInfoRequest.class, new Object[]{});
+    }
 
+    /**
+     * @return a list of every Patient Info request that has not been completed yet.
+     */
+    public List<PatientInfoRequest> getAllIncompletePatientInfoRequests() {
+        String query = "Select * FROM PATIENTINFOREQUEST WHERE (completed = ?)";
+        return (List<PatientInfoRequest>)(List<?>) executeGetMultiple(query, PatientInfoRequest.class, false);
+    }
+
+    /**
+     * @return a list of every Patient Info request that has been completed.
+     */
+    public List<PatientInfoRequest> getAllCompletePatientInfoRequests() {
+        String query = "Select * FROM PATIENTINFOREQUEST WHERE (completed = ?)";
+        return (List<PatientInfoRequest>)(List<?>) executeGetMultiple(query, PatientInfoRequest.class, true);
+    }
 
 
     //////////////////////// END REQUEST 7 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 8 QUERIES ////////////////////////////////////////////////////////////////////////
 
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertInternalTransportRequest(InternalTransportRequest req) {
+        String insertQuery = ("INSERT INTO INTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, transportType) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name());
+    }
 
+    /**
+     * @param id the id of the request to get from the database
+     * @return the InternalTransportRequest request object with the given ID
+     */
+    public InternalTransportRequest getInternalTransportRequest(int id) {
+        String query = "SELECT * FROM INTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
+        return (InternalTransportRequest) executeGetById(query, InternalTransportRequest.class, id);
+    }
+
+    /**
+     * @return all IT requests stored in the database in a List.
+     */
+    public List<InternalTransportRequest> getAllInternalTransportRequest() {
+        String query = "Select * FROM INTERNALTRANSPORTREQUEST";
+        return (List<InternalTransportRequest>)(List<?>) executeGetMultiple(query, InternalTransportRequest.class, new Object[]{});
+    }
+
+    /** updates a given IT request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateInternalTransportRequest(InternalTransportRequest req) {
+        String query = "UPDATE INTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, completed=?, transportType=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name(), req.getId());
+    }
+
+    /** deletes a given IT request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteInternalTransportRequest(InternalTransportRequest req) {
+        String query = "DELETE FROM INTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
+
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<InternalTransportRequest> getAllIncompleteInternalTransportRequests() {
+        String query = "Select * FROM INTERNALTRANSPORTREQUEST WHERE (completed = ?)";
+        return (List<InternalTransportRequest>)(List<?>) executeGetMultiple(query, InternalTransportRequest.class, false);
+    }
+
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<InternalTransportRequest> getAllCompleteInternalTransportRequests() {
+        String query = "Select * FROM INTERNALTRANSPORTREQUEST WHERE (completed = ?)";
+        return (List<InternalTransportRequest>)(List<?>) executeGetMultiple(query, InternalTransportRequest.class, true);
+    }
 
 
 
@@ -1047,13 +1196,15 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM RESERVABLESPACE");
 
             // statement.addBatch("DELETE FROM <TableName>");
-            // Request 1 delete here
+            statement.addBatch("DELETE FROM FLORISTREQUEST");
             // Request 2 delete here
             // Request 3 delete here
             // Request 4 delete here
             // Request 5 delete here
             // Request 6 delete here
             // Request 7 delete here
+            statement.addBatch("DELETE FROM INTERNALTRANSPORTREQUEST");
+            statement.addBatch("DELETE FROM PATIENTINFOREQUEST");
             // Request 8 delete here
             // Request 9 delete here
             // Request 10 delete here
@@ -1065,23 +1216,24 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE MEDICINEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE RESERVATION ALTER COLUMN eventID RESTART WITH 0");
 
-            // TODO: add restart statement
             // statement.addBatch("ALTER TABLE <TableName> ALTER COLUMN serviceID RESTART WITH 0");
-            // Request 1 restart here
+            statement.addBatch("ALTER TABLE FLORISTREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 2 restart here
             // Request 3 restart here
             // Request 4 restart here
             // Request 5 restart here
             // Request 6 restart here
             // Request 7 restart here
+            statement.addBatch("ALTER TABLE INTERNALTRANSPORTREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE PATIENTINFOREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 8 restart here
             // Request 9 restart here
             // Request 10 restart here
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE TOYREQUEST ALTER COLUMN serviceID RESTART WITH 0");
 
-
             statement.addBatch("DELETE FROM NODE");
+
 
             statement.executeBatch();
         } catch (SQLException e) {
@@ -1243,14 +1395,17 @@ public class DatabaseService {
         else if (cls.equals(ITRequest.class)) return extractITRequest(rs);
         else if (cls.equals(MedicineRequest.class)) return extractMedicineRequest(rs);
         else if (cls.equals(Employee.class)) return extractEmployee(rs);
+
         // else if (cls.equals(<RequestClassName>.class)) return extract<RequestName>(rs);
-        // Request 1 else if here
+        else if (cls.equals(FloristRequest.class)) return extractFloristRequest(rs);
         // Request 2 else if here
         // Request 3 else if here
         // Request 4 else if here
         // Request 5 else if here
         // Request 6 else if here
         // Request 7 else if here
+        else if (cls.equals(InternalTransportRequest.class)) return extractInternalTransportRequest(rs);
+        else if (cls.equals(PatientInfoRequest.class)) return extractPatientInfoRequest(rs);
         // Request 8 else if here
         // Request 9 else if here
         // Request 10 else if here
@@ -1259,7 +1414,22 @@ public class DatabaseService {
         else return null;
     }
 
+
     ///////////////////////// REQUEST 1 EXTRACTION /////////////////////////////////////////////////////////////////////
+    private FloristRequest extractFloristRequest(ResultSet rs, String name) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String bouquetType = rs.getString("bouquetType");
+        int quantity = rs.getInt("quantity");
+        // construct the new node and return it
+        return new FloristRequest(serviceID, notes, locationNode, completed, bouquetType, quantity);
+    }
+
+    private FloristRequest extractFloristRequest(ResultSet rs) throws SQLException {
+        return extractFloristRequest(rs, "");
+    }
 
 
 
@@ -1314,18 +1484,50 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 6 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 7 EXTRACTION /////////////////////////////////////////////////////////////////////
+    private PatientInfoRequest extractPatientInfoRequest(ResultSet rs) throws SQLException {
+//        firstName varchar(255), lastName varchar(255), birthDay varchar(255), description varchar(255)
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String firstName = rs.getString("firstName");
+        String lastName = rs.getString("lastName");
+        String birthDay = rs.getString("birthDay");
+        String description = rs.getString("description");
 
-
-
-
-
-
-
+        return new PatientInfoRequest(serviceID, notes, locationNode, completed, firstName, lastName, birthDay, description);
+    }
     //////////////////////// END REQUEST 7 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 8 EXTRACTION /////////////////////////////////////////////////////////////////////
 
 
+    private InternalTransportRequest extractInternalTransportRequest(ResultSet rs) throws SQLException {
+        // locationNodeID varchar (255), completed boolean, transportType varchar(40)
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String enumVal = rs.getString("transportType");
+        InternalTransportRequest.TransportType transportType;
 
+        switch (enumVal) {
+            case "Wheelchair":
+                transportType = InternalTransportRequest.TransportType.Wheelchair;
+                break;
+            case "MotorScooter":
+                transportType = InternalTransportRequest.TransportType.MotorScooter;
+                break;
+            case "Stretcher":
+                transportType = InternalTransportRequest.TransportType.Stretcher;
+                break;
+            default:
+                System.out.println("Invalid employee job entry (on DBS.extractEmployee): " + enumVal);
+                transportType = null;
+                break; // the loop
+        }
+
+        return new InternalTransportRequest(serviceID, notes, locationNode, completed, transportType);
+    }
 
 
 
