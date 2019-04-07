@@ -190,4 +190,9 @@ public class RequestController extends Controller implements Initializable {
     public void locationSelected(MouseEvent mouseEvent) {
         selectedNode = (Node) list_view.getSelectionModel().getSelectedItem();
     }
+
+    public void toyRequestSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.ToyRequest));
+    }
 }

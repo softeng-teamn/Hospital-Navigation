@@ -13,6 +13,8 @@ public class ResourceLoader {
     public static final URL floristRequest = service.ResourceLoader.class.getResource("/requests/floristRequest.fxml");
     public static final URL patientInfoRequest = service.ResourceLoader.class.getResource("/requests/patientInfo.fxml");
 
+    public static final URL ToyRequest = service.ResourceLoader.class.getResource("/Requests/ToyRequest.fxml");
+
     public static final URL edges = service.ResourceLoader.class.getResource("/edges.csv");
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");
