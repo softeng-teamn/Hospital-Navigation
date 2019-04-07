@@ -41,7 +41,7 @@ public class HomeRegressionSuite extends ApplicationTest {
         try {
             Parent root = FXMLLoader.load(ResourceLoader.home);
             StageManager.changeWindow(stage, root, "Home");
-            stage.setFullScreen(true);
+            stage.setMaximized(true);
         } catch (LoadException e) {
 
         }
