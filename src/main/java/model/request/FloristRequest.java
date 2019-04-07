@@ -38,16 +38,6 @@ public class FloristRequest extends Request {
     }
 
     @Override
-    public void makeRequest() {
-
-    }
-
-    @Override
-    public void fillRequest() {
-
-    }
-
-    @Override
     public String toString() {
         return "FloristRequest{" +
                 "bouquetType='" + bouquetType + '\'' +
@@ -68,5 +58,16 @@ public class FloristRequest extends Request {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), bouquetType, quantity);
+    }
+
+    @Override
+    public void makeRequest() {
+        DatabaseService.getDatabaseService().insertFloristRequest(this);
+    }
+
+    @Override
+    public void fillRequest() {
+        this.setCompleted(true);
+        DatabaseService.getDatabaseService().updateFloristRequest(this);
     }
 }
