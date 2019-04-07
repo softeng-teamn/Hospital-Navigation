@@ -10,6 +10,9 @@ public class ResourceLoader {
     public static final URL request = service.ResourceLoader.class.getResource("/request.fxml");
     public static final URL createNode = service.ResourceLoader.class.getResource("/createNode.fxml");
 
+
+    public static final URL floristRequest = service.ResourceLoader.class.getResource("/requests/floristRequest.fxml");
+
     public static final URL edges = service.ResourceLoader.class.getResource("/edges.csv");
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");

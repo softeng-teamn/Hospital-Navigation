@@ -69,7 +69,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Florist" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#floristSelect" prefHeight="256.0" prefWidth="256.0" text="Florist (Nicolas)" toggleGroup="$requestType">
                                  <graphic>
                                     <MaterialIconView glyphName="LOCAL_FLORIST" size="128" styleClass="button-glyph-icon" />
                                  </graphic>

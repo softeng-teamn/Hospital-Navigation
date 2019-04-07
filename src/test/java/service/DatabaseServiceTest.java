@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import model.request.FloristRequest;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import org.apache.commons.io.FileUtils;
@@ -1326,6 +1327,106 @@ public class DatabaseServiceTest {
     // update           - Add one, verify values with get, update a field, verify updated field with get
     // delete           - verify id 0 doesn't exist, add request, verify request exists, delete request, verify id 0 doesn't exist
     ///////////////////////// REQUEST 1 TESTS //////////////////////////////////////////////////////////////////////////
+
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetFloristRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        FloristRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getFloristRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        FloristRequest req = new FloristRequest(0, "Yellow", node, false, "Get Well Bouquet", 1);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertFloristRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getFloristRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllFloristRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        FloristRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getFloristRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getFloristRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getFloristRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        FloristRequest req1 = new FloristRequest(0, "No notes", node, false, "Get Well", 6);
+        FloristRequest req2 = new FloristRequest(1, "Priority", node, true, "Red Rose", 10);
+        FloristRequest req3 = new FloristRequest(2, "Notes go here", node, false, "Douglas", 1);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertFloristRequest(req1));
+        assertTrue(myDBS.insertFloristRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<FloristRequest> allFloristRequests = myDBS.getAllFloristRequests();
+        assertThat(allFloristRequests.size(), is(2));
+        assertEquals(req1, allFloristRequests.get(0));
+        assertEquals(req2, allFloristRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertFloristRequest(req3));
+
+        allFloristRequests = myDBS.getAllFloristRequests();
+        assertThat(allFloristRequests.size(), is(3));
+        assertEquals(req1, allFloristRequests.get(0));
+        assertEquals(req2, allFloristRequests.get(1));
+        assertEquals(req3, allFloristRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateFloristRequests() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        FloristRequest req = new FloristRequest(0, "No notes", node, false, "Red Rose", 4);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertFloristRequest(req));
+        assertEquals(req, myDBS.getFloristRequest(0));
+
+        req.setNotes("Rapid Order");
+        req.setQuantity(7);
+
+        assertTrue(myDBS.updateFloristRequest(req));
+        assertEquals(req, myDBS.getFloristRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteFloristRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        FloristRequest req = new FloristRequest(0, "No notes", node, false, "Red Rose", 6);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertFloristRequest(req));
+        assertEquals(req, myDBS.getFloristRequest(0));
+
+        assertTrue(myDBS.deleteFloristRequest(req));
+        assertNull(myDBS.getFloristRequest(0));
+    }
 
 
 
