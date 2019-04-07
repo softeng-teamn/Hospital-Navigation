@@ -28,7 +28,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(ResourceLoader.home);
-        primaryStage.setFullScreen(true);
+        primaryStage.setMaximized(true);
         StageManager.changeWindow(primaryStage, root, "Home");
     }
 
