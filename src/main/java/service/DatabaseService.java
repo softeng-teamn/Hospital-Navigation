@@ -817,7 +817,7 @@ public class DatabaseService {
     ///////////////////////// REQUEST 7 QUERIES ////////////////////////////////////////////////////////////////////////
     /**
      * @param id the id of the request to get from the database
-     * @return the controller.requests.PatientInfo request object with the given ID
+     * @return the controller.PatientInfo request object with the given ID
      */
     public PatientInfoRequest getPatientInfoRequest(int id) {
         String query = "SELECT * FROM PATIENTINFOREQUEST WHERE (serviceID = ?)";
@@ -833,7 +833,7 @@ public class DatabaseService {
         return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription());
     }
 
-    /** updates a given controller.requests.PatientInfo request in the database.
+    /** updates a given controller.PatientInfo request in the database.
      * @param req the request to update
      * @return true if the update succeeds and false if otherwise
      */
@@ -842,7 +842,7 @@ public class DatabaseService {
         return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription(), req.getId());
     }
 
-    /** deletes a given controller.requests.PatientInfo request from the database
+    /** deletes a given controller.PatientInfo request from the database
      * @param req the request to delete
      * @return true if the delete succeeds and false if otherwise
      */

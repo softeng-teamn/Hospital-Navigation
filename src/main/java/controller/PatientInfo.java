@@ -1,12 +1,13 @@
-package controller.requests;
+package controller;
 
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import controller.RequestController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import model.request.PatientInfoRequest;
 
-public class PatientInfo {
+public class PatientInfo extends controller.RequestController {
 
     @FXML
     private JFXTextField firstNameField, lastNameField, birthYField, birthMField, birthDField;
@@ -23,8 +24,10 @@ public class PatientInfo {
         birthDay = birthYField.getText() + birthMField.getText() + birthDField.getText();
         description = descriptionArea.getText();
 
-        PatientInfoRequest newPatientInfoRequest = new PatientInfoRequest(-1, null, null, false, firstName, lastName, birthDay, description);
-        newPatientInfoRequest.makeRequest();
+        if (selectedNode != null) {
+            PatientInfoRequest newPatientInfoRequest = new PatientInfoRequest(-1, description, null, false, firstName, lastName, birthDay, description);
+            newPatientInfoRequest.makeRequest();
+        }
     }
 
 
