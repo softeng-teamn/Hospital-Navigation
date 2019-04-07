@@ -19,6 +19,7 @@ import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
@@ -80,6 +81,12 @@ public class RequestController extends Controller implements Initializable {
         String search = search_bar.getText();
         System.out.println(search);
         filterList(search);
+    }
+
+    @FXML
+    public void securitySelect(ActionEvent e) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.securityRequest));
     }
 
     /**

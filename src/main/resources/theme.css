@@ -28,6 +28,8 @@
 }
 
 .small-label{
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-family: Roboto;
     -fx-font-size: 12pt;
 }
 

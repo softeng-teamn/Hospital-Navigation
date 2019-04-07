@@ -63,7 +63,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Security Request" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#securitySelect" prefHeight="256.0" prefWidth="256.0" text="Security Request" toggleGroup="$requestType" wrapText="true">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="SHIELD" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -156,7 +156,7 @@
                   </HBox>
                </content>
             </ScrollPane>
-            <Pane fx:id="subSceneHolder" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Pane fx:id="subSceneHolder" prefHeight="952.0" prefWidth="582.0" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </children>

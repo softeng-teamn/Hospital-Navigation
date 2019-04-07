@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
+import model.request.SecurityRequest;
 
 import java.io.File;
 import java.sql.*;
@@ -197,11 +198,9 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
 
-
-            // TODO: create table for services here
             // statement.addBatch("CREATE TABLE <TableName>(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ... <you fields here>")
             // Request 1 Create table here
-            // Request 2 Create table here
+            statement.addBatch("CREATE TABLE SECURITYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(30))");
             // Request 3 Create table here
             // Request 4 Create table here
             // Request 5 Create table here
@@ -230,10 +229,9 @@ public class DatabaseService {
             // creates an index to optimize querying.
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
-            // TODO: add location constraint for tables here if required
             // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 1 constraint here
-            // Request 2 constraint here
+            statement.addBatch("ALTER TABLE SECURITYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 3 constraint here
             // Request 4 constraint here
             // Request 5 constraint here
@@ -756,9 +754,6 @@ public class DatabaseService {
         return (List<MedicineRequest>)(List<?>) executeGetMultiple(query, MedicineRequest.class, false);
     }
 
-
-
-    // TODO: query methods here
     // get      - use executeGetById        - "SELECT * FROM <TableName> WHERE (serviceID = ?)"
     // insert   - use executeInsert         - "INSERT INTO <TableName>(<all values except serviceID>) VALUES(<1 question mark for each value listed>)"
     // update   - use executeUpdate         - "UPDATE <TableName> SET <value=? for each value except serviceID> WHERE (serviceID = ?)"
@@ -774,13 +769,65 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 1 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 2 QUERIES ////////////////////////////////////////////////////////////////////////
+    /**
+     * @param id the id of the request to get from the database
+     * @return the Security request object with the given ID
+     */
+    public SecurityRequest getSecurityRequest(int id) {
+        String query = "SELECT * FROM SECURITYREQUEST WHERE (serviceID = ?)";
+        return (SecurityRequest) executeGetById(query, SecurityRequest.class, id);
+    }
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertSecurityRequest(SecurityRequest req) {
+        String insertQuery = ("INSERT INTO SECURITYREQUEST(notes, locationNodeID, completed, urgency) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency().name());
+    }
 
+    /** updates a given Security request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateSecurityRequest(SecurityRequest req) {
+        String query = "UPDATE SECURITYREQUEST SET notes=?, locationNodeID=?, completed=?, urgency=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency().name(), req.getId());
+    }
 
+    /** deletes a given Security request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteSecurityRequest(SecurityRequest req) {
+        String query = "DELETE FROM SECURITYREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
 
+    /**
+     * @return all Security requests stored in the database in a List.
+     */
+    public List<SecurityRequest> getAllSecurityRequests() {
+        String query = "Select * FROM SECURITYREQUEST";
+        return (List<SecurityRequest>)(List<?>) executeGetMultiple(query, SecurityRequest.class, new Object[]{});
+    }
 
+    /**
+     * @return a list of every Security request that has not been completed yet.
+     */
+    public List<SecurityRequest> getAllIncompleteSecurityRequests() {
+        String query = "Select * FROM SECURITYREQUEST WHERE (completed = ?)";
+        return (List<SecurityRequest>)(List<?>) executeGetMultiple(query, SecurityRequest.class, false);
+    }
 
-
+    /**
+     * @return a list of every Security request that has not been completed yet.
+     */
+    public List<SecurityRequest> getAllCompleteSecurityRequests() {
+        String query = "Select * FROM SECURITYREQUEST WHERE (completed = ?)";
+        return (List<SecurityRequest>)(List<?>) executeGetMultiple(query, SecurityRequest.class, true);
+    }
     //////////////////////// END REQUEST 2 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 3 QUERIES ////////////////////////////////////////////////////////////////////////
 
@@ -938,10 +985,9 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM EMPLOYEE");
             statement.addBatch("DELETE FROM RESERVABLESPACE");
 
-            // TODO: add delete statement
             // statement.addBatch("DELETE FROM <TableName>");
             // Request 1 delete here
-            // Request 2 delete here
+            statement.addBatch("DELETE FROM SECURITYREQUEST");
             // Request 3 delete here
             // Request 4 delete here
             // Request 5 delete here
@@ -958,10 +1004,9 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE MEDICINEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE RESERVATION ALTER COLUMN eventID RESTART WITH 0");
 
-            // TODO: add restart statement
             // statement.addBatch("ALTER TABLE <TableName> ALTER COLUMN serviceID RESTART WITH 0");
             // Request 1 restart here
-            // Request 2 restart here
+            statement.addBatch("ALTER TABLE SECURITYREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 3 restart here
             // Request 4 restart here
             // Request 5 restart here
@@ -1136,10 +1181,9 @@ public class DatabaseService {
         else if (cls.equals(ITRequest.class)) return extractITRequest(rs);
         else if (cls.equals(MedicineRequest.class)) return extractMedicineRequest(rs);
         else if (cls.equals(Employee.class)) return extractEmployee(rs);
-        // TODO: add if statement
         // else if (cls.equals(<RequestClassName>.class)) return extract<RequestName>(rs);
         // Request 1 else if here
-        // Request 2 else if here
+        else if (cls.equals(SecurityRequest.class)) return extractSecurityRequest(rs);
         // Request 3 else if here
         // Request 4 else if here
         // Request 5 else if here
@@ -1152,8 +1196,6 @@ public class DatabaseService {
         // Request 12 else if here
         else return null;
     }
-
-    // TODO: extraction methods here
     ///////////////////////// REQUEST 1 EXTRACTION /////////////////////////////////////////////////////////////////////
 
 
@@ -1164,13 +1206,29 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 1 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 2 EXTRACTION /////////////////////////////////////////////////////////////////////
+    private SecurityRequest extractSecurityRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String typeString = rs.getString("urgency");
 
+        SecurityRequest.Urgency urgency = null;
 
+        switch (typeString) {
+            case "NOT":
+                urgency = SecurityRequest.Urgency.NOT;
+                break;
+            case "SOMEWHAT":
+                urgency = SecurityRequest.Urgency.SOMEWHAT;
+                break;
+            case "VERY":
+                urgency = SecurityRequest.Urgency.VERY;
+                break;
+        }
 
-
-
-
-
+        return new SecurityRequest(serviceID, notes, locationNode, completed, urgency);
+    }
     //////////////////////// END REQUEST 2 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 3 EXTRACTION /////////////////////////////////////////////////////////////////////
 
