@@ -284,7 +284,8 @@
     -fx-table-color: rgba(82, 100, 174, 0.4);
     -fx-table-rippler-color: rgba(82, 100, 174, 0.6);
 }
-:focused {
+
+.table-view:focused {
     -fx-background-color: -fx-table-color, -fx-box-border, -fx-control-inner-background;
     -fx-background-insets: -1.4, 0, 1;
     -fx-background-radius: 1.4, 0, 0;
@@ -322,10 +323,6 @@
     -fx-background-color: #949494;
 }
 
-.table-view .column-header:last-visible {
-    -fx-border-width: 0 2 0 1;
-}
-
 .table-view .column-header-background {
     -fx-border-width: 0 0.0 1 0;
     -fx-border-color: #F3F3F3;
@@ -356,11 +353,6 @@
     -fx-focus-color: rgb(82, 100, 174);
 }
 
-.table-row-cell .jfx-text-field:error {
-    -jfx-focus-color: #D34336;
-    -jfx-unfocus-color: #D34336;
-}
-
 .table-row-cell .jfx-text-field .error-label {
     -fx-text-fill: #D34336;
     -fx-font-size: 0.75em;
@@ -369,10 +361,6 @@
 .table-row-cell .jfx-text-field .error-icon {
     -fx-fill: #D34336;
     -fx-font-size: 1.0em;
-}
-
-.table-row-cell:grouped {
-    -fx-background-color: rgb(230, 230, 230);
 }
 
 .table-view .menu-item:focused {

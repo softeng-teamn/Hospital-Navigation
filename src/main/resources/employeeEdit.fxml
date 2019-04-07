@@ -12,18 +12,18 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EmployeeEditController">
+<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EmployeeEditController">
    <children>
       <HBox fx:id="hbox_container" alignment="CENTER" VBox.vgrow="ALWAYS">
          <children>
-            <VBox prefHeight="200.0" prefWidth="802.0" alignment="CENTER">
+            <VBox prefHeight="200.0" prefWidth="807.0" alignment="CENTER">
                <children>
                   <TableView fx:id="employee_table" editable="false" maxHeight="600.0" prefHeight="600.0" prefWidth="800.0">
                      <columns>
-                        <TableColumn fx:id="col_id" editable="false" prefWidth="70.0" text="ID" />
-                        <TableColumn fx:id="col_username" editable="true" prefWidth="210.0" text="Username" />
-                        <TableColumn fx:id="col_job" editable="true" prefWidth="260.0" text="Job" />
-                        <TableColumn fx:id="col_admin" editable="true" prefWidth="260.0" text="Is Kiosk Administrator?" />
+                        <TableColumn fx:id="col_id" editable="false" resizable="false" prefWidth="70.0" text="ID" />
+                        <TableColumn fx:id="col_username" editable="true" resizable="false" prefWidth="210.0" text="Username" />
+                        <TableColumn fx:id="col_job" editable="true" resizable="false" prefWidth="260.0" text="Job" />
+                        <TableColumn fx:id="col_admin" editable="true" resizable="false" prefWidth="260.0" text="Is Kiosk Administrator?" />
                      </columns>
                      <VBox.margin>
                         <Insets top="50.0" />
