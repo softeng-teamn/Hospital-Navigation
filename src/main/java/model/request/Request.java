@@ -1,15 +1,6 @@
 package model.request;
 
-import com.jfoenix.controls.JFXToggleNode;
 import model.Node;
-import model.RequestType;
-import service.DatabaseService;
-//import sun.plugin.services.AxBridgeBrowserService;
-
-import static model.RequestType.RType.ABS;
-
-import java.util.Objects;
-
 import java.util.Objects;
 
 public abstract class Request {
@@ -17,28 +8,18 @@ public abstract class Request {
     private String notes;
     private Node location;
     private boolean completed;
-    private RequestType requestType;
     private String completedBy;
-
-    public Request(int id, String notes, Node location, boolean completed, RequestType requestType) {
-        this.id = id;
-        this.notes = notes;
-        this.location = location;
-        this.completed = completed;
-        this.requestType = requestType;
-        this.completedBy = "";
-    }
 
     public Request(int id, String notes, Node location, boolean completed) {
         this.id = id;
         this.notes = notes;
         this.location = location;
         this.completed = completed;
-        this.requestType = new RequestType(ABS);
         this.completedBy = "";
     }
 
     public abstract void  makeRequest() ;
+
     public abstract void fillRequest() ;
 
     public int getId() {
@@ -81,8 +62,6 @@ public abstract class Request {
         this.completedBy = completedBy;
     }
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -99,14 +78,6 @@ public abstract class Request {
         return Objects.hash(id, notes, location, completed);
     }
 
-    public RequestType getRequestType() {
-        return requestType;
-    }
-
-    public void setRequestType(RequestType requestType) {
-        this.requestType = requestType;
-    }
-
     @Override
     public String toString() {
         return "Request{" +
@@ -118,14 +89,4 @@ public abstract class Request {
                 ", completedBy='" + completedBy + '\'' +
                 '}';
     }
-
-
-
-
-
 }
-
-
-
-
-
