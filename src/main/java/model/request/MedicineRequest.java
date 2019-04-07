@@ -1,10 +1,9 @@
 package model.request;
 
+import com.jfoenix.controls.JFXToggleNode;
 import model.Node;
-import model.RequestType;
+import service.DatabaseService;
 
-import static model.RequestType.RType.ITS;
-import static model.RequestType.RType.MED;
 
 import java.util.Objects;
 
@@ -17,14 +16,14 @@ public class MedicineRequest extends Request {
 
     public MedicineRequest(int id, String notes, Node location, boolean completed) {
         super(id, notes, location, completed);
-        this.requestType = new RequestType(MED);
+        //this.requestType = new RequestType(MED);
         this.medicineType = "";
         this.quantity = 0;
     }
 
     public MedicineRequest(int id, String notes, Node location, boolean completed, String medicineType, double quantity) {
         super(id, notes, location, completed);
-        this.requestType = new RequestType(MED);
+        //this.requestType = new RequestType(MED);
         this.quantity = quantity;
     }
 
@@ -58,4 +57,20 @@ public class MedicineRequest extends Request {
     public int hashCode() {
         return Objects.hash(super.hashCode(), medicineType, quantity);
     }
+
+
+    @Override
+    public void makeRequest () {
+        ITRequest newITRequest = new ITRequest(-1, this.getNotes(), this.getLocation(), false);
+        DatabaseService.getDatabaseService().insertITRequest(newITRequest);
+    }
+
+    @Override
+    public void fillRequest () {
+        this.setCompleted(true);
+        this.setCompletedBy(this.getCompletedBy());
+        DatabaseService.getDatabaseService().updateMedicineRequest((MedicineRequest) this);
+    }
+
+
 }

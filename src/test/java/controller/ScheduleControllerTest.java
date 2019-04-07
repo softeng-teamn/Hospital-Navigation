@@ -9,6 +9,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.Employee;
+import model.JobType;
 import model.ReservableSpace;
 import model.Reservation;
 import org.junit.After;
@@ -100,7 +101,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         when(dbs.getAllReservableSpaces()).thenReturn(spaces);
         when(dbs.getReservationsBySpaceIdBetween("Room A",gcalStart,gcalStart)).thenReturn(reservationsA);
         when(dbs.getReservationsBySpaceIdBetween("Room B",gcalStart,gcalStart)).thenReturn(reservationsB);
-        when(dbs.getEmployee(123)).thenReturn(new Employee(123, "Janitor", false, "password"));
+        when(dbs.getEmployee(123)).thenReturn(new Employee(123, "username", JobType.JANITOR, false, "password"));
         when(dbs.getEmployee(77)).thenReturn(null);
 
 
@@ -175,8 +176,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         // what database should do
         when(dbs.getReservationsBySpaceId(roomID)).thenReturn(reservationReturns) ;
 
-
-        DatabaseService.setDatabaseForMocking(dbs);
+        sc.myDBS = dbs;
     }
 
     @Override
@@ -217,12 +217,6 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(l2.getText().equals("5:30"));
     }
 
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void makeReservation() {
-
-    }
-
     @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
@@ -237,77 +231,14 @@ public class ScheduleControllerTest extends ApplicationTest {
         Reservation r = new Reservation(-1, Integer.parseInt(sc.privacyLvlBox.getValue()),Integer.parseInt(sc.employeeID.getText()),
                 sc.eventName.getText(),sc.currentSelection.getLocationNodeID(),gcalStart,gcalEnd);
         sc.createReservation();
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventID() == r.getEventID());
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getPrivacyLevel() == r.getPrivacyLevel());
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEmployeeId() == r.getEmployeeId());
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventName().equals(r.getEventName()));
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getLocationID() == r.getLocationID());
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getStartTime().equals(r.getStartTime()));
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEndTime().equals(r.getEndTime()));
+        assertTrue(RequestController.myDBS.getReservation(0).getEventID() == r.getEventID());
+        assertTrue(RequestController.myDBS.getReservation(0).getPrivacyLevel() == r.getPrivacyLevel());
+        assertTrue(RequestController.myDBS.getReservation(0).getEmployeeId() == r.getEmployeeId());
+        assertTrue(RequestController.myDBS.getReservation(0).getEventName().equals(r.getEventName()));
+        assertTrue(RequestController.myDBS.getReservation(0).getLocationID() == r.getLocationID());
+        assertTrue(RequestController.myDBS.getReservation(0).getStartTime().equals(r.getStartTime()));
+        assertTrue(RequestController.myDBS.getReservation(0).getEndTime().equals(r.getEndTime()));
 
-    }
-
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void submit() throws InterruptedException {
-        Thread.sleep(2000);
-        System.out.println(sc.reservableList);
-        System.out.println(sc.reservableList.getChildrenUnmodifiable());
-        clickOn(sc.reservableList.getChildrenUnmodifiable().get(0));
-        Thread.sleep(20000);
-        assertFalse(sc.confErrorLbl.isVisible());
-        sc.eventName.setText("");
-        sc.employeeID.setText("ROFL");
-        sc.privacyLvlBox.setValue("0");
-        sc.submit();
-        assertTrue(sc.confErrorLbl.getText().equals("Error: Please fill out all fields to make a reservation."));
-        sc.eventName.setText("LMAO");
-        sc.submit();
-        assertTrue(sc.confErrorLbl.getText().equals("Error: Please provide a valid employee ID number."));
-        sc.employeeID.setText("2");
-        sc.submit();
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventName().equals("LMAO"));
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEmployeeId() == 2);
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getPrivacyLevel() == 0);
-    }
-
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void showInstructions() throws InterruptedException {
-        clickOn(instrBtn);
-        Thread.sleep(200);
-        TitledPane pane = (TitledPane) GuiTest.find(instrP);
-        assertTrue(pane.isVisible());
-    }
-
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void closeInstructions() throws InterruptedException {
-        clickOn(instrBtn);
-        Thread.sleep(200);
-        clickOn(closeInstrBrn);
-        Thread.sleep(200);
-        boolean vis = true;
-        try {
-            GuiTest.exists(instrP);
-        } catch (NoNodesFoundException | NoNodesVisibleException e) {
-            vis = false;
-        }
-        assertFalse(vis);
-    }
-  
-    @Ignore
-    @Test
-    @Category({UiTest.class, FastTest.class})
-    public void showConf() throws InterruptedException {
-        clickOn("#");
-        Thread.sleep(200);
-        //TODO: need a valid home screen w/ something to ID
-        //TitledPane pane = (TitledPane) GuiTest.find();
-        //assertTrue(pane.isVisible());
     }
 
 //    @Test

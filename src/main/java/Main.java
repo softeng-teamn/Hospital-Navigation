@@ -16,7 +16,7 @@ public class Main extends Application {
      * @param args
      */
     public static void main(String[] args) {
-        DatabaseService.getDatabaseService();
+        DatabaseService.getDatabaseService().loadFromCSVsIfNecessary();
         launch();
     }
 
@@ -28,6 +28,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(ResourceLoader.home);
+        primaryStage.setFullScreen(true);
         StageManager.changeWindow(primaryStage, root, "Home");
     }
 

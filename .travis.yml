@@ -14,9 +14,9 @@ before_script:
 jobs:
       include:
             - if: branch = master
-              script: ./gradlew clean check regressionTest spotbugsMain spotbugsTest jar
+              script: ./gradlew clean check spotbugsMain spotbugsTest jar
             - if: branch = dev
-              script: ./gradlew clean check regressionTest spotbugsMain spotbugsTest jar
+              script: ./gradlew clean check spotbugsMain spotbugsTest jar
             - if: branch =~ /^testing.*$/
               script: ./gradlew clean check spotbugsMain spotbugsTest
             - if: branch = ui

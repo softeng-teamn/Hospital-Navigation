@@ -45,7 +45,9 @@
                   <JFXDatePicker fx:id="datePicker" promptText="Choose a date" />
                   <JFXTimePicker fx:id="startTimePicker" promptText="Choose a start time" />
                   <JFXTimePicker fx:id="endTimePicker" promptText="Choose an end time" />
-                  <Label fx:id="errorLbl" text="Error" wrapText="true" />
+                  <JFXButton fx:id="availRoomsBtn" onAction="#availRooms" text="Show Available Rooms" />
+                  <JFXButton fx:id="bookedRoomsBtn" onAction="#bookedRooms" text="Show Booked Rooms" />
+                  <Label fx:id="timeErrorLbl" text="Error" wrapText="true" />
                   <Region prefHeight="707.0" prefWidth="316.0" />
                </children>
             </VBox>
@@ -69,12 +71,12 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="timeLbl" styleClass="big-label" text="Times" />
+                  <Label fx:id="resInfoLbl" styleClass="big-label" text="Times" />
                   <JFXTextField fx:id="eventName" prefWidth="235.0" promptText="event name" />
                   <JFXTextField fx:id="employeeID" promptText="employee id number" />
                   <JFXComboBox fx:id="privacyLvlBox" />
                   <JFXButton fx:id="makeReservationBtn" onAction="#makeReservation" text="Make Reservation" />
-                  <Label fx:id="confErrorLbl" text="confError" wrapText="true" />
+                  <Label fx:id="inputErrorLbl" text="confError" wrapText="true" />
                </children>
             </VBox>
             <Region prefHeight="970.0" prefWidth="107.0" />
