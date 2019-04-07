@@ -26,7 +26,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn;
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn, employeeBtn;
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -172,5 +172,13 @@ public class TopNav {
         sendEvent.setAccessiblePath(accessibility);
         sendEvent.setEventName("navigation");
         eventBus.post(sendEvent);
+    }
+
+    public void showEditEmployee(ActionEvent actionEvent) throws Exception {
+        Stage stage = (Stage) employeeBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
+        StageManager.changeExistingWindow(stage, root, "Edit Employees");
+        stage.sizeToScene();
+        stage.setFullScreen(true);
     }
 }
