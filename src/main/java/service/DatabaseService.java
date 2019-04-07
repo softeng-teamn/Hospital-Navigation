@@ -3,7 +3,9 @@ package service;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
 import model.request.ITRequest;
+import model.request.InterpreterRequest;
 import model.request.MedicineRequest;
+
 
 import java.io.File;
 import java.sql.*;
@@ -198,7 +200,6 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
 
 
-            // TODO: create table for services here
             // statement.addBatch("CREATE TABLE <TableName>(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ... <you fields here>")
             // Request 1 Create table here
             // Request 2 Create table here
@@ -213,8 +214,10 @@ public class DatabaseService {
             // Request 11 Create table here
             // Request 12 Create table here
 
-            statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
+            statement.addBatch("CREATE TABLE INTERPRETERREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, language varchar(30)");
+            statement.addBatch("ALTER TABLE INTERPRETERREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
 
+            statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
             statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
 
             // DATABASE CONSTRAINTS
@@ -230,7 +233,7 @@ public class DatabaseService {
             // creates an index to optimize querying.
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
-            // TODO: add location constraint for tables here if required
+
             // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 1 constraint here
             // Request 2 constraint here
@@ -758,7 +761,6 @@ public class DatabaseService {
 
 
 
-    // TODO: query methods here
     // get      - use executeGetById        - "SELECT * FROM <TableName> WHERE (serviceID = ?)"
     // insert   - use executeInsert         - "INSERT INTO <TableName>(<all values except serviceID>) VALUES(<1 question mark for each value listed>)"
     // update   - use executeUpdate         - "UPDATE <TableName> SET <value=? for each value except serviceID> WHERE (serviceID = ?)"
@@ -812,11 +814,35 @@ public class DatabaseService {
     ///////////////////////// REQUEST 6 QUERIES ////////////////////////////////////////////////////////////////////////
 
 
+    public InterpreterRequest getInterpreterRequest(int id) {
+        String query = "SELECT * FROM INTERPRETERREQUEST WHERE (serviceID = ?)";
+        return (InterpreterRequest) executeGetById(query, InterpreterRequest.class, id);
+    }
 
 
+    public boolean insertInterpreterRequest(InterpreterRequest req) {
+        String insertQuery = ("INSERT INTO INTERPRETERREQUEST(notes, locationNodeID, completed, language) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name());
+    }
 
+    public boolean updateInterpreterRequest(InterpreterRequest req) {
+        String query = "UPDATE INTERPRETERREQUEST SET notes=?, locationNodeID=?, completed=?, language=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name(), req.getId());
+    }
 
+    public boolean deleteInterpreterRequest(InterpreterRequest req) {
+        String query = "DELETE FROM INTERPRETER WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
 
+    public List<InterpreterRequest> getAllInterpreterRequests() {
+        String query = "Select * FROM INTERPRETERREQUEST";
+        return (List<InterpreterRequest>)(List<?>) executeGetMultiple(query, InterpreterRequest.class, new Object[]{});
+    }
+    public List<InterpreterRequest> getAllIncompleteInterpreterRequests() {
+        String query = "Select * FROM INTERPRETERREQUEST WHERE (completed = ?)";
+        return (List<InterpreterRequest>)(List<?>) executeGetMultiple(query, InterpreterRequest.class, false);
+    }
     //////////////////////// END REQUEST 6 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 7 QUERIES ////////////////////////////////////////////////////////////////////////
 
@@ -938,13 +964,13 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM EMPLOYEE");
             statement.addBatch("DELETE FROM RESERVABLESPACE");
 
-            // TODO: add delete statement
             // statement.addBatch("DELETE FROM <TableName>");
             // Request 1 delete here
             // Request 2 delete here
             // Request 3 delete here
             // Request 4 delete here
             // Request 5 delete here
+            statement.addBatch("DELETE FROM INTERPRETERREQUEST");
             // Request 6 delete here
             // Request 7 delete here
             // Request 8 delete here
@@ -958,13 +984,13 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE MEDICINEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE RESERVATION ALTER COLUMN eventID RESTART WITH 0");
 
-            // TODO: add restart statement
             // statement.addBatch("ALTER TABLE <TableName> ALTER COLUMN serviceID RESTART WITH 0");
             // Request 1 restart here
             // Request 2 restart here
             // Request 3 restart here
             // Request 4 restart here
             // Request 5 restart here
+            statement.addBatch("ALTER TABLE INTERPRETERREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 6 restart here
             // Request 7 restart here
             // Request 8 restart here
@@ -1136,13 +1162,13 @@ public class DatabaseService {
         else if (cls.equals(ITRequest.class)) return extractITRequest(rs);
         else if (cls.equals(MedicineRequest.class)) return extractMedicineRequest(rs);
         else if (cls.equals(Employee.class)) return extractEmployee(rs);
-        // TODO: add if statement
         // else if (cls.equals(<RequestClassName>.class)) return extract<RequestName>(rs);
         // Request 1 else if here
         // Request 2 else if here
         // Request 3 else if here
         // Request 4 else if here
         // Request 5 else if here
+        else if (cls.equals(InterpreterRequest.class)) return extractInterpreterRequest(rs);
         // Request 6 else if here
         // Request 7 else if here
         // Request 8 else if here
@@ -1153,7 +1179,6 @@ public class DatabaseService {
         else return null;
     }
 
-    // TODO: extraction methods here
     ///////////////////////// REQUEST 1 EXTRACTION /////////////////////////////////////////////////////////////////////
 
 
@@ -1201,7 +1226,31 @@ public class DatabaseService {
     //////////////////////// END REQUEST 5 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 6 EXTRACTION /////////////////////////////////////////////////////////////////////
 
+    private InterpreterRequest extractInterpreterRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String language = rs.getString("language");
 
+        InterpreterRequest.Language l = null;
+
+        switch(language){
+            case "SPANISH":
+                l = InterpreterRequest.Language.SPANISH;
+                break;
+            case "ENGLISH":
+                l = InterpreterRequest.Language.ENGLISH;
+                break;
+            case "FRENCH":
+                l = InterpreterRequest.Language.FRENCH;
+            case "MANDARIN":
+                l = InterpreterRequest.Language.MANDARIN;
+                break;
+        }
+
+        return new InterpreterRequest(serviceID, notes, locationNode, completed, l);
+    }
 
 
 
