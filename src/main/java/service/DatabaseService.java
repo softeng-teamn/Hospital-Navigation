@@ -2,12 +2,7 @@ package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
-import model.request.FloristRequest;
-import model.request.ITRequest;
-import model.request.InternalTransportRequest;
-import model.request.MaintenanceRequest;
-import model.request.MedicineRequest;
-import model.request.PatientInfoRequest;
+import model.request.*;
 
 import java.io.File;
 import java.sql.*;
@@ -205,7 +200,7 @@ public class DatabaseService {
             // statement.addBatch("CREATE TABLE <TableName>(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ... <you fields here>")
             statement.addBatch("CREATE TABLE FLORISTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, bouquetType varchar(255), quantity int)");
             // Request 2 Create table here
-            // Request 3 Create table here
+            statement.addBatch("CREATE TABLE SANITATIONREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(255), materialState varchar(255))");
             // Request 4 Create table here
             // Request 5 Create table here
             // Request 6 Create table here
@@ -238,7 +233,7 @@ public class DatabaseService {
             // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             statement.addBatch("ALTER TABLE FLORISTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 2 constraint here
-            // Request 3 constraint here
+            statement.addBatch("ALTER TABLE SANITATIONREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 4 constraint here
             // Request 5 constraint here
             // Request 6 constraint here
@@ -819,11 +814,65 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 2 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 3 QUERIES ////////////////////////////////////////////////////////////////////////
+    /**
+     * @param id the id of the request to get from the database
+     * @return the sanitation request object with the given ID
+     */
+    public SanitationRequest getSanitationRequest(int id) {
+        String query = "SELECT * FROM SANITATIONREQUEST WHERE (serviceID = ?)";
+        return (SanitationRequest) executeGetById(query, SanitationRequest.class, id);
+    }
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertSanitationRequest(SanitationRequest req) {
+        String insertQuery = ("INSERT INTO SANITATIONREQUEST(notes, locationNodeID, completed, urgency, materialState) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency(), req.getMaterialState());
+    }
 
+    /** updates a given sanitation request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateSanitationRequest(SanitationRequest req) {
+        String query = "UPDATE SANITATIONREQUEST SET notes=?, locationNodeID=?, completed=?, urgency=?, materialState=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency(), req.getMaterialState(), req.getId());
+    }
 
+    /** deletes a given sanitation request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteSanitationRequest(SanitationRequest req) {
+        String query = "DELETE FROM SANITATIONREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
 
+    /**
+     * @return all sanitation requests stored in the database in a List.
+     */
+    public List<SanitationRequest> getAllSanitationRequests() {
+        String query = "Select * FROM SANITATIONREQUEST";
+        return (List<SanitationRequest>)(List<?>) executeGetMultiple(query, SanitationRequest.class, new Object[]{});
+    }
 
+    /**
+     * @return a list of every sanitation request that has not been completed yet.
+     */
+    public List<SanitationRequest> getAllIncompleteSanitationRequests() {
+        String query = "Select * FROM SANITATIONREQUEST WHERE (completed = ?)";
+        return (List<SanitationRequest>)(List<?>) executeGetMultiple(query, SanitationRequest.class, false);
+    }
+
+    /**
+     * @return a list of every sanitation request that has been completed.
+     */
+    public List<SanitationRequest> getAllCompleteSanitationRequests() {
+        String query = "Select * FROM SANITATIONREQUEST WHERE (completed = ?)";
+        return (List<SanitationRequest>)(List<?>) executeGetMultiple(query, SanitationRequest.class, true);
+    }
 
 
     //////////////////////// END REQUEST 3 QUERIES /////////////////////////////////////////////////////////////////////
@@ -1141,7 +1190,7 @@ public class DatabaseService {
             // statement.addBatch("DELETE FROM <TableName>");
             statement.addBatch("DELETE FROM FLORISTREQUEST");
             // Request 2 delete here
-            // Request 3 delete here
+            statement.addBatch("DELETE FROM SANITATIONREQUEST");
             // Request 4 delete here
             // Request 5 delete here
             // Request 6 delete here
@@ -1162,7 +1211,7 @@ public class DatabaseService {
             // statement.addBatch("ALTER TABLE <TableName> ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE FLORISTREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 2 restart here
-            // Request 3 restart here
+            statement.addBatch("ALTER TABLE SANITATIONREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 4 restart here
             // Request 5 restart here
             // Request 6 restart here
@@ -1342,7 +1391,7 @@ public class DatabaseService {
         // else if (cls.equals(<RequestClassName>.class)) return extract<RequestName>(rs);
         else if (cls.equals(FloristRequest.class)) return extractFloristRequest(rs);
         // Request 2 else if here
-        // Request 3 else if here
+        else if (cls.equals(SanitationRequest.class)) return extractSanitationRequest(rs);
         // Request 4 else if here
         // Request 5 else if here
         // Request 6 else if here
@@ -1391,12 +1440,16 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 2 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 3 EXTRACTION /////////////////////////////////////////////////////////////////////
+    private SanitationRequest extractSanitationRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String urgency = rs.getString("urgency");
+        String materialState = rs.getString("materialState");
 
-
-
-
-
-
+        return new SanitationRequest(serviceID, notes, locationNode, completed, urgency, materialState);
+    }
 
     //////////////////////// END REQUEST 3 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 4 EXTRACTION /////////////////////////////////////////////////////////////////////
