@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
+import model.request.ToyRequest;
 
 import java.io.File;
 import java.sql.*;
@@ -211,7 +212,8 @@ public class DatabaseService {
             // Request 9 Create table here
             // Request 10 Create table here
             // Request 11 Create table here
-            // Request 12 Create table here
+            statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ...notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255)");
+
 
             statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
 
@@ -243,7 +245,7 @@ public class DatabaseService {
             // Request 9 constraint here
             // Request 10 constraint here
             // Request 11 constraint here
-            // Request 12 constraint here
+            statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
 
 
             statement.executeBatch();
@@ -864,7 +866,57 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 11 QUERIES ////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 12 QUERIES ///////////////////////////////////////////////////////////////////////
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertToyRequest(ToyRequest req) {
+        String insertQuery = ("INSERT INTO TOYREQUEST(notes, locationNodeID, completed, toyName) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getToyName());
+    }
 
+    /**
+     * @param id the id of the request to get from the database
+     * @return the IT request object with the given ID
+     */
+    public ToyRequest getToyRequest(int id) {
+        String query = "SELECT * FROM TOYREQUEST WHERE (serviceID = ?)";
+        return (ToyRequest) executeGetById(query, ToyRequest.class, id);
+    }
+
+    /**
+     * @return all IT requests stored in the database in a List.
+     */
+    public List<ToyRequest> getAllToyRequests() {
+        String query = "Select * FROM TOYREQUEST";
+        return (List<ToyRequest>)(List<?>) executeGetMultiple(query, ToyRequest.class, new Object[]{});
+    }
+
+    /** updates a given IT request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateToyRequest(ToyRequest req) {
+        String query = "UPDATE TOYREQUEST SET notes=?, locationNodeID=?, completed=?, toyName=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getToyName(), req.getId());
+    }
+
+    /** deletes a given IT request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteToyRequest(ToyRequest req) {
+        String query = "DELETE FROM TOYREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
+
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<ToyRequest> getAllIncompleteToyRequests() {
+        String query = "Select * FROM ITREQUEST WHERE (completed = ?)";
+        return (List<ToyRequest>)(List<?>) executeGetMultiple(query, ToyRequest.class, false);
+    }
 
 
 
@@ -951,7 +1003,7 @@ public class DatabaseService {
             // Request 9 delete here
             // Request 10 delete here
             // Request 11 delete here
-            // Request 12 delete here
+            statement.addBatch("DELETE FROM TOYREQUEST");
 
             // restart the auto-generated keys
             statement.addBatch("ALTER TABLE ITREQUEST ALTER COLUMN serviceID RESTART WITH 0");
@@ -971,7 +1023,7 @@ public class DatabaseService {
             // Request 9 restart here
             // Request 10 restart here
             // Request 11 restart here
-            // Request 12 restart here
+            statement.addBatch("ALTER TABLE TOYREQUEST ALTER COLUMN serviceID RESTART WITH 0");
 
 
             statement.executeBatch();
@@ -1149,7 +1201,7 @@ public class DatabaseService {
         // Request 9 else if here
         // Request 10 else if here
         // Request 11 else if here
-        // Request 12 else if here
+        else if (cls.equals(ToyRequest.class)) return extractToyRequest(rs);
         else return null;
     }
 
@@ -1254,13 +1306,15 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 11 EXTRACTION /////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 12 EXTRACTION ////////////////////////////////////////////////////////////////////
+    private ToyRequest extractToyRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String toyName = rs.getString("toyName");
 
-
-
-
-
-
-
+        return new ToyRequest(serviceID, notes, locationNode, completed, toyName);
+    }
     //////////////////////// END REQUEST 12 EXTRACTION /////////////////////////////////////////////////////////////////
 
 

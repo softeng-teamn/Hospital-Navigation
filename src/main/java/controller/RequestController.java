@@ -14,11 +14,7 @@ import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import model.Node;
-import model.RequestType;
-import model.request.ITRequest;
-import model.request.MedicineRequest;
 import model.request.Request;
-import model.request.RequestFacade;
 import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -51,6 +47,18 @@ public class RequestController extends Controller implements Initializable {
     private ObservableList<Node> allNodesObservable;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    /**
+     * initializes the request controller
+     *
+     * @param location
+     * @param resources
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        repopulateList();
+    }
+
     /**
      * switches window to home screen
      *
@@ -108,110 +116,6 @@ public class RequestController extends Controller implements Initializable {
             list_view.getItems().clear();
             list_view.getItems().addAll(toShow);
         }
-    }
-
-
-    /**
-     * collects user input information, calls Facade class to create object and submit to database
-     * "confirm" button
-     */
-    @FXML
-    public void makeRequest() {
-
-        JFXToggleNode selected = (JFXToggleNode) requestType.getSelectedToggle();
-        String description = textArea.getText();
-        Node requestLocation = (Node) list_view.getSelectionModel().getSelectedItem();
-
-        // make sure fields are filled in
-        if (requestLocation == null) {
-            textArea.setText("Please select location");
-        } else if (selected == null) {
-            textArea.setText("Please select type");
-        }
-
-        // new Facade object
-        RequestFacade reqFacade = new RequestFacade(selected,description, requestLocation) ;
-
-
-
-        // if feilds are populted and are of type:
-        if ((selected != null) && (selected.getText().contains("Medicine"))) {
-            reqFacade.makeRequest();
-        } else if ((selected != null) && (selected.getText().contains("IT"))) {
-            reqFacade.makeRequest();
-        }
-        textArea.clear();
-    }
-
-
-    /**
-     * Generates a request of the given type
-     *
-     * @param type
-     */
-    void makeRequest(Request type) {
-        RequestType rType = type.getRequestType();
-        switch (rType.getrType()) {
-            case ITS:
-                ITRequest ITType = (ITRequest) type;
-                if (myDBS.getITRequest(ITType.getId()) == null) {
-                    myDBS.insertITRequest(ITType);
-                }
-                break;
-            case MED:
-                MedicineRequest medReq = (MedicineRequest) type;
-                if (myDBS.getMedicineRequest(medReq.getId()) == null) {
-                    myDBS.insertMedicineRequest(medReq);
-                }
-                break;
-            case ABS:
-                //dont make a request if its not a real type
-        }
-    }
-
-    /**
-     * removes object from database through Facade class
-     *
-     * @param type
-     * @param byWho
-     */
-    void fufillRequest(Request type, String byWho) {
-        RequestFacade reqFacade = new RequestFacade(type,byWho);
-        RequestType rType = type.getRequestType();
-        switch (rType.getrType()) {
-            case ITS:
-                reqFacade.fillRequest();
-                break;
-            case MED:
-                reqFacade.fillRequest();
-                break;
-            case ABS:
-                //do nothing
-        }
-    }
-
-    /**
-     * getter for pendingRequests
-     *
-     * @return
-     */
-    public Collection<Request> getPendingRequests() {
-        ArrayList<Request> requests = new ArrayList<>();
-        requests.addAll(myDBS.getAllIncompleteITRequests());
-        requests.addAll(myDBS.getAllIncompleteMedicineRequests());
-        return requests;
-    }
-
-
-    /**
-     * initializes the request controller
-     *
-     * @param location
-     * @param resources
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        repopulateList();
     }
 
     /**

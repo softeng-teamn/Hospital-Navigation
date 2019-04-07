@@ -1,5 +1,6 @@
 * {
     -fx-primary: #48577D;
+    -fx-complementary: #43464C;
     -fx-secondary: #F5F5F5;
     -fx-primarytext: #F7FAFF;
     -fx-unfocusedtext: #9E9E9E;
@@ -13,6 +14,10 @@
  ******************************************************************************/
 
 .root{
+    -fx-background-color: -fx-primary;
+}
+
+.header {
     -fx-background-color: -fx-primary;
 }
 

@@ -1,7 +1,6 @@
 package model.request;
 
 import model.Node;
-import model.RequestType;
 
 import java.util.Objects;
 
@@ -21,16 +20,40 @@ public class ToyRequest extends Request {
 
     @Override
     public void makeRequest() {
-
+        //TODO fill out
     }
 
     @Override
     public void fillRequest() {
+        //TODO fill out
+    }
 
+    public String getToyName() {
+        return toyName;
+    }
+
+    public void setToyName(String toyName) {
+        this.toyName = toyName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ToyRequest that = (ToyRequest) o;
+        return Objects.equals(toyName, that.toyName);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), toyName);
+    }
+
+    @Override
+    public String toString() {
+        return "ToyRequest{" +
+                "toyName='" + toyName + '\'' +
+                '}';
     }
 }

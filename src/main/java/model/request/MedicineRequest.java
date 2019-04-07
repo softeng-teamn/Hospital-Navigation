@@ -16,14 +16,12 @@ public class MedicineRequest extends Request {
 
     public MedicineRequest(int id, String notes, Node location, boolean completed) {
         super(id, notes, location, completed);
-        //this.requestType = new RequestType(MED);
         this.medicineType = "";
         this.quantity = 0;
     }
 
     public MedicineRequest(int id, String notes, Node location, boolean completed, String medicineType, double quantity) {
         super(id, notes, location, completed);
-        //this.requestType = new RequestType(MED);
         this.quantity = quantity;
     }
 
@@ -71,6 +69,4 @@ public class MedicineRequest extends Request {
         this.setCompletedBy(this.getCompletedBy());
         DatabaseService.getDatabaseService().updateMedicineRequest((MedicineRequest) this);
     }
-
-
 }
