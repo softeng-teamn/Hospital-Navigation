@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
    <children>
       <HBox alignment="CENTER" prefHeight="128.0">
          <children>
@@ -75,7 +75,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Internal Transport" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#internalTransportSelect" prefHeight="256.0" prefWidth="256.0" text="Internal Transport - Tyler" toggleGroup="$requestType" wrapText="true">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="WHEELCHAIR" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -133,7 +133,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Patient Info" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#patientSelect" prefHeight="256.0" prefWidth="256.0" text="Patient Info - Xinzhe" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="VCARD" styleClass="button-glyph-icon" />
                                  </graphic>
