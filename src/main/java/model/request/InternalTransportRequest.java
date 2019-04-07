@@ -1,5 +1,6 @@
 package model.request;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import model.Node;
 
 import java.util.Objects;
@@ -9,7 +10,7 @@ public class InternalTransportRequest extends Request {
     public enum TransportType {
         Wheelchair,
         MotorScooter,
-        Streatcher
+        Stretcher
     }
 
     private TransportType transport;
@@ -26,12 +27,12 @@ public class InternalTransportRequest extends Request {
 
     @Override
     public void makeRequest() {
-
+        /// TODO: 2019-04-07 FILL OUT
     }
 
     @Override
     public void fillRequest() {
-
+        // TODO: FILL OUT
     }
 
     public TransportType getTransport() {
