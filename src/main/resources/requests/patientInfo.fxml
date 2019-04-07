@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PatientInfo">
+   <children>
+      <Label alignment="TOP_CENTER" styleClass="big-label" text="Patient Infomation Gathering" />
+      <JFXTextField fx:id="firstNameField" labelFloat="true" promptText="First Name" />
+      <JFXTextField fx:id="lastNameField" labelFloat="true" promptText="Last Name" />
+      <HBox>
+         <children>
+            <JFXTextField fx:id="birthYField" labelFloat="true" promptText="YYYY">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </JFXTextField>
+            <JFXTextField fx:id="birthMField" labelFloat="true" promptText="MM">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </JFXTextField>
+            <JFXTextField fx:id="birthDField" labelFloat="true" promptText="DD" />
+         </children>
+      </HBox>
+      <JFXTextArea fx:id="descriptionArea" promptText="Description if needed">
+         <VBox.margin>
+            <Insets right="12.0" />
+         </VBox.margin>
+      </JFXTextArea>
+      <JFXButton onAction="#makeRequestHandler" styleClass="confirm-button" text="Make Request" />
+   </children>
+   <padding>
+      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+   </padding>
+</VBox>
