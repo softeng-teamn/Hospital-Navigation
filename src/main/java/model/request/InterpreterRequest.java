@@ -9,6 +9,8 @@ public class InterpreterRequest extends Request{
         SPANISH, FRENCH, MANDARIN, ENGLISH;
     }
 
+
+
     private Language l;
 
     public InterpreterRequest(int id, String notes, Node location, boolean completed, Language l){
