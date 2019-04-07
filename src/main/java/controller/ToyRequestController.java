@@ -23,8 +23,8 @@ public class ToyRequestController extends RequestController {
     @FXML
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
-            ToyRequest toyRequest = new ToyRequest(-1, description.getText(), selectedNode, false, toy);
-            ToyRequest.makeRequest();
+            ToyRequest toyRequest = new ToyRequest(-1, description.getText(), selectedNode, false, toy.getText());
+            toyRequest.makeRequest();
         }
     }
 }

@@ -20,7 +20,7 @@ public class ToyRequest extends Request {
     }
 
     @Override
-    public static void makeRequest() {
+    public void makeRequest() {
         DatabaseService.getDatabaseService().insertToyRequest(this);
     }
 
