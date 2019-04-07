@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -11,6 +12,8 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Employee;
+import model.Event;
+import model.EventBusFactory;
 import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -35,7 +38,9 @@ public class AdminLoginController extends Controller implements Initializable {
     @FXML
     private Text passwordPrompt;
 
-
+    Event event = new Event();
+    private EventBus eventBus = EventBusFactory.getEventBus();
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
 
     @FXML
@@ -61,28 +66,20 @@ public class AdminLoginController extends Controller implements Initializable {
         String id = idText.getText();
         String password = passwordField.getText();
         int intID = Integer.parseInt(id);
-        Employee user = DatabaseService.getDatabaseService().getEmployee(intID);
-        if(user == null){
-            System.out.println("Null employee");
-        }
-        else
-        {
-            System.out.println(user.isAdmin());
-            System.out.println(user.getPassword());
-        }
-
+        Employee user = myDBS.getEmployee(intID);
 
         try {
+            if(user.isAdmin()){
                 if (password.equals(user.getPassword())){
-                    Controller.setIsEmployee(true);
-                    if(user.isAdmin()) {
-                        Controller.setIsAdmin(true);
-                    }
+                    event.setLoggedIn(true);
+                    event.setAdmin(true);
+                    event.setEventName("login");
+                    eventBus.post(event);
                     showHome();
                 } else {
                     passwordField.getStyleClass().add("wrong-credentials");
                 }
-
+            }
         } catch (Exception e) {
             idText.getStyleClass().add("wrong-credentials");
             passwordField.getStyleClass().add("wrong-credentials");
@@ -103,6 +100,8 @@ public class AdminLoginController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        eventBus.register(this);
+
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String text = change.getText();
 
