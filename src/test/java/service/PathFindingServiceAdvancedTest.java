@@ -76,25 +76,25 @@ public class PathFindingServiceAdvancedTest {
     MapNode mn10;
 
     public void createMap() {
-        n1 = new Node("node1",0,2);
+        n1 = new Node("node1",0,2, "CONF");
         mn1 = new MapNode(0,2,n1);
-        n2 = new Node("node2",1, 2);
+        n2 = new Node("node2",1, 2, "CONF");
         mn2 = new MapNode(1,2,n2);
-        n3 = new Node("node3",2, 2);
+        n3 = new Node("node3",2, 2, "CONF");
         mn3 = new MapNode(2,2,n3);
-        n4 = new Node("node4",3, 2);
+        n4 = new Node("node4",3, 2, "CONF");
         mn4 = new MapNode(3,2,n4);
-        n5 = new Node("node5",1, 3);
+        n5 = new Node("node5",1, 3, "CONF");
         mn5 = new MapNode(1,3,n5);
-        n6 = new Node("node6",1, 4);
+        n6 = new Node("node6",1, 4, "CONF");
         mn6 = new MapNode(1,4,n6);
-        n7 = new Node("node7",2, 3);
+        n7 = new Node("node7",2, 3, "CONF");
         mn7 = new MapNode(2,3,n7);
-        n8 = new Node("node8",3, 4);
+        n8 = new Node("node8",3, 4, "CONF");
         mn8 = new MapNode(3,4,n8);
-        n9 = new Node("node9",2, 1);
+        n9 = new Node("node9",2, 1, "CONF");
         mn9 = new MapNode(2,1,n9);
-        n10 = new Node("node10",2, 0);
+        n10 = new Node("node10",2, 0, "CONF");
         mn10 = new MapNode(2,0,n10);
     }
 

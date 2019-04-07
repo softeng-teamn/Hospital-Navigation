@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<StackPane prefWidth="1280.0" stylesheets="@theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MapView">
+        <children>
+            <ScrollPane fx:id="map_scrollpane" prefHeight="749.0" prefWidth="998.0">
+                <content>
+                    <Pane>
+                        <children>
+                            <ImageView>
+                                <image>
+                                    <Image url="Images/1_NoIcons.png" />
+                                </image>
+                            </ImageView>
+                        </children>
+                    </Pane>
+                </content>
+            </ScrollPane>
+      <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="230.0" prefWidth="124.0" stylesheets="@theme.css" StackPane.alignment="TOP_RIGHT">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="232.0" prefWidth="124.0">
+               <children>
+                  <Slider fx:id="zoom_slider" orientation="VERTICAL">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Slider>
+               </children>
+            </VBox>
+         </children>
+         <StackPane.margin>
+            <Insets right="20.0" top="10.0" />
+         </StackPane.margin>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Pane>
+            <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="290.0" prefWidth="290.0" StackPane.alignment="BOTTOM_RIGHT">
+                <children>
+                    <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;" stylesheets="@theme.css">
+                        <children>
+                            <Label text="Call Elevator" />
+                            <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" text="Level 1">
+                                <VBox.margin>
+                                    <Insets top="10.0" />
+                                </VBox.margin>
+                            </JFXButton>
+                            <JFXButton fx:id="call_el2_btn" onAction="#callElevatorAction" text="Level 2">
+                                <VBox.margin>
+                                    <Insets top="10.0" />
+                                </VBox.margin>
+                            </JFXButton>
+                            <JFXButton fx:id="call_el3_btn" onAction="#callElevatorAction" text="Level 3">
+                                <VBox.margin>
+                                    <Insets top="10.0" />
+                                </VBox.margin>
+                            </JFXButton>
+                            <JFXButton fx:id="call_el4_btn" onAction="#callElevatorAction" text="Level 4">
+                                <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                </VBox.margin>
+                            </JFXButton>
+                            <Label text="Current Level" />
+                            <Label fx:id="cur_el_floor" text="2">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                </VBox.margin>
+                            </Label>
+                        </children>
+                        <padding>
+                            <Insets bottom="10.0" top="10.0" />
+                        </padding>
+                    </VBox>
+                </children>
+            </Pane>
+        </children>
+</StackPane>
