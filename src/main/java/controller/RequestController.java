@@ -51,6 +51,7 @@ public class RequestController extends Controller implements Initializable {
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
+    @SuppressFBWarnings(value="MS_CANNOT_BE_FINAL", justification = "I need to")
     public static Node selectedNode = null;
 
     /**
