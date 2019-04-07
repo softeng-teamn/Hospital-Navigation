@@ -113,6 +113,18 @@
     -fx-fill: -fx-primary;
 }
 
+.accessiblity-toggle-node {
+    -fx-content-display: graphic_only;
+}
+
+.accessiblity-toggle-node:hover .glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
+.accessiblity-toggle-node:selected .glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
 .jfx-radio-button {
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primaryText;
