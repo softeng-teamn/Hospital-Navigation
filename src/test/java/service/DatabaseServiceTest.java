@@ -1,12 +1,7 @@
 package service;
 
 import model.*;
-import model.request.FloristRequest;
-import model.request.ITRequest;
-import model.request.InternalTransportRequest;
-import model.request.MaintenanceRequest;
-import model.request.MedicineRequest;
-import model.request.PatientInfoRequest;
+import model.request.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.derby.iapi.db.Database;
 import org.hamcrest.Matchers;
@@ -1446,7 +1441,151 @@ public class DatabaseServiceTest {
     //////////////////////// END REQUEST 2 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 3 TESTS //////////////////////////////////////////////////////////////////////////
 
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetSanitationRequest() {
+        // Assume an empty DB (ensured by setUp())
 
+        SanitationRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getSanitationRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SanitationRequest req = new SanitationRequest(0, "No notes", node, false, "High", "Liquid");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertSanitationRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getSanitationRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllSanitationRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        SanitationRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getSanitationRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getSanitationRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getSanitationRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SanitationRequest req1 = new SanitationRequest(0, "No notes", node, false, "High", "Solid");
+        SanitationRequest req2 = new SanitationRequest(1, "Priority", node, true, "Medium", "Mixture");
+        SanitationRequest req3 = new SanitationRequest(2, "Notes go here", node, false, "Low", "Liquid");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertSanitationRequest(req1));
+        assertTrue(myDBS.insertSanitationRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
+
+        // Check that there are two and only two, and that they are the right two
+        List<SanitationRequest> allSanitationRequests = myDBS.getAllSanitationRequests();
+        assertThat(allSanitationRequests.size(), is(2));
+        assertEquals(req1, allSanitationRequests.get(0));
+        assertEquals(req2, allSanitationRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertSanitationRequest(req3));
+
+        req3.setId(2);
+
+        allSanitationRequests = myDBS.getAllSanitationRequests();
+        assertThat(allSanitationRequests.size(), is(3));
+        assertEquals(req1, allSanitationRequests.get(0));
+        assertEquals(req2, allSanitationRequests.get(1));
+        assertEquals(req3, allSanitationRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateSanitationRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SanitationRequest req = new SanitationRequest(0, "No notes", node, false, "High", "Other");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertSanitationRequest(req));
+        assertEquals(req, myDBS.getSanitationRequest(0));
+
+        req.setMaterialState("Liquid");
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updateSanitationRequest(req));
+        assertEquals(req, myDBS.getSanitationRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteSanitationRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SanitationRequest req = new SanitationRequest(0, "No notes", node, false, "Low", "Solid");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertSanitationRequest(req));
+        assertEquals(req, myDBS.getSanitationRequest(0));
+
+        assertTrue(myDBS.deleteSanitationRequest(req));
+        assertNull(myDBS.getSanitationRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteSanitationRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        SanitationRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getSanitationRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getSanitationRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getSanitationRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SanitationRequest req1 = new SanitationRequest(0, "No notes", node, false, "High", "Liquid");
+        SanitationRequest req2 = new SanitationRequest(1, "Priority", node, true, "Low", "Liquid");
+        SanitationRequest req3 = new SanitationRequest(2, "Notes go here", node, false, "Medium", "Liquid");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertSanitationRequest(req1));
+        assertTrue(myDBS.insertSanitationRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<SanitationRequest> allIncompleteSanitationRequests = myDBS.getAllIncompleteSanitationRequests();
+        assertThat(allIncompleteSanitationRequests.size(), is(1));
+        assertEquals(req1, allIncompleteSanitationRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertSanitationRequest(req3));
+
+        allIncompleteSanitationRequests = myDBS.getAllIncompleteSanitationRequests();
+        assertThat(allIncompleteSanitationRequests.size(), is(2));
+        assertEquals(req1, allIncompleteSanitationRequests.get(0));
+        assertEquals(req3, allIncompleteSanitationRequests.get(1));
+    }
 
 
 
