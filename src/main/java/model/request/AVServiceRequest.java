@@ -49,8 +49,4 @@ public class AVServiceRequest extends Request {
     DatabaseService.getDatabaseService().updateAVServiceRequest(this);
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
 }
