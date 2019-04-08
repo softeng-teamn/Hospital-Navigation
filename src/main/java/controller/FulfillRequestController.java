@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.Employee;
 import model.JobType;
 import model.RequestType;
 import model.request.ITRequest;
@@ -26,6 +27,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static model.JobType.*;
+
 public class FulfillRequestController extends Controller implements Initializable {
 
     @FXML
@@ -34,6 +37,8 @@ public class FulfillRequestController extends Controller implements Initializabl
     private JFXButton adminBtn;
     @FXML
     private JFXListView requestListView;
+    @FXML
+    private JFXListView employeeListView;
     @FXML
     private JFXRadioButton allTypeRadio;
     @FXML
@@ -46,6 +51,11 @@ public class FulfillRequestController extends Controller implements Initializabl
     private JFXRadioButton uncRadio;
     @FXML
     private VBox typeVBox;
+
+
+
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
 
     /**
      * switches window to home screen
@@ -105,6 +115,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     public void radioChanged(ActionEvent event) {
         reloadList();
+        reloadEmployees() ;
 
     }
 
@@ -171,6 +182,166 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
 
+
+
+    /**
+     * Prints out the list of Employees
+     *
+     * @param newEList
+     */
+    /*
+    public void printEList(ObservableList<Employee> employeeList) {
+        employeeListView.getItems().clear();
+        employeeListView.setItems(employeeList);
+
+        // Set the cell to display only the name of the reservableSpace
+        employeeListView.setCellFactory(param -> new ListCell<Request>() {
+            @Override
+            protected void updateItem(Request item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null || printEmployee(item) == null) {
+                    setText(null);
+                } else {
+                    setText(printEmployee(item));
+                }
+            }
+        });
+        employeeListView.setEditable(false);
+    }
+*/
+
+
+
+
+    /**
+     * reload the list of employees - similar to reloadList for requests but
+     * loads by selected Request rather than radio button change
+     * Dependant on selected Request & radio button
+     */
+    public void reloadEmployees() {
+
+
+        Request selected;
+        // if there are extisting requests
+        if (requestListView != null) {
+            // get the select the first request in the list
+            requestListView.getSelectionModel().select(0);
+            // assign the selected item to a variable
+            selected = (Request) requestListView.getSelectionModel().getSelectedItem();
+            // otherwise set to null
+        } else {
+            selected = null;
+        }
+
+        // fetch all the employees from databse
+        ArrayList<Employee> allEmployees = (ArrayList) myDBS.getAllEmployees();
+        // final list of "correct" employees
+        ObservableList<Employee> returnList = FXCollections.observableArrayList();
+
+        // if all requests radio (either fulfilled and unfulfilled) is selected
+        if (allRadio.isSelected() || uncRadio.isSelected()) {
+            // if all types of request radio is selected
+            if (allTypeRadio.isSelected()) {
+                // if no filters selected, but unfulfilled request is selected in list
+                if (selected != null && selected.isCompleted() == false) {
+                    returnList = employeeForSelectedJob();
+                    // if no filters selected, but FULFILLED request is selected in list
+                } else if (selected != null && selected.isCompleted() == true) {
+                    // give back all employees
+                    returnList.addAll(allEmployees);
+                }
+                // do i need a case for if select == null
+            } else if (medicineRadio.isSelected()) {
+                // show medical staff
+                returnList = employeeForSelectedJob();
+                // same for IT
+            } else if (ITRadio.isSelected()) {
+                returnList = employeeForSelectedJob();
+            }
+        }
+        // printEList(returnList);
+
+    }
+
+
+
+
+
+
+
+    /**
+     * returns the proper list of employee based on the selected job
+     *
+     * @return list of correct employees
+     */
+    public ObservableList<Employee> employeeForSelectedJob() {
+
+        // selected request
+        Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
+
+        // new list for correct employees based on request type
+        ArrayList<Employee> newEmployeeList;
+        ArrayList<Employee> newITEmployeeList = new ArrayList<>();
+        ArrayList<Employee> newMedEmployeeList = new ArrayList<>();
+        ArrayList<Employee> newAbsEmployeeList = new ArrayList<>();
+        ObservableList<Employee> returnEmployeeList = FXCollections.observableArrayList();
+
+        // get all Employees from database
+        newEmployeeList = (ArrayList) myDBS.getAllEmployees();
+
+
+        // ****** sort employees by job  **********
+        // loop over all employees and sort by job responsisbilities
+        for (int i = 0; i < newEmployeeList.size(); i++) {
+            // if admin, add to all lists
+            if (newEmployeeList.get(i).getJob() == ADMINISTRATOR) {
+                newITEmployeeList.add(newEmployeeList.get(i));
+                newMedEmployeeList.add(newEmployeeList.get(i));
+                newAbsEmployeeList.add(newEmployeeList.get(i));
+            }
+            // if IT employee add to IT
+            if (newEmployeeList.get(i).getJob() == IT) {
+                newITEmployeeList.add(newEmployeeList.get(i));
+            }
+            // add doctors and nurses to medList
+            if (newEmployeeList.get(i).getJob() == DOCTOR || newEmployeeList.get(i).getJob() == NURSE) {
+                newMedEmployeeList.add(newEmployeeList.get(i));
+            }
+            // everything else add to "ABS" list - can adjust as needed as we create more Request types
+            if (newEmployeeList.get(i).getJob() == SECURITY_PERSONNEL || newEmployeeList.get(i).getJob() == JANITOR || newEmployeeList.get(i).getJob() == MAINTENANCE_WORKER) {
+                newAbsEmployeeList.add(newEmployeeList.get(i));
+            }
+        }
+
+        // switch case
+        // return proper employeelist based on Request type
+        switch (selected.getRequestType().getrType()) {
+            case ITS:
+                returnEmployeeList.addAll(newITEmployeeList);
+                break;
+            case MED:
+                returnEmployeeList.addAll(newMedEmployeeList);
+                break;
+            case ABS:
+                returnEmployeeList.addAll(newAbsEmployeeList);
+            default:
+                System.out.println("Incorrect Job Type: + " + selected.getRequestType().getrType());
+        }
+
+        return returnEmployeeList;
+
+
+    }
+
+
+
+
+
+
+
+
+
     /**
      * Prints out a single request
      *
@@ -186,6 +357,17 @@ public class FulfillRequestController extends Controller implements Initializabl
                 " Request Type: " + request.getRequestType().getrType().toString() +
                 " Description: " + request.getNotes();
     }
+
+
+    public String printEmployee(Employee e) {
+        if (e == null) {
+            return null;
+        }
+        return "ID: " + e.getID() +
+                " Job: " + e.getJob().toString();
+    }
+
+
 
     //Show Requests based on Job
     private ObservableList<Request> showProperRequest(ObservableList<Request> newRequestList, ArrayList<MedicineRequest> allMedReqList,ArrayList<ITRequest> allITReqList){
@@ -239,13 +421,17 @@ public class FulfillRequestController extends Controller implements Initializabl
     public void initialize(URL location, ResourceBundle resources) {
 
         ObservableList<Request> requestlist = FXCollections.observableArrayList();
+        ObservableList<Employee> EmployeeList = FXCollections.observableArrayList();
 
+        ArrayList<Employee> allEs = (ArrayList) myDBS.getAllEmployees();
         ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
         ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
 
         requestlist = showProperRequest(requestlist, medicineReq, itReq);
+        EmployeeList.addAll(allEs);
 
         printList(requestlist);
+        // printEList(EmployeeList);
 
     }
 }
