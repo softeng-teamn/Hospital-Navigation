@@ -125,11 +125,13 @@ public class TopNav {
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
             newNode_btn.setVisible(true);
+            employeeBtn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
         } else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             newNode_btn.setVisible(false);
+            employeeBtn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
         }
     }

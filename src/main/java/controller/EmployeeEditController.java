@@ -1,9 +1,6 @@
 package controller;
 
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import com.sun.javafx.collections.ObservableSequentialListWrapper;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
@@ -72,6 +69,9 @@ public class EmployeeEditController {
     private JFXPasswordField new_password_conf;
 
     @FXML
+    private JFXButton remove;
+
+    @FXML
     public void initialize() {
         new_job.getItems().setAll(JobType.values());
         initCols();
@@ -88,6 +88,10 @@ public class EmployeeEditController {
     }
 
     private void editableCols() {
+        employee_table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            remove.setDisable(false);
+        });
+
         col_username.setCellFactory(TextFieldTableCell.forTableColumn());
         col_username.setOnEditCommit(e -> {
             Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
@@ -112,11 +116,7 @@ public class EmployeeEditController {
             loadData();
         });
 
-//        // switch to edit mode on MouseClick
-//        employee_table.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-//            TablePosition focusedCellPosition = employee_table.getFocusModel().getFocusedCell();
-//            employee_table.edit(focusedCellPosition.getRow(), focusedCellPosition.getTableColumn());
-//        });
+        new_job.getSelectionModel().select(1);
     }
 
     private void loadData() {
@@ -131,8 +131,15 @@ public class EmployeeEditController {
 
     @FXML
     void addNewEmployee(ActionEvent event) {
-        // TODO: verify password match
-        // TODO: better ID generation
+        if (!new_password.getText().equals(new_password_conf.getText())) {
+            new_password.getStyleClass().add("wrong-credentials");
+            new_password_conf.getStyleClass().add("wrong-credentials");
+            return;
+        } else {
+            new_password.getStyleClass().remove("wrong-credentials");
+            new_password_conf.getStyleClass().remove("wrong-credentials");
+        }
+
 
         int max = -1;
         for (Employee e : employee_table.getItems()) {
@@ -142,6 +149,21 @@ public class EmployeeEditController {
         Employee employee = new Employee(max+1, new_username.getText(), new_job.getValue(), new_is_admin.isSelected(), new_password.getText());
         myDBS.insertEmployee(employee);
         loadData();
+
+        new_password.setText("");
+        new_password_conf.setText("");
+        new_username.setText("");
+        new_job.getSelectionModel().select(1);
+        new_is_admin.setSelected(false);
+    }
+
+
+    @FXML
+    void onRemoveEmployee(ActionEvent event) {
+        Employee employee = employee_table.getSelectionModel().getSelectedItem();
+        myDBS.deleteEmployee(employee);
+        loadData();
+        remove.setDisable(true);
     }
 
     public void showHome(ActionEvent actionEvent) throws Exception {
