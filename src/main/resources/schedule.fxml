@@ -9,7 +9,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -54,19 +54,7 @@
             <VBox minWidth="10.0" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label styleClass="big-label" text="Schedule" />
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                     <content>
-                        <HBox prefHeight="100.0">
-                           <children>
-                              <VBox fx:id="schedule" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="NEVER" />
-                              <VBox fx:id="checks" prefHeight="200.0" HBox.hgrow="ALWAYS" />
-                           </children>
-                        </HBox>
-                     </content>
-                     <VBox.margin>
-                        <Insets bottom="24.0" right="12.0" top="12.0" />
-                     </VBox.margin>
-                  </ScrollPane>
+                  <TableView fx:id="scheduleTable" prefHeight="200.0" prefWidth="200.0" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
