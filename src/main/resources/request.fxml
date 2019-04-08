@@ -51,7 +51,7 @@
                      <children>
                         <VBox prefWidth="256.0">
                            <children>
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="IT Request">
+                              <JFXToggleNode onAction="#itSelect" prefHeight="256.0" prefWidth="256.0" text="IT Request">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="DESKTOP" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -113,7 +113,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#externalTransportationRequest"prefHeight="256.0" prefWidth="256.0" text="External Transport&#10;Lauren" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#externalTransportationRequest" prefHeight="256.0" prefWidth="256.0" text="External Transport&#10;Lauren" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="TAXI" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -124,7 +124,7 @@
                         <Region prefHeight="610.0" prefWidth="50.0" />
                         <VBox prefWidth="256.0">
                            <children>
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Medicine Request" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#medicineSelect" prefHeight="256.0" prefWidth="256.0" text="Medicine Request" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="AMBULANCE" styleClass="button-glyph-icon" />
                                  </graphic>
