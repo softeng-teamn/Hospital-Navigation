@@ -128,24 +128,6 @@ public class MapView {
         };
 
         new Thread(task).start();
-
-//        Platform.runLater(() -> {
-//            while (true) {
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                System.out.println("shit was fired");
-//                try {
-//                    TimeUnit.SECONDS.sleep(1);
-//                    Controller.floorIsAt = elevatorCon.getFloor("S");
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-
     }
 
     @Subscribe
