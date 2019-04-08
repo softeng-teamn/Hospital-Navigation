@@ -30,7 +30,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn;
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn;
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -39,6 +39,8 @@ public class TopNav {
     private FontAwesomeIconView lock_icon;
     @FXML
     private Label time_label;
+    @FXML
+    private JFXToggleNode edit_btn;
 
     // events I send out/control
     @FXML
@@ -90,6 +92,11 @@ public class TopNav {
     @FXML
     void initialize() {
         eventBus.register(this);
+
+        // Turn off editing
+        event.setEventName("editing");
+        event.setEditing(false);
+        eventBus.post(event);
 
         // SHOULD THIS GO HERE? (was in intialize of old map controller)
         navigate_btn.setVisible(false);
@@ -161,10 +168,10 @@ public class TopNav {
 
     @FXML
     public void editButtonAction(ActionEvent e) throws Exception {
-        Stage stage = (Stage) search_bar.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.editNode);
-        StageManager.changeExistingWindow(stage, root, "Node Editor");
-        stage.setMaximized(true);
+        event.setEventName("editing");
+        event.setEditing(!event.isEditing());
+        System.out.println("Editing: " + event.isEditing());
+        eventBus.post(event);
     }
 
     /**

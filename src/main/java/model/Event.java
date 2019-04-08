@@ -15,6 +15,24 @@ public class Event {
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
+    boolean isEditing = false;      // editing
+    String floor = "1";      // floor
+
+    public String getFloor() {
+        return floor;
+    }
+
+    public void setFloor(String floor) {
+        this.floor = floor;
+    }
+
+    public boolean isEditing() {
+        return isEditing;
+    }
+
+    public void setEditing(boolean editing) {
+        isEditing = editing;
+    }
 
     public boolean isChangingStart() {
         return isChangingStart;

@@ -8,26 +8,37 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.*;
+import service.DatabaseService;
 import service.PathFindingService;
 import service.ResourceLoader;
+import service.StageManager;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+
+import static controller.Controller.nodeToEdit;
 
 public class MapView {
 
@@ -38,6 +49,7 @@ public class MapView {
     private Circle startCircle;
     private Circle selectCircle;
     private ArrayList<Line> lineCollection;
+    private ArrayList<Circle> circleCollection;
 
     @FXML
     private ScrollPane map_scrollpane;
@@ -72,6 +84,9 @@ public class MapView {
         // Set start circle
         startCircle = new Circle();
 
+        // Initialize Circle Collection
+        circleCollection = new ArrayList<Circle>();
+
         // Setting Up Circle Destination Point
         startCircle.setCenterX(event.getDefaultNode().getXcoord());
         startCircle.setCenterY(event.getDefaultNode().getYcoord());
@@ -92,30 +107,39 @@ public class MapView {
     void changeFloor(ActionEvent e) throws IOException {
         JFXButton btn = (JFXButton)e.getSource();
         ImageView imageView;
+        event.setEventName("floor");
+        String floorName = "";
+        event.setFloor(btn.getText());
         switch (btn.getText()) {
             case "Floor 3":
                 imageView = new ImageView(new Image(
                         ResourceLoader.thirdFloor.openStream()));
+                floorName = "3";
                 break;
             case "Floor 2":
                 imageView = new ImageView(new Image(
                         ResourceLoader.secondFloor.openStream()));
+                floorName = "2";
                 break;
             case "Floor 1":
                 imageView = new ImageView(new Image(
                         ResourceLoader.firstFloor.openStream()));
+                floorName = "1";
                 break;
             case "L1":
                 imageView = new ImageView(new Image(
                         ResourceLoader.firstLowerFloor.openStream()));
+                floorName = "L1";
                 break;
             case "L2":
                 imageView = new ImageView(new Image(
                         ResourceLoader.secondLowerFloor.openStream()));
+                floorName = "L2";
                 break;
             case "Ground":
                 imageView = new ImageView(new Image(
                         ResourceLoader.groundFloor.openStream()));
+                floorName = "G";
                 break;
             default:
                 System.out.println("We should not have default here!!!");
@@ -125,6 +149,10 @@ public class MapView {
         }
         image_pane.getChildren().clear();
         image_pane.getChildren().add(imageView);
+        event.setFloor(floorName);
+        eventBus.post(event);
+        // Handle Floor changes
+        editNodeHandler(event.isEditing());
     }
 
     @Subscribe
@@ -139,6 +167,8 @@ public class MapView {
                     case "node-select":
                         drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125));
                         break;
+                    case "editing":
+                        editNodeHandler(event.isEditing());
                     default:
                         break;
                 }
@@ -146,6 +176,65 @@ public class MapView {
         });
         this.event = event;
     }
+
+    void editNodeHandler(boolean isEditing) {
+        if (isEditing) {
+            // remove previous selected circle
+            if (zoomGroup.getChildren().contains(selectCircle)) {
+                zoomGroup.getChildren().remove(selectCircle);
+            }
+            // remove old circles
+            zoomGroup.getChildren().removeAll(circleCollection);
+            circleCollection.clear();
+            // load all nodes for the floor
+            ArrayList<Node> nodeByFlooor = DatabaseService.getDatabaseService().getNodesByFloor(event.getFloor());
+            for (Node n : nodeByFlooor) {
+                Circle nodeCircle = new Circle();
+                nodeCircle.setCenterX(n.getXcoord());
+                nodeCircle.setCenterY(n.getYcoord());
+                nodeCircle.setRadius(20);
+                nodeCircle.setFill(Color.GREEN);
+                Tooltip tp = new Tooltip("ID: " + n.getNodeID() + ", Short Name: " + n.getShortName());
+                nodeCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        Stage stage = (Stage) image_pane.getScene().getWindow();
+                        Circle c = (Circle)event.getSource();
+                        tp.show(c, stage.getX()+event.getSceneX()+15, stage.getY()+event.getSceneY());
+                        image_pane.getScene().setCursor(Cursor.HAND);
+                    }
+                });
+                nodeCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        tp.hide();
+                        image_pane.getScene().setCursor(Cursor.DEFAULT);
+                    }
+                });
+                nodeCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        nodeToEdit = n;
+                        System.out.println("WE CLICKED THE CIRCLE");
+                        try {
+                            Stage stage = (Stage) image_pane.getScene().getWindow();
+                            Parent root = FXMLLoader.load(ResourceLoader.editNode);
+                            StageManager.changeExistingWindow(stage, root, "Node Editor");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                circleCollection.add(nodeCircle);
+            }
+            // Show on screen
+            zoomGroup.getChildren().addAll(circleCollection);
+        } else {
+            zoomGroup.getChildren().removeAll(circleCollection);
+            circleCollection.clear();
+        }
+    }
+
 
     private void drawPoint(Node node, Circle circle, Color color) {
         // remove points

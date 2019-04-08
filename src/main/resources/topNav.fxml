@@ -43,11 +43,16 @@
                 </graphic>
                 <HBox.margin>
                     <Insets right="8.0" />
-                </HBox.margin></JFXButton>
-            <JFXButton fx:id="edit_btn" onAction="#editButtonAction" contentDisplay="GRAPHIC_ONLY" prefHeight="80.0" prefWidth="80.0" text="Edit">
+                </HBox.margin>
+            </JFXButton>
+            <JFXToggleNode fx:id="edit_btn" onAction="#editButtonAction" maxHeight="80.0" maxWidth="80.0" prefHeight="0.0" prefWidth="80.0" styleClass="accessiblity-toggle-node">
                 <graphic>
-                    <FontAwesomeIconView glyphName="PENCIL" size="60" />
-                </graphic></JFXButton>
+                    <FontAwesomeIconView glyphName="PENCIL" size="50" styleClass="jfx-toggle-node" />
+                </graphic>
+                <HBox.margin>
+                    <Insets right="8.0" />
+                </HBox.margin>
+            </JFXToggleNode>
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="time_label"/>
             <Region HBox.hgrow="ALWAYS" />
