@@ -2,6 +2,7 @@ package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
+import model.request.GiftStoreRequest;
 import model.request.FloristRequest;
 import model.request.ITRequest;
 import model.request.InternalTransportRequest;
@@ -207,7 +208,7 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE FLORISTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, bouquetType varchar(255), quantity int)");
             // Request 2 Create table here
             // Request 3 Create table here
-            // Request 4 Create table here
+            statement.addBatch("CREATE TABLE GIFTSTOREREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean,  gType varchar(30), patientName varchar(255))") ;
             // Request 5 Create table here
             // Request 6 Create table here
             // Request 7 Create table here
@@ -241,7 +242,7 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE FLORISTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 2 constraint here
             // Request 3 constraint here
-            // Request 4 constraint here
+            statement.addBatch("ALTER TABLE GIFTSTOREREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 5 constraint here
             // Request 6 constraint here
             // Request 7 constraint here
@@ -712,6 +713,8 @@ public class DatabaseService {
         return (List<ITRequest>)(List<?>) executeGetMultiple(query, ITRequest.class, false);
     }
 
+
+
     /**
      * @param req the request to insert into the database
      * @return true if the insert succeeds and false if otherwise
@@ -831,15 +834,64 @@ public class DatabaseService {
     //////////////////////// END REQUEST 3 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 4 QUERIES ////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @param id the id of the request to get from the database
+     * @return the GiftRequest request object with the given ID
+     */
+    public GiftStoreRequest getGiftStoreRequest(int id) {
+        String query = "SELECT * FROM GIFTSTOREREQUEST WHERE (serviceID = ?)";
+        return (GiftStoreRequest) executeGetById(query, GiftStoreRequest.class, id);
+    }
+
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertGiftStoreRequest(GiftStoreRequest req) {
+        String insertQuery = ("INSERT INTO GIFTSTOREREQUEST(notes, locationNodeID, completed, gType, patientName) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getgType().name(), req.getPatientName());
+    }
 
 
 
+    /** updates a given GiftStoreRequest request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateGiftStoreRequest(GiftStoreRequest req) {
+        String query = "UPDATE GIFTSTOREREQUEST SET notes=?, locationNodeID=?, completed=?, gType=?, patientName=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getgType().name(), req.getPatientName(), req.getId());
+    }
 
+
+    /** deletes a given GiftStoreRequest request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteGiftStoreRequest(GiftStoreRequest req) {
+        String query = "DELETE FROM GIFTSTOREREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
+
+    /**
+     * @return a list of every GiftStoreRequests request that has not been completed yet.
+     */
+    public List<GiftStoreRequest> getAllIncompleteGiftStoreRequests() {
+        String query = "Select * FROM GIFTSTOREREQUEST WHERE (completed = ?)";
+        return (List<GiftStoreRequest>)(List<?>) executeGetMultiple(query, GiftStoreRequest.class, false);
+    }
+
+    /**
+     * @return a list of every GiftStoreRequests request that has not been completed yet.
+     */
+    public List<GiftStoreRequest> getAllCompleteGiftStoreRequests() {
+        String query = "Select * FROM GIFTSTOREREQUEST WHERE (completed = ?)";
+        return (List<GiftStoreRequest>)(List<?>) executeGetMultiple(query, GiftStoreRequest.class, true);
+    }
 
 
     //////////////////////// END REQUEST 4 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 5 QUERIES ////////////////////////////////////////////////////////////////////////
-
 
 
 
@@ -1199,7 +1251,7 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM FLORISTREQUEST");
             // Request 2 delete here
             // Request 3 delete here
-            // Request 4 delete here
+            statement.addBatch("DELETE FROM GIFTSTOREREQUEST");
             // Request 5 delete here
             // Request 6 delete here
             // Request 7 delete here
@@ -1220,7 +1272,7 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE FLORISTREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 2 restart here
             // Request 3 restart here
-            // Request 4 restart here
+            statement.addBatch("ALTER TABLE GIFTSTOREREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 5 restart here
             // Request 6 restart here
             // Request 7 restart here
@@ -1234,8 +1286,8 @@ public class DatabaseService {
 
             statement.addBatch("DELETE FROM NODE");
 
-
             statement.executeBatch();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -1400,7 +1452,7 @@ public class DatabaseService {
         else if (cls.equals(FloristRequest.class)) return extractFloristRequest(rs);
         // Request 2 else if here
         // Request 3 else if here
-        // Request 4 else if here
+        else if (cls.equals(GiftStoreRequest.class)) return extractGiftStoreRequest(rs);
         // Request 5 else if here
         // Request 6 else if here
         // Request 7 else if here
@@ -1458,10 +1510,31 @@ public class DatabaseService {
     //////////////////////// END REQUEST 3 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 4 EXTRACTION /////////////////////////////////////////////////////////////////////
 
+    private GiftStoreRequest extractGiftStoreRequest (ResultSet rs) throws SQLException {
+        // Extract data
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String typeString = rs.getString("gType") ;
+        String patientName = rs.getString("patientName") ;
 
+        GiftStoreRequest.GiftType giftType = null ;
 
+        switch (typeString) {
+            case "BALLOONS":
+                giftType = GiftStoreRequest.GiftType.BALLOONS;
+                break;
+            case "TEDDY_BEAR":
+                giftType = GiftStoreRequest.GiftType.TEDDY_BEAR;
+                break;
+            case "GIFT_BASKET":
+                giftType = GiftStoreRequest.GiftType.GIFT_BASKET;
+                break;
+        }
 
-
+        return new GiftStoreRequest(serviceID, notes, locationNode, completed, giftType, patientName);
+    }
 
 
     //////////////////////// END REQUEST 4 EXTRACTION //////////////////////////////////////////////////////////////////

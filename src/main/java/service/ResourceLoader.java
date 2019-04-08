@@ -15,12 +15,15 @@ public class ResourceLoader {
 
     public static final URL ToyRequest = service.ResourceLoader.class.getResource("/Requests/ToyRequest.fxml");
 
+    public static final URL giftStoreRequest = service.ResourceLoader.class.getResource("/GiftStoreRequest.fxml");
+
     public static final URL edges = service.ResourceLoader.class.getResource("/edges.csv");
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");
     public static final URL internalTransportRequest = service.ResourceLoader.class.getResource("/requests/internalTransportRequest.fxml");
     public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
     public static final URL employees = service.ResourceLoader.class.getResource("/employees.csv");
+
 
     // Images
     public static final URL firstFloor = service.ResourceLoader.class.getResource("/Images/01_thefirstfloor.png");

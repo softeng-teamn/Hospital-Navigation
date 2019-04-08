@@ -88,6 +88,8 @@ public class RequestController extends Controller implements Initializable {
         filterList(search);
     }
 
+
+
     /**
      *for lists
      */
@@ -184,6 +186,12 @@ public class RequestController extends Controller implements Initializable {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.floristRequest));
     }
+
+    public void giftSelect (ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.giftStoreRequest));
+    }
+
 
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "I need to")
     @FXML
