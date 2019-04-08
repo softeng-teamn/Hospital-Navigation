@@ -33,6 +33,8 @@ public class SecurityRequestController extends RequestController {
             case "High":
                 urgencyLevel = SecurityRequest.Urgency.VERY;
                 break;
+            default:
+                urgencyLevel = SecurityRequest.Urgency.NOT;
         }
 
         if(selectedNode != null) {
