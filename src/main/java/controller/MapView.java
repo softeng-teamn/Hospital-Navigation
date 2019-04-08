@@ -242,8 +242,7 @@ public class MapView {
         timeline.play();
     }
 
-    // todo: watch out for multiple floors? are those separate nodes -> problem w directions
-    // TODO: comments
+    // todo: watch out for multiple floors? are those separate nodes -> problem w directions?
 
     /**
      * Create textual instructions for the given path.
@@ -461,7 +460,7 @@ public class MapView {
         else if (Math.abs(theta - Math.PI) < THRESHOLD) {    // Turn around if theta is to behind you
             turn = "around";
         }
-        else if (Math.abs(expectedVal - computedY1) < THRESHOLD) {
+        else if (Math.abs(expectedVal - computedY1) < THRESHOLD) {    // Otherwise turn the correct direction
             if (theta < Math.PI/4) {
                 turn = "slightly right";
             }
@@ -484,11 +483,14 @@ public class MapView {
             }
         }
 
-
+        // Create and return the direction
         String direction = String.format("Turn " + turn + " and walk %.0f feet.", distance);
         return direction;
     }
 
+    /**
+     * On click, show the directions. On second click, hide them again.
+     */
     @FXML
     private void showDirections() {
         directionsView.setVisible(!directionsView.isVisible());
