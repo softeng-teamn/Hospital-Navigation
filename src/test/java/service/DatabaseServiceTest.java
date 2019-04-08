@@ -4,6 +4,8 @@ import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import org.apache.commons.io.FileUtils;
+import org.apache.derby.iapi.db.Database;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,15 +15,16 @@ import testclassifications.FastTest;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
@@ -29,31 +32,32 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class DatabaseServiceTest {
-    private DatabaseService myDBS;
-
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+    
     @Before
-    public void setUp() throws SQLException, MismatchedDatabaseVersionException {
-        myDBS = DatabaseService.init("hospital-db-test");
+    public void setUp() {
         myDBS.wipeTables();
     }
 
     @After
     public void tearDown() {
         myDBS.wipeTables();
-        myDBS.close();
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws IOException {
-        FileUtils.deleteDirectory(new File("hospital-db-test"));
     }
 
     @Test
     @Category(FastTest.class)
     public void insertNode() {
+        final Function callback = mock(Function.class);
+        myDBS.registerNodeCallback(callback);
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         // make sure that the new node is successfully inserted
         assertThat(myDBS.insertNode(testNode), is(true));
+        verify(callback, times(1)).apply(null);
+
         // make sure that the same node cannot be inserted a second time
         assertThat(myDBS.insertNode(testNode), is(false));
     }
@@ -85,6 +89,9 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void updateNode() {
+        final Function callback = mock(Function.class);
+        myDBS.registerNodeCallback(callback);
+
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         myDBS.insertNode(testNode);
 
@@ -101,6 +108,7 @@ public class DatabaseServiceTest {
 
         testNode = new Node("ACONF00102", 1582, 2540, "3", "BTM", "CONF", "Halla", "Halls");
         myDBS.updateNode(testNode);
+        verify(callback, times(2)).apply(null); // Cumulative
 
         toGet = myDBS.getNode("ACONF00102");
         assertThat(toGet.getNodeID(),is("ACONF00102"));
@@ -116,12 +124,17 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void deleteNode() {
+        final Function callback = mock(Function.class);
+        myDBS.registerNodeCallback(callback);
+
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         myDBS.insertNode(testNode);
         // make sure it can be got
         assertThat(myDBS.getNode("ACONF00102").getNodeID(), is("ACONF00102"));
         // delete the node from the database successfully
         assertThat(myDBS.deleteNode(testNode),is(true));
+        verify(callback, times(2)).apply(null);
+
         //make sure that it is not in the database
         assertThat((myDBS.getNode("ACONF00102")), is(nullValue()));
         //delete is like update so trying to delete a record that isn't there doesn't cause problems. No case needed for that.
@@ -172,16 +185,16 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void getNumNodeTypeByFloor() {
-        Node testNode1 = new Node("ACONF00101", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        Node testNode2 = new Node("ACONF00102", 1648, 2968, "2", "BTM", "STAI", "BTM Conference Center", "BTM Conference");
-        Node testNode3 = new Node("ACONF00103", 1648, 2968, "2", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        Node testNode4 = new Node("ACONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node testNode1 = new Node("XCONF00101", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node testNode2 = new Node("XCONF00102", 1648, 2968, "2", "BTM", "STAI", "BTM Conference Center", "BTM Conference");
+        Node testNode3 = new Node("XCONF00103", 1648, 2968, "2", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode4 = new Node("XCONF00104", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
 
-        Node testNode5 = new Node("ACONF00105", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
-        Node testNode6 = new Node("ACONF00106", 1648, 2968, "1", "BTM", "DEPT", "BTM Conference Center", "BTM Conference");
-        Node testNode7 = new Node("ACONF00107", 1580, 2538, "1", "BTM", "LABS", "Hall", "Hall");
-        Node testNode8 = new Node("ACONF00108", 1648, 2968, "1", "BTM", "LABS", "BTM Conference Center", "BTM Conference");
-        Node testNode9 = new Node("ACONF00109", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode5 = new Node("XCONF00105", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node testNode6 = new Node("XCONF00106", 1648, 2968, "1", "BTM", "DEPT", "BTM Conference Center", "BTM Conference");
+        Node testNode7 = new Node("XCONF00107", 1580, 2538, "1", "BTM", "LABS", "Hall", "Hall");
+        Node testNode8 = new Node("XCONF00108", 1648, 2968, "1", "BTM", "LABS", "BTM Conference Center", "BTM Conference");
+        Node testNode9 = new Node("XCONF00109", 1648, 2968, "1", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         assertTrue(myDBS.insertNode(testNode1));
         assertTrue(myDBS.insertNode(testNode2));
         assertTrue(myDBS.insertNode(testNode3));
@@ -292,19 +305,29 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void insertEdge(){
+        final Function callback = mock(Function.class);
+        myDBS.registerEdgeCallback(callback);
+
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
         assertFalse(myDBS.insertEdge(newEdge));
+        verify(callback, times(0)).apply(null);
+
         myDBS.insertNode(testNode);
         assertFalse(myDBS.insertEdge(newEdge));
+        verify(callback, times(0)).apply(null);
+
         myDBS.insertNode(otherNode);
         assertTrue(myDBS.insertEdge(newEdge));
+        verify(callback, times(1)).apply(null);
     }
 
     @Test
     @Category(FastTest.class)
     public void updateEdge(){
+        final Function callback = mock(Function.class);
+        myDBS.registerEdgeCallback(callback);
         // set up the DB
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
@@ -326,13 +349,14 @@ public class DatabaseServiceTest {
         assertThat(gotEdge,is(notNullValue()));
         assertThat(gotEdge.getNode1().getNodeID(), is(newerEdge.getNode1().getNodeID()));
 
-
-
+        verify(callback, times(2)).apply(null);
     }
 
     @Test
     @Category(FastTest.class)
     public void deleteEdge(){
+        final Function callback = mock(Function.class);
+        myDBS.registerEdgeCallback(callback);
         Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
         Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
@@ -343,10 +367,10 @@ public class DatabaseServiceTest {
         assertThat(gotEdge.getEdgeID(), is(newEdge.getEdgeID()));
         // delete it
         myDBS.deleteEdge(gotEdge);
+        verify(callback, times(2)).apply(null);
+
         //make sure that it's not there
         assertThat((myDBS.getEdge("ACONF00102-ACONF00103")), is(nullValue()));
-
-
     }
 
 
@@ -366,7 +390,26 @@ public class DatabaseServiceTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void getAllEdges() {
+        Node n1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node n2 = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node n3 = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge e1 = new Edge("ACONF00102-ACONF00103", n1, n2);
+        Edge e2 = new Edge("ACONF00102-ACONF00104", n1, n3);
+        Edge e3 = new Edge("ACONF00103-ACONF00104", n2, n3);
+        assertTrue(myDBS.insertNode(n1));
+        assertTrue(myDBS.insertNode(n2));
+        assertTrue(myDBS.insertNode(n3));
+
+        assertTrue(myDBS.insertEdge(e1));
+
+        assertThat(myDBS.getAllEdges(), Matchers.contains(e1));
+
+        assertTrue(myDBS.insertEdge(e2));
+        assertTrue(myDBS.insertEdge(e3));
+
+        assertThat(myDBS.getAllEdges(), Matchers.contains(e1, e2, e3));
     }
 
     @Test
@@ -380,6 +423,7 @@ public class DatabaseServiceTest {
         // First verify that these reservations are null
         value = myDBS.getReservation(1);
         assertThat(value, is(nullValue()));
+        Employee testEmployee = new Employee(23,"JJohnson",JobType.DOCTOR,false,"douglas");
 
         // Create a reservation
         GregorianCalendar reservationStart = new GregorianCalendar();
@@ -387,15 +431,17 @@ public class DatabaseServiceTest {
         GregorianCalendar reservationEnd = new GregorianCalendar();
         reservationEnd.setTime(new Date());
         reservationEnd.add(Calendar.HOUR, 1);
-        Reservation reservation1 = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
+        Reservation reservation1 = new Reservation(1, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
 
         // successful insert because of constraints
-        boolean insertRes = myDBS.insertReservation(reservation1);
-        assertTrue(insertRes);
+        assertFalse(myDBS.insertReservation(reservation1)); // No matching employee yet
+        assertTrue(myDBS.insertEmployee(testEmployee));
+        assertTrue(myDBS.insertReservation(reservation1));
 
         // Verify successful get
         expected = reservation1;
-        value = myDBS.getReservation(0);
+        value = myDBS.getReservation(1); // Expect 1 because of failed insert
+      
         assertEquals(expected, value);
     }
 
@@ -408,6 +454,9 @@ public class DatabaseServiceTest {
         // No reservations should exist yet
         reservationList = myDBS.getAllReservations();
         assertThat(reservationList.size(), is(0));
+
+        Employee testEmployee = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee));
 
         // Create some reservations
         GregorianCalendar res1Start = new GregorianCalendar();
@@ -423,8 +472,8 @@ public class DatabaseServiceTest {
         res3Start.setTime(new Date(now));
         res3End.setTime(new Date(now + 1000));
         Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
-        Reservation res1 = new Reservation(1, 0, 43, "Event 1", "XYZ", res2Start, res2End);
-        Reservation res2 = new Reservation(2, 2, 12, "Event 2", "LMNO", res3Start, res3End);
+        Reservation res1 = new Reservation(1, 0, 23, "Event 1", "XYZ", res2Start, res2End);
+        Reservation res2 = new Reservation(2, 2, 23, "Event 2", "LMNO", res3Start, res3End);
 
         // Insert two
         assertTrue(myDBS.insertReservation(res0));
@@ -454,7 +503,11 @@ public class DatabaseServiceTest {
         GregorianCalendar reservationEnd = new GregorianCalendar();
         reservationEnd.setTime(new Date());
         reservationEnd.add(Calendar.HOUR, 1);
-        Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+        Reservation reservation = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
+
+
+        Employee testEmployee = new Employee(23,"CatPlanet", JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee));
 
         assertTrue(myDBS.insertReservation(reservation));
         assertEquals(reservation, myDBS.getReservation(0));
@@ -476,7 +529,10 @@ public class DatabaseServiceTest {
         GregorianCalendar reservationEnd = new GregorianCalendar();
         reservationEnd.setTime(new Date());
         reservationEnd.add(Calendar.HOUR, 1);
-        Reservation reservation = new Reservation(0, 0, 0, "Event 0", "None", reservationStart, reservationEnd);
+        Reservation reservation = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
+
+        Employee testEmployee = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee));
 
         assertTrue(myDBS.insertReservation(reservation));
         assertEquals(reservation, myDBS.getReservation(0));
@@ -512,6 +568,16 @@ public class DatabaseServiceTest {
         Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
         Reservation res1 = new Reservation(1, 0, 43, "Event 1", "XYZ", res2Start, res2End);
         Reservation res2 = new Reservation(2, 2, 12, "Event 2", "ABCD", res3Start, res3End);
+
+
+        Employee testEmployee1 = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee1));
+
+        Employee testEmployee2 = new Employee(43,"CatPlanet1",JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee2));
+
+        Employee testEmployee3 = new Employee(12,"CatPlanet2",JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee3));
 
         // Insert two
         assertTrue(myDBS.insertReservation(res0));
@@ -556,6 +622,13 @@ public class DatabaseServiceTest {
         Reservation res1 = new Reservation(1, 0, 43, "Event 1", "ABCD", res2Start, res2End);
         Reservation res2 = new Reservation(2, 0, 43, "Event 1", "LMNO", res2Start, res2End);
 
+
+        Employee testEmployee1 = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee1));
+
+        Employee testEmployee2 = new Employee(43,"CatPlanet1",JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee2));
+
         // Insert two
         assertTrue(myDBS.insertReservation(res0));
         assertTrue(myDBS.insertReservation(res1));
@@ -567,7 +640,7 @@ public class DatabaseServiceTest {
         gapEnd.setTime(new Date(now + 200));
 
         // Check that only one is retrieved (small time block)
-        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", gapStart, gapEnd);
+        reservationList = myDBS.getReservationsBySpaceIdBetween("ABCD", gapStart, gapEnd);
         assertThat(reservationList.size(), is(1));
         assertEquals(res0, reservationList.get(0));
 
@@ -575,7 +648,7 @@ public class DatabaseServiceTest {
         gapEnd.setTime(new Date(now + 1100000));
 
         // Check that both are retrieved (large time block)
-        reservationList = myDBS.getReservationBySpaceIdBetween("ABCD", gapStart, gapEnd);
+        reservationList = myDBS.getReservationsBySpaceIdBetween("ABCD", gapStart, gapEnd);
         assertThat(reservationList.size(), is(2));
         assertEquals(res0, reservationList.get(0));
         assertEquals(res1, reservationList.get(1));
@@ -593,7 +666,7 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee = new Employee(0, "Doctor", false, "douglas");
+        Employee employee = new Employee(0, "mrdoctor", JobType.DOCTOR, false, "douglas");
 
         // Verify successful insertion
         boolean insertRes = myDBS.insertEmployee(employee);
@@ -619,15 +692,17 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee1 = new Employee(0, "Doctor", false, "douglas");
-        Employee employee2 = new Employee(1, "Nurse", false, "tyler");
-        Employee employee3 = new Employee(2, "Admin", true, "joshua");
+        Employee employee1 = new Employee(0, "douglas", JobType.DOCTOR, false, "douglas");
+        Employee employee2 = new Employee(1, "tferrara", JobType.NURSE, false, "tyler");
+        Employee employee3 = new Employee(2, "josh", JobType.ADMINISTRATOR, true, "joshua");
+        Employee tylerImpersonator = new Employee(3, "tferrara", JobType.NURSE, true, "tyler");
 
         // Verify successful insertion
         boolean insertRes = myDBS.insertEmployee(employee1);
         assertTrue(insertRes);
         insertRes = myDBS.insertEmployee(employee2);
         assertTrue(insertRes);
+        assertFalse(myDBS.insertEmployee(tylerImpersonator));
 
         // Check that there are two and only two, and that they are the right two
         List<Employee> employeeList = myDBS.getAllEmployees();
@@ -648,13 +723,13 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void updateEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "123456");
+        Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "123456");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
 
         employee.setAdmin(true);
-        employee.setJob("Department head");
+        employee.setJob(JobType.ADMINISTRATOR);
 
         assertTrue(myDBS.updateEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
@@ -663,7 +738,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void deleteEmployee() {
-        Employee employee = new Employee(0, "Doctor", false, "password");
+        Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "password");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
@@ -707,7 +782,6 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void getAllReservableSpaces() {
         // Assume an empty DB (ensured by setUp())
-
         ReservableSpace value, expected;
 
         // First verify that the ReservableSpace is null
@@ -751,6 +825,176 @@ public class DatabaseServiceTest {
         assertEquals(space1, allReservableSpaces.get(0));
         assertEquals(space2, allReservableSpaces.get(1));
         assertEquals(space3, allReservableSpaces.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getBookedReservableSpacesBetween() {
+        // Create employee
+        Employee emp = new Employee(1234, "JOe", JobType.DOCTOR, false, "pass");
+        myDBS.insertEmployee(emp);
+
+        // Create a ReservableSpace
+        GregorianCalendar openTime = new GregorianCalendar();
+        openTime.set(Calendar.HOUR, 7);
+        openTime.set(Calendar.MINUTE, 0);
+        GregorianCalendar closeTime = new GregorianCalendar();
+        closeTime.set(Calendar.HOUR, 23);
+        closeTime.set(Calendar.MINUTE, 00);
+
+        ReservableSpace space1 = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
+        ReservableSpace space2 = new ReservableSpace("XYZ", "Space 2", "WKRS", "XYZ10011", openTime, closeTime);
+        ReservableSpace space3 = new ReservableSpace("LMNO", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+
+        assertTrue(myDBS.insertReservableSpace(space1));
+        assertTrue(myDBS.insertReservableSpace(space2));
+        assertTrue(myDBS.insertReservableSpace(space3));
+
+        // Query times
+        GregorianCalendar betweenStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(9, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar betweenEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(11, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        ArrayList<ReservableSpace> value;
+
+        // First verify that the query returns null
+        value = (ArrayList) myDBS.getBookedReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(0));
+
+        // Create a Reservation
+        GregorianCalendar resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(9, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(10, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        Reservation res1 = new Reservation(-1, 0, 1234, "Test", "ABCD", resStart, resEnd);
+        Reservation res2 = new Reservation(-1, 0, 1234, "Test", "XYZ", resStart, resEnd);
+
+        // Insert reservation
+        assertTrue(myDBS.insertReservation(res1));
+
+        // Now the query should return only Space1
+        value = (ArrayList) myDBS.getBookedReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(1));
+        assertThat(value.get(0), is(space1));
+
+        // Insert reservation
+        assertTrue(myDBS.insertReservation(res2));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) myDBS.getBookedReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(2));
+        assertThat(value.get(0), is(space1));
+        assertThat(value.get(1), is(space2));
+
+        // Create a Reservation
+        GregorianCalendar fakeStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(19, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar fakeEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(20, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        Reservation res3 = new Reservation(-1, 0, 1234, "Test", "ABCD", fakeStart, fakeEnd);
+
+        // Insert reservation
+        assertTrue(myDBS.insertReservation(res3));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) myDBS.getBookedReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(2));
+        assertThat(value.get(0), is(space1));
+        assertThat(value.get(1), is(space2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAvailableReservableSpacesBetween() {
+        // Create employee
+        Employee emp = new Employee(1234, "JOe", JobType.DOCTOR, false, "pass");
+        myDBS.insertEmployee(emp);
+
+        // Create a ReservableSpace
+        GregorianCalendar openTime = new GregorianCalendar();
+        GregorianCalendar closeTime = new GregorianCalendar();
+
+        ReservableSpace space1 = new ReservableSpace("ABCD", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
+        ReservableSpace space2 = new ReservableSpace("XYZ", "Space 2", "WKRS", "XYZ10011", openTime, closeTime);
+        ReservableSpace space3 = new ReservableSpace("LMNO", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+        ReservableSpace space4 = new ReservableSpace("0001", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+        ReservableSpace space5 = new ReservableSpace("0002", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+        ReservableSpace space6 = new ReservableSpace("0003", "Space 3", "CONF", "LMNO10011", openTime, closeTime);
+
+        assertTrue(myDBS.insertReservableSpace(space1));
+        assertTrue(myDBS.insertReservableSpace(space2));
+        assertTrue(myDBS.insertReservableSpace(space3));
+        assertTrue(myDBS.insertReservableSpace(space4));
+        assertTrue(myDBS.insertReservableSpace(space5));
+        assertTrue(myDBS.insertReservableSpace(space6));
+
+        // Query times
+        GregorianCalendar betweenStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(9, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar betweenEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(12, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        ArrayList<ReservableSpace> value;
+
+        // First verify that the query returns null
+        value = (ArrayList) myDBS.getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(6));
+        assertThat(value.get(0), is(space1));
+        assertThat(value.get(1), is(space2));
+        assertThat(value.get(2), is(space3));
+
+        // Create a Reservation
+        GregorianCalendar resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(9, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(10, 0)).atZone(ZoneId.of("America/New_York"))));
+        Reservation res1 = new Reservation(-1, 0, 1234, "Test", "ABCD", resStart, resEnd);
+
+        resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(8, 0)).atZone(ZoneId.of("America/New_York"))));
+        resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(11, 30)).atZone(ZoneId.of("America/New_York"))));
+        Reservation res2 = new Reservation(-1, 0, 1234, "Test", "XYZ", resStart, resEnd);
+
+        resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(11, 30)).atZone(ZoneId.of("America/New_York"))));
+        resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(18, 00)).atZone(ZoneId.of("America/New_York"))));
+        Reservation res3 = new Reservation(-1, 0, 1234, "Test", "0001", resStart, resEnd);
+
+        resStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(7, 0)).atZone(ZoneId.of("America/New_York"))));
+        resEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(13, 00)).atZone(ZoneId.of("America/New_York"))));
+        Reservation res4 = new Reservation(-1, 0, 1234, "Test", "0002", resStart, resEnd);
+
+        // Insert reservation
+        assertTrue(myDBS.insertReservation(res1));
+
+        // Now the query should return only Space1
+        value = (ArrayList) myDBS.getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(5));
+        assertThat(value.get(0), is(space2));
+        assertThat(value.get(4), is(space6));
+
+        // Insert reservation
+        assertTrue(myDBS.insertReservation(res2));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) myDBS.getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(4));
+        assertThat(value.get(0), is(space3));
+
+        // Create a Reservation
+        GregorianCalendar fakeStart = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(19, 0)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar fakeEnd = GregorianCalendar.from(ZonedDateTime.from(LocalDate.now().atTime(LocalTime.of(20, 0)).atZone(ZoneId.of("America/New_York"))));
+
+        Reservation res5 = new Reservation(-1, 0, 1234, "Test", "ABCD", fakeStart, fakeEnd);
+
+        // Insert reservation
+        assertTrue(myDBS.insertReservation(res5));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) myDBS.getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(4));
+        assertThat(value.get(0), is(space3));
+
+        // Insert reservation
+        assertTrue(myDBS.insertReservation(res3));
+        assertTrue(myDBS.insertReservation(res4));
+
+        // Now the query should return space1 and space2
+        value = (ArrayList) myDBS.getAvailableReservableSpacesBetween(betweenStart, betweenEnd);
+        assertThat(value, hasSize(2));
+        assertThat(value.get(0), is(space3));
+        assertThat(value.get(1), is(space6));
     }
 
     @Test
@@ -1073,4 +1317,120 @@ public class DatabaseServiceTest {
         assertEquals(req1, allMedicineRequests.get(0));
         assertEquals(req3, allMedicineRequests.get(1));
     }
+
+
+
+    // TODO: query methods here
+    // insertAndGet     - Verify id 0 doesn't exist, insert node, insert request, verify request with id 0 exists
+    // getAll           - Verify none exist, add 2, verify you get those 2, add one more, verify you get all 3
+    // update           - Add one, verify values with get, update a field, verify updated field with get
+    // delete           - verify id 0 doesn't exist, add request, verify request exists, delete request, verify id 0 doesn't exist
+    ///////////////////////// REQUEST 1 TESTS //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 1 TESTS ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 2 TESTS //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 2 TESTS ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 3 TESTS //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 3 TESTS ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 4 TESTS //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 4 TESTS ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 5 TESTS //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 5 TESTS ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 6 TESTS //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 6 TESTS ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 7 TESTS //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 7 TESTS ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 8 TESTS //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 8 TESTS ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 9 TESTS //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 9 TESTS ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 10 TESTS /////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 10 TESTS //////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 11 TESTS /////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 11 TESTS //////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 12 TESTS /////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 12 TESTS //////////////////////////////////////////////////////////////////////
 }

@@ -1,9 +1,10 @@
-import controller.CSVController;
+import service.CSVService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 import java.lang.SuppressWarnings;
@@ -15,6 +16,7 @@ public class Main extends Application {
      * @param args
      */
     public static void main(String[] args) {
+        DatabaseService.getDatabaseService().loadFromCSVsIfNecessary();
         launch();
     }
 
@@ -26,9 +28,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(ResourceLoader.home);
+        primaryStage.setMaximized(true);
         StageManager.changeWindow(primaryStage, root, "Home");
-
-        CSVController.importIfNecessary();
     }
 
 }

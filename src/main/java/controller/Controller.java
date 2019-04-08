@@ -1,32 +1,17 @@
 package controller;
 
+
+import model.Edge;
+import model.Node;
 import service.DatabaseService;
-import service.MismatchedDatabaseVersionException;
 
-import java.sql.SQLException;
-
-
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Controller {
-
-    static DatabaseService dbs;
-
-    static {
-        initializeDatabase();
-    }
-
-    /**
-     * initializes the Database
-     */
-    public static void initializeDatabase() {
-        try {
-            dbs = DatabaseService.init();
-        } catch (SQLException | MismatchedDatabaseVersionException e) {
-            e.printStackTrace();
-        }
-    }
-
     static boolean isAdmin = false;
+    static HashMap<String, ArrayList<Node>> connections;
+
 
     public static boolean getIsAdmin() {
         return isAdmin;
@@ -36,18 +21,31 @@ public class Controller {
         Controller.isAdmin = isAdmin;
     }
 
-    /**
-     * closes the database
-     */
-    public static void closeDatabase() {
-        dbs.close();
-    }
+    public static void initConnections() {
+        System.out.println("creating hashmap ...");
+        connections = new HashMap<>();
+        ArrayList<Edge> allEdges = DatabaseService.getDatabaseService().getAllEdges();
 
-    /**
-     * empties all entries from tables in the database, used for testing.
-     */
-    public static void wipeTables() {
-        dbs.wipeTables();
+        for (Edge e : allEdges) {
+            if (connections.containsKey(e.getNode1().getNodeID())) {
+                connections.get(e.getNode1().getNodeID()).add(e.getNode2());
+            } else {
+                ArrayList<Node> newList = new ArrayList<>();
+                newList.add(e.getNode2());
+                connections.put(e.getNode1().getNodeID(), newList);
+            }
+
+
+            if (connections.containsKey(e.getNode2().getNodeID())) {
+                connections.get(e.getNode2().getNodeID()).add(e.getNode1());
+            } else {
+                ArrayList<Node> newList = new ArrayList<>();
+                newList.add(e.getNode1());
+                connections.put(e.getNode2().getNodeID(), newList);
+            }
+        }
+
+        System.out.println("the hashmap is MADE!");
     }
 
 }
