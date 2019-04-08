@@ -1,6 +1,7 @@
 package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import me.xdrop.fuzzywuzzy.Extractor;
 import model.*;
 import model.request.*;
 
@@ -209,7 +210,7 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE PATIENTINFOREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, firstName varchar(255), lastName varchar(255), birthDay varchar(255), description varchar(255))");
             // Request 8 Create table here
             // Request 9 Create table here
-            statement.addBatch("CREATE TABLE EXTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), time TIMESTAMP, locationNodeID2 varchar(255), transportType varchar(30))");
+            statement.addBatch("CREATE TABLE EXTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, time TIMESTAMP, transportType varchar(30), description varchar(255))");
             // Request 10 Create table here
             statement.addBatch("CREATE TABLE MAINTENANCEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, maintenanceType varchar(30))");
             statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255))");
@@ -244,8 +245,7 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE PATIENTINFOREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 8 constraint here
             // Request 9 constraint here
-            statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
-            statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID2) REFERENCES NODE(nodeID)");
+            statement.addBatch("ALTER TABLE EXTERNALTRANSPORTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");;
             // Request 10 constraint here
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
@@ -994,8 +994,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertExtTransRequest(ExternalTransportRequest req) {
-        String insertQuery = ("INSERT INTO EXTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, time, transportType) VALUES(?, ?, ?, ?, ?,?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType());
+        String insertQuery = ("INSERT INTO EXTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, time, transportType, description) VALUES(?, ?, ?, ?, ?,?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType().name(), req.getDescription());
     }
 
 
@@ -1014,6 +1014,31 @@ public class DatabaseService {
     public List<ExternalTransportRequest> getAllExtTransRequests() {
         String query = "Select * FROM EXTERNALTRANSPORTREQUEST";
         return (List<ExternalTransportRequest>)(List<?>) executeGetMultiple(query, ExternalTransportRequest.class, new Object[]{});
+    }
+
+    /** updates a given IT request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateExtTransRequest(ExternalTransportRequest req) {
+        String query = "UPDATE EXTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, completed=?, time=?, transportType=?, description=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType().name(), req.getDescription(), req.getId());
+    }
+
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<ExternalTransportRequest> getAllIncompleteExtTransRequests() {
+        String query = "Select * FROM EXTERNALTRANSPORTREQUEST WHERE (completed = ?)";
+        return (List<ExternalTransportRequest>)(List<?>) executeGetMultiple(query, ExternalTransportRequest.class, false);
+    }
+
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<ExternalTransportRequest> getAllCompleteExtTransRequests() {
+        String query = "Select * FROM EXTERNALTRANSPORTREQUEST WHERE (completed = ?)";
+        return (List<ExternalTransportRequest>)(List<?>) executeGetMultiple(query, MaintenanceRequest.class, true);
     }
 
     //////////////////////// END REQUEST 9 QUERIES /////////////////////////////////////////////////////////////////////
@@ -1566,7 +1591,7 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String transType = rs.getString("transportType");
-        Node destNode = getNode(rs.getString("locationNodeID2"));
+        String descript = rs.getString("description");
         Date t = new Date(rs.getTimestamp("time").getTime());
 
         ExternalTransportRequest.TransportationType tType = null;
@@ -1583,7 +1608,7 @@ public class DatabaseService {
                 break;
         }
 
-        return new ExternalTransportRequest(serviceID, notes, locationNode, completed, t, tType);
+        return new ExternalTransportRequest(serviceID, notes, locationNode, completed, t, tType, descript);
     }
 
     //////////////////////// END REQUEST 9 EXTRACTION //////////////////////////////////////////////////////////////////

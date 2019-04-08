@@ -1,13 +1,7 @@
 package service;
 
 import model.*;
-import model.request.FloristRequest;
-import model.request.ITRequest;
-import model.request.InternalTransportRequest;
-import model.request.MaintenanceRequest;
-import model.request.MedicineRequest;
-import model.request.ToyRequest;
-import model.request.PatientInfoRequest;
+import model.request.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.derby.iapi.db.Database;
 import org.hamcrest.Matchers;
@@ -1823,7 +1817,182 @@ public class DatabaseServiceTest {
     //////////////////////// END REQUEST 8 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 9 TESTS //////////////////////////////////////////////////////////////////////////
 
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetExtTransRequest() {
+        // Assume an empty DB (ensured by setUp())
 
+        ExternalTransportRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getExtTransRequest(0);
+        assertThat(value, is(nullValue()));
+
+        Date d = new Date();
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node node2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ExternalTransportRequest req = new ExternalTransportRequest(0, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
+
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertNode(node2));
+        boolean insertRes = myDBS.insertExtTransRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getExtTransRequest(0);
+        assertEquals(expected, value);
+    }
+
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllExtTransRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        ExternalTransportRequest value;
+
+
+        Date d = new Date();
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node node2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ExternalTransportRequest req1 = new ExternalTransportRequest(0, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
+        ExternalTransportRequest req2 = new ExternalTransportRequest(1, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
+        ExternalTransportRequest req3 = new ExternalTransportRequest(2, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
+
+
+        // First verify that these requests are null
+        value = myDBS.getExtTransRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getExtTransRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getExtTransRequest(2);
+        assertThat(value, is(nullValue()));
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertExtTransRequest(req1));
+        assertTrue(myDBS.insertExtTransRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
+
+        // Check that there are two and only two, and that they are the right two
+        List<ExternalTransportRequest> allExtTransRequests = myDBS.getAllExtTransRequests();
+        assertThat(allExtTransRequests.size(), is(2));
+        assertEquals(req1, allExtTransRequests.get(0));
+        assertEquals(req2, allExtTransRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertExtTransRequest(req3));
+
+        req3.setId(2);
+
+        allExtTransRequests = myDBS.getAllExtTransRequests();
+        assertThat(allExtTransRequests.size(), is(3));
+        assertEquals(req1, allExtTransRequests.get(0));
+        assertEquals(req2, allExtTransRequests.get(1));
+        assertEquals(req3, allExtTransRequests.get(2));
+    }
+
+
+    @Test
+    @Category(FastTest.class)
+    public void updateExtTransRequest() {
+        ExternalTransportRequest value;
+
+
+        Date d = new Date();
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node node2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ExternalTransportRequest req = new ExternalTransportRequest(0, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertNode(node2));
+        boolean insertRes = myDBS.insertExtTransRequest(req);
+        assertTrue(insertRes);
+
+        req.setDescription("Two new mouses needed");
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updateExtTransRequest(req));
+        assertEquals(req, myDBS.getExtTransRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteExtTransRequest() {
+        ExternalTransportRequest value;
+
+
+        Date d = new Date();
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node node2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ExternalTransportRequest req = new ExternalTransportRequest(0, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertNode(node2));
+        boolean insertRes = myDBS.insertExtTransRequest(req);
+        assertTrue(insertRes);
+        assertEquals(req, myDBS.getExtTransRequest(0));
+
+        assertTrue(myDBS.deleteExtTransRequest(req));
+        assertNull(myDBS.getITRequest(0));
+    }
+
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteExtTransRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        ExternalTransportRequest value;
+
+
+        Date d = new Date();
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node node2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ExternalTransportRequest req1 = new ExternalTransportRequest(0, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
+        ExternalTransportRequest req2 = new ExternalTransportRequest(1, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
+        ExternalTransportRequest req3 = new ExternalTransportRequest(2, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
+
+
+        // First verify that these requests are null
+        value = myDBS.getExtTransRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getExtTransRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getExtTransRequest(2);
+        assertThat(value, is(nullValue()));
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertExtTransRequest(req1));
+        assertTrue(myDBS.insertExtTransRequest(req2));
+
+
+        // Check that there are two and only two, and that they are the right two
+        List<ExternalTransportRequest> allExtTransRequests = myDBS.getAllIncompleteExtTransRequests();
+        assertThat(allExtTransRequests.size(), is(1));
+        assertEquals(req1, allExtTransRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertExtTransRequest(req3));
+
+        allExtTransRequests = myDBS.getAllIncompleteExtTransRequests();
+        assertThat(allExtTransRequests.size(), is(2));
+        assertEquals(req1, allExtTransRequests.get(0));
+        assertEquals(req3, allExtTransRequests.get(1));
+    }
 
 
 
