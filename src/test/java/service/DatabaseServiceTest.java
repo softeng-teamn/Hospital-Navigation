@@ -2,7 +2,6 @@ package service;
 
 import model.*;
 import model.request.*;
-import org.apache.commons.io.FileUtils;
 
 import model.request.FloristRequest;
 import model.request.ITRequest;
@@ -382,21 +381,11 @@ public class DatabaseServiceTest {
         assertThat((myDBS.getEdge("ACONF00102-ACONF00103")), is(nullValue()));
     }
 
-
-    // uh i legit don't know how to test this because everything relies on it and we can't delete
-    // the tables yet
-    @Test
-    public void createTables() {
-
-    }
-
     @Test
     @Category(FastTest.class)
     public void tableExists() {
         assertTrue(myDBS.tableExists("NODE"));
         assertFalse(myDBS.tableExists("NOTPRESENT"));
-
-
     }
 
     @Test
@@ -1328,12 +1317,6 @@ public class DatabaseServiceTest {
         assertEquals(req3, allMedicineRequests.get(1));
     }
 
-
-
-
-
-    ///////////////////////// REQUEST 1 TESTS //////////////////////////////////////////////////////////////////////////
-
     @Test
     @Category(FastTest.class)
     public void insertAndGetFloristRequest() {
@@ -1434,14 +1417,6 @@ public class DatabaseServiceTest {
         assertNull(myDBS.getFloristRequest(0));
     }
 
-
-
-
-
-
-
-    //////////////////////// END REQUEST 1 TESTS ///////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 2 TESTS //////////////////////////////////////////////////////////////////////////
     @Test
     @Category(FastTest.class)
     public void insertAndGetSecurityRequest() {
@@ -1483,7 +1458,6 @@ public class DatabaseServiceTest {
         value = myDBS.getSecurityRequest(2);
         assertThat(value, is(nullValue()));
 
-
         // Create a some requests - don't care about node, so all the same
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         SecurityRequest req1 = new SecurityRequest(0, "No notes", node, false, SecurityRequest.Urgency.VERY);
@@ -1515,7 +1489,6 @@ public class DatabaseServiceTest {
         assertEquals(req2, allSecurityRequests.get(1));
         assertEquals(req3, allSecurityRequests.get(2));
     }
-
 
     @Test
     @Category(FastTest.class)
@@ -1589,9 +1562,6 @@ public class DatabaseServiceTest {
         assertEquals(req3, allServiceRequests.get(1));
     }
 
-    //////////////////////// END REQUEST 2 TESTS ///////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 3 TESTS //////////////////////////////////////////////////////////////////////////
-
     @Test
     @Category(FastTest.class)
     public void insertAndGetSanitationRequest() {
@@ -1632,7 +1602,6 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
         value = myDBS.getSanitationRequest(2);
         assertThat(value, is(nullValue()));
-
 
         // Create a some requests - don't care about node, so all the same
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
@@ -1738,14 +1707,6 @@ public class DatabaseServiceTest {
         assertEquals(req3, allIncompleteSanitationRequests.get(1));
     }
 
-
-
-
-
-    //////////////////////// END REQUEST 3 TESTS ///////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 4 TESTS //////////////////////////////////////////////////////////////////////////
-
-
     @Test
     @Category(FastTest.class)
     public void insertAndGetGiftStoreRequest() {
@@ -1820,8 +1781,6 @@ public class DatabaseServiceTest {
         assertEquals(req3, allGiftStoreRequests.get(2));
     }
 
-
-
     @Test
     @Category(FastTest.class)
     public void getAllCompleteGiftStoreRequests() {
@@ -1870,12 +1829,6 @@ public class DatabaseServiceTest {
         assertEquals(req3, allGiftStoreRequests.get(2));
     }
 
-
-
-
-
-
-
     @Test
     @Category(FastTest.class)
     public void updateGiftStoreRequest() {
@@ -1893,7 +1846,6 @@ public class DatabaseServiceTest {
         assertEquals(req, myDBS.getGiftStoreRequest(0));
     }
 
-
     @Test
     @Category(FastTest.class)
     public void deleteGiftStoreRequest() {
@@ -1907,12 +1859,6 @@ public class DatabaseServiceTest {
         assertTrue(myDBS.deleteGiftStoreRequest(req));
         assertNull(myDBS.getGiftStoreRequest(0));
     }
-
-
-
-
-    //////////////////////// END REQUEST 4 TESTS ///////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 5 TESTS //////////////////////////////////////////////////////////////////////////
 
     @Test
     @Category(FastTest.class)
@@ -2055,13 +2001,6 @@ public class DatabaseServiceTest {
         assertEquals(req3, allReligiousRequests.get(1));
     }
 
-
-
-
-
-    //////////////////////// END REQUEST 5 TESTS ///////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 6 TESTS //////////////////////////////////////////////////////////////////////////
-
     @Test
     @Category(FastTest.class)
     public void insertAndGetInterpreterRequest() {
@@ -2203,12 +2142,6 @@ public class DatabaseServiceTest {
         assertEquals(req3, allInterpreterRequests.get(1));
     }
 
-
-
-
-
-    //////////////////////// END REQUEST 6 TESTS ///////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 7 TESTS //////////////////////////////////////////////////////////////////////////
     @Test
     @Category(FastTest.class)
     public void insertAndGetPatientInfoRequest() {
@@ -2396,10 +2329,6 @@ public class DatabaseServiceTest {
         assertEquals(req3, allPatientInfoRequests.get(1));
     }
 
-    //////////////////////// END REQUEST 7 TESTS ///////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 8 TESTS //////////////////////////////////////////////////////////////////////////
-
-
     @Test
     @Category(FastTest.class)
     public void insertAndGetInternalTransportRequest() {
@@ -2546,10 +2475,6 @@ public class DatabaseServiceTest {
         assertEquals(req3, allInternalTransportRequests.get(1));
     }
 
-
-    //////////////////////// END REQUEST 8 TESTS ///////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 9 TESTS //////////////////////////////////////////////////////////////////////////
-
     @Test
     @Category(FastTest.class)
     public void insertAndGetExtTransRequest() {
@@ -2639,7 +2564,6 @@ public class DatabaseServiceTest {
     public void updateExtTransRequest() {
         ExternalTransportRequest value;
 
-
         Date d = new Date();
         // Create a request
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
@@ -2664,7 +2588,6 @@ public class DatabaseServiceTest {
     public void deleteExtTransRequest() {
         ExternalTransportRequest value;
 
-
         Date d = new Date();
         // Create a request
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
@@ -2681,7 +2604,6 @@ public class DatabaseServiceTest {
         assertTrue(myDBS.deleteExtTransRequest(req));
         assertNull(myDBS.getITRequest(0));
     }
-
 
     @Test
     @Category(FastTest.class)
@@ -2729,12 +2651,6 @@ public class DatabaseServiceTest {
         assertEquals(req2, allExtTransRequests.get(1));
     }
 
-
-
-
-
-    //////////////////////// END REQUEST 9 TESTS ///////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 10 TESTS /////////////////////////////////////////////////////////////////////////
     @Test
     @Category(FastTest.class)
     public void insertAndGetAVServiceRequest() {
@@ -2875,14 +2791,6 @@ public class DatabaseServiceTest {
         assertTrue(myDBS.deleteAVServiceRequest(req));
         assertNull(myDBS.getAVServiceRequest(0));
     }
-
-
-
-
-
-
-    //////////////////////// END REQUEST 10 TESTS //////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 11 TESTS /////////////////////////////////////////////////////////////////////////
 
     @Test
     @Category(FastTest.class)
@@ -3025,8 +2933,6 @@ public class DatabaseServiceTest {
         assertNull(myDBS.getMaintenanceRequest(0));
     }
 
-    //////////////////////// END REQUEST 11 TESTS //////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 12 TESTS /////////////////////////////////////////////////////////////////////////
     @Test
     @Category(FastTest.class)
     public void insertAndGetToyRequest() {
@@ -3211,5 +3117,4 @@ public class DatabaseServiceTest {
         assertThat(allToyRequests.size(), is(1));
         assertEquals(req2, allToyRequests.get(0));
     }
-    //////////////////////// END REQUEST 12 TESTS //////////////////////////////////////////////////////////////////////
 }
