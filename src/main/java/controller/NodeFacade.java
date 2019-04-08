@@ -30,13 +30,4 @@ public class NodeFacade {
     public void NodeValidateType(String nodeType){
         node.validateType(nodeType);
     }
-
-    public void NodeEquals(Object o){
-        node.equals(o);
-    }
-
-    public void MapNodeEquals(Object o){
-        mapNode.equals(o);
-    }
-
 }
