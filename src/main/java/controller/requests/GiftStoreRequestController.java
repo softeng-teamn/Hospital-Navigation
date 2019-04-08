@@ -1,4 +1,4 @@
-package controller;
+package controller.requests;
 
 import com.jfoenix.controls.*;
 import controller.RequestController;

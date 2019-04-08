@@ -1,8 +1,9 @@
-package controller;
+package controller.requests;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
+import controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,11 +19,6 @@ public class InterpreterController extends RequestController {
 
     @FXML
     private JFXComboBox<InterpreterRequest.Language> type;
-
-    @FXML
-    private JFXButton submit;
-
-    static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
