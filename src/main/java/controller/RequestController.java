@@ -35,10 +35,6 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     private JFXListView list_view;
     @FXML
-    private JFXTextArea textArea;
-    @FXML
-    private ToggleGroup requestType;
-    @FXML
     private JFXTextField search_bar;
     @FXML
     private Pane subSceneHolder;
