@@ -14,7 +14,6 @@ public class FloristRequest extends Request {
         super(id, notes, location, completed);
         this.bouquetType = bouquetType;
         this.quantity = quantity;
-
     }
 
     public FloristRequest(int id, String notes, Node location, boolean completed) {

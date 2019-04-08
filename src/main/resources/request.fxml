@@ -121,7 +121,7 @@
                         <Region prefHeight="610.0" prefWidth="50.0" />
                         <VBox prefWidth="256.0">
                            <children>
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Interpreter" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#interpreterRequestSelect" prefHeight="256.0" prefWidth="256.0" text="Interpreter" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="USER" styleClass="button-glyph-icon" />
                                  </graphic>

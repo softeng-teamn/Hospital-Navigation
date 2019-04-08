@@ -222,7 +222,7 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255))");
 
 
-            statement.addBatch("CREATE TABLE INTERPRETERREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, language varchar(30)");
+            statement.addBatch("CREATE TABLE INTERPRETERREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, language varchar(30))");
             statement.addBatch("ALTER TABLE INTERPRETERREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
 
             statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
@@ -241,10 +241,6 @@ public class DatabaseService {
             // creates an index to optimize querying.
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
-<<<<<<< HEAD
-
-=======
->>>>>>> requests
             // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             statement.addBatch("ALTER TABLE FLORISTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 2 constraint here
@@ -774,14 +770,12 @@ public class DatabaseService {
 
 
 
-<<<<<<< HEAD
     // get      - use executeGetById        - "SELECT * FROM <TableName> WHERE (serviceID = ?)"
     // insert   - use executeInsert         - "INSERT INTO <TableName>(<all values except serviceID>) VALUES(<1 question mark for each value listed>)"
     // update   - use executeUpdate         - "UPDATE <TableName> SET <value=? for each value except serviceID> WHERE (serviceID = ?)"
     // delete   - use executeUpdate         - "DELETE FROM <TableName> WHERE (serviceID = ?)"
     // getAll   - use executeGetMultiple    - "SELECT * FROM <TableName>
-=======
->>>>>>> requests
+
     ///////////////////////// REQUEST 1 QUERIES ////////////////////////////////////////////////////////////////////////
 
 
@@ -1437,10 +1431,7 @@ public class DatabaseService {
         else if (cls.equals(ITRequest.class)) return extractITRequest(rs);
         else if (cls.equals(MedicineRequest.class)) return extractMedicineRequest(rs);
         else if (cls.equals(Employee.class)) return extractEmployee(rs);
-<<<<<<< HEAD
-=======
 
->>>>>>> requests
         // else if (cls.equals(<RequestClassName>.class)) return extract<RequestName>(rs);
         else if (cls.equals(FloristRequest.class)) return extractFloristRequest(rs);
         // Request 2 else if here
@@ -1460,10 +1451,6 @@ public class DatabaseService {
         else return null;
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> requests
     ///////////////////////// REQUEST 1 EXTRACTION /////////////////////////////////////////////////////////////////////
     private FloristRequest extractFloristRequest(ResultSet rs, String name) throws SQLException {
         int serviceID = rs.getInt("serviceID");
