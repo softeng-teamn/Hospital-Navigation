@@ -52,7 +52,7 @@ public class FulfillRequestControllerTest {
     }
     Node a = new Node (0, 0, "nodeID", "Floor1", "building", "hallway", "longName", "shortName") ;
 
-    ITRequest itR = new ITRequest(1337, "Lost Laptop Battery",a, false);
+    ITRequest itR = new ITRequest(1337, "Lost Laptop Battery",a, false, ITRequest.ITRequestType.Assistance);
     // TODO: rewrite, currently everything is fake
 //    @Test
 //    @Category(FastTest.class)
