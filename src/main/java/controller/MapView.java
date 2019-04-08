@@ -246,7 +246,8 @@ public class MapView {
 
     // TODO: working on directions. idk where to put this
     // TODO: SHOW COMPASS ON MAP
-    // TODO: going up/down and direction after that - NSEW? based on them going in and coming out of elev opp dir? turn into
+    // todo: watch out for multiple floors? are those separate nodes -> problem w directions
+    // TODO: comments
 
     private String makeDirections(ArrayList<Node> path) {
         final int NORTH_I = 1122 - 1886;
@@ -276,7 +277,6 @@ public class MapView {
                     directions.add("Take the stairs from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
                 }
                 afterFloorChange = true;
-                // todo: watch out for multiple floors? are those separate nodes -> problem w directions
             }
             else if(path.get(i+1).getNodeType().equals("ELEV")) {
                 directions.add("Walk to the elevator.\n");
@@ -320,13 +320,12 @@ public class MapView {
             }
         }
 
-
-        // tODO: make button and allow display on map
         ObservableList<Label> dirs = FXCollections.observableArrayList();
         ArrayList<Label> labels = new ArrayList<>();
         for (int i = 0; i < directions.size(); i++) {
             Label l = new Label(directions.get(i));
             l.setWrapText(true);
+            l.setTextFill(Color.WHITE);
             labels.add(l);
         }
         dirs.addAll(labels);
