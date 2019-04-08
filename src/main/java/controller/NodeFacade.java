@@ -36,12 +36,4 @@ public class NodeFacade {
         mapNode.equals(o);
     }
 
-    public void NodeHashCode(){
-        node.hashCode();
-    }
-
-    public void MapNodeHashCode(){
-        mapNode.hashCode();
-    }
-
 }
