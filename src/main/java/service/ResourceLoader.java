@@ -14,6 +14,7 @@ public class ResourceLoader {
     public static final URL patientInfoRequest = service.ResourceLoader.class.getResource("/requests/patientInfo.fxml");
 
     public static final URL ToyRequest = service.ResourceLoader.class.getResource("/Requests/ToyRequest.fxml");
+    public static final URL externalTransportRequest = service.ResourceLoader.class.getResource("/Requests/ExternalTransportationRequest.fxml");
 
     public static final URL edges = service.ResourceLoader.class.getResource("/edges.csv");
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
