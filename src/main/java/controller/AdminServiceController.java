@@ -45,8 +45,10 @@ public class AdminServiceController extends Controller{
     }
 
     @FXML
-    private void showEditEmployees() {
-        // TODO need sam's page
+    private void showEditEmployees() throws Exception {
+        Stage stage = (Stage) editEmployeeBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
+        StageManager.changeExistingWindow(stage, root, "Edit Employees");
     }
 
     @FXML
@@ -54,7 +56,7 @@ public class AdminServiceController extends Controller{
         Stage stage = (Stage) editEmployeeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.mapEdit);
         StageManager.changeExistingWindow(stage, root, "Edit Map");
-        // TODO: verify that this is how you edit the map; vs going to home controller?
+        // TODO: verify/change that this is how you edit the map; vs going to home controller?
     }
 
     @FXML

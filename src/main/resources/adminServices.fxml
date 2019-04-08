@@ -7,16 +7,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminServiceController">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminServiceController">
    <children>
       <HBox prefHeight="100.0" prefWidth="200.0" spacing="40.0">
          <children>
-            <JFXButton fx:id="showHomeBtn" onAction="#showHome" text="Home">
+            <JFXButton fx:id="showHomeBtn" onAction="#showHome" prefHeight="100.0" prefWidth="100.0" text="Home">
                <HBox.margin>
                   <Insets left="5.0" top="5.0" />
                </HBox.margin>
             </JFXButton>
-            <Label fx:id="adminServicesTitle" styleClass="big-label" text="Administrator Services">
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+         <children>
+            <Label fx:id="adminServicesTitle" styleClass="big-label" stylesheets="@theme.css" text="Administrator Services">
                <padding>
                   <Insets top="20.0" />
                </padding>
