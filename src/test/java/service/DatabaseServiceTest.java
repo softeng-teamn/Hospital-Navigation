@@ -2279,7 +2279,6 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void getAllCompleteToyRequests() {
         // Assume an empty DB (ensured by setUp())
-
         ToyRequest value;
 
         // First verify that these requests are null
