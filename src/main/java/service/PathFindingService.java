@@ -23,8 +23,8 @@ public class PathFindingService {
      * @param dest
      * @return Returns null on fail
      * */
-    public ArrayList<Node> genPath(MapNode start, MapNode dest) {
-        MapNode target = aStar(start, dest);
+    public ArrayList<Node> genPath(MapNode start, MapNode dest, Boolean accessibility) {
+        MapNode target = aStar(start, dest, accessibility);
         if (target != null) {
             ArrayList<Node> path = new ArrayList<Node>();
             while (target != null) { // INFINITE LOOP
@@ -47,7 +47,7 @@ public class PathFindingService {
      * @param dest
      * @return
      */
-    MapNode aStar(MapNode start, MapNode dest) {
+    MapNode aStar(MapNode start, MapNode dest, Boolean accessibility) {
         //1.  Initialize queue and set
         PriorityQueue<MapNode> open = new PriorityQueue<>();
         //System.out.println("Created open PriorityQueue");
@@ -85,6 +85,11 @@ public class PathFindingService {
                 }
 
                 if(explored.contains(child) && cost>=child.getF()) {
+                    //System.out.println("skipping this node because the cost is to big");
+                    continue;
+                }
+
+                if(child.getData().getNodeType().equals("STAI") && accessibility) {
                     //System.out.println("skipping this node because the cost is to big");
                     continue;
                 }
