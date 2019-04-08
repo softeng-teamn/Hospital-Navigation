@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
-import org.apache.derby.iapi.services.io.FileUtil;
 
 import java.io.File;
 import java.sql.*;
@@ -21,82 +20,72 @@ public class DatabaseService {
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
     private ArrayList<Function<Void, Void>> edgeCallbacks;
+    private boolean createFlag;
+
+    private static class SingletonHelper {
+        private static final DatabaseService dbs = new DatabaseService();
+    }
+
+    public static DatabaseService getDatabaseService() {
+        return SingletonHelper.dbs;
+    }
 
     /**
      * Construct a DatabaseService
-     * @param startFresh if true, blow away any database existing on disk
-     * @param loadCSVs if true, load the CSVs
      * @throws SQLException on DB connection creation error
      */
-    private DatabaseService(boolean startFresh, boolean loadCSVs) throws SQLException {
-        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-        boolean createFlag = false;
+    private DatabaseService() {
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+            createFlag = false;
 
-        // Start by trying to open connection with existing database
-        Connection conn = openConnection(false);
+            // Start by trying to open connection with existing database
+            Connection conn;
+            conn = openConnection(false);
 
-        if (conn != null) { // Database exists on file
-            if (startFresh) { // We don't want to use an existing database
-                // Close initial connection
-                conn.close();
-
-                // Open a connection to issue shutdown
-                Connection closeConnection = DriverManager.getConnection(
-                        "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
-                closeConnection.close();
-
-                // Nuke files
-                wipeOutFiles();
-
-                // Open a new connection allowing creation of database
-                conn = openConnection(true);
+            if (conn == null) { // No database exists on disk, so create a new one
+                try {
+                    conn = openConnection(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 createFlag = true;
             }
-        } else { // No database exists on disk, so create a new one
-            conn = openConnection(true);
-            createFlag = true;
-        }
 
-        if (!createFlag) {
+            if (!createFlag) {
+                this.connection = conn;
+                boolean valid = validateVersion();
+                if (!valid) { // Not valid. Nuke it and try again
+                    conn.close();
+                    this.connection = null;
+
+                    // Open a connection to issue shutdown
+                    Connection closeConnection = DriverManager.getConnection(
+                            "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
+                    closeConnection.close();
+
+                    // Nuke files
+                    wipeOutFiles();
+
+                    // Open a new connection allowing creation of database
+                    conn = openConnection(true);
+
+                    createFlag = true;
+                }
+            }
+
             this.connection = conn;
-            boolean valid = validateVersion();
-            if (!valid) { // Not valid. Nuke it and try again
-                conn.close();
-                this.connection = null;
 
-                // Open a connection to issue shutdown
-                Connection closeConnection = DriverManager.getConnection(
-                        "jdbc:derby:" + DATABASE_NAME + ";shutdown=true");
-                closeConnection.close();
-
-                // Nuke files
-                wipeOutFiles();
-
-                // Open a new connection allowing creation of database
-                conn = openConnection(true);
-                createFlag = true;
+            if (createFlag) {
+                this.createTables();
             }
 
+            nodeCallbacks = new ArrayList<>();
+            edgeCallbacks = new ArrayList<>();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        this.connection = conn;
-
-        if(createFlag) {
-            this.createTables();
-
-            if (loadCSVs) {
-                CSVService.importNodes();
-                CSVService.importEdges();
-                CSVService.importEmployees();
-                CSVService.importReservableSpaces();
-            }
-        }
-
-        nodeCallbacks = new ArrayList<>();
-        edgeCallbacks = new ArrayList<>();
     }
-
-
 
     private static Connection openConnection(boolean allowCreate) throws SQLException {
         try {
@@ -114,48 +103,14 @@ public class DatabaseService {
         }
     }
 
-
-    /**
-     * This overrides the global dbs - only use to mock the database!!
-     * @param dbs
-     */
-    public static void setDatabaseForMocking(DatabaseService dbs) {
-        _dbs = dbs;
-    }
-
-    public static synchronized DatabaseService getDatabaseService(boolean startFresh, boolean loadCSVs) {
-        // Case 1: Database already exists in memory and we want to start fresh
-        // Execute later if statement as well
-        if (startFresh && _dbs != null) {
-            _dbs.close();
-            _dbs = null;
-            wipeOutFiles();
+    public void loadFromCSVsIfNecessary() {
+        if(createFlag) {
+            CSVService.importNodes();
+            CSVService.importEdges();
+            CSVService.importEmployees();
+            CSVService.importReservableSpaces();
         }
-
-        // Create a new database service, telling it to start over if necessary
-        if (_dbs == null) {
-            try {
-                _dbs = new DatabaseService(startFresh, loadCSVs);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("WARNING!");
-                System.out.println("Database not created due to the above error!");
-            }
-        }
-
-        return _dbs;
     }
-
-    // Default loadCSVs to true
-    public static synchronized DatabaseService getDatabaseService(boolean startFresh) {
-        return getDatabaseService(startFresh, true);
-    }
-
-    // Default start fresh to false
-    public static synchronized DatabaseService getDatabaseService() {
-        return getDatabaseService(false);
-    }
-
 
     /**
      * Delete DB Files
@@ -179,7 +134,6 @@ public class DatabaseService {
         }
         wipeOutFiles(new File(DATABASE_NAME));
     }
-
 
     /**
      */
@@ -239,25 +193,57 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER')))");
 
-            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, description varchar(300))");
+            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, description varchar(300))");
 
-            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(10), completed boolean, medicineType varchar(50), quantity double)");
+            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
+
+
+            // TODO: create table for services here
+            // statement.addBatch("CREATE TABLE <TableName>(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ... <you fields here>")
+            // Request 1 Create table here
+            // Request 2 Create table here
+            // Request 3 Create table here
+            // Request 4 Create table here
+            // Request 5 Create table here
+            // Request 6 Create table here
+            // Request 7 Create table here
+            // Request 8 Create table here
+            // Request 9 Create table here
+            // Request 10 Create table here
+            // Request 11 Create table here
+            // Request 12 Create table here
 
             statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
 
             statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
 
+            // DATABASE CONSTRAINTS
             statement.addBatch("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
             statement.addBatch("INSERT INTO META_DB_VER values(0, " + getDatabaseVersion() + ")");
-
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node1) REFERENCES NODE(nodeID)");
             statement.addBatch("ALTER TABLE EDGE ADD FOREIGN KEY (node2) REFERENCES NODE(nodeID)");
             // constraints that matter less but will be fully implemented later
-            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (LOCATIONID) REFERENCES RESERVABLESPACE(SPACEID)");
-            //statement.execute("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
-
-
+            statement.addBatch("ALTER TABLE RESERVATION ADD FOREIGN KEY (employeeID) REFERENCES EMPLOYEE(employeeID)");
+            // constraints on service requests
+            statement.addBatch("ALTER TABLE ITREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
+            statement.addBatch("ALTER TABLE MEDICINEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
+            // creates an index to optimize querying.
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
+
+            // TODO: add location constraint for tables here if required
+            // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
+            // Request 1 constraint here
+            // Request 2 constraint here
+            // Request 3 constraint here
+            // Request 4 constraint here
+            // Request 5 constraint here
+            // Request 6 constraint here
+            // Request 7 constraint here
+            // Request 8 constraint here
+            // Request 9 constraint here
+            // Request 10 constraint here
+            // Request 11 constraint here
+            // Request 12 constraint here
 
 
             statement.executeBatch();
@@ -625,14 +611,27 @@ public class DatabaseService {
     }
 
     /**
-     * @param from gregorian calendar start time
-     * @param to gregorian calendar end time
-     * @return a list of reservations  between start and end times
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces with any reservation in the given time frame
      */
-    public List<Reservation> getReservationsBetween(GregorianCalendar from, GregorianCalendar to) {
-        String query = "SELECT * FROM RESERVATION WHERE ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?))";
+    public List<ReservableSpace> getBookedReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
 
-        return (List<Reservation>)(List<?>) executeGetMultiple(query, Reservation.class, from, from, from, to);
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
+    }
+
+    /**
+     *
+     * @param from start time
+     * @param to end time
+     * @return list of reservable spaces without any reservations in the given time frame
+     */
+    public List<ReservableSpace> getAvailableReservableSpacesBetween(GregorianCalendar from, GregorianCalendar to) {
+        String query = "Select * From RESERVABLESPACE Where SPACEID Not In (Select Distinct SPACEID From RESERVATION Where ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?)))";
+
+        return (List<ReservableSpace>)(List<?>) executeGetMultiple(query, ReservableSpace.class, from, from, from, to);
     }
 
     /**
@@ -757,6 +756,123 @@ public class DatabaseService {
         return (List<MedicineRequest>)(List<?>) executeGetMultiple(query, MedicineRequest.class, false);
     }
 
+
+
+    // TODO: query methods here
+    // get      - use executeGetById        - "SELECT * FROM <TableName> WHERE (serviceID = ?)"
+    // insert   - use executeInsert         - "INSERT INTO <TableName>(<all values except serviceID>) VALUES(<1 question mark for each value listed>)"
+    // update   - use executeUpdate         - "UPDATE <TableName> SET <value=? for each value except serviceID> WHERE (serviceID = ?)"
+    // delete   - use executeUpdate         - "DELETE FROM <TableName> WHERE (serviceID = ?)"
+    // getAll   - use executeGetMultiple    - "SELECT * FROM <TableName>
+    ///////////////////////// REQUEST 1 QUERIES ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 1 QUERIES /////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 2 QUERIES ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 2 QUERIES /////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 3 QUERIES ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 3 QUERIES /////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 4 QUERIES ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 4 QUERIES /////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 5 QUERIES ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 5 QUERIES /////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 6 QUERIES ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 6 QUERIES /////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 7 QUERIES ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 7 QUERIES /////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 8 QUERIES ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 8 QUERIES /////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 9 QUERIES ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 9 QUERIES /////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 10 QUERIES ///////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 10 QUERIES ////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 11 QUERIES ///////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 11 QUERIES ////////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 12 QUERIES ///////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 12 QUERIES ////////////////////////////////////////////////////////////////////
+
     /**
      * @param table table to check
      * @return true if a table with the given name exists in the database and false if otherwise.
@@ -812,14 +928,52 @@ public class DatabaseService {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.addBatch("DROP TABLE EDGE");
-            statement.addBatch("DROP TABLE NODE");
-            statement.addBatch("DROP TABLE EMPLOYEE");
-            statement.addBatch("DROP TABLE ITREQUEST");
-            statement.addBatch("DROP TABLE MEDICINEREQUEST");
-            statement.addBatch("DROP TABLE RESERVATION");
-            statement.addBatch("DROP TABLE RESERVABLESPACE");
-            statement.addBatch("DROP TABLE META_DB_VER");
+            // these must be wiped first to prevent constraint issues
+            statement.addBatch("DELETE FROM EDGE");
+            statement.addBatch("DELETE FROM RESERVATION");
+            statement.addBatch("DELETE FROM ITREQUEST");
+            statement.addBatch("DELETE FROM MEDICINEREQUEST");
+            // these can be wiped in any order
+            statement.addBatch("DELETE FROM NODE");
+            statement.addBatch("DELETE FROM EMPLOYEE");
+            statement.addBatch("DELETE FROM RESERVABLESPACE");
+
+            // TODO: add delete statement
+            // statement.addBatch("DELETE FROM <TableName>");
+            // Request 1 delete here
+            // Request 2 delete here
+            // Request 3 delete here
+            // Request 4 delete here
+            // Request 5 delete here
+            // Request 6 delete here
+            // Request 7 delete here
+            // Request 8 delete here
+            // Request 9 delete here
+            // Request 10 delete here
+            // Request 11 delete here
+            // Request 12 delete here
+
+            // restart the auto-generated keys
+            statement.addBatch("ALTER TABLE ITREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE MEDICINEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE RESERVATION ALTER COLUMN eventID RESTART WITH 0");
+
+            // TODO: add restart statement
+            // statement.addBatch("ALTER TABLE <TableName> ALTER COLUMN serviceID RESTART WITH 0");
+            // Request 1 restart here
+            // Request 2 restart here
+            // Request 3 restart here
+            // Request 4 restart here
+            // Request 5 restart here
+            // Request 6 restart here
+            // Request 7 restart here
+            // Request 8 restart here
+            // Request 9 restart here
+            // Request 10 restart here
+            // Request 11 restart here
+            // Request 12 restart here
+
+
             statement.executeBatch();
 
             this.createTables();
@@ -829,6 +983,8 @@ public class DatabaseService {
             closeStatement(statement);
         }
     }
+
+
 
 
     //<editor-fold desc="Generic Execution Methods">
@@ -973,27 +1129,140 @@ public class DatabaseService {
      * @throws SQLException when extraction fails.
      */
     private <T> Object extractGeneric(ResultSet rs, Class<T> cls) throws SQLException {
-        Object result;
-
-        if (cls.equals(Node.class)) {
-            result = extractNode(rs);
-        } else if (cls.equals(Edge.class)) {
-            result = extractEdge(rs);
-        } else if (cls.equals(ReservableSpace.class)) {
-            result = extractReservableSpace(rs);
-        } else if (cls.equals(Reservation.class)) {
-            result = extractReservation(rs);
-        } else if (cls.equals(ITRequest.class)) {
-            result = extractITRequest(rs);
-        } else if (cls.equals(MedicineRequest.class)) {
-            result = extractMedicineRequest(rs);
-        } else if (cls.equals(Employee.class)) {
-            result = extractEmployee(rs);
-        } else {
-            return null;
-        }
-        return result;
+        if (cls.equals(Node.class)) return extractNode(rs);
+        else if (cls.equals(Edge.class))  return extractEdge(rs);
+        else if (cls.equals(ReservableSpace.class)) return extractReservableSpace(rs);
+        else if (cls.equals(Reservation.class)) return extractReservation(rs);
+        else if (cls.equals(ITRequest.class)) return extractITRequest(rs);
+        else if (cls.equals(MedicineRequest.class)) return extractMedicineRequest(rs);
+        else if (cls.equals(Employee.class)) return extractEmployee(rs);
+        // TODO: add if statement
+        // else if (cls.equals(<RequestClassName>.class)) return extract<RequestName>(rs);
+        // Request 1 else if here
+        // Request 2 else if here
+        // Request 3 else if here
+        // Request 4 else if here
+        // Request 5 else if here
+        // Request 6 else if here
+        // Request 7 else if here
+        // Request 8 else if here
+        // Request 9 else if here
+        // Request 10 else if here
+        // Request 11 else if here
+        // Request 12 else if here
+        else return null;
     }
+
+    // TODO: extraction methods here
+    ///////////////////////// REQUEST 1 EXTRACTION /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 1 EXTRACTION //////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 2 EXTRACTION /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 2 EXTRACTION //////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 3 EXTRACTION /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 3 EXTRACTION //////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 4 EXTRACTION /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 4 EXTRACTION //////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 5 EXTRACTION /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 5 EXTRACTION //////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 6 EXTRACTION /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 6 EXTRACTION //////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 7 EXTRACTION /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 7 EXTRACTION //////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 8 EXTRACTION /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 8 EXTRACTION //////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 9 EXTRACTION /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 9 EXTRACTION //////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 10 EXTRACTION ////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 10 EXTRACTION /////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 11 EXTRACTION ////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 11 EXTRACTION /////////////////////////////////////////////////////////////////
+    ///////////////////////// REQUEST 12 EXTRACTION ////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+    //////////////////////// END REQUEST 12 EXTRACTION /////////////////////////////////////////////////////////////////
+
 
     private Node extractNode(ResultSet rs, String name) throws SQLException {
         String newNodeID = rs.getString(name + "nodeID");

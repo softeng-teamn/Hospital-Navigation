@@ -176,8 +176,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         // what database should do
         when(dbs.getReservationsBySpaceId(roomID)).thenReturn(reservationReturns) ;
 
-
-        DatabaseService.setDatabaseForMocking(dbs);
+        sc.myDBS = dbs;
     }
 
     @Override
@@ -187,7 +186,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         stage.show();
         stage.toFront();
         stage.sizeToScene();
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
     }
 
     @Ignore
@@ -232,13 +231,13 @@ public class ScheduleControllerTest extends ApplicationTest {
         Reservation r = new Reservation(-1, Integer.parseInt(sc.privacyLvlBox.getValue()),Integer.parseInt(sc.employeeID.getText()),
                 sc.eventName.getText(),sc.currentSelection.getLocationNodeID(),gcalStart,gcalEnd);
         sc.createReservation();
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventID() == r.getEventID());
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getPrivacyLevel() == r.getPrivacyLevel());
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEmployeeId() == r.getEmployeeId());
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEventName().equals(r.getEventName()));
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getLocationID() == r.getLocationID());
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getStartTime().equals(r.getStartTime()));
-        assertTrue(DatabaseService.getDatabaseService(true).getReservation(0).getEndTime().equals(r.getEndTime()));
+        assertTrue(RequestController.myDBS.getReservation(0).getEventID() == r.getEventID());
+        assertTrue(RequestController.myDBS.getReservation(0).getPrivacyLevel() == r.getPrivacyLevel());
+        assertTrue(RequestController.myDBS.getReservation(0).getEmployeeId() == r.getEmployeeId());
+        assertTrue(RequestController.myDBS.getReservation(0).getEventName().equals(r.getEventName()));
+        assertTrue(RequestController.myDBS.getReservation(0).getLocationID() == r.getLocationID());
+        assertTrue(RequestController.myDBS.getReservation(0).getStartTime().equals(r.getStartTime()));
+        assertTrue(RequestController.myDBS.getReservation(0).getEndTime().equals(r.getEndTime()));
 
     }
 
