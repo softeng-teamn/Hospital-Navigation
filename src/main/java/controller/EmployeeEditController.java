@@ -147,14 +147,20 @@ public class EmployeeEditController {
         }
 
         Employee employee = new Employee(max+1, new_username.getText(), new_job.getValue(), new_is_admin.isSelected(), new_password.getText());
-        myDBS.insertEmployee(employee);
+        boolean inserted = myDBS.insertEmployee(employee);
         loadData();
 
-        new_password.setText("");
-        new_password_conf.setText("");
-        new_username.setText("");
-        new_job.getSelectionModel().select(1);
-        new_is_admin.setSelected(false);
+        if (inserted) {
+            new_password.setText("");
+            new_password_conf.setText("");
+            new_username.setText("");
+            new_job.getSelectionModel().select(1);
+            new_is_admin.setSelected(false);
+
+            new_username.getStyleClass().remove("wrong-credentials");
+        } else {
+            new_username.getStyleClass().add("wrong-credentials");
+        }
     }
 
 
