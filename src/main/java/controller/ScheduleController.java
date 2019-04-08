@@ -47,6 +47,15 @@ public class ScheduleController extends Controller {
     public JFXTextField eventName, employeeID, searchBar;
 
     @FXML
+    private TableView<Employee> employee_table;
+
+    @FXML
+    private TableColumn<Employee, Integer> col_id;
+
+    @FXML
+    private TableColumn<Employee, String> col_username;
+
+    @FXML
     public JFXListView reservableList;
 
     @FXML
