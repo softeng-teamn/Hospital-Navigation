@@ -16,6 +16,7 @@ public class ResourceLoader {
     public static final URL sanitationRequest = service.ResourceLoader.class.getResource("/requests/sanitationRequest.fxml");
     public static final URL ToyRequest = service.ResourceLoader.class.getResource("/Requests/ToyRequest.fxml");
     public static final URL securityRequest = service.ResourceLoader.class.getResource("/requests/securityRequest.fxml");
+    public static final URL religiousRequest = service.ResourceLoader.class.getResource("/requests/religiousRequest.fxml");
 
     public static final URL giftStoreRequest = service.ResourceLoader.class.getResource("/Requests/giftStoreRequest.fxml");
 

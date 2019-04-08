@@ -148,7 +148,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Religious Services" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#religiousRequestSelect" prefHeight="256.0" prefWidth="256.0" text="Religious Services - Nicole" toggleGroup="$requestType">
                                  <graphic>
                                     <EmojiOneView glyphName="PRAY" styleClass="button-glyph-icon" />
                                  </graphic>
