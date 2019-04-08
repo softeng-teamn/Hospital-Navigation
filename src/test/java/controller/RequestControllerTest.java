@@ -22,8 +22,8 @@ public class RequestControllerTest {
     private RequestController RC = new RequestController();
     private MedicineRequest medReqR = new MedicineRequest(2,"Fast",n,false);
     private MedicineRequest medReqM = new MedicineRequest(2,"take your time", n, false, "Morphine", 200.0);
-    private ITRequest ITReqA = new ITRequest(2,"3/31/2019 1:21 PM",n,false,"Hard Drive Broke When I peed on it");
-    private ITRequest ITReqB = new ITRequest(3,"4/1/2019 2:30 PM", n, false, "Can't wifi");
+    private ITRequest ITReqA = new ITRequest(2,"3/31/2019 1:21 PM",n,false,ITRequest.ITRequestType.New_Computer);
+    private ITRequest ITReqB = new ITRequest(3,"4/1/2019 2:30 PM", n, false, ITRequest.ITRequestType.Assistance);
 
     @Before
     public void setupTest() {

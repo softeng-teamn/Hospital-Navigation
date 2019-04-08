@@ -1,4 +1,4 @@
-package controller;
+package controller.requests;
 
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -7,7 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import model.request.PatientInfoRequest;
 
-public class PatientInfo extends controller.RequestController {
+public class PatientInfoController extends RequestController {
 
     @FXML
     private JFXTextField firstNameField, lastNameField, birthYField, birthMField, birthDField;
@@ -29,7 +29,4 @@ public class PatientInfo extends controller.RequestController {
             newPatientInfoRequest.makeRequest();
         }
     }
-
-
-
 }
