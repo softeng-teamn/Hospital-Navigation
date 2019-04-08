@@ -168,10 +168,9 @@ public class TopNav {
     public void searchBarEnter(ActionEvent e) {
         String search = search_bar.getText();
 
-        Event sendEvent = new Event();
-        sendEvent.setSearchBarQuery(search);
-        sendEvent.setEventName("search-query");
-        eventBus.post(sendEvent);
+        event.setSearchBarQuery(search);
+        event.setEventName("search-query");
+        eventBus.post(event);
     }
 
     // when event comes in with a node-selected:

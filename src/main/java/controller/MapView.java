@@ -92,6 +92,7 @@ public class MapView {
                         break;
                     case "filter":
                         filteredHandler();
+                        break;
                     default:
                         break;
                 }
@@ -174,6 +175,7 @@ public class MapView {
                 break;
             default:
                 path = null;
+                break;
         }
 
         if (path == null){
