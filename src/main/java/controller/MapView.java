@@ -140,7 +140,6 @@ public class MapView {
         }
 
         drawPath(path);
-        System.out.println(makeDirections(path));
     }
 
     // draw path on the screen
@@ -172,6 +171,7 @@ public class MapView {
             }
         }
 
+        System.out.println(makeDirections(path));
     }
 
     /**
@@ -222,8 +222,11 @@ public class MapView {
         timeline.play();
     }
 
+
+
     // TODO: working on directions. idk where to put this
     // TODO: SHOW COMPASS ON MAP
+    // TODO: going up/down and direction after that - NSEW? based on them going in and coming out of elev opp dir? turn into
 
     private String makeDirections(ArrayList<Node> path) {
         final int NORTH_I = 1122 - 1886;
@@ -234,6 +237,77 @@ public class MapView {
         directions.add("\nStart at " + path.get(0).getLongName() + ".\n");
 
         String cardinal = csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0).getXcoord(), path.get(0).getYcoord(), path.get(1).getXcoord(), path.get(1).getYcoord());
+        cardinal = convertToCardinal(cardinal);
+        directions.add(cardinal);
+
+        boolean afterFloorChange = false;
+        for (int i = 0; i < path.size() - 2; i++) {
+            if (afterFloorChange) {
+                String afterEl = csDirPrint(path.get(i+1).getXcoord() + NORTH_I, path.get(i+1).getYcoord() + NORTH_J, path.get(i+1).getXcoord(), path.get(i+1).getYcoord(), path.get(i+2).getXcoord(), path.get(i+2).getYcoord());
+                directions.add(convertToCardinal(afterEl));
+                afterFloorChange = false;
+            }
+            else if (!path.get(i).getFloor().equals(path.get(i+1).getFloor())) {
+                System.out.println(path.get(i) + " " + path.get(i+1));
+                if (path.get(i).getNodeType().equals("ELEV")) {
+                    directions.add("Take the elevator from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
+                }
+                else {
+                    directions.add("Take the stairs from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
+                }
+                afterFloorChange = true;
+                // todo: watch out for multiple floors? are those separate nodes -> problem w directions
+            }
+            else if(path.get(i+1).getNodeType().equals("ELEV")) {
+                directions.add("Walk to the elevator.\n");
+            }
+            else if (path.get(i+1).getNodeType().equals("STAI")) {
+                directions.add("Walk to the stairs.\n");
+            }
+            else {
+                directions.add(csDirPrint(path.get(i).getXcoord(), path.get(i).getYcoord(), path.get(i + 1).getXcoord(), path.get(i + 1).getYcoord(), path.get(i + 2).getXcoord(), path.get(i + 2).getYcoord()) + "\n");
+            }
+        }
+
+        directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
+
+        for (int i = 1; i < directions.size(); i++) {
+            String currDir = directions.get(i);
+            String oldDir = directions.get(i-1);
+            if (currDir.contains("straight")) {
+                int feetIndex = oldDir.indexOf("for");
+                if (feetIndex < 0) {
+                    feetIndex = oldDir.indexOf("walk") + 5;
+                }
+                else {
+                    feetIndex += 4;
+                }
+                int oldDist = Integer.parseInt(oldDir.substring(feetIndex, oldDir.indexOf("feet")-1));
+                int currDist = Integer.parseInt(currDir.substring(currDir.indexOf("walk") + 5, currDir.indexOf("feet")-1));
+                int totalDist = oldDist + currDist;
+
+                String newDir = "";
+                if (oldDir.contains("for")) {
+                    newDir = oldDir.substring(0, oldDir.indexOf("for") + 4) + totalDist + " feet\n";
+                }
+                else {
+                    newDir = oldDir.substring(0, oldDir.indexOf("walk") + 5) + totalDist + " feet\n";
+                }
+                directions.remove(i);
+                directions.remove(i-1);
+                directions.add(i-1, newDir);
+                i--;
+            }
+        }
+
+        String total = "";
+        for (int i = 0; i < directions.size(); i++) {
+            total += directions.get(i);
+        }
+        return total;
+    }
+
+    private String convertToCardinal(String cardinal) {
         String feet = cardinal.substring(cardinal.indexOf("walk")+5)+ "\n";
         if (cardinal.contains("slightly left")) {
             cardinal = "Walk south east for " + feet;
@@ -259,38 +333,10 @@ public class MapView {
         else {
             cardinal = "Walk north for " + feet;
         }
-        directions.add(cardinal);
-
-        for (int i = 0; i < path.size() - 2; i++) {
-            directions.add(csDirPrint(path.get(i).getXcoord(), path.get(i).getYcoord(), path.get(i+1).getXcoord(), path.get(i+1).getYcoord(), path.get(i+2).getXcoord(), path.get(i+2).getYcoord()) + "\n");
-        }
-        directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
-
-        for (int i = 0; i < directions.size(); i++) {
-            String currDir = directions.get(i);
-            if (currDir.contains("straight")) {
-                String oldDir = directions.get(i-1);
-                int oldDist = Integer.parseInt(oldDir.substring(oldDir.indexOf("walk") + 5, oldDir.indexOf("feet")-1));
-                int currDist = Integer.parseInt(currDir.substring(currDir.indexOf("walk") + 5, currDir.indexOf("feet")-1));
-                int totalDist = oldDist + currDist;
-
-                String newDir = oldDir.substring(0, oldDir.indexOf("walk")+5) + totalDist + " feet\n";
-                directions.remove(i);
-                directions.remove(i-1);
-                directions.add(i-1, newDir);
-                i--;
-            }
-        }
-
-
-        String total = "";
-        for (int i = 0; i < directions.size(); i++) {
-            total += directions.get(i);
-        }
-        return total;
+        return cardinal;
     }
 
-    public String csDirPrint(double pX, double pY, double cX, double cY, double nX, double nY) {
+    private String csDirPrint(double pX, double pY, double cX, double cY, double nX, double nY) {
         final double THRESHOLD = .0001;
 
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
@@ -384,9 +430,5 @@ public class MapView {
         String direction = String.format("Turn " + turn + " and walk %.0f feet.", distance);
         return direction;
     }
-
-// TODO: decide when to give direction vs continue straight for multiple hallway nodes in a row - collapse into one
-    // TODO: going up/down and direction after that - NSEW? based on them going in and coming out of elev opp dir? turn into
-    // function - doesn't even have to be NS but any given oldI and oldJ (could make negatives of new one)
 
 }
