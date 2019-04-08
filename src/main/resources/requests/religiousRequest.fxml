@@ -18,7 +18,7 @@
         </JFXTextArea>
         <Label styleClass="big-label" text="Select Request Type:" />
         <JFXComboBox fx:id="type" prefHeight="31.0" prefWidth="358.0" promptText="Request Type" />
-        <Region prefHeight="391.0" prefWidth="522.0" />
+        <Region prefHeight="103.0" prefWidth="534.0" />
         <JFXButton fx:id="submit" onAction="#submitRequest" text="Submit Request" />
     </children>
     <opaqueInsets>
