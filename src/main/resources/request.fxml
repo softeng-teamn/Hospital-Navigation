@@ -142,7 +142,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="AV Request&#10;James" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#avSelect" prefHeight="256.0" prefWidth="256.0" text="AV Request&#10;James" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="HARD_OF_HEARING" styleClass="button-glyph-icon" />
                                  </graphic>
