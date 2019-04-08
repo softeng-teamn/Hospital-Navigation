@@ -215,6 +215,7 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE PATIENTINFOREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, firstName varchar(255), lastName varchar(255), birthDay varchar(255), description varchar(255))");
             // Request 8 Create table here
             // Request 9 Create table here
+            statement.addBatch("CREATE TABLE EXTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), time TIMESTAMP, locationNodeID2 varchar(255), transportType varchar(30))");
             // Request 10 Create table here
             statement.addBatch("CREATE TABLE MAINTENANCEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, maintenanceType varchar(30))");
             statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255))");
@@ -249,6 +250,8 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE PATIENTINFOREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 8 constraint here
             // Request 9 constraint here
+            statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
+            statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID2) REFERENCES NODE(nodeID)");
             // Request 10 constraint here
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
@@ -987,12 +990,37 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 8 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 9 QUERIES ////////////////////////////////////////////////////////////////////////
+    public ExternalTransportRequest getExtTransRequest(int id) {
+        String query = "SELECT * FROM EXTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
+        return (ExternalTransportRequest) executeGetById(query, ExternalTransportRequest.class, id);
+    }
+
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertExtTransRequest(ExternalTransportRequest req) {
+        String insertQuery = ("INSERT INTO EXTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, time, locationNodeID2, transportType) VALUES(?, ?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTime(), req.getPickUpLoc(), req.getTransPortType());
+    }
 
 
+    /** deletes a given IT request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteExtTransRequest(ExternalTransportRequest req) {
+        String query = "DELETE FROM EXTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
 
-
-
-
+    /**
+     * @return all IT requests stored in the database in a List.
+     */
+    public List<ExternalTransportRequest> getAllExtTransRequests() {
+        String query = "Select * FROM EXTERNALTRANSPORTREQUEST";
+        return (List<ExternalTransportRequest>)(List<?>) executeGetMultiple(query, ExternalTransportRequest.class, new Object[]{});
+    }
 
     //////////////////////// END REQUEST 9 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 10 QUERIES ///////////////////////////////////////////////////////////////////////
@@ -1207,6 +1235,7 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM PATIENTINFOREQUEST");
             // Request 8 delete here
             // Request 9 delete here
+            statement.addBatch("DELETE FROM EXTERNALTRANSPORTREQUEST");
             // Request 10 delete here
             statement.addBatch("DELETE FROM MAINTENANCEREQUEST");
             statement.addBatch("DELETE FROM TOYREQUEST");
@@ -1228,6 +1257,7 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE PATIENTINFOREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 8 restart here
             // Request 9 restart here
+            statement.addBatch("ALTER TABLE EXTERNALTRANSPORTREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 10 restart here
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE TOYREQUEST ALTER COLUMN serviceID RESTART WITH 0");
@@ -1408,6 +1438,7 @@ public class DatabaseService {
         else if (cls.equals(PatientInfoRequest.class)) return extractPatientInfoRequest(rs);
         // Request 8 else if here
         // Request 9 else if here
+        else if (cls.equals(ExternalTransportRequest.class)) return extractExtTransRequest(rs);
         // Request 10 else if here
         else if (cls.equals(MaintenanceRequest.class)) return extractMaintenanceRequest(rs);
         else if (cls.equals(ToyRequest.class)) return extractToyRequest(rs);
@@ -1534,12 +1565,32 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 8 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 9 EXTRACTION /////////////////////////////////////////////////////////////////////
+    private ExternalTransportRequest extractExtTransRequest(ResultSet rs) throws SQLException {
+        // statement.addBatch("CREATE TABLE EXTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), time TIMESTAMP, locationNodeID2 varchar(255), transportType varchar(30))");
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String transType = rs.getString("transportType");
+        Node destNode = getNode(rs.getString("locationNodeID2"));
+        long t =rs.getTimestamp("time").getTime();
 
+        ExternalTransportRequest.TransportType tType = null;
 
+        switch(transType){
+            case "CAR":
+                tType = ExternalTransportRequest.TransportType.CAR;
+                break;
+            case "TAXI":
+                tType = ExternalTransportRequest.TransportType.TAXI;
+                break;
+            case "BUS":
+                tType = ExternalTransportRequest.TransportType.BUS;
+                break;
+        }
 
-
-
-
+        return new ExternalTransportRequest(serviceID, notes, locationNode, completed, destNode, t, tType);
+    }
 
     //////////////////////// END REQUEST 9 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 10 EXTRACTION ////////////////////////////////////////////////////////////////////
