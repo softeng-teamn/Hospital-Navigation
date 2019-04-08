@@ -16,7 +16,6 @@ public class Event {
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
 
-
     public boolean isChangingStart() {
         return isChangingStart;
     }

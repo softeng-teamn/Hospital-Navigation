@@ -159,6 +159,13 @@ public class TopNav {
         }
     }
 
+    @FXML
+    public void editButtonAction(ActionEvent e) throws Exception {
+        Stage stage = (Stage) search_bar.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.editNode);
+        StageManager.changeExistingWindow(stage, root, "Node Editor");
+        stage.setMaximized(true);
+    }
 
     /**
      * searches for room

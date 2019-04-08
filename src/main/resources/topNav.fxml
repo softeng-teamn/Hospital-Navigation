@@ -44,7 +44,7 @@
                 <HBox.margin>
                     <Insets right="8.0" />
                 </HBox.margin></JFXButton>
-            <JFXButton fx:id="edit_btn" contentDisplay="GRAPHIC_ONLY" prefHeight="80.0" prefWidth="80.0" text="Edit">
+            <JFXButton fx:id="edit_btn" onAction="#editButtonAction" contentDisplay="GRAPHIC_ONLY" prefHeight="80.0" prefWidth="80.0" text="Edit">
                 <graphic>
                     <FontAwesomeIconView glyphName="PENCIL" size="60" />
                 </graphic></JFXButton>

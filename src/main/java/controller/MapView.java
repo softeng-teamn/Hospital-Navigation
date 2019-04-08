@@ -12,13 +12,19 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import model.*;
 import service.PathFindingService;
+import service.ResourceLoader;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -37,6 +43,10 @@ public class MapView {
     private ScrollPane map_scrollpane;
     @FXML
     private Slider zoom_slider;
+    @FXML
+    private JFXButton f1_btn, f2_btn, f3_btn, l1_btn, l2_btn, ground_btn;
+    @FXML
+    private Pane image_pane;
 
     // ELEVATOR CALL BUTTONS
     @FXML
@@ -76,6 +86,45 @@ public class MapView {
         zoom_slider.setValue(0.3);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.3);
+    }
+
+    @FXML
+    void changeFloor(ActionEvent e) throws IOException {
+        JFXButton btn = (JFXButton)e.getSource();
+        ImageView imageView;
+        switch (btn.getText()) {
+            case "Floor 3":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.thirdFloor.openStream()));
+                break;
+            case "Floor 2":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.secondFloor.openStream()));
+                break;
+            case "Floor 1":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.firstFloor.openStream()));
+                break;
+            case "L1":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.firstLowerFloor.openStream()));
+                break;
+            case "L2":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.secondLowerFloor.openStream()));
+                break;
+            case "Ground":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.groundFloor.openStream()));
+                break;
+            default:
+                System.out.println("We should not have default here!!!");
+                imageView = new ImageView(new Image(
+                        ResourceLoader.groundFloor.openStream()));
+                break;
+        }
+        image_pane.getChildren().clear();
+        image_pane.getChildren().add(imageView);
     }
 
     @Subscribe
