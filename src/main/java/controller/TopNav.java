@@ -65,10 +65,10 @@ public class TopNav {
 
     @FXML
     // switches window to map editor screen.
-    public void showFulfillRequest() throws Exception {
+    public void showAdminScene() throws Exception {
         Stage stage = (Stage) fulfillBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
-        StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
+        Parent root = FXMLLoader.load(ResourceLoader.adminServices);
+        StageManager.changeExistingWindow(stage, root, "Administrator Services");
     }
 
     @FXML
@@ -147,7 +147,7 @@ public class TopNav {
 
     private void resetBtn() {
         if(event.isAdmin()){
-            fulfillBtn.setVisible(true);
+            fulfillBtn.setVisible(true);    // TODO: set subholder to hold admin screen
             edit_btn.setVisible(true);
             newNode_btn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);

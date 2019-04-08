@@ -7,34 +7,42 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminServiceController">
    <children>
-      <Label styleClass="big-label" text="Administrator Services">
-         <padding>
-            <Insets top="20.0" />
-         </padding>
-      </Label>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="80.0" stylesheets="@theme.css">
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="40.0">
          <children>
-            <JFXButton scaleX="1.5" scaleY="1.5" text="Fulfill Requests" />
-            <JFXButton scaleX="1.5" scaleY="1.5" text="Edit Employees" />
+            <JFXButton fx:id="showHomeBtn" onAction="#showHome" text="Home">
+               <HBox.margin>
+                  <Insets left="5.0" top="5.0" />
+               </HBox.margin>
+            </JFXButton>
+            <Label fx:id="adminServicesTitle" styleClass="big-label" text="Administrator Services">
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </Label>
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="80.0" stylesheets="@theme.css">
          <children>
-            <JFXButton scaleX="1.5" scaleY="1.5" text="Map Editor" />
-            <JFXButton scaleX="1.5" scaleY="1.5" text="Export CSV" />
+            <JFXButton fx:id="fulfillRequestBtn" onAction="#showFulfillRequest" scaleX="1.5" scaleY="1.5" text="Fulfill Requests" />
+            <JFXButton fx:id="editEmployeeBtn" onAction="#showEditEmployees" scaleX="1.5" scaleY="1.5" text="Edit Employees" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0" stylesheets="@theme.css">
+         <children>
+            <JFXButton fx:id="mapEditorBtn" onAction="#showMapEditor" scaleX="1.5" scaleY="1.5" text="Map Editor" />
+            <JFXButton fx:id="exportCSVBtn" onAction="#exportCSV" scaleX="1.5" scaleY="1.5" stylesheets="@theme.css" text="Export CSV" />
          </children>
       </HBox>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
          <children>
-            <Label styleClass="big-label" text="Select Pathfinding Algorithm" />
+            <Label fx:id="selectPathfindingTitle" styleClass="big-label" text="Select Pathfinding Algorithm" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="52.0">
                <children>
-                  <JFXToggleNode text="A* (Default)" />
-                  <JFXToggleNode text="Depth First" />
-                  <JFXToggleNode text="Breadth First" />
+                  <JFXToggleNode fx:id="aStarToggle" text="A* (Default)" />
+                  <JFXToggleNode fx:id="depthFirstToggle" text="Depth First" />
+                  <JFXToggleNode fx:id="breadthFirstToggle" text="Breadth First" />
                </children>
             </HBox>
          </children>
