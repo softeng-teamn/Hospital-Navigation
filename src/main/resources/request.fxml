@@ -16,12 +16,15 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
    <children>
-      <HBox alignment="CENTER" prefHeight="128.0">
+      <HBox alignment="CENTER" prefHeight="128.0" styleClass="header">
          <children>
             <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" promptText="Search Room" />
-            <Region prefHeight="118.0" prefWidth="491.0" HBox.hgrow="ALWAYS" />
+            <Region prefHeight="118.0" prefWidth="491.0" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin></Region>
             <Label prefHeight="40.0" prefWidth="234.0" styleClass="big-label" text="Request Service" />
             <Region prefHeight="128.0" prefWidth="837.0" />
             <JFXButton fx:id="cancelBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
@@ -38,9 +41,9 @@
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <JFXListView fx:id="list_view" prefWidth="384.0" onMouseClicked="#locationSelected">
+            <JFXListView fx:id="list_view" onMouseClicked="#locationSelected" prefWidth="384.0">
                <HBox.margin>
-                  <Insets right="50.0" />
+                  <Insets right="24.0" />
                </HBox.margin></JFXListView>
             <ScrollPane prefHeight="952.0" prefWidth="904.0" styleClass="edge-to-edge">
                <content>
@@ -63,7 +66,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Security Request" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#securitySelect" prefHeight="256.0" prefWidth="256.0" text="Security Request" toggleGroup="$requestType" wrapText="true">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="SHIELD" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -98,13 +101,13 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Sanitation Services" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#selectSanitation" prefHeight="256.0" prefWidth="256.0" text="Sanitation Services (Maya)" textAlignment="CENTER" toggleGroup="$requestType" wrapText="true">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="TRASH" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Gift Services" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#giftSelect" prefHeight="256.0" prefWidth="256.0" text="Gift Services - Molly" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="GIFT" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -121,7 +124,7 @@
                         <Region prefHeight="610.0" prefWidth="50.0" />
                         <VBox prefWidth="256.0">
                            <children>
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Interpreter" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#interpreterRequestSelect" prefHeight="256.0" prefWidth="256.0" text="Interpreter" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="USER" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -155,8 +158,11 @@
                      </children>
                   </HBox>
                </content>
+               <HBox.margin>
+                  <Insets bottom="24.0" top="24.0" />
+               </HBox.margin>
             </ScrollPane>
-            <Pane fx:id="subSceneHolder" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Pane fx:id="subSceneHolder" prefHeight="952.0" prefWidth="582.0" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </children>

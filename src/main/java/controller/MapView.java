@@ -71,11 +71,11 @@ public class MapView {
 
 
         // Setting View Scrolling
-        zoom_slider.setMin(0.3);
+        zoom_slider.setMin(0.4);
         zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.3);
+        zoom_slider.setValue(0.4);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
-        zoom(0.3);
+        zoom(0.4);
     }
 
     @Subscribe
@@ -128,15 +128,16 @@ public class MapView {
     private void navigationHandler() {
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> path;
+        MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
+        MapNode dest = new MapNode(event.getNodeSelected().getXcoord(), event.getNodeSelected().getYcoord(), event.getNodeSelected());
         // check if the path need to be 'accessible'
-//        if (event.isAccessiblePath()) {
-//            // do something special
-//        } else {
+        if (event.isAccessiblePath()) {
+            // do something special
+            path = pathFinder.genPath(start, dest, true);
+        } else {
             // not accessible
-            MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
-            MapNode dest = new MapNode(event.getNodeSelected().getXcoord(), event.getNodeSelected().getYcoord(), event.getNodeSelected());
-            path = pathFinder.genPath(start, dest);
-//        }
+            path = pathFinder.genPath(start, dest, false);
+        }
 
         drawPath(path);
 
@@ -144,6 +145,12 @@ public class MapView {
 
     // draw path on the screen
     private void drawPath(ArrayList<Node> path) {
+        // remove points
+        for (Line line : lineCollection) {
+            if (zoomGroup.getChildren().contains(line)) {
+                zoomGroup.getChildren().remove(line);
+            }
+        }
         if (path != null && path.size() > 1) {
             Node last = path.get(0);
             Node current;
