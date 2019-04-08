@@ -1,13 +1,13 @@
-package controller;
+package controller.requests;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
+import controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import model.request.MaintenanceRequest;
-import service.DatabaseService;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,11 +19,6 @@ public class MaintenanceRequestController extends RequestController {
 
     @FXML
     private JFXComboBox<MaintenanceRequest.MaintenanceType> type;
-
-    @FXML
-    private JFXButton submit;
-
-    static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -37,5 +32,4 @@ public class MaintenanceRequestController extends RequestController {
             maintenanceRequest.makeRequest();
         }
     }
-
 }
