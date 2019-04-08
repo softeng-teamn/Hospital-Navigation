@@ -2,13 +2,7 @@ package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
-import model.request.FloristRequest;
-import model.request.ITRequest;
-import model.request.InternalTransportRequest;
-import model.request.MaintenanceRequest;
-import model.request.MedicineRequest;
-import model.request.ToyRequest;
-import model.request.PatientInfoRequest;
+import model.request.*;
 
 import java.io.File;
 import java.sql.*;
@@ -1000,8 +994,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertExtTransRequest(ExternalTransportRequest req) {
-        String insertQuery = ("INSERT INTO EXTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, time, locationNodeID2, transportType) VALUES(?, ?, ?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTime(), req.getPickUpLoc(), req.getTransPortType());
+        String insertQuery = ("INSERT INTO EXTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, time, transportType) VALUES(?, ?, ?, ?, ?,?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType());
     }
 
 
@@ -1573,23 +1567,23 @@ public class DatabaseService {
         boolean completed = rs.getBoolean("completed");
         String transType = rs.getString("transportType");
         Node destNode = getNode(rs.getString("locationNodeID2"));
-        long t =rs.getTimestamp("time").getTime();
+        Date t = new Date(rs.getTimestamp("time").getTime());
 
-        ExternalTransportRequest.TransportType tType = null;
+        ExternalTransportRequest.TransportationType tType = null;
 
         switch(transType){
             case "CAR":
-                tType = ExternalTransportRequest.TransportType.CAR;
+                tType = ExternalTransportRequest.TransportationType.CAR;
                 break;
             case "TAXI":
-                tType = ExternalTransportRequest.TransportType.TAXI;
+                tType = ExternalTransportRequest.TransportationType.TAXI;
                 break;
             case "BUS":
-                tType = ExternalTransportRequest.TransportType.BUS;
+                tType = ExternalTransportRequest.TransportationType.BUS;
                 break;
         }
 
-        return new ExternalTransportRequest(serviceID, notes, locationNode, completed, destNode, t, tType);
+        return new ExternalTransportRequest(serviceID, notes, locationNode, completed, t, tType);
     }
 
     //////////////////////// END REQUEST 9 EXTRACTION //////////////////////////////////////////////////////////////////
