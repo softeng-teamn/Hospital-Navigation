@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.text.Font?>
 
 <StackPane prefWidth="1280.0" stylesheets="@theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MapView">
@@ -99,10 +100,24 @@
             <Insets right="300.0" />
          </StackPane.margin>
          <children>
-            <JFXButton fx:id="showDirectionsBtn" onAction="#showDirections" text="Show Textual Directions">
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin></JFXButton>
+            <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="200.0">
+               <children>
+                  <Pane prefHeight="40.0" prefWidth="58.0">
+                     <children>
+                        <Polygon fill="RED" layoutX="56.0" layoutY="29.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
+                        <Polygon fill="WHITE" layoutX="66.0" layoutY="39.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="WHITE" strokeType="INSIDE" />
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Pane>
+                  <JFXButton fx:id="showDirectionsBtn" onAction="#showDirections" text="Show Textual Directions">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </JFXButton>
+               </children>
+            </HBox>
          </children>
       </VBox>
         </children>

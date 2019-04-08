@@ -242,10 +242,6 @@ public class MapView {
         timeline.play();
     }
 
-
-
-    // TODO: working on directions. idk where to put this
-    // TODO: SHOW COMPASS ON MAP
     // todo: watch out for multiple floors? are those separate nodes -> problem w directions
     // TODO: comments
 
