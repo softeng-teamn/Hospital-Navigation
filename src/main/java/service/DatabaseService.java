@@ -1519,6 +1519,8 @@ public class DatabaseService {
             case "VERY":
                 urgency = SecurityRequest.Urgency.VERY;
                 break;
+            default:
+                urgency = SecurityRequest.Urgency.NOT;
         }
 
         return new SecurityRequest(serviceID, notes, locationNode, completed, urgency);
