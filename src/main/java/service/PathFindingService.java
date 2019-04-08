@@ -4,10 +4,7 @@ import controller.MapController;
 import model.MapNode;
 import model.Node;
 
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 public class PathFindingService {
 
@@ -20,10 +17,24 @@ public class PathFindingService {
      *  attempts to generate a path from a start node to a dest node
      * @param start
      * @param dest
+     * @param accessibility
+     * @param type "breadth" for BFS "depth" for DFS "astar" for astar, Any nodeType for a filtered BFS
      * @return Returns null on fail
      * */
-    public ArrayList<Node> genPath(MapNode start, MapNode dest, Boolean accessibility) {
-        MapNode target = aStar(start, dest, accessibility);
+    public ArrayList<Node> genPath(MapNode start, MapNode dest, Boolean accessibility, String type) {
+        MapNode target;
+        switch (type){
+            case "astar":
+                target = aStar(start, dest, accessibility);
+                break;
+            case "breadth":
+                target = filteredBreadth(start, dest, null);
+                break;
+            default:
+                target = filteredBreadth(start, null, type);
+        }
+
+
         if (target != null) {
             ArrayList<Node> path = new ArrayList<Node>();
             while (target != null) { // INFINITE LOOP
@@ -105,6 +116,50 @@ public class PathFindingService {
         }
         return null;
     }
+
+
+    /**
+     *  Will either return the last MapNode with a parent chain back to the start
+     *  or returns null if we CANT get to the dest node
+     * @param start
+     * @param dest
+     * @return
+     */
+    MapNode filteredBreadth(MapNode start, MapNode nodeDest, String dest) {
+        //1.  Initialize queue and set
+        PriorityQueue<MapNode> needVisit = new PriorityQueue<>();
+        //System.out.println("Created open PriorityQueue");
+        HashMap<MapNode, String> visited = new HashMap<MapNode, String>();
+        //2. Set up default values
+        needVisit.add(start);
+        while(!needVisit.isEmpty()){
+            //System.out.println(open.toString());
+            MapNode current = needVisit.poll();
+            //System.out.println("Current Node: " + current.getData().getNodeID());
+            visited.put(current, "true");
+            //System.out.println("Added current node to explored Set");
+            if (nodeDest == null){
+                if(current.getData().getNodeType().equals(dest)){
+                    //System.out.println("DESTINATION FOUND!!!!!");
+                    return current;
+                }
+            } else if (dest == null){
+                if(current.equals(nodeDest)){
+                    return current;
+                }
+            }
+            ArrayList<MapNode> children = getChildren(current);
+            for (MapNode child : children){
+                if (!visited.containsKey(child)){
+                    child.setParent(current, 0);
+                    needVisit.add(child);
+                }
+            }
+        }
+        return null;
+    }
+
+
 
     /**
      * Gets reachable MapNodes from given MapNode
