@@ -2,6 +2,7 @@ package controller;
 
 
 import model.Edge;
+import model.ElevatorCon;
 import model.Node;
 import service.DatabaseService;
 
@@ -18,6 +19,8 @@ public class Controller {
     public static void setIsEmployee(boolean isEmployee) { Controller.isEmployee = isEmployee; }
 
     static HashMap<String, ArrayList<Node>> connections;
+    static ElevatorCon elevatorCon = new ElevatorCon();
+    static String floorIsAt = "0";
 
 
     public static boolean getIsAdmin() {

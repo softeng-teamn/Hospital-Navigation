@@ -45,7 +45,7 @@ public class RequestControllerTest {
 
     @AfterClass
     public static void cleanup() {
-        DatabaseService.wipeOutFiles();
+        RequestController.myDBS.wipeTables();
     }
 
     private ArrayList<MedicineRequest> medList = new ArrayList<>();

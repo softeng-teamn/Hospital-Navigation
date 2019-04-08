@@ -54,7 +54,7 @@ public class PathFindingServiceSimpleTest {
 //
 //    }
 
-    // generates the mock sinerio
+    // generates the mock scenario
     //
     //  1 - 2 - - - 6
     //      |       |
@@ -94,7 +94,7 @@ public class PathFindingServiceSimpleTest {
         //when(mockPF.getChildren(mn6)).thenReturn(list);
     }
 
-    // make sure I built the sinerio correctly
+    // make sure I built the scenario correctly
     @Test
     @Category(FastTest.class)
     public void testMocking() throws IOException {
@@ -116,7 +116,7 @@ public class PathFindingServiceSimpleTest {
     @Category(FastTest.class)
     public void testAStar() {
         // a path can be found
-        assertThat(mockPF.aStar(mn1, mn6), is(mn6));
+        assertThat(mockPF.aStar(mn1, mn6, false), is(mn6));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n6);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn6), is(expected));
+        assertThat(mockPF.genPath(mn1, mn6, false), is(expected));
     }
 
     @Test
@@ -134,9 +134,10 @@ public class PathFindingServiceSimpleTest {
     public void testPathBackTracking2() {
         ArrayList<Node> expected = new ArrayList<Node>();
         expected.add(0, n6);
-        expected.add(0, n2);
+        expected.add(0, n5);
+        expected.add(0, n4);
         expected.add(0, n3);
-        assertThat(mockPF.genPath(mn3, mn6), is(expected));
+        assertThat(mockPF.genPath(mn3, mn6, false), is(expected));
     }
 
     @Test
@@ -147,7 +148,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n2);
         expected.add(0, n3);
         expected.add(0, n4);
-        assertThat(mockPF.genPath(mn4, mn1), is(expected));
+        assertThat(mockPF.genPath(mn4, mn1, false), is(expected));
     }
 
 }

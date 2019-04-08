@@ -11,8 +11,7 @@ import java.util.HashSet;
 
 public class PathFindingService {
 
-    private static final int DEFAULT_HV_COST = 10;
-    private static final int DEFAULT_DIAGONAL_COST = 14;
+    public int estimatedTimeOfArrival;
 
     public PathFindingService() {}
 
@@ -22,8 +21,8 @@ public class PathFindingService {
      * @param dest
      * @return Returns null on fail
      * */
-    public ArrayList<Node> genPath(MapNode start, MapNode dest) {
-        MapNode target = aStar(start, dest);
+    public ArrayList<Node> genPath(MapNode start, MapNode dest, Boolean accessibility) {
+        MapNode target = aStar(start, dest, accessibility);
         if (target != null) {
             ArrayList<Node> path = new ArrayList<Node>();
             while (target != null) { // INFINITE LOOP
@@ -46,7 +45,7 @@ public class PathFindingService {
      * @param dest
      * @return
      */
-    MapNode aStar(MapNode start, MapNode dest) {
+    MapNode aStar(MapNode start, MapNode dest, Boolean accessibility) {
         //1.  Initialize queue and set
         PriorityQueue<MapNode> open = new PriorityQueue<>();
         //System.out.println("Created open PriorityQueue");
@@ -73,7 +72,9 @@ public class PathFindingService {
 
                 if (child.equals(dest)) {
                     //System.out.println("This child is our destination node!");
-                    child.setParent(current, current.getG() + child.getG());
+                    child.setParent(current, child.getG());
+                    //System.out.println(child.getG());
+                    estimatedTimeOfArrival = child.getG()/734;
                     return child;
                 }
 
@@ -87,9 +88,14 @@ public class PathFindingService {
                     continue;
                 }
 
+                if(child.getData().getNodeType().equals("STAI") && accessibility) {
+                    //System.out.println("skipping this node because the cost is to big");
+                    continue;
+                }
+
                 else if(!open.contains(child) || cost < child.getF()){
                     //System.out.println("setting child's parent to be current");
-                    child.setParent(current, current.getG() + child.getG());
+                    child.setParent(current, child.getG());
                     if(open.contains(child)){
                         open.remove(child);
                     }
@@ -113,5 +119,9 @@ public class PathFindingService {
             nodeChildren.add(new MapNode(n.getXcoord(), n.getYcoord(), n));
         }
         return nodeChildren;
+    }
+
+    int getEstimatedTimeOfArrival(){
+         return estimatedTimeOfArrival;
     }
 }

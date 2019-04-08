@@ -24,7 +24,7 @@ public class MainTest {
 
     @Before
     public void setup() throws IOException {
-        DatabaseService.wipeOutFiles();
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
     @Test

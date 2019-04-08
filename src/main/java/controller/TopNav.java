@@ -7,18 +7,22 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
 import service.ResourceLoader;
 import service.StageManager;
 
 import java.io.IOException;
-
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 public class TopNav {
 
@@ -26,13 +30,15 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn;
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn, employeeBtn;
     @FXML
     private JFXTextField search_bar ;
     @FXML
     private JFXToggleNode accessibilityButton;
     @FXML
     private FontAwesomeIconView lock_icon;
+    @FXML
+    private Label time_label;
 
     // events I send out/control
     @FXML
@@ -92,7 +98,27 @@ public class TopNav {
         resetBtn();
 
         // set Default time
-//        time_label.setText();
+        timeWatcher();
+    }
+
+    private void timeWatcher() {
+        time_label.setTextFill(Color.WHITE);
+        Task task = new Task<Void>() {
+            @Override public Void call() throws Exception {
+                while (true) {
+                    Thread.sleep(100);
+                    GregorianCalendar calendar = new GregorianCalendar();
+                    TimeUnit.SECONDS.sleep(1);
+                    Platform.runLater(new Runnable() {
+                        @Override public void run() {
+                            time_label.setText(calendar.getTime().toString());
+                        }
+                    });
+                }
+            }
+        };
+
+        new Thread(task).start();
     }
 
 
@@ -124,11 +150,13 @@ public class TopNav {
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
             newNode_btn.setVisible(true);
+            employeeBtn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
         } else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             newNode_btn.setVisible(false);
+            employeeBtn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
         }
     }
@@ -171,5 +199,12 @@ public class TopNav {
         sendEvent.setAccessiblePath(accessibility);
         sendEvent.setEventName("navigation");
         eventBus.post(sendEvent);
+    }
+
+    public void showEditEmployee(ActionEvent actionEvent) throws Exception {
+        Stage stage = (Stage) employeeBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
+        StageManager.changeExistingWindow(stage, root, "Edit Employees");
+        stage.setFullScreen(true);
     }
 }
