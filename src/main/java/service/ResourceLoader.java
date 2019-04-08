@@ -5,7 +5,6 @@ import java.net.URL;
 public class ResourceLoader {
 
     public static final URL home = service.ResourceLoader.class.getResource("/home.fxml");
-    public static final URL mapEdit = service.ResourceLoader.class.getResource("/mapEdit.fxml");
     public static final URL scheduler = service.ResourceLoader.class.getResource("/schedule.fxml");
     public static final URL request = service.ResourceLoader.class.getResource("/request.fxml");
     public static final URL createNode = service.ResourceLoader.class.getResource("/createNode.fxml");
@@ -16,8 +15,9 @@ public class ResourceLoader {
     public static final URL sanitationRequest = service.ResourceLoader.class.getResource("/requests/sanitationRequest.fxml");
     public static final URL ToyRequest = service.ResourceLoader.class.getResource("/Requests/ToyRequest.fxml");
     public static final URL securityRequest = service.ResourceLoader.class.getResource("/requests/securityRequest.fxml");
-
     public static final URL giftStoreRequest = service.ResourceLoader.class.getResource("/Requests/giftStoreRequest.fxml");
+    public static final URL medicineRequest = service.ResourceLoader.class.getResource("/requests/medicine_request.fxml");
+    public static final URL itRequest = service.ResourceLoader.class.getResource("/requests/it_request.fxml");
 
     public static final URL edges = service.ResourceLoader.class.getResource("/edges.csv");
     public static final URL nodes = service.ResourceLoader.class.getResource("/nodes.csv");
