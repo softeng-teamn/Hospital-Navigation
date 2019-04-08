@@ -1,6 +1,7 @@
 * {
     -fx-primary: #48577D;
-    -fx-complementary: #43464C;
+    -fx-complementary: #1C2E51;
+    -fx-highlight: #456AAC;
     -fx-secondary: #F5F5F5;
     -fx-primarytext: #F7FAFF;
     -fx-unfocusedtext: #9E9E9E;
@@ -18,7 +19,7 @@
 }
 
 .header {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: -fx-complementary;
 }
 
 .big-label{
@@ -146,12 +147,12 @@
  ******************************************************************************/
 
 .list-view {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: -fx-complementary;
     -fx-border-radius: 0px;
 }
 
 .list-view .list-cell {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: -fx-complementary;
     -fx-text-fill: -fx-primarytext;
     -fx-font-size: 13pt;
 }
@@ -162,7 +163,7 @@
 }
 
 .list-view .list-cell:selected {
-    -fx-background-color: #434343;
+    -fx-background-color: #7683ac;
 }
 
 /*******************************************************************************
