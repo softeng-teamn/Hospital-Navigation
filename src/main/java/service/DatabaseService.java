@@ -1770,6 +1770,9 @@ public class DatabaseService {
                 case "ISLAM":
                     r = ReligiousRequest.Religion.ISLAM;
                     break;
+                case "OTHER":
+                    r = ReligiousRequest.Religion.OTHER;
+                    break;
                 default:
                     r = ReligiousRequest.Religion.CHRISTIAN;
                     break;

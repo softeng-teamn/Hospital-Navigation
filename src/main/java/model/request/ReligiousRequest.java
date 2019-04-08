@@ -10,7 +10,8 @@ public class ReligiousRequest extends Request{
         CHRISTIAN,
         JEWISH,
         CATHOLIC,
-        ISLAM
+        ISLAM,
+        OTHER
     }
 
     ReligiousRequest.Religion religion;
