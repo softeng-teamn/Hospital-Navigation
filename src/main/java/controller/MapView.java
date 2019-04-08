@@ -474,7 +474,7 @@ public class MapView {
             showDirVbox.toFront();
         }
         if (showDirVbox.getAlignment().equals(Pos.BOTTOM_RIGHT)) {
-            showDirVbox.setAlignment(Pos.TOP_LEFT);
+            showDirVbox.setAlignment(Pos.TOP_RIGHT);
         }
         else {
             showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
