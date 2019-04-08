@@ -2,6 +2,7 @@ package controller;
 
 
 import model.Edge;
+import model.ElevatorCon;
 import model.Node;
 import service.DatabaseService;
 
@@ -11,6 +12,8 @@ import java.util.HashMap;
 public class Controller {
     static boolean isAdmin = false;
     static HashMap<String, ArrayList<Node>> connections;
+    static ElevatorCon elevatorCon = new ElevatorCon();
+    static String floorIsAt = "0";
 
 
     public static boolean getIsAdmin() {
