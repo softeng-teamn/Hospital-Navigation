@@ -18,6 +18,7 @@ public class ResourceLoader {
     public static final URL fulfillrequest = service.ResourceLoader.class.getResource("/fulfillrequest.fxml");
     public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
     public static final URL employees = service.ResourceLoader.class.getResource("/employees.csv");
+    public static final URL employeeEdit = service.ResourceLoader.class.getResource("/employeeEdit.fxml");
 
     public static final URL adminServices = service.ResourceLoader.class.getResource("/adminServices.fxml");
 

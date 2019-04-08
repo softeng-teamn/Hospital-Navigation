@@ -127,21 +127,33 @@ public class RequestController extends Controller implements Initializable {
      * populates list based on the user
      */
     void repopulateList() {
+
         System.out.println("Repopulation of listView");
+
         if (Controller.getIsAdmin()) {
             allNodes = myDBS.getAllNodes();
         } else {
             allNodes = myDBS.getNodesFilteredByType("STAI", "HALL");
         }
+
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();
         // repopulate
         allNodesObservable.addAll(allNodes);
+
+        Collections.sort(allNodesObservable, new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return o1.getLongName().compareTo(o2.getLongName());
+            }
+        });
+
         // clear listVIEW
         if (list_view == null) {
             System.out.println("LIST VIEW IS NULL");
             return;
         }
+
         list_view.getItems().clear();
         // add to listView
         list_view.getItems().addAll(allNodesObservable);

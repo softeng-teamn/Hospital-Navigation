@@ -3,8 +3,6 @@ package controller;
 import com.google.common.eventbus.EventBus;
 import javafx.fxml.FXML;
 import model.EventBusFactory;
-
-
 import static controller.Controller.initConnections;
 
 public class HomeController {

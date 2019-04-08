@@ -7,9 +7,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.paint.Color;
@@ -19,9 +21,12 @@ import javafx.util.Duration;
 import model.*;
 import service.PathFindingService;
 
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static controller.Controller.elevatorCon;
+import static controller.Controller.floorIsAt;
 
 public class MapView {
 
@@ -37,15 +42,36 @@ public class MapView {
     private ScrollPane map_scrollpane;
     @FXML
     private Slider zoom_slider;
+    @FXML
+    private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
+    @FXML
+    private Label cur_el_floor;
 
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
 
+
+
+        JFXButton myBtn = (JFXButton) e.getSource();
+        char elevNum = myBtn.getText().charAt(myBtn.getText().length()-1);
+
+        int floor = Integer.parseInt("" + elevNum);
+
+        GregorianCalendar cal = new GregorianCalendar();
+        try {
+            elevatorCon.postFloor("S", floor, cal);
+        }catch (IOException ioe){
+            System.out.println("IO Exception");
+        }
+
     }
 
     @FXML
     void initialize() {
+
+        pingTiming();
+
         // listen to changes
         eventBus.register(this);
 
@@ -76,6 +102,32 @@ public class MapView {
         zoom_slider.setValue(0.3);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.3);
+    }
+
+    void pingTiming() {
+
+        Task task = new Task<Void>() {
+            @Override public Void call() throws Exception {
+                while (true) {
+                    Thread.sleep(1000);
+                    System.out.println("shit was fired");
+                    TimeUnit.SECONDS.sleep(1);
+                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
+                    Platform.runLater(new Runnable() {
+                        @Override public void run() {
+                            try {
+                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
+                                cur_el_floor.setText(elevatorCon.getFloor("S"));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+        };
+
+        new Thread(task).start();
     }
 
     @Subscribe
