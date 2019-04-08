@@ -18,6 +18,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -81,6 +83,7 @@ public class ScheduleController extends Controller {
      */
     @FXML
     public void initialize() {
+        resInfoLbl.setText("");
         timeErrorText = "Please enter valid start and end times.";
         availRoomsText = "Show Available Spaces";
         bookedRoomsText = "Show Booked Spaces";
@@ -101,7 +104,7 @@ public class ScheduleController extends Controller {
                         "Public",
                         "Private"
                 );
-        privacyLvlBox.getItems().addAll(options);
+        privacyLvlBox.setItems(options);
 
         // Set default date to today's date
         LocalDate date =  LocalDate.now();
