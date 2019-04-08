@@ -189,9 +189,8 @@ public class MapView {
                 lineCollection.add(line);
                 last = current;
             }
+            System.out.println(makeDirections(path));
         }
-
-        System.out.println(makeDirections(path));
     }
 
     /**
@@ -331,10 +330,12 @@ public class MapView {
         dirs.addAll(labels);
         directionsView.setItems(dirs);
 
-        String total = "";
-        for (int i = 0; i < directions.size(); i++) {
-            total += directions.get(i);
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < directions.size(); ++i) {
+            buf.append(directions.get(i));
         }
+        String total = buf.toString();
+
         return total;
     }
 

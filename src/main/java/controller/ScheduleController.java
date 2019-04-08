@@ -37,7 +37,7 @@ import service.StageManager;
 
 public class ScheduleController extends Controller {
 
-    private class ScheduleWrapper {
+    private static class ScheduleWrapper {
         private String time;
         public void setTime(String value) { this.time = value; }
         public String getTime() { return time; }
