@@ -13,10 +13,11 @@ public class ResourceLoader {
     public static final URL patientInfoRequest = service.ResourceLoader.class.getResource("/requests/patientInfo.fxml");
     public static final URL interpreterRequest = service.ResourceLoader.class.getResource("/requests/interpreterRequest.fxml");
     public static final URL sanitationRequest = service.ResourceLoader.class.getResource("/requests/sanitationRequest.fxml");
+    public static final URL securityRequest = service.ResourceLoader.class.getResource("/requests/securityRequest.fxml");
+    public static final URL religiousRequest = service.ResourceLoader.class.getResource("/requests/religiousRequest.fxml");
     public static final URL ToyRequest = service.ResourceLoader.class.getResource("/requests/ToyRequest.fxml");
     public static final URL externalTransportRequest = service.ResourceLoader.class.getResource("/requests/ExternalTransportationRequest.fxml");
 
-  public static final URL securityRequest = service.ResourceLoader.class.getResource("/requests/securityRequest.fxml");
     public static final URL giftStoreRequest = service.ResourceLoader.class.getResource("/requests/giftStoreRequest.fxml");
     public static final URL medicineRequest = service.ResourceLoader.class.getResource("/requests/medicine_request.fxml");
     public static final URL itRequest = service.ResourceLoader.class.getResource("/requests/it_request.fxml");

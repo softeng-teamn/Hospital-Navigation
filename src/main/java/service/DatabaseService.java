@@ -203,7 +203,9 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE FLORISTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, bouquetType varchar(255), quantity int)");
             statement.addBatch("CREATE TABLE SECURITYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(30))");
             statement.addBatch("CREATE TABLE SANITATIONREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(255), materialState varchar(255))");
+
             // Request 4 Create table here
+            statement.addBatch("CREATE TABLE RELIGIOUSREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1),notes varchar(225), locationNodeID varchar (255), completed boolean, religion varchar (30))");
             // Request 3 Create table here
             statement.addBatch("CREATE TABLE GIFTSTOREREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean,  gType varchar(30), patientName varchar(255))") ;
             // Request 5 Create table here
@@ -248,6 +250,7 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE SANITATIONREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 4 constraint here
             // Request 5 constraint here
+            statement.addBatch("ALTER TABLE RELIGIOUSREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 6 constraint here
             // Request 7 constraint here
             statement.addBatch("ALTER TABLE INTERNALTRANSPORTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
@@ -1010,8 +1013,35 @@ public class DatabaseService {
     //////////////////////// END REQUEST 4 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 5 QUERIES ////////////////////////////////////////////////////////////////////////
 
+    public ReligiousRequest getReligiousRequest(int id) {
+        String query = "SELECT * FROM RELIGIOUSREQUEST WHERE (serviceID = ?)";
+        return (ReligiousRequest) executeGetById(query, ReligiousRequest.class, id);
+    }
 
 
+    public boolean insertReligiousRequest(ReligiousRequest req) {
+        String insertQuery = ("INSERT INTO RELIGIOUSREQUEST(notes, locationNodeID, completed, religion) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name());
+    }
+
+    public boolean updateReligiousRequest(ReligiousRequest req) {
+        String query = "UPDATE RELIGIOUSREQUEST SET notes=?, locationNodeID=?, completed=?, religion=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name(), req.getId());
+    }
+
+    public boolean deleteReligiousRequest(ReligiousRequest req) {
+        String query = "DELETE FROM RELIGIOUSREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
+
+    public List<ReligiousRequest> getAllReligiousRequests() {
+        String query = "Select * FROM RELIGIOUSREQUEST";
+        return (List<ReligiousRequest>)(List<?>) executeGetMultiple(query, ReligiousRequest.class, new Object[]{});
+    }
+    public List<ReligiousRequest> getAllIncompleteReligiousRequests() {
+        String query = "Select * FROM RELIGIOUSREQUEST WHERE (completed = ?)";
+        return (List<ReligiousRequest>) (List<?>) executeGetMultiple(query, ReligiousRequest.class, false);
+    }
 
 
 
@@ -1446,6 +1476,7 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM SECURITYREQUEST");
             statement.addBatch("DELETE FROM SANITATIONREQUEST");
             // Request 4 delete here
+            statement.addBatch("DELETE FROM RELIGIOUSREQUEST");
             // Request 5 delete here
             statement.addBatch("DELETE FROM INTERPRETERREQUEST");
             // Request 6 delete here
@@ -1472,6 +1503,7 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE SECURITYREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE SANITATIONREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 4 restart here
+            statement.addBatch("ALTER TABLE RELIGIOUSREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 5 restart here
             statement.addBatch("ALTER TABLE INTERPRETERREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 6 restart here
@@ -1657,6 +1689,7 @@ public class DatabaseService {
         else if (cls.equals(SecurityRequest.class)) return extractSecurityRequest(rs);
         else if (cls.equals(SanitationRequest.class)) return extractSanitationRequest(rs);
         // Request 4 else if here
+        else if (cls.equals(ReligiousRequest.class)) return extractReligiousRequest(rs);
         // Request 5 else if here
         else if (cls.equals(InterpreterRequest.class)) return extractInterpreterRequest(rs);
         // Request 6 else if here
@@ -1771,7 +1804,38 @@ public class DatabaseService {
     //////////////////////// END REQUEST 4 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 5 EXTRACTION /////////////////////////////////////////////////////////////////////
 
+        private ReligiousRequest extractReligiousRequest(ResultSet rs) throws SQLException {
+            int serviceID = rs.getInt("serviceID");
+            String notes = rs.getString("notes");
+            Node locationNode = getNode(rs.getString("locationNodeID"));
+            boolean completed = rs.getBoolean("completed");
+            String religion = rs.getString("religion");
 
+            ReligiousRequest.Religion r = null;
+
+            switch(religion){
+                case "CHRISTIAN":
+                    r = ReligiousRequest.Religion.CHRISTIAN;
+                    break;
+                case "JEWISH":
+                    r = ReligiousRequest.Religion.JEWISH;
+                    break;
+                case "CATHOLIC":
+                    r = ReligiousRequest.Religion.CATHOLIC;
+                    break;
+                case "ISLAM":
+                    r = ReligiousRequest.Religion.ISLAM;
+                    break;
+                case "OTHER":
+                    r = ReligiousRequest.Religion.OTHER;
+                    break;
+                default:
+                    r = ReligiousRequest.Religion.CHRISTIAN;
+                    break;
+            }
+
+            return new ReligiousRequest(serviceID, notes, locationNode, completed, r);
+        }
 
 
 

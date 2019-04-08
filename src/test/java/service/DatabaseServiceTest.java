@@ -1914,7 +1914,146 @@ public class DatabaseServiceTest {
     //////////////////////// END REQUEST 4 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 5 TESTS //////////////////////////////////////////////////////////////////////////
 
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetReligiousRequest() {
+        // Assume an empty DB (ensured by setUp())
 
+        ReligiousRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getReligiousRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ReligiousRequest req = new ReligiousRequest(0, "Quickly please", node, false, ReligiousRequest.Religion.CHRISTIAN);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertReligiousRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getReligiousRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllReligiousRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        ReligiousRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getReligiousRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getReligiousRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getReligiousRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ReligiousRequest req1 = new ReligiousRequest(0, "No notes", node, false, ReligiousRequest.Religion.CHRISTIAN);
+        ReligiousRequest req2 = new ReligiousRequest(1, "Priority", node, true, ReligiousRequest.Religion.JEWISH);
+        ReligiousRequest req3 = new ReligiousRequest(2, "Notes go here", node, false, ReligiousRequest.Religion.CATHOLIC);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertReligiousRequest(req1));
+        assertTrue(myDBS.insertReligiousRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<ReligiousRequest> allReligiousRequests = myDBS.getAllReligiousRequests();
+        assertThat(allReligiousRequests.size(), is(2));
+        assertEquals(req1, allReligiousRequests.get(0));
+        assertEquals(req2, allReligiousRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertReligiousRequest(req3));
+
+        allReligiousRequests = myDBS.getAllReligiousRequests();
+        assertThat(allReligiousRequests.size(), is(3));
+        assertEquals(req1, allReligiousRequests.get(0));
+        assertEquals(req2, allReligiousRequests.get(1));
+        assertEquals(req3, allReligiousRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateReligiousRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ReligiousRequest req = new ReligiousRequest(0, "No notes", node, false, ReligiousRequest.Religion.CHRISTIAN);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertReligiousRequest(req));
+        assertEquals(req, myDBS.getReligiousRequest(0));
+
+        req.setNotes("Capsules");
+        req.setReligion(ReligiousRequest.Religion.JEWISH);
+
+        assertTrue(myDBS.updateReligiousRequest(req));
+        assertEquals(req, myDBS.getReligiousRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteReligiousRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ReligiousRequest req = new ReligiousRequest(0, "No notes", node, false, ReligiousRequest.Religion.CHRISTIAN);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertReligiousRequest(req));
+        assertEquals(req, myDBS.getReligiousRequest(0));
+
+        assertTrue(myDBS.deleteReligiousRequest(req));
+        assertNull(myDBS.getReligiousRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteReligiousRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        ReligiousRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getReligiousRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getReligiousRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getReligiousRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        ReligiousRequest req1 = new ReligiousRequest(0, "No notes", node, false, ReligiousRequest.Religion.CHRISTIAN);
+        ReligiousRequest req2 = new ReligiousRequest(1, "Priority", node, true, ReligiousRequest.Religion.JEWISH);
+        ReligiousRequest req3 = new ReligiousRequest(2, "Notes go here", node, false, ReligiousRequest.Religion.CATHOLIC);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertReligiousRequest(req1));
+        assertTrue(myDBS.insertReligiousRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<ReligiousRequest> allReligiousRequests = myDBS.getAllIncompleteReligiousRequests();
+        assertThat(allReligiousRequests.size(), is(1));
+        assertEquals(req1, allReligiousRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertReligiousRequest(req3));
+
+        allReligiousRequests = myDBS.getAllIncompleteReligiousRequests();
+        assertThat(allReligiousRequests.size(), is(2));
+        assertEquals(req1, allReligiousRequests.get(0));
+        assertEquals(req3, allReligiousRequests.get(1));
+    }
 
 
 
