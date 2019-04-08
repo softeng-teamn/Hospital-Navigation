@@ -20,17 +20,20 @@ public class ExternalTransportRequest extends Request {
 
     public ExternalTransportRequest(int id, String notes, Node location, boolean completed, Date date, TransportationType transportationType, String description) {
         super(id, notes, location, completed);
-        this.date = (Date) date.clone();
+        Date d = new Date(date.getTime());
+        this.date = d;
         this.transportationType = transportationType;
         this.description = description;
     }
 
     public Date getDate() {
-        return (Date) date.clone();
+        Date d = new Date(date.getTime());
+        return d;
     }
 
     public void setDate(Date date) {
-        this.date = (Date) date.clone();
+        Date d = new Date(date.getTime());
+        this.date = d;
     }
 
     public TransportationType getTransportationType() {

@@ -2592,6 +2592,7 @@ public class DatabaseServiceTest {
         Date d = new Date();
         // Create a request
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node node2 = new Node("ACONF00103", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         ExternalTransportRequest req1 = new ExternalTransportRequest(0, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
         ExternalTransportRequest req2 = new ExternalTransportRequest(1, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
         ExternalTransportRequest req3 = new ExternalTransportRequest(2, "No notes", node, false, d, ExternalTransportRequest.TransportationType.BUS, "");
@@ -2607,6 +2608,7 @@ public class DatabaseServiceTest {
 
         // Verify successful insertion
         assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertNode(node2));
         assertTrue(myDBS.insertExtTransRequest(req1));
         assertTrue(myDBS.insertExtTransRequest(req2));
 
