@@ -27,7 +27,6 @@
             <JFXComboBox fx:id="type" unFocusColor="BLACK" />
          </children>
       </HBox>
-      <JFXTextField />
       <Label styleClass="big-label" text="Patient Name" />
       <JFXTextField fx:id="patientName" />
       <Region prefHeight="195.0" prefWidth="534.0" stylesheets="@../theme.css" />

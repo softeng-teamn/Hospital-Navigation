@@ -32,7 +32,6 @@ public class GiftStoreRequestController extends RequestController {
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<GiftStoreRequest.GiftType> options = FXCollections.observableArrayList(GiftStoreRequest.GiftType.BALLOONS, GiftStoreRequest.GiftType.TEDDY_BEAR, GiftStoreRequest.GiftType.GIFT_BASKET) ;
         type.getItems().addAll(options);
-        //type.setItems(FXCollections.observableArrayList(GiftStoreRequest.GiftType.values()));
     }
 
 
