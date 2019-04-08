@@ -5,25 +5,40 @@
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EmployeeEditController">
    <children>
+      <HBox alignment="CENTER_RIGHT" spacing="12.0">
+         <children>
+            <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
+               <graphic>
+                  <FontAwesomeIconView glyphName="HOME" size="60" />
+               </graphic>
+            </JFXButton>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+         </padding>
+      </HBox>
       <HBox fx:id="hbox_container" alignment="CENTER" VBox.vgrow="ALWAYS">
          <children>
-            <VBox prefHeight="200.0" prefWidth="807.0" alignment="CENTER">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="807.0">
                <children>
                   <TableView fx:id="employee_table" editable="false" maxHeight="600.0" prefHeight="600.0" prefWidth="800.0">
                      <columns>
-                        <TableColumn fx:id="col_id" editable="false" resizable="false" prefWidth="70.0" text="ID" />
-                        <TableColumn fx:id="col_username" editable="true" resizable="false" prefWidth="210.0" text="Username" />
-                        <TableColumn fx:id="col_job" editable="true" resizable="false" prefWidth="260.0" text="Job" />
-                        <TableColumn fx:id="col_admin" editable="true" resizable="false" prefWidth="260.0" text="Is Kiosk Administrator?" />
+                        <TableColumn fx:id="col_id" editable="false" prefWidth="70.0" resizable="false" text="ID" />
+                        <TableColumn fx:id="col_username" editable="true" prefWidth="210.0" resizable="false" text="Username" />
+                        <TableColumn fx:id="col_job" editable="true" prefWidth="260.0" resizable="false" text="Job" />
+                        <TableColumn fx:id="col_admin" editable="true" prefWidth="260.0" resizable="false" text="Is Kiosk Administrator?" />
                      </columns>
                      <VBox.margin>
                         <Insets top="50.0" />
@@ -61,10 +76,6 @@
                   <JFXButton onAction="#addNewEmployee" prefHeight="69.0" prefWidth="560.0" text="Add" />
                </children>
             </VBox>
-            <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
-               <graphic>
-                  <FontAwesomeIconView glyphName="HOME" size="60" />
-               </graphic></JFXButton>
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
