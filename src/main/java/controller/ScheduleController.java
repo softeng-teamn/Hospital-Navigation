@@ -83,6 +83,7 @@ public class ScheduleController extends Controller {
      */
     @FXML
     public void initialize() {
+        resInfoLbl.setText("");
         timeErrorText = "Please enter valid start and end times.";
         availRoomsText = "Show Available Spaces";
         bookedRoomsText = "Show Booked Spaces";
@@ -103,7 +104,7 @@ public class ScheduleController extends Controller {
                         "Public",
                         "Private"
                 );
-        privacyLvlBox.getItems().addAll(options);
+        privacyLvlBox.setItems(options);
 
         // Set default date to today's date
         LocalDate date =  LocalDate.now();

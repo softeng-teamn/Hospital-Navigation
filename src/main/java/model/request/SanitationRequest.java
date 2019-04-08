@@ -1,6 +1,7 @@
 package model.request;
 
 import model.Node;
+import service.DatabaseService;
 
 import java.util.Objects;
 
@@ -56,11 +57,12 @@ public class SanitationRequest extends Request {
 
     @Override
     public void makeRequest() {
-        // Todo
+        DatabaseService.getDatabaseService().insertSanitationRequest(this);
     }
 
     @Override
     public void fillRequest() {
-        // todo
+        this.setCompleted(true);
+        DatabaseService.getDatabaseService().updateSanitationRequest(this);
     }
 }
