@@ -113,6 +113,18 @@
     -fx-fill: -fx-primary;
 }
 
+.accessiblity-toggle-node {
+    -fx-content-display: graphic_only;
+}
+
+.accessiblity-toggle-node:hover .glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
+.accessiblity-toggle-node:selected .glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
 .jfx-radio-button {
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primaryText;
@@ -178,7 +190,7 @@
 }
 
 .scroll-bar > .increment-button > .increment-arrow, .scroll-bar > .decrement-button > .decrement-arrow {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: -fx-unfocusedtext;
 }
 
 /* Up Arrow */
