@@ -105,6 +105,13 @@ public class Node {
         nodeID = id;
     }
 
+    public Node(String nodeID, int xcord, int ycord, String nodeType){
+        this.nodeID = nodeID;
+        this.xcoord = xcord;
+        this.ycoord = ycord;
+        this.nodeType = nodeType;
+    }
+
     public Node( String nodeID, int xcoord, int ycoord, String floor, String building, String nodeType, String longName, String shortName) {
         this.xcoord = xcoord;
         this.ycoord = ycoord;
