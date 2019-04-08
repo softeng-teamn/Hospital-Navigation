@@ -50,6 +50,7 @@ public class EmployeeEditControllerTest extends ApplicationTest {
     private List<Employee> testEmployees = Arrays.asList(testEmployee1, testEmployee2, testEmployee3, testEmployee4, testEmployee5, testEmployee6, testEmployee7, testEmployee8, testEmployee9, testEmployee10);
 
     @Override
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
     public void start(Stage stage) throws Exception {
         DatabaseService mockDBS = mock(DatabaseService.class);
         when(mockDBS.getAllEmployees()).thenReturn(testEmployees);
@@ -64,7 +65,6 @@ public class EmployeeEditControllerTest extends ApplicationTest {
     }
 
     @Before
-    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
     public void setupTest() {
     }
 
@@ -109,9 +109,9 @@ public class EmployeeEditControllerTest extends ApplicationTest {
         verifyThat(cols, hasSize(4), informedErrorMessage(this));
 
         TableColumn<Employee, Integer> col_id = (TableColumn<Employee, Integer>) cols.get(0);
-        TableColumn<Employee, String> col_username = (TableColumn<Employee, String>) cols.get(1);
-        TableColumn<Employee, JobType> col_job = (TableColumn<Employee, JobType>) cols.get(2);
-        TableColumn<Employee, Boolean> col_admin = (TableColumn<Employee, Boolean>) cols.get(3);
+//        TableColumn<Employee, String> col_username = (TableColumn<Employee, String>) cols.get(1);
+//        TableColumn<Employee, JobType> col_job = (TableColumn<Employee, JobType>) cols.get(2);
+//        TableColumn<Employee, Boolean> col_admin = (TableColumn<Employee, Boolean>) cols.get(3);
 
         clickOn(getCell(0, 0)).write("abcd").clickOn(0, 0);
         verifyThat(col_id.getCellData(0), is(testEmployee1.getID()), informedErrorMessage(this));
