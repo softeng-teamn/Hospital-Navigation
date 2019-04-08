@@ -35,10 +35,6 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     private JFXListView list_view;
     @FXML
-    private JFXTextArea textArea;
-    @FXML
-    private ToggleGroup requestType;
-    @FXML
     private JFXTextField search_bar;
     @FXML
     private Pane subSceneHolder;
@@ -86,6 +82,12 @@ public class RequestController extends Controller implements Initializable {
         String search = search_bar.getText();
         System.out.println(search);
         filterList(search);
+    }
+
+    @FXML
+    public void securitySelect(ActionEvent e) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.securityRequest));
     }
 
     /**
@@ -166,6 +168,11 @@ public class RequestController extends Controller implements Initializable {
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.internalTransportRequest));
     }
 
+    @FXML
+    public void interpreterRequestSelect(ActionEvent e) throws IOException{
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.interpreterRequest));
+    }
 
     @FXML
     public void patientSelect(ActionEvent actionEvent) throws IOException {

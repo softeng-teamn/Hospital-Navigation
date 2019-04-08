@@ -1,8 +1,9 @@
-package controller;
+package controller.requests;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,7 +12,7 @@ import model.request.FloristRequest;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FloristController extends RequestController{
+public class FloristController extends RequestController {
 
     @FXML
     private JFXTextArea description;

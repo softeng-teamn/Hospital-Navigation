@@ -5,9 +5,11 @@ import model.request.GiftStoreRequest;
 import model.request.*;
 import model.request.FloristRequest;
 import model.request.ITRequest;
+import model.request.InterpreterRequest;
 import model.request.InternalTransportRequest;
 import model.request.MaintenanceRequest;
 import model.request.MedicineRequest;
+import model.request.SecurityRequest;
 import model.request.ToyRequest;
 import model.request.PatientInfoRequest;
 import org.apache.commons.io.FileUtils;
@@ -40,7 +42,7 @@ import static org.mockito.Mockito.*;
 
 public class DatabaseServiceTest {
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
-    
+
     @Before
     public void setUp() {
         myDBS.wipeTables();
@@ -385,6 +387,7 @@ public class DatabaseServiceTest {
     // the tables yet
     @Test
     public void createTables() {
+
     }
 
     @Test
@@ -448,7 +451,7 @@ public class DatabaseServiceTest {
         // Verify successful get
         expected = reservation1;
         value = myDBS.getReservation(1); // Expect 1 because of failed insert
-      
+
         assertEquals(expected, value);
     }
 
@@ -1439,12 +1442,153 @@ public class DatabaseServiceTest {
 
     //////////////////////// END REQUEST 1 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 2 TESTS //////////////////////////////////////////////////////////////////////////
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetSecurityRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        SecurityRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getSecurityRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SecurityRequest req = new SecurityRequest(0, "No notes", node, false, SecurityRequest.Urgency.VERY);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertSecurityRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getSecurityRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllSecurityRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        SecurityRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getSecurityRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getSecurityRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getSecurityRequest(2);
+        assertThat(value, is(nullValue()));
 
 
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SecurityRequest req1 = new SecurityRequest(0, "No notes", node, false, SecurityRequest.Urgency.VERY);
+        SecurityRequest req2 = new SecurityRequest(1, "Priority", node, true, SecurityRequest.Urgency.NOT);
+        SecurityRequest req3 = new SecurityRequest(2, "Notes go here", node, false, SecurityRequest.Urgency.SOMEWHAT);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertSecurityRequest(req1));
+        assertTrue(myDBS.insertSecurityRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
+
+        // Check that there are two and only two, and that they are the right two
+        List<SecurityRequest> allSecurityRequests = myDBS.getAllSecurityRequests();
+        assertThat(allSecurityRequests.size(), is(2));
+        assertEquals(req1, allSecurityRequests.get(0));
+        assertEquals(req2, allSecurityRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertSecurityRequest(req3));
+
+        req3.setId(2);
+
+        allSecurityRequests = myDBS.getAllSecurityRequests();
+        assertThat(allSecurityRequests.size(), is(3));
+        assertEquals(req1, allSecurityRequests.get(0));
+        assertEquals(req2, allSecurityRequests.get(1));
+        assertEquals(req3, allSecurityRequests.get(2));
+    }
 
 
+    @Test
+    @Category(FastTest.class)
+    public void updateSecurityRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SecurityRequest req = new SecurityRequest(0, "No notes", node, false, SecurityRequest.Urgency.VERY);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertSecurityRequest(req));
+        assertEquals(req, myDBS.getSecurityRequest(0));
+
+        req.setUrgency(SecurityRequest.Urgency.NOT);
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updateSecurityRequest(req));
+        assertEquals(req, myDBS.getSecurityRequest(0));
+    }
 
 
+    @Test
+    @Category(FastTest.class)
+    public void deleteSecurityRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SecurityRequest req = new SecurityRequest(0, "No notes", node, false, SecurityRequest.Urgency.VERY);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertSecurityRequest(req));
+        assertEquals(req, myDBS.getSecurityRequest(0));
+
+        assertTrue(myDBS.deleteSecurityRequest(req));
+        assertNull(myDBS.getSecurityRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteSecurityRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        SecurityRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getSecurityRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getSecurityRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getSecurityRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        SecurityRequest req1 = new SecurityRequest(0, "No notes", node, false, SecurityRequest.Urgency.VERY);
+        SecurityRequest req2 = new SecurityRequest(1, "Priority", node, true, SecurityRequest.Urgency.NOT);
+        SecurityRequest req3 = new SecurityRequest(2, "Notes go here", node, false, SecurityRequest.Urgency.SOMEWHAT);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertSecurityRequest(req1));
+        assertTrue(myDBS.insertSecurityRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<SecurityRequest> allServiceRequests = myDBS.getAllIncompleteSecurityRequests();
+        assertThat(allServiceRequests.size(), is(1));
+        assertEquals(req1, allServiceRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertSecurityRequest(req3));
+
+        allServiceRequests = myDBS.getAllIncompleteSecurityRequests();
+        assertThat(allServiceRequests.size(), is(2));
+        assertEquals(req1, allServiceRequests.get(0));
+        assertEquals(req3, allServiceRequests.get(1));
+    }
 
     //////////////////////// END REQUEST 2 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 3 TESTS //////////////////////////////////////////////////////////////////////////
@@ -1780,7 +1924,146 @@ public class DatabaseServiceTest {
     //////////////////////// END REQUEST 5 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 6 TESTS //////////////////////////////////////////////////////////////////////////
 
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetInterpreterRequest() {
+        // Assume an empty DB (ensured by setUp())
 
+        InterpreterRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getInterpreterRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req = new InterpreterRequest(0, "Quickly please", node, false, InterpreterRequest.Language.ENGLISH);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertInterpreterRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getInterpreterRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllInterpreterRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        InterpreterRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getInterpreterRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInterpreterRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInterpreterRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req1 = new InterpreterRequest(0, "No notes", node, false, InterpreterRequest.Language.ENGLISH);
+        InterpreterRequest req2 = new InterpreterRequest(1, "Priority", node, true, InterpreterRequest.Language.FRENCH);
+        InterpreterRequest req3 = new InterpreterRequest(2, "Notes go here", node, false, InterpreterRequest.Language.MANDARIN);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInterpreterRequest(req1));
+        assertTrue(myDBS.insertInterpreterRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<InterpreterRequest> allInterpreterRequests = myDBS.getAllInterpreterRequests();
+        assertThat(allInterpreterRequests.size(), is(2));
+        assertEquals(req1, allInterpreterRequests.get(0));
+        assertEquals(req2, allInterpreterRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertInterpreterRequest(req3));
+
+        allInterpreterRequests = myDBS.getAllInterpreterRequests();
+        assertThat(allInterpreterRequests.size(), is(3));
+        assertEquals(req1, allInterpreterRequests.get(0));
+        assertEquals(req2, allInterpreterRequests.get(1));
+        assertEquals(req3, allInterpreterRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateInterpreterRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req = new InterpreterRequest(0, "No notes", node, false, InterpreterRequest.Language.ENGLISH);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInterpreterRequest(req));
+        assertEquals(req, myDBS.getInterpreterRequest(0));
+
+        req.setNotes("Capsules");
+        req.setLanguage(InterpreterRequest.Language.FRENCH);
+
+        assertTrue(myDBS.updateInterpreterRequest(req));
+        assertEquals(req, myDBS.getInterpreterRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteInterpreterRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req = new InterpreterRequest(0, "No notes", node, false, InterpreterRequest.Language.ENGLISH);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInterpreterRequest(req));
+        assertEquals(req, myDBS.getInterpreterRequest(0));
+
+        assertTrue(myDBS.deleteInterpreterRequest(req));
+        assertNull(myDBS.getInterpreterRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteInterpreterRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        InterpreterRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getInterpreterRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInterpreterRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInterpreterRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req1 = new InterpreterRequest(0, "No notes", node, false, InterpreterRequest.Language.ENGLISH);
+        InterpreterRequest req2 = new InterpreterRequest(1, "Priority", node, true, InterpreterRequest.Language.FRENCH);
+        InterpreterRequest req3 = new InterpreterRequest(2, "Notes go here", node, false, InterpreterRequest.Language.MANDARIN);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInterpreterRequest(req1));
+        assertTrue(myDBS.insertInterpreterRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<InterpreterRequest> allInterpreterRequests = myDBS.getAllIncompleteInterpreterRequests();
+        assertThat(allInterpreterRequests.size(), is(1));
+        assertEquals(req1, allInterpreterRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertInterpreterRequest(req3));
+
+        allInterpreterRequests = myDBS.getAllIncompleteInterpreterRequests();
+        assertThat(allInterpreterRequests.size(), is(2));
+        assertEquals(req1, allInterpreterRequests.get(0));
+        assertEquals(req3, allInterpreterRequests.get(1));
+    }
 
 
 
