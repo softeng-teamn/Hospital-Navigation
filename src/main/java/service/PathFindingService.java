@@ -122,6 +122,7 @@ public class PathFindingService {
      *  Will either return the last MapNode with a parent chain back to the start
      *  or returns null if we CANT get to the dest node
      * @param start
+     * @param nodeDest
      * @param dest
      * @return
      */
@@ -141,16 +142,19 @@ public class PathFindingService {
             if (nodeDest == null){
                 if(current.getData().getNodeType().equals(dest)){
                     //System.out.println("DESTINATION FOUND!!!!!");
+                    System.out.println(current.getData().getLongName());
+
                     return current;
                 }
             } else if (dest == null){
                 if(current.equals(nodeDest)){
                     return current;
+
                 }
             }
             ArrayList<MapNode> children = getChildren(current);
             for (MapNode child : children){
-                if (!visited.containsKey(child)){
+                if (!visited.containsKey(child) && !needVisit.contains(child)){
                     child.setParent(current, 0);
                     needVisit.add(child);
                 }
@@ -159,6 +163,45 @@ public class PathFindingService {
         return null;
     }
 
+    /**
+     *  Will either return the last MapNode with a parent chain back to the start
+     *  or returns null if we CANT get to the dest node
+     * @param start
+     * @param nodeDest
+     * @return
+     */
+    MapNode depth(MapNode start, MapNode nodeDest) {
+        //System.out.println("Created open PriorityQueue");
+        HashMap<MapNode, String> visited = new HashMap<MapNode, String>();
+
+        MapNode path = depthUtil(start, visited, nodeDest);
+
+        return path;
+    }
+
+    private MapNode depthUtil(MapNode current, HashMap<MapNode, String> visited, MapNode dest) {
+        visited.put(current, "true");
+
+        ArrayList<MapNode> children = getChildren(current);
+
+        if(current.equals(dest)){
+            //System.out.println("DESTINATION FOUND!!!!!");
+            return current;
+        }
+
+        for (MapNode child : children){
+            if (!visited.containsKey(child)){
+                child.setParent(current, 0);
+                MapNode path = depthUtil(child, visited, dest);
+                if (path != null){
+                    return path;
+                }
+            }
+        }
+
+        // return null if dest isn't in this node and any of it's child;
+        return null;
+    }
 
 
     /**

@@ -184,6 +184,8 @@ public class MapView {
             drawPoint(path.get(path.size()-1), selectCircle, Color.rgb(72,87,125));
         }
 
+
+
         drawPath(path);
 
     }
