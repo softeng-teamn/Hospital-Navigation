@@ -96,13 +96,36 @@ public class ScheduleController extends Controller {
     public ReservableSpace currentSelection;
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
-
     // LIst of spaces to display
     private ObservableList<ReservableSpace> resSpaces;
-
+    // Error messages
     private String timeErrorText, availRoomsText, bookedRoomsText, clearFilterText, conflictErrorText, pastDateErrorText;
-
+    // Database
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    public int getOpenTime() {
+        return openTime;
+    }
+
+    public void setOpenTime(int openTime) {
+        this.openTime = openTime;
+    }
+
+    public int getCloseTime() {
+        return closeTime;
+    }
+
+    public void setCloseTime(int closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public int getTimeStep() {
+        return timeStep;
+    }
+
+    public void setTimeStep(int timeStep) {
+        this.timeStep = timeStep;
+    }
 
     /**
      * Set up scheduler page.

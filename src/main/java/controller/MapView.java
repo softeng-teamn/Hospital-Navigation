@@ -3,15 +3,23 @@ package controller;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -19,6 +27,7 @@ import javafx.util.Duration;
 import model.*;
 import service.PathFindingService;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -37,6 +46,15 @@ public class MapView {
     private ScrollPane map_scrollpane;
     @FXML
     private Slider zoom_slider;
+
+    @FXML
+    private JFXListView directionsView;
+
+    @FXML
+    private JFXButton showDirectionsBtn;
+
+    @FXML
+    private VBox showDirVbox;
 
     // ELEVATOR CALL BUTTONS
     @FXML
@@ -76,6 +94,8 @@ public class MapView {
         zoom_slider.setValue(0.3);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.3);
+
+        directionsView.setVisible(false);
     }
 
     @Subscribe
@@ -300,6 +320,18 @@ public class MapView {
             }
         }
 
+
+        // tODO: make button and allow display on map
+        ObservableList<Label> dirs = FXCollections.observableArrayList();
+        ArrayList<Label> labels = new ArrayList<>();
+        for (int i = 0; i < directions.size(); i++) {
+            Label l = new Label(directions.get(i));
+            l.setWrapText(true);
+            labels.add(l);
+        }
+        dirs.addAll(labels);
+        directionsView.setItems(dirs);
+
         String total = "";
         for (int i = 0; i < directions.size(); i++) {
             total += directions.get(i);
@@ -431,4 +463,22 @@ public class MapView {
         return direction;
     }
 
+    @FXML
+    private void showDirections() {
+        directionsView.setVisible(!directionsView.isVisible());
+        if (showDirectionsBtn.getText().contains("Show")) {
+            showDirectionsBtn.setText("Close Textual Directions");
+            directionsView.toFront();
+        }
+        else {
+            showDirectionsBtn.setText("Show Textual Directions");
+            showDirVbox.toFront();
+        }
+        if (showDirVbox.getAlignment().equals(Pos.BOTTOM_RIGHT)) {
+            showDirVbox.setAlignment(Pos.TOP_LEFT);
+        }
+        else {
+            showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
+        }
+    }
 }
