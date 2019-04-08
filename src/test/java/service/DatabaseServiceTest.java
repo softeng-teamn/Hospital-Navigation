@@ -2460,6 +2460,7 @@ public class DatabaseServiceTest {
 
         // Verify successful insertion
         assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertNode(node2));
         assertTrue(myDBS.insertExtTransRequest(req1));
         assertTrue(myDBS.insertExtTransRequest(req2));
 
