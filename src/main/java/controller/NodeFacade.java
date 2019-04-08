@@ -7,9 +7,12 @@ public class NodeFacade {
     Node node;
     MapNode mapNode;
 
-    public NodeFacade(Node node, MapNode mapNode) {
-        this.node = node;
+    public NodeFacade(MapNode mapNode) {
         this.mapNode = mapNode;
+    }
+
+    public NodeFacade(Node node){
+        this.node = node;
     }
 
     public void MapNodeCalculateHeuristic(MapNode destination){
