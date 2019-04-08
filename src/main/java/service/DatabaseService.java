@@ -2,15 +2,8 @@ package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
-import model.request.FloristRequest;
-import model.request.ITRequest;
-import model.request.InterpreterRequest;
-import model.request.InternalTransportRequest;
-import model.request.MaintenanceRequest;
-import model.request.MedicineRequest;
-import model.request.ToyRequest;
-import model.request.PatientInfoRequest;
 
+import model.request.*;
 
 import java.io.File;
 import java.sql.*;
@@ -204,11 +197,12 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
 
-
+            // statement.addBatch("CREATE TABLE <TableName>(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ... <you fields here>")
+            // Request 1 Create table here
             // statement.addBatch("CREATE TABLE <TableName>(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), ... <you fields here>")
             statement.addBatch("CREATE TABLE FLORISTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, bouquetType varchar(255), quantity int)");
-            // Request 2 Create table here
-            // Request 3 Create table here
+            statement.addBatch("CREATE TABLE SECURITYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(30))");
+            statement.addBatch("CREATE TABLE SANITATIONREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(255), materialState varchar(255))");
             // Request 4 Create table here
             // Request 5 Create table here
             // Request 6 Create table here
@@ -242,9 +236,11 @@ public class DatabaseService {
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
             // statement.addBatch("ALTER TABLE <TableName> ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
+            // Request 1 constraint here
+            statement.addBatch("ALTER TABLE SECURITYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             statement.addBatch("ALTER TABLE FLORISTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 2 constraint here
-            // Request 3 constraint here
+            statement.addBatch("ALTER TABLE SANITATIONREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
             // Request 4 constraint here
             // Request 5 constraint here
             // Request 6 constraint here
@@ -822,20 +818,126 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 1 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 2 QUERIES ////////////////////////////////////////////////////////////////////////
+    /**
+     * @param id the id of the request to get from the database
+     * @return the Security request object with the given ID
+     */
+    public SecurityRequest getSecurityRequest(int id) {
+        String query = "SELECT * FROM SECURITYREQUEST WHERE (serviceID = ?)";
+        return (SecurityRequest) executeGetById(query, SecurityRequest.class, id);
+    }
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertSecurityRequest(SecurityRequest req) {
+        String insertQuery = ("INSERT INTO SECURITYREQUEST(notes, locationNodeID, completed, urgency) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency().name());
+    }
 
+    /** updates a given Security request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateSecurityRequest(SecurityRequest req) {
+        String query = "UPDATE SECURITYREQUEST SET notes=?, locationNodeID=?, completed=?, urgency=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency().name(), req.getId());
+    }
 
+    /** deletes a given Security request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteSecurityRequest(SecurityRequest req) {
+        String query = "DELETE FROM SECURITYREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
 
+    /**
+     * @return all Security requests stored in the database in a List.
+     */
+    public List<SecurityRequest> getAllSecurityRequests() {
+        String query = "Select * FROM SECURITYREQUEST";
+        return (List<SecurityRequest>)(List<?>) executeGetMultiple(query, SecurityRequest.class, new Object[]{});
+    }
 
+    /**
+     * @return a list of every Security request that has not been completed yet.
+     */
+    public List<SecurityRequest> getAllIncompleteSecurityRequests() {
+        String query = "Select * FROM SECURITYREQUEST WHERE (completed = ?)";
+        return (List<SecurityRequest>)(List<?>) executeGetMultiple(query, SecurityRequest.class, false);
+    }
 
-
+    /**
+     * @return a list of every Security request that has not been completed yet.
+     */
+    public List<SecurityRequest> getAllCompleteSecurityRequests() {
+        String query = "Select * FROM SECURITYREQUEST WHERE (completed = ?)";
+        return (List<SecurityRequest>)(List<?>) executeGetMultiple(query, SecurityRequest.class, true);
+    }
     //////////////////////// END REQUEST 2 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 3 QUERIES ////////////////////////////////////////////////////////////////////////
+    /**
+     * @param id the id of the request to get from the database
+     * @return the sanitation request object with the given ID
+     */
+    public SanitationRequest getSanitationRequest(int id) {
+        String query = "SELECT * FROM SANITATIONREQUEST WHERE (serviceID = ?)";
+        return (SanitationRequest) executeGetById(query, SanitationRequest.class, id);
+    }
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertSanitationRequest(SanitationRequest req) {
+        String insertQuery = ("INSERT INTO SANITATIONREQUEST(notes, locationNodeID, completed, urgency, materialState) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency(), req.getMaterialState());
+    }
 
+    /** updates a given sanitation request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateSanitationRequest(SanitationRequest req) {
+        String query = "UPDATE SANITATIONREQUEST SET notes=?, locationNodeID=?, completed=?, urgency=?, materialState=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency(), req.getMaterialState(), req.getId());
+    }
 
+    /** deletes a given sanitation request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteSanitationRequest(SanitationRequest req) {
+        String query = "DELETE FROM SANITATIONREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
 
+    /**
+     * @return all sanitation requests stored in the database in a List.
+     */
+    public List<SanitationRequest> getAllSanitationRequests() {
+        String query = "Select * FROM SANITATIONREQUEST";
+        return (List<SanitationRequest>)(List<?>) executeGetMultiple(query, SanitationRequest.class, new Object[]{});
+    }
 
+    /**
+     * @return a list of every sanitation request that has not been completed yet.
+     */
+    public List<SanitationRequest> getAllIncompleteSanitationRequests() {
+        String query = "Select * FROM SANITATIONREQUEST WHERE (completed = ?)";
+        return (List<SanitationRequest>)(List<?>) executeGetMultiple(query, SanitationRequest.class, false);
+    }
+
+    /**
+     * @return a list of every sanitation request that has been completed.
+     */
+    public List<SanitationRequest> getAllCompleteSanitationRequests() {
+        String query = "Select * FROM SANITATIONREQUEST WHERE (completed = ?)";
+        return (List<SanitationRequest>)(List<?>) executeGetMultiple(query, SanitationRequest.class, true);
+    }
 
 
     //////////////////////// END REQUEST 3 QUERIES /////////////////////////////////////////////////////////////////////
@@ -1231,8 +1333,8 @@ public class DatabaseService {
 
             // statement.addBatch("DELETE FROM <TableName>");
             statement.addBatch("DELETE FROM FLORISTREQUEST");
-            // Request 2 delete here
-            // Request 3 delete here
+            statement.addBatch("DELETE FROM SECURITYREQUEST");
+            statement.addBatch("DELETE FROM SANITATIONREQUEST");
             // Request 4 delete here
             // Request 5 delete here
             statement.addBatch("DELETE FROM INTERPRETERREQUEST");
@@ -1253,8 +1355,8 @@ public class DatabaseService {
 
             // statement.addBatch("ALTER TABLE <TableName> ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE FLORISTREQUEST ALTER COLUMN serviceID RESTART WITH 0");
-            // Request 2 restart here
-            // Request 3 restart here
+            statement.addBatch("ALTER TABLE SECURITYREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE SANITATIONREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 4 restart here
             // Request 5 restart here
             statement.addBatch("ALTER TABLE INTERPRETERREQUEST ALTER COLUMN serviceID RESTART WITH 0");
@@ -1434,8 +1536,8 @@ public class DatabaseService {
 
         // else if (cls.equals(<RequestClassName>.class)) return extract<RequestName>(rs);
         else if (cls.equals(FloristRequest.class)) return extractFloristRequest(rs);
-        // Request 2 else if here
-        // Request 3 else if here
+        else if (cls.equals(SecurityRequest.class)) return extractSecurityRequest(rs);
+        else if (cls.equals(SanitationRequest.class)) return extractSanitationRequest(rs);
         // Request 4 else if here
         // Request 5 else if here
         else if (cls.equals(InterpreterRequest.class)) return extractInterpreterRequest(rs);
@@ -1475,21 +1577,43 @@ public class DatabaseService {
 
     //////////////////////// END REQUEST 1 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 2 EXTRACTION /////////////////////////////////////////////////////////////////////
+    private SecurityRequest extractSecurityRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String typeString = rs.getString("urgency");
 
+        SecurityRequest.Urgency urgency = null;
 
+        switch (typeString) {
+            case "NOT":
+                urgency = SecurityRequest.Urgency.NOT;
+                break;
+            case "SOMEWHAT":
+                urgency = SecurityRequest.Urgency.SOMEWHAT;
+                break;
+            case "VERY":
+                urgency = SecurityRequest.Urgency.VERY;
+                break;
+            default:
+                urgency = SecurityRequest.Urgency.NOT;
+        }
 
-
-
-
-
+        return new SecurityRequest(serviceID, notes, locationNode, completed, urgency);
+    }
     //////////////////////// END REQUEST 2 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 3 EXTRACTION /////////////////////////////////////////////////////////////////////
+    private SanitationRequest extractSanitationRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String urgency = rs.getString("urgency");
+        String materialState = rs.getString("materialState");
 
-
-
-
-
-
+        return new SanitationRequest(serviceID, notes, locationNode, completed, urgency, materialState);
+    }
 
     //////////////////////// END REQUEST 3 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 4 EXTRACTION /////////////////////////////////////////////////////////////////////
