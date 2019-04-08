@@ -1534,6 +1534,9 @@ public class DatabaseService {
             case "MANDARIN":
                 l = InterpreterRequest.Language.MANDARIN;
                 break;
+            default:
+                l = InterpreterRequest.Language.SPANISH;
+                break;
         }
 
         return new InterpreterRequest(serviceID, notes, locationNode, completed, l);
