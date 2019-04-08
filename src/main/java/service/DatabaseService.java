@@ -2,6 +2,7 @@ package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.*;
+import model.request.AVServiceRequest;
 import model.request.ITRequest;
 import model.request.MaintenanceRequest;
 import model.request.MedicineRequest;
@@ -209,7 +210,7 @@ public class DatabaseService {
             // Request 7 Create table here
             // Request 8 Create table here
             // Request 9 Create table here
-            // Request 10 Create table here
+             statement.addBatch("CREATE TABLE AVSERVICEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, avServiceType varchar(30)");
             statement.addBatch("CREATE TABLE MAINTENANCEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, maintenanceType varchar(30))");
             // Request 12 Create table here
 
@@ -240,7 +241,7 @@ public class DatabaseService {
             // Request 7 constraint here
             // Request 8 constraint here
             // Request 9 constraint here
-            // Request 10 constraint here
+            statement.addBatch("ALTER TABLE AVSERVICEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             // Request 12 constraint here
 
@@ -846,11 +847,65 @@ public class DatabaseService {
     //////////////////////// END REQUEST 9 QUERIES /////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 10 QUERIES ///////////////////////////////////////////////////////////////////////
 
+    /**
+     * @param req the request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertAVServiceRequest(AVServiceRequest req) {
+        String insertQuery = ("INSERT INTO AVSERVICEREQUEST(notes, locationNodeID, completed, avServiceType) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getAVServiceType().name());
+    }
 
+    /**
+     * @param id the id of the request to get from the database
+     * @return the IT request object with the given ID
+     */
+    public AVServiceRequest getAVServiceRequest(int id) {
+        String query = "SELECT * FROM AVSERVICEREQUEST WHERE (serviceID = ?)";
+        return (AVServiceRequest) executeGetById(query, AVServiceRequest.class, id);
+    }
 
+    /**
+     * @return all IT requests stored in the database in a List.
+     */
+    public List<AVServiceRequest> getAllAVServiceRequests() {
+        String query = "Select * FROM AVSERIVCEQUEST";
+        return (List<AVServiceRequest>)(List<?>) executeGetMultiple(query, AVServiceRequest.class, new Object[]{});
+    }
 
+    /** updates a given IT request in the database.
+     * @param req the request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateAVServiceRequest(AVServiceRequest req) {
+        String query = "UPDATE AVSERVICEREQUEST SET notes=?, locationNodeID=?, completed=?, avServiceType=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getAVServiceType().name(), req.getId());
+    }
 
+    /** deletes a given IT request from the database
+     * @param req the request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteAVServiceRequest(AVServiceRequest req) {
+        String query = "DELETE FROM AVSERVICEREQUEST WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getId());
+    }
 
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<AVServiceRequest> getAllIncompleteAVServiceRequests() {
+        String query = "Select * FROM AVSERVICEREQUEST WHERE (completed = ?)";
+        return (List<AVServiceRequest>)(List<?>) executeGetMultiple(query, AVServiceRequest.class, false);
+    }
+
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<AVServiceRequest> getAllCompleteAVServiceRequests() {
+        String query = "Select * FROM AVSERVICEREQUEST WHERE (completed = ?)";
+        return (List<AVServiceRequest>)(List<?>) executeGetMultiple(query, AVServiceRequest.class, true);
+    }
 
     //////////////////////// END REQUEST 10 QUERIES ////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 11 QUERIES ///////////////////////////////////////////////////////////////////////
@@ -999,7 +1054,7 @@ public class DatabaseService {
             // Request 7 delete here
             // Request 8 delete here
             // Request 9 delete here
-            // Request 10 delete here
+            statement.addBatch("DELETE FROM AVSERVICERQUEST");
             statement.addBatch("DELETE FROM MAINTENANCEREQUEST");
             // Request 12 delete here
 
@@ -1019,7 +1074,7 @@ public class DatabaseService {
             // Request 7 restart here
             // Request 8 restart here
             // Request 9 restart here
-            // Request 10 restart here
+            statement.addBatch("ALTER TABLE AVSERVICEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             // Request 12 restart here
 
@@ -1196,7 +1251,7 @@ public class DatabaseService {
         // Request 7 else if here
         // Request 8 else if here
         // Request 9 else if here
-        // Request 10 else if here
+        else if (cls.equals(AVServiceRequest.class)) return extractAVServiceRequest(rs);
         else if (cls.equals(MaintenanceRequest.class)) return extractMaintenanceRequest(rs);
         // Request 12 else if here
         else return null;
@@ -1285,12 +1340,15 @@ public class DatabaseService {
     //////////////////////// END REQUEST 9 EXTRACTION //////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 10 EXTRACTION ////////////////////////////////////////////////////////////////////
 
+    private AVServiceRequest extractAVServiceRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        String typeString = rs.getString("avServiceType");
 
-
-
-
-
-
+        return new AVServiceRequest(serviceID, notes, locationNode, completed, AVServiceRequest.AVServiceType.valueOf(typeString));
+    }
     //////////////////////// END REQUEST 10 EXTRACTION /////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 11 EXTRACTION ////////////////////////////////////////////////////////////////////
 

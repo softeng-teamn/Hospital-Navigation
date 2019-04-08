@@ -38,7 +38,7 @@
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <JFXListView fx:id="list_view" prefWidth="384.0" onMouseClicked="#locationSelected">
+            <JFXListView fx:id="list_view" onMouseClicked="#locationSelected" prefWidth="384.0">
                <HBox.margin>
                   <Insets right="50.0" />
                </HBox.margin></JFXListView>
@@ -139,7 +139,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="AV Request" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#avSelect" prefHeight="256.0" prefWidth="256.0" text=" AV Request (James)" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="HARD_OF_HEARING" styleClass="button-glyph-icon" />
                                  </graphic>
