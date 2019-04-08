@@ -17,6 +17,7 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.request, is(notNullValue()));
         assertThat(ResourceLoader.createNode, is(notNullValue()));
         assertThat(ResourceLoader.maintenanceRequest, is(notNullValue()));
+
         assertThat(ResourceLoader.floristRequest, is(notNullValue()));
         assertThat(ResourceLoader.patientInfoRequest, is(notNullValue()));
         assertThat(ResourceLoader.interpreterRequest, is(notNullValue()));
@@ -33,10 +34,6 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.internalTransportRequest, is(notNullValue()));
         assertThat(ResourceLoader.reservablespaces, is(notNullValue()));
         assertThat(ResourceLoader.employees, is(notNullValue()));
-
-
-        // Images
-        assertThat(ResourceLoader.firstFloor, is(notNullValue()));
     }
 
 }

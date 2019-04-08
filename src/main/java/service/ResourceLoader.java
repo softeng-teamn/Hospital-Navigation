@@ -14,7 +14,9 @@ public class ResourceLoader {
     public static final URL interpreterRequest = service.ResourceLoader.class.getResource("/requests/interpreterRequest.fxml");
     public static final URL sanitationRequest = service.ResourceLoader.class.getResource("/requests/sanitationRequest.fxml");
     public static final URL ToyRequest = service.ResourceLoader.class.getResource("/requests/ToyRequest.fxml");
-    public static final URL securityRequest = service.ResourceLoader.class.getResource("/requests/securityRequest.fxml");
+    public static final URL externalTransportRequest = service.ResourceLoader.class.getResource("/requests/ExternalTransportationRequest.fxml");
+
+  public static final URL securityRequest = service.ResourceLoader.class.getResource("/requests/securityRequest.fxml");
     public static final URL giftStoreRequest = service.ResourceLoader.class.getResource("/requests/giftStoreRequest.fxml");
     public static final URL medicineRequest = service.ResourceLoader.class.getResource("/requests/medicine_request.fxml");
     public static final URL itRequest = service.ResourceLoader.class.getResource("/requests/it_request.fxml");
@@ -25,7 +27,6 @@ public class ResourceLoader {
     public static final URL internalTransportRequest = service.ResourceLoader.class.getResource("/requests/internalTransportRequest.fxml");
     public static final URL reservablespaces = service.ResourceLoader.class.getResource("/reservablespaces.csv");
     public static final URL employees = service.ResourceLoader.class.getResource("/employees.csv");
-
 
     // Images
     public static final URL firstFloor = service.ResourceLoader.class.getResource("/Images/01_thefirstfloor.png");
