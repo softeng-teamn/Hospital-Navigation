@@ -1888,6 +1888,10 @@ public class DatabaseService {
             case "BUS":
                 tType = ExternalTransportRequest.TransportationType.BUS;
                 break;
+            default:
+                System.out.println("Invalid transportation entry (on DBS.extractExtTransRequest): " + transType);
+                tType = null;
+                break; // the loop
         }
 
         return new ExternalTransportRequest(serviceID, notes, locationNode, completed, t, tType, descript);
