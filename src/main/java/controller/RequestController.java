@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
@@ -40,6 +41,8 @@ public class RequestController extends Controller implements Initializable {
     private ToggleGroup requestType;
     @FXML
     private JFXTextField search_bar;
+    @FXML
+    private Pane subSceneHolder;
 
     private Collection<Request> requests;
     private Collection<Request> pendingRequests;

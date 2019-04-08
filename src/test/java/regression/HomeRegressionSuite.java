@@ -41,7 +41,7 @@ public class HomeRegressionSuite extends ApplicationTest {
         try {
             Parent root = FXMLLoader.load(ResourceLoader.home);
             StageManager.changeWindow(stage, root, "Home");
-            stage.setFullScreen(true);
+            stage.setMaximized(true);
         } catch (LoadException e) {
 
         }
@@ -51,7 +51,7 @@ public class HomeRegressionSuite extends ApplicationTest {
     @After
     public void cleanup() {
         System.out.println("Cleanup!");
-        DatabaseService.wipeOutFiles();
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
 

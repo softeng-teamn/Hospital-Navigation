@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import service.CSVService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -28,7 +29,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(ResourceLoader.home);
-        primaryStage.setFullScreen(true);
+        // Closes all threads
+        primaryStage.setOnCloseRequest((ae) -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        primaryStage.setMaximized(true);
         StageManager.changeWindow(primaryStage, root, "Home");
     }
 
