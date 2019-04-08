@@ -877,7 +877,7 @@ public class DatabaseService {
     }
 
     public boolean deleteInterpreterRequest(InterpreterRequest req) {
-        String query = "DELETE FROM INTERPRETER WHERE (serviceID = ?)";
+        String query = "DELETE FROM INTERPRETERREQUEST WHERE (serviceID = ?)";
         return executeUpdate(query, req.getId());
     }
 
@@ -1530,6 +1530,7 @@ public class DatabaseService {
                 break;
             case "FRENCH":
                 l = InterpreterRequest.Language.FRENCH;
+                break;
             case "MANDARIN":
                 l = InterpreterRequest.Language.MANDARIN;
                 break;
