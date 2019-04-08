@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import model.request.GiftStoreRequest;
 import model.request.*;
 import model.request.FloristRequest;
 import model.request.ITRequest;
@@ -1746,7 +1747,167 @@ public class DatabaseServiceTest {
     ///////////////////////// REQUEST 4 TESTS //////////////////////////////////////////////////////////////////////////
 
 
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetGiftStoreRequest() {
+        // Assume an empty DB (ensured by setUp())
 
+        GiftStoreRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getGiftStoreRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        GiftStoreRequest req = new GiftStoreRequest(0, "Get well soon!", node, false, GiftStoreRequest.GiftType.BALLOONS,  "Mary");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertGiftStoreRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getGiftStoreRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteGiftStoreRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        GiftStoreRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getGiftStoreRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getGiftStoreRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getGiftStoreRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        GiftStoreRequest req1 = new GiftStoreRequest(0, "No notes", node, false, GiftStoreRequest.GiftType.GIFT_BASKET,  "Tommy");
+        GiftStoreRequest req2 = new GiftStoreRequest(1, "Get well soon!", node, false, GiftStoreRequest.GiftType.TEDDY_BEAR,"Ben");
+        GiftStoreRequest req3 = new GiftStoreRequest(2, "feel better", node, false, GiftStoreRequest.GiftType.BALLOONS, "Tommy");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertGiftStoreRequest(req1));
+        assertTrue(myDBS.insertGiftStoreRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
+
+        // Check that there are two and only two, and that they are the right two
+        List<GiftStoreRequest> allGiftStoreRequests = myDBS.getAllIncompleteGiftStoreRequests();
+        assertThat(allGiftStoreRequests.size(), is(2));
+        assertEquals(req1, allGiftStoreRequests.get(0));
+        assertEquals(req2, allGiftStoreRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertGiftStoreRequest(req3));
+
+        req3.setId(2);
+
+        allGiftStoreRequests = myDBS.getAllIncompleteGiftStoreRequests();
+        assertThat(allGiftStoreRequests.size(), is(3));
+        assertEquals(req1, allGiftStoreRequests.get(0));
+        assertEquals(req2, allGiftStoreRequests.get(1));
+        assertEquals(req3, allGiftStoreRequests.get(2));
+    }
+
+
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllCompleteGiftStoreRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        GiftStoreRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getGiftStoreRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getGiftStoreRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getGiftStoreRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        GiftStoreRequest req1 = new GiftStoreRequest(0, "No notes", node, true, GiftStoreRequest.GiftType.GIFT_BASKET,  "Tommy");
+        GiftStoreRequest req2 = new GiftStoreRequest(1, "Get well soon!", node, true, GiftStoreRequest.GiftType.TEDDY_BEAR,"Ben");
+        GiftStoreRequest req3 = new GiftStoreRequest(2, "feel better", node, true, GiftStoreRequest.GiftType.BALLOONS, "Tommy");
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertGiftStoreRequest(req1));
+        assertTrue(myDBS.insertGiftStoreRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
+
+        // Check that there are two and only two, and that they are the right two
+        List<GiftStoreRequest> allGiftStoreRequests = myDBS.getAllCompleteGiftStoreRequests();
+        assertThat(allGiftStoreRequests.size(), is(2));
+        assertEquals(req1, allGiftStoreRequests.get(0));
+        assertEquals(req2, allGiftStoreRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertGiftStoreRequest(req3));
+
+        req3.setId(2);
+
+        allGiftStoreRequests = myDBS.getAllCompleteGiftStoreRequests();
+        assertThat(allGiftStoreRequests.size(), is(3));
+        assertEquals(req1, allGiftStoreRequests.get(0));
+        assertEquals(req2, allGiftStoreRequests.get(1));
+        assertEquals(req3, allGiftStoreRequests.get(2));
+    }
+
+
+
+
+
+
+
+    @Test
+    @Category(FastTest.class)
+    public void updateGiftStoreRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        GiftStoreRequest req = new GiftStoreRequest(0, "No notes", node, false, GiftStoreRequest.GiftType.TEDDY_BEAR, "Ron");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertGiftStoreRequest(req));
+        assertEquals(req, myDBS.getGiftStoreRequest(0));
+
+        req.setPatientName("SOMETHING THAT CHANGED ");
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updateGiftStoreRequest(req));
+        assertEquals(req, myDBS.getGiftStoreRequest(0));
+    }
+
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteGiftStoreRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        GiftStoreRequest req = new GiftStoreRequest(0, "No notes", node, false, GiftStoreRequest.GiftType.BALLOONS, "me");
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertGiftStoreRequest(req));
+        assertEquals(req, myDBS.getGiftStoreRequest(0));
+
+        assertTrue(myDBS.deleteGiftStoreRequest(req));
+        assertNull(myDBS.getGiftStoreRequest(0));
+    }
 
 
 

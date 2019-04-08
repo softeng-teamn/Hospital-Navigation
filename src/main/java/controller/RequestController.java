@@ -193,6 +193,12 @@ public class RequestController extends Controller implements Initializable {
     }
 
     @FXML
+    public void giftSelect (ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.giftStoreRequest));
+    }
+
+    @FXML
     public void selectSanitation(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.sanitationRequest));

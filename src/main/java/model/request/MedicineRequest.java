@@ -56,13 +56,14 @@ public class MedicineRequest extends Request {
         return Objects.hash(super.hashCode(), medicineType, quantity);
     }
 
-
+    // overides abstract Request method - called in Request Facade
     @Override
     public void makeRequest () {
         ITRequest newITRequest = new ITRequest(-1, this.getNotes(), this.getLocation(), false);
         DatabaseService.getDatabaseService().insertITRequest(newITRequest);
     }
 
+    // overides abstract Request method - called in Request Facade
     @Override
     public void fillRequest () {
         this.setCompleted(true);

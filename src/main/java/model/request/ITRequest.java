@@ -41,12 +41,14 @@ public class ITRequest extends Request {
     }
 
 
+    // overides abstract Request method - called in Request Facade
     @Override
     public void makeRequest () {
         ITRequest newITRequest = new ITRequest(-1, description, this.getLocation(), false);
         DatabaseService.getDatabaseService().insertITRequest(newITRequest);
     }
 
+    // overides abstract Request method - called in Request Facade
     @Override
     public void fillRequest () {
         this.setCompleted(true);

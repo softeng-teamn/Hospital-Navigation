@@ -107,7 +107,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Gift Services" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#giftSelect" prefHeight="256.0" prefWidth="256.0" text="Gift Services - Molly" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="GIFT" styleClass="button-glyph-icon" />
                                  </graphic>
