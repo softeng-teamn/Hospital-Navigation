@@ -245,27 +245,32 @@ public class MapView {
     // todo: watch out for multiple floors? are those separate nodes -> problem w directions
     // TODO: comments
 
+    /**
+     * Create textual instructions for the given path.
+     * @param path the list of nodes in the path
+     * @return a String of the directions
+     */
     private String makeDirections(ArrayList<Node> path) {
-        final int NORTH_I = 1122 - 1886;
-        final int NORTH_J = 642 - 1501;
+        final int NORTH_I = 1122 - 1886;    // Measurements from maps
+        final int NORTH_J = 642 - 1501;    // Measurements from maps
 
         double oldX, oldY;
-        ArrayList<String> directions = new ArrayList<>();
-        directions.add("\nStart at " + path.get(0).getLongName() + ".\n");
+        ArrayList<String> directions = new ArrayList<>();    // Collection of instructions
+        directions.add("\nStart at " + path.get(0).getLongName() + ".\n");    // First instruction
 
+        // Make the first instruction cardinal
         String cardinal = csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0).getXcoord(), path.get(0).getYcoord(), path.get(1).getXcoord(), path.get(1).getYcoord());
         cardinal = convertToCardinal(cardinal);
         directions.add(cardinal);
 
-        boolean afterFloorChange = false;
-        for (int i = 0; i < path.size() - 2; i++) {
-            if (afterFloorChange) {
+        boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
+        for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
+            if (afterFloorChange) {    // If we just changed floors, give a cardinal direction
                 String afterEl = csDirPrint(path.get(i+1).getXcoord() + NORTH_I, path.get(i+1).getYcoord() + NORTH_J, path.get(i+1).getXcoord(), path.get(i+1).getYcoord(), path.get(i+2).getXcoord(), path.get(i+2).getYcoord());
                 directions.add(convertToCardinal(afterEl));
                 afterFloorChange = false;
             }
-            else if (!path.get(i).getFloor().equals(path.get(i+1).getFloor())) {
-                System.out.println(path.get(i) + " " + path.get(i+1));
+            else if (!path.get(i).getFloor().equals(path.get(i+1).getFloor())) {    // Otherwise if we're changing floors, give a floor change direction
                 if (path.get(i).getNodeType().equals("ELEV")) {
                     directions.add("Take the elevator from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
                 }
@@ -274,25 +279,27 @@ public class MapView {
                 }
                 afterFloorChange = true;
             }
-            else if(path.get(i+1).getNodeType().equals("ELEV")) {
+            else if(path.get(i+1).getNodeType().equals("ELEV")) {    // If next node is elevator, say so
                 directions.add("Walk to the elevator.\n");
             }
-            else if (path.get(i+1).getNodeType().equals("STAI")) {
+            else if (path.get(i+1).getNodeType().equals("STAI")) {    // If next node is stairs, say so
                 directions.add("Walk to the stairs.\n");
             }
-            else {
+            else {    // Otherwise provide a normal direction
                 directions.add(csDirPrint(path.get(i).getXcoord(), path.get(i).getYcoord(), path.get(i + 1).getXcoord(), path.get(i + 1).getYcoord(), path.get(i + 2).getXcoord(), path.get(i + 2).getYcoord()) + "\n");
             }
         }
 
+        // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
 
+        // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
             String oldDir = directions.get(i-1);
-            if (currDir.contains("straight")) {
+            if (currDir.contains("straight")) {    // If the current direction contains straight, get the distance substring
                 int feetIndex = oldDir.indexOf("for");
-                if (feetIndex < 0) {
+                if (feetIndex < 0) {    // If it's not cardinal, get the correct distance substring index
                     feetIndex = oldDir.indexOf("walk") + 5;
                 }
                 else {
@@ -300,22 +307,23 @@ public class MapView {
                 }
                 int oldDist = Integer.parseInt(oldDir.substring(feetIndex, oldDir.indexOf("feet")-1));
                 int currDist = Integer.parseInt(currDir.substring(currDir.indexOf("walk") + 5, currDir.indexOf("feet")-1));
-                int totalDist = oldDist + currDist;
+                int totalDist = oldDist + currDist;    // Combine the distance of this direction with the previous one
 
                 String newDir = "";
-                if (oldDir.contains("for")) {
+                if (oldDir.contains("for")) {    // Create the new direction as cardinal or not based on the old direction
                     newDir = oldDir.substring(0, oldDir.indexOf("for") + 4) + totalDist + " feet\n";
                 }
                 else {
                     newDir = oldDir.substring(0, oldDir.indexOf("walk") + 5) + totalDist + " feet\n";
                 }
-                directions.remove(i);
+                directions.remove(i);    // Remove the two old directions and add the new one
                 directions.remove(i-1);
                 directions.add(i-1, newDir);
                 i--;
             }
         }
 
+        // Create labels for each direction and add them to the listview
         ObservableList<Label> dirs = FXCollections.observableArrayList();
         ArrayList<Label> labels = new ArrayList<>();
         for (int i = 0; i < directions.size(); i++) {
@@ -327,6 +335,7 @@ public class MapView {
         dirs.addAll(labels);
         directionsView.setItems(dirs);
 
+        // Print out the directions
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < directions.size(); ++i) {
             buf.append(directions.get(i));
@@ -336,6 +345,11 @@ public class MapView {
         return total;
     }
 
+    /**
+     * Convert this direction to a cardinal direction
+     * @param cardinal the normal direction
+     * @return the direction as a cardinal direction
+     */
     private String convertToCardinal(String cardinal) {
         String feet = cardinal.substring(cardinal.indexOf("walk")+5)+ "\n";
         if (cardinal.contains("slightly left")) {
@@ -365,8 +379,19 @@ public class MapView {
         return cardinal;
     }
 
+    /**
+     * Compute the direction turned and distance between the middle and last point for the given 3 points.
+     * @param pX previous point's x
+     * @param pY previous point's y
+     * @param cX current point's x
+     * @param cY current point's y
+     * @param nX next point's x
+     * @param nY next point's y
+     * @return the direction for someone walking from points 1 to 3 with the turn direction and distance
+     *          between the middle and last point
+     */
     private String csDirPrint(double pX, double pY, double cX, double cY, double nX, double nY) {
-        final double THRESHOLD = .0001;
+        final double THRESHOLD = .0001;   // Double comparison standard
 
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
         prevXd = pX;
@@ -376,11 +401,13 @@ public class MapView {
         nextXd = nX;
         nextYd = nY;
 
+        // The slopes for the two vectors and y-intercept for the second vector as a line
         double slope1, slope2, intercept;
         slope1 = (currYd - prevYd) / (currXd - prevXd);
         slope2 = (nextYd - currYd) / (nextXd - currXd);
         intercept = nextYd - slope2 * nextXd;
 
+        // The vector components for both vectors and their lengths
         double oldI, oldJ, newI, newJ, lengthOld, lengthNew;
         oldI = currXd - prevXd;
         oldJ = currYd - prevYd;
@@ -389,20 +416,22 @@ public class MapView {
         lengthOld = Math.sqrt(oldI*oldI + oldJ*oldJ);
         lengthNew = Math.sqrt(newI*newI + newJ * newJ);
 
+        // Distance in feet based on measurements from the map: 260 pixels per 85 feet
         double distance = lengthNew /260 * 85;
 
+        // Compute the angle, theta, between the old and new vector
         double uDotV = oldI * newI + oldJ * newJ;
         double theta, alpha, plus, minus;
         theta = Math.acos(uDotV/(lengthNew*lengthOld));
-        alpha = Math.atan(slope1);
-        plus = theta + alpha;
-        minus = alpha - theta;
+        alpha = Math.atan(slope1);    // Compute the angle, alpha, between the old vector and horizontal
+        plus = theta + alpha;    // The sum of the two angles
+        minus = alpha - theta;    // The difference between the two angles
 
-        double computedY1 = currYd + Math.tan(plus);
+        double computedY1 = currYd + Math.tan(plus);    // Guess which side of the old vector we turned to
 
-        double expectedVal = (currXd + 1) * slope2 + intercept;
+        double expectedVal = (currXd + 1) * slope2 + intercept;    // The actual side of the old vector we turned to
 
-        if (Math.abs(newI) < THRESHOLD) {
+        if (Math.abs(newI) < THRESHOLD) {    // If the next vector is vertical, make sure it does what it's supposed to
             if ((nextYd > currYd && prevXd < currXd) || (nextYd < currYd && prevXd > currXd)) {
                 expectedVal = 1;
                 computedY1 = 1;
@@ -412,7 +441,7 @@ public class MapView {
                 computedY1 = 0;
             }
         }
-
+        // If the next vector is horizontal and this one was vertical, make it give the correct direction
         if (Math.abs(oldI) < THRESHOLD && Math.abs(newJ) < THRESHOLD) {
             if ((currYd > prevYd && nextXd > currXd) || (currYd < prevYd && currXd > nextXd)) {
                 expectedVal = 1;
@@ -426,10 +455,10 @@ public class MapView {
 
         String turn = "";
 
-        if (Math.abs(plus - minus) < Math.PI/8) {
+        if (Math.abs(plus - minus) < Math.PI/8) {    // Say straight within a small angle
             turn = "straight";
         }
-        else if (Math.abs(theta - Math.PI) < THRESHOLD) {
+        else if (Math.abs(theta - Math.PI) < THRESHOLD) {    // Turn around if theta is to behind you
             turn = "around";
         }
         else if (Math.abs(expectedVal - computedY1) < THRESHOLD) {
