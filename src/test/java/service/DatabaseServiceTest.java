@@ -4,6 +4,7 @@ import model.*;
 import model.request.*;
 import model.request.FloristRequest;
 import model.request.ITRequest;
+import model.request.InterpreterRequest;
 import model.request.InternalTransportRequest;
 import model.request.MaintenanceRequest;
 import model.request.MedicineRequest;
@@ -385,6 +386,7 @@ public class DatabaseServiceTest {
     // the tables yet
     @Test
     public void createTables() {
+
     }
 
     @Test
@@ -1761,7 +1763,146 @@ public class DatabaseServiceTest {
     //////////////////////// END REQUEST 5 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 6 TESTS //////////////////////////////////////////////////////////////////////////
 
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetInterpreterRequest() {
+        // Assume an empty DB (ensured by setUp())
 
+        InterpreterRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getInterpreterRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req = new InterpreterRequest(0, "Quickly please", node, false, InterpreterRequest.Language.ENGLISH);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertInterpreterRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getInterpreterRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllInterpreterRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        InterpreterRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getInterpreterRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInterpreterRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInterpreterRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req1 = new InterpreterRequest(0, "No notes", node, false, InterpreterRequest.Language.ENGLISH);
+        InterpreterRequest req2 = new InterpreterRequest(1, "Priority", node, true, InterpreterRequest.Language.FRENCH);
+        InterpreterRequest req3 = new InterpreterRequest(2, "Notes go here", node, false, InterpreterRequest.Language.MANDARIN);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInterpreterRequest(req1));
+        assertTrue(myDBS.insertInterpreterRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<InterpreterRequest> allInterpreterRequests = myDBS.getAllInterpreterRequests();
+        assertThat(allInterpreterRequests.size(), is(2));
+        assertEquals(req1, allInterpreterRequests.get(0));
+        assertEquals(req2, allInterpreterRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertInterpreterRequest(req3));
+
+        allInterpreterRequests = myDBS.getAllInterpreterRequests();
+        assertThat(allInterpreterRequests.size(), is(3));
+        assertEquals(req1, allInterpreterRequests.get(0));
+        assertEquals(req2, allInterpreterRequests.get(1));
+        assertEquals(req3, allInterpreterRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateInterpreterRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req = new InterpreterRequest(0, "No notes", node, false, InterpreterRequest.Language.ENGLISH);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInterpreterRequest(req));
+        assertEquals(req, myDBS.getInterpreterRequest(0));
+
+        req.setNotes("Capsules");
+        req.setLanguage(InterpreterRequest.Language.FRENCH);
+
+        assertTrue(myDBS.updateInterpreterRequest(req));
+        assertEquals(req, myDBS.getInterpreterRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteInterpreterRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req = new InterpreterRequest(0, "No notes", node, false, InterpreterRequest.Language.ENGLISH);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInterpreterRequest(req));
+        assertEquals(req, myDBS.getInterpreterRequest(0));
+
+        assertTrue(myDBS.deleteInterpreterRequest(req));
+        assertNull(myDBS.getInterpreterRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteInterpreterRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        InterpreterRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getInterpreterRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInterpreterRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getInterpreterRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        InterpreterRequest req1 = new InterpreterRequest(0, "No notes", node, false, InterpreterRequest.Language.ENGLISH);
+        InterpreterRequest req2 = new InterpreterRequest(1, "Priority", node, true, InterpreterRequest.Language.FRENCH);
+        InterpreterRequest req3 = new InterpreterRequest(2, "Notes go here", node, false, InterpreterRequest.Language.MANDARIN);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertInterpreterRequest(req1));
+        assertTrue(myDBS.insertInterpreterRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<InterpreterRequest> allInterpreterRequests = myDBS.getAllIncompleteInterpreterRequests();
+        assertThat(allInterpreterRequests.size(), is(1));
+        assertEquals(req1, allInterpreterRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertInterpreterRequest(req3));
+
+        allInterpreterRequests = myDBS.getAllIncompleteInterpreterRequests();
+        assertThat(allInterpreterRequests.size(), is(2));
+        assertEquals(req1, allInterpreterRequests.get(0));
+        assertEquals(req3, allInterpreterRequests.get(1));
+    }
 
 
 
