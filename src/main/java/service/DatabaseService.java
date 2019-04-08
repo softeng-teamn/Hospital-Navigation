@@ -193,7 +193,7 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER')))");
 
-            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, description varchar(300))");
+            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, type varchar(30))");
 
             statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
 
@@ -671,8 +671,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertITRequest(ITRequest req) {
-        String insertQuery = ("INSERT INTO ITREQUEST(notes, locationNodeID, completed, description) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDescription());
+        String insertQuery = ("INSERT INTO ITREQUEST(notes, locationNodeID, completed, type) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getItRequestType().name());
     }
 
     /**
@@ -697,8 +697,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateITRequest(ITRequest req) {
-        String query = "UPDATE ITREQUEST SET notes=?, locationNodeID=?, completed=?, description=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDescription(), req.getId());
+        String query = "UPDATE ITREQUEST SET notes=?, locationNodeID=?, completed=?, type=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getItRequestType().name(), req.getId());
     }
 
     /** deletes a given IT request from the database
@@ -2031,9 +2031,9 @@ public class DatabaseService {
         String notes = rs.getString("notes");
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
-        String description = rs.getString("description");
+        String type = rs.getString("type");
 
-        return new ITRequest(serviceID, notes, locationNode, completed, description);
+        return new ITRequest(serviceID, notes, locationNode, completed, ITRequest.ITRequestType.valueOf(type));
     }
 
     private MedicineRequest extractMedicineRequest(ResultSet rs) throws SQLException {

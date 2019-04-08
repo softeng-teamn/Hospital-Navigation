@@ -215,9 +215,18 @@ public class RequestController extends Controller implements Initializable {
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.ToyRequest));
     }
 
-
     public void externalTransportationRequest(ActionEvent actionEvent) throws IOException{
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.externalTransportRequest));
+    }
+  
+    public void medicineSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.medicineRequest));
+    }
+
+    public void itSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.itRequest));
     }
 }

@@ -3,7 +3,17 @@ package service;
 import model.*;
 import model.request.*;
 import org.apache.commons.io.FileUtils;
-import org.apache.derby.iapi.db.Database;
+
+import model.request.FloristRequest;
+import model.request.ITRequest;
+import model.request.InterpreterRequest;
+import model.request.InternalTransportRequest;
+import model.request.MaintenanceRequest;
+import model.request.MedicineRequest;
+import model.request.SecurityRequest;
+import model.request.ToyRequest;
+import model.request.PatientInfoRequest;
+
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12,7 +22,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.FastTest;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -1044,7 +1053,7 @@ public class DatabaseServiceTest {
 
         // Create a request
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
+        ITRequest req = new ITRequest(0, "No notes", node, false, ITRequest.ITRequestType.Maintenance);
 
         // Verify successful insertion
         assertTrue(myDBS.insertNode(node));
@@ -1075,9 +1084,9 @@ public class DatabaseServiceTest {
 
         // Create a some requests - don't care about node, so all the same
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        ITRequest req1 = new ITRequest(0, "No notes", node, false, "New mouse required");
-        ITRequest req2 = new ITRequest(1, "Priority", node, true, "No internet");
-        ITRequest req3 = new ITRequest(2, "Notes go here", node, false, "Help me");
+        ITRequest req1 = new ITRequest(0, "No notes", node, false, ITRequest.ITRequestType.Assistance);
+        ITRequest req2 = new ITRequest(1, "Priority", node, true, ITRequest.ITRequestType.New_Computer);
+        ITRequest req3 = new ITRequest(2, "Notes go here", node, false, ITRequest.ITRequestType.Accessories);
 
         // Verify successful insertion
         assertTrue(myDBS.insertNode(node));
@@ -1109,13 +1118,13 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void updateITRequest() {
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
+        ITRequest req = new ITRequest(0, "No notes", node, false, ITRequest.ITRequestType.New_Computer);
 
         assertTrue(myDBS.insertNode(node));
         assertTrue(myDBS.insertITRequest(req));
         assertEquals(req, myDBS.getITRequest(0));
 
-        req.setDescription("Two new mouses needed");
+        req.setItRequestType(ITRequest.ITRequestType.Maintenance);
         req.setCompleted(true);
 
         assertTrue(myDBS.updateITRequest(req));
@@ -1126,7 +1135,7 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void deleteITRequest() {
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        ITRequest req = new ITRequest(0, "No notes", node, false, "New mouse required");
+        ITRequest req = new ITRequest(0, "No notes", node, false, ITRequest.ITRequestType.New_Computer);
 
         assertTrue(myDBS.insertNode(node));
         assertTrue(myDBS.insertITRequest(req));
@@ -1154,9 +1163,9 @@ public class DatabaseServiceTest {
 
         // Create a some requests - don't care about node, so all the same
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        ITRequest req1 = new ITRequest(0, "No notes", node, false, "New mouse required");
-        ITRequest req2 = new ITRequest(1, "Priority", node, true, "No internet");
-        ITRequest req3 = new ITRequest(2, "Notes go here", node, false, "Help me");
+        ITRequest req1 = new ITRequest(0, "No notes", node, false, ITRequest.ITRequestType.New_Computer);
+        ITRequest req2 = new ITRequest(1, "Priority", node, true, ITRequest.ITRequestType.New_Computer);
+        ITRequest req3 = new ITRequest(2, "Notes go here", node, false, ITRequest.ITRequestType.New_Computer);
 
         // Verify successful insertion
         assertTrue(myDBS.insertNode(node));
