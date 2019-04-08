@@ -140,7 +140,7 @@ public class MapView {
         }
 
         drawPath(path);
-
+        System.out.println(makeDirections(path));
     }
 
     // draw path on the screen
@@ -221,5 +221,172 @@ public class MapView {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
+
+    // TODO: working on directions. idk where to put this
+    // TODO: SHOW COMPASS ON MAP
+
+    private String makeDirections(ArrayList<Node> path) {
+        final int NORTH_I = 1122 - 1886;
+        final int NORTH_J = 642 - 1501;
+
+        double oldX, oldY;
+        ArrayList<String> directions = new ArrayList<>();
+        directions.add("\nStart at " + path.get(0).getLongName() + ".\n");
+
+        String cardinal = csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0).getXcoord(), path.get(0).getYcoord(), path.get(1).getXcoord(), path.get(1).getYcoord());
+        String feet = cardinal.substring(cardinal.indexOf("walk")+5)+ "\n";
+        if (cardinal.contains("slightly left")) {
+            cardinal = "Walk south east for " + feet;
+        }
+        else if (cardinal.contains("slightly right")) {
+            cardinal = "Walk south west for " + feet;
+        }
+        else if (cardinal.contains("sharply left")) {
+            cardinal = "Walk north east for " + feet;
+        }
+        else if (cardinal.contains("sharply right")) {
+            cardinal = "Walk north west for " + feet;
+        }
+        else if (cardinal.contains("left")) {
+            cardinal = "Walk east for " + feet;
+        }
+        else if (cardinal.contains("right")) {
+            cardinal = "Walk west for " + feet;
+        }
+        else if (cardinal.contains("straight")) {
+            cardinal = "Walk south for " + feet;
+        }
+        else {
+            cardinal = "Walk north for " + feet;
+        }
+        directions.add(cardinal);
+
+        for (int i = 0; i < path.size() - 2; i++) {
+            directions.add(csDirPrint(path.get(i).getXcoord(), path.get(i).getYcoord(), path.get(i+1).getXcoord(), path.get(i+1).getYcoord(), path.get(i+2).getXcoord(), path.get(i+2).getYcoord()) + "\n");
+        }
+        directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
+
+        for (int i = 0; i < directions.size(); i++) {
+            String currDir = directions.get(i);
+            if (currDir.contains("straight")) {
+                String oldDir = directions.get(i-1);
+                int oldDist = Integer.parseInt(oldDir.substring(oldDir.indexOf("walk") + 5, oldDir.indexOf("feet")-1));
+                int currDist = Integer.parseInt(currDir.substring(currDir.indexOf("walk") + 5, currDir.indexOf("feet")-1));
+                int totalDist = oldDist + currDist;
+
+                String newDir = oldDir.substring(0, oldDir.indexOf("walk")+5) + totalDist + " feet\n";
+                directions.remove(i);
+                directions.remove(i-1);
+                directions.add(i-1, newDir);
+                i--;
+            }
+        }
+
+
+        String total = "";
+        for (int i = 0; i < directions.size(); i++) {
+            total += directions.get(i);
+        }
+        return total;
+    }
+
+    public String csDirPrint(double pX, double pY, double cX, double cY, double nX, double nY) {
+        final double THRESHOLD = .0001;
+
+        double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
+        prevXd = pX;
+        prevYd = pY;
+        currXd = cX;
+        currYd = cY;
+        nextXd = nX;
+        nextYd = nY;
+
+        double slope1, slope2, intercept;
+        slope1 = (currYd - prevYd) / (currXd - prevXd);
+        slope2 = (nextYd - currYd) / (nextXd - currXd);
+        intercept = nextYd - slope2 * nextXd;
+
+        double oldI, oldJ, newI, newJ, lengthOld, lengthNew;
+        oldI = currXd - prevXd;
+        oldJ = currYd - prevYd;
+        newI = nextXd - currXd;
+        newJ = nextYd - currYd;
+        lengthOld = Math.sqrt(oldI*oldI + oldJ*oldJ);
+        lengthNew = Math.sqrt(newI*newI + newJ * newJ);
+
+        double distance = lengthNew /260 * 85;
+
+        double uDotV = oldI * newI + oldJ * newJ;
+        double theta, alpha, plus, minus;
+        theta = Math.acos(uDotV/(lengthNew*lengthOld));
+        alpha = Math.atan(slope1);
+        plus = theta + alpha;
+        minus = alpha - theta;
+
+        double computedY1 = currYd + Math.tan(plus);
+
+        double expectedVal = (currXd + 1) * slope2 + intercept;
+
+        if (Math.abs(newI) < THRESHOLD) {
+            if ((nextYd > currYd && prevXd < currXd) || (nextYd < currYd && prevXd > currXd)) {
+                expectedVal = 1;
+                computedY1 = 1;
+            }
+            else {
+                expectedVal = 1;
+                computedY1 = 0;
+            }
+        }
+
+        if (Math.abs(oldI) < THRESHOLD && Math.abs(newJ) < THRESHOLD) {
+            if ((currYd > prevYd && nextXd > currXd) || (currYd < prevYd && currXd > nextXd)) {
+                expectedVal = 1;
+                computedY1 = 0;
+            }
+            else {
+                expectedVal = 1;
+                computedY1 = 1;
+            }
+        }
+
+        String turn = "";
+
+        if (Math.abs(plus - minus) < Math.PI/8) {
+            turn = "straight";
+        }
+        else if (Math.abs(theta - Math.PI) < THRESHOLD) {
+            turn = "around";
+        }
+        else if (Math.abs(expectedVal - computedY1) < THRESHOLD) {
+            if (theta < Math.PI/4) {
+                turn = "slightly right";
+            }
+            else if (theta > Math.PI*3/4) {
+                turn = "sharply right";
+            }
+            else {
+                turn = "right";
+            }
+        }
+        else {
+            if (theta < Math.PI/4) {
+                turn = "slightly left";
+            }
+            else if (theta > Math.PI*3/4) {
+                turn = "sharply left";
+            }
+            else {
+                turn = "left";
+            }
+        }
+
+
+        String direction = String.format("Turn " + turn + " and walk %.0f feet.", distance);
+        return direction;
+    }
+
+// TODO: decide when to give direction vs continue straight for multiple hallway nodes in a row - collapse into one
+    // TODO: going up/down and direction after that - NSEW? based on them going in and coming out of elev opp dir? turn into
+    // function - doesn't even have to be NS but any given oldI and oldJ (could make negatives of new one)
 
 }
