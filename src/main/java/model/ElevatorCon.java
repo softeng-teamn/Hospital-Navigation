@@ -33,7 +33,7 @@ public class ElevatorCon {
         //change into time since 12
         String t = "" + time.getTimeInMillis()/1000;
 
-        String urlParameters = "elevator=" + elevator + "&floor=" + floorNum + "&time=" + t;
+        String urlParameters = "elevator=" + elevator + "&floor=" + floorNum + "&time=" + t + "&isESP=false";
         post(URL, urlParameters);
     }
 
