@@ -176,7 +176,12 @@ public class MapView {
                 path = null;
         }
 
-        drawPoint(path.get(path.size()-1), selectCircle, Color.rgb(72,87,125));
+        if (path == null){
+            System.out.println("DIDNT FIND A PATH");
+        } else {
+            drawPoint(path.get(path.size()-1), selectCircle, Color.rgb(72,87,125));
+        }
+
         drawPath(path);
 
     }
