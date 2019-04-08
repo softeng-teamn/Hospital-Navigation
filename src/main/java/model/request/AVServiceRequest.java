@@ -1,6 +1,7 @@
 package model.request;
 
 import model.Node;
+import service.DatabaseService;
 
 import java.util.Objects;
 
@@ -39,12 +40,13 @@ public class AVServiceRequest extends Request {
 
     @Override
     public void makeRequest() {
-
+        DatabaseService.getDatabaseService().insertAVServiceRequest(this);
     }
 
     @Override
     public void fillRequest() {
-
+    this.setCompleted(true);
+    DatabaseService.getDatabaseService().updateAVServiceRequest(this);
     }
 
     @Override

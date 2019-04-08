@@ -210,7 +210,7 @@ public class DatabaseService {
             // Request 7 Create table here
             // Request 8 Create table here
             // Request 9 Create table here
-             statement.addBatch("CREATE TABLE AVSERVICEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, avServiceType varchar(30)");
+             statement.addBatch("CREATE TABLE AVSERVICEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, avServiceType varchar(30))");
             statement.addBatch("CREATE TABLE MAINTENANCEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, maintenanceType varchar(30))");
             // Request 12 Create table here
 
@@ -869,7 +869,7 @@ public class DatabaseService {
      * @return all IT requests stored in the database in a List.
      */
     public List<AVServiceRequest> getAllAVServiceRequests() {
-        String query = "Select * FROM AVSERIVCEQUEST";
+        String query = "Select * FROM AVSERVICEREQUEST";
         return (List<AVServiceRequest>)(List<?>) executeGetMultiple(query, AVServiceRequest.class, new Object[]{});
     }
 
@@ -1054,7 +1054,7 @@ public class DatabaseService {
             // Request 7 delete here
             // Request 8 delete here
             // Request 9 delete here
-            statement.addBatch("DELETE FROM AVSERVICERQUEST");
+            statement.addBatch("DELETE FROM AVSERVICEREQUEST");
             statement.addBatch("DELETE FROM MAINTENANCEREQUEST");
             // Request 12 delete here
 
