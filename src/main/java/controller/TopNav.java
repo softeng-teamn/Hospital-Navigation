@@ -147,7 +147,7 @@ public class TopNav {
 
     private void resetBtn() {
         if(event.isAdmin()){
-            fulfillBtn.setVisible(true);    // TODO: set subholder to hold admin screen
+            fulfillBtn.setVisible(true);    // TODO: change icon & name
             edit_btn.setVisible(true);
             newNode_btn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
