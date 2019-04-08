@@ -41,7 +41,7 @@
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <JFXListView fx:id="list_view" onMouseClicked="#locationSelected" prefHeight="952.0" prefWidth="384.0">
+            <JFXListView fx:id="list_view" onMouseClicked="#locationSelected" prefWidth="384.0">
                <HBox.margin>
                   <Insets right="24.0" />
                </HBox.margin></JFXListView>
@@ -101,7 +101,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Sanitation Services" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#selectSanitation" prefHeight="256.0" prefWidth="256.0" text="Sanitation Services (Maya)" textAlignment="CENTER" toggleGroup="$requestType" wrapText="true">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="TRASH" styleClass="button-glyph-icon" />
                                  </graphic>

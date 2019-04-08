@@ -187,6 +187,12 @@ public class RequestController extends Controller implements Initializable {
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.floristRequest));
     }
 
+    @FXML
+    public void selectSanitation(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.sanitationRequest));
+    }
+
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "I need to")
     @FXML
     public void locationSelected(MouseEvent mouseEvent) {
