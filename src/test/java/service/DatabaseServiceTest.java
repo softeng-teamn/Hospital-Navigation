@@ -9,6 +9,7 @@ import model.request.ITRequest;
 import model.request.InterpreterRequest;
 import model.request.InternalTransportRequest;
 import model.request.MaintenanceRequest;
+import model.request.AVServiceRequest;
 import model.request.MedicineRequest;
 import model.request.SecurityRequest;
 import model.request.ToyRequest;
@@ -1554,7 +1555,6 @@ public class DatabaseServiceTest {
         // Assume an empty DB (ensured by setUp())
 
         SecurityRequest value;
-
         // First verify that these requests are null
         value = myDBS.getSecurityRequest(0);
         assertThat(value, is(nullValue()));
@@ -2733,7 +2733,146 @@ public class DatabaseServiceTest {
 
     //////////////////////// END REQUEST 9 TESTS ///////////////////////////////////////////////////////////////////////
     ///////////////////////// REQUEST 10 TESTS /////////////////////////////////////////////////////////////////////////
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetAVServiceRequest() {
+        // Assume an empty DB (ensured by setUp())
 
+        AVServiceRequest value, expected;
+
+        // First verify that the request is null
+        value = myDBS.getAVServiceRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        AVServiceRequest req = new AVServiceRequest(0, "Quickly please", node, false, AVServiceRequest.AVServiceType.Visual);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertAVServiceRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getAVServiceRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllAVServiceRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        AVServiceRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getAVServiceRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getAVServiceRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getAVServiceRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        AVServiceRequest req1 = new AVServiceRequest(0, "No notes", node, false, AVServiceRequest.AVServiceType.Audio);
+        AVServiceRequest req2 = new AVServiceRequest(1, "Priority", node, true, AVServiceRequest.AVServiceType.Visual);
+        AVServiceRequest req3 = new AVServiceRequest(2, "Notes go here", node, false, AVServiceRequest.AVServiceType.Other);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertAVServiceRequest(req1));
+        assertTrue(myDBS.insertAVServiceRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<AVServiceRequest> allAVServiceRequests = myDBS.getAllAVServiceRequests();
+        assertThat(allAVServiceRequests.size(), is(2));
+        assertEquals(req1, allAVServiceRequests.get(0));
+        assertEquals(req2, allAVServiceRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertAVServiceRequest(req3));
+
+        allAVServiceRequests = myDBS.getAllAVServiceRequests();
+        assertThat(allAVServiceRequests.size(), is(3));
+        assertEquals(req1, allAVServiceRequests.get(0));
+        assertEquals(req2, allAVServiceRequests.get(1));
+        assertEquals(req3, allAVServiceRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteAVServiceRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        AVServiceRequest value;
+
+        // First verify that these requests are null
+        value = myDBS.getAVServiceRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getAVServiceRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getAVServiceRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some requests - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        AVServiceRequest req1 = new AVServiceRequest(0, "No notes", node, false, AVServiceRequest.AVServiceType.Audio);
+        AVServiceRequest req2 = new AVServiceRequest(1, "Priority", node, true, AVServiceRequest.AVServiceType.Visual);
+        AVServiceRequest req3 = new AVServiceRequest(2, "Notes go here", node, false, AVServiceRequest.AVServiceType.Other);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertAVServiceRequest(req1));
+        assertTrue(myDBS.insertAVServiceRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<AVServiceRequest> allAVServiceRequests = myDBS.getAllIncompleteAVServiceRequests();
+        assertThat(allAVServiceRequests.size(), is(1));
+        assertEquals(req1, allAVServiceRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertAVServiceRequest(req3));
+
+        allAVServiceRequests = myDBS.getAllIncompleteAVServiceRequests();
+        assertThat(allAVServiceRequests.size(), is(2));
+        assertEquals(req1, allAVServiceRequests.get(0));
+        assertEquals(req3, allAVServiceRequests.get(1));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateAVServiceRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        AVServiceRequest req = new AVServiceRequest(0, "No notes", node, false, AVServiceRequest.AVServiceType.Audio);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertAVServiceRequest(req));
+        assertEquals(req, myDBS.getAVServiceRequest(0));
+
+        req.setNotes("Capsules");
+        req.setAVServiceType(AVServiceRequest.AVServiceType.Visual);
+
+        assertTrue(myDBS.updateAVServiceRequest(req));
+        assertEquals(req, myDBS.getAVServiceRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteAVServiceRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        AVServiceRequest req = new AVServiceRequest(0, "No notes", node, false, AVServiceRequest.AVServiceType.Audio);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertAVServiceRequest(req));
+        assertEquals(req, myDBS.getAVServiceRequest(0));
+
+        assertTrue(myDBS.deleteAVServiceRequest(req));
+        assertNull(myDBS.getAVServiceRequest(0));
+    }
 
 
 

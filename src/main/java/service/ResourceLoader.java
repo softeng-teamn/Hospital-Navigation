@@ -2,13 +2,14 @@ package service;
 
 import java.net.URL;
 
-public class ResourceLoader {
+public class  ResourceLoader {
 
     public static final URL home = service.ResourceLoader.class.getResource("/home.fxml");
     public static final URL scheduler = service.ResourceLoader.class.getResource("/schedule.fxml");
     public static final URL request = service.ResourceLoader.class.getResource("/request.fxml");
     public static final URL createNode = service.ResourceLoader.class.getResource("/createNode.fxml");
     public static final URL maintenanceRequest = service.ResourceLoader.class.getResource("/requests/maintenance_requests.fxml");
+    public static final URL avServiceRequest = service.ResourceLoader.class.getResource("/requests/avservice_requests.fxml");
     public static final URL floristRequest = service.ResourceLoader.class.getResource("/requests/floristRequest.fxml");
     public static final URL patientInfoRequest = service.ResourceLoader.class.getResource("/requests/patientInfo.fxml");
     public static final URL interpreterRequest = service.ResourceLoader.class.getResource("/requests/interpreterRequest.fxml");
