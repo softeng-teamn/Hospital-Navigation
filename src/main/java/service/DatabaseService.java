@@ -1017,13 +1017,13 @@ public class DatabaseService {
 
 
     public boolean insertReligiousRequest(ReligiousRequest req) {
-        String insertQuery = ("INSERT INTO RELIGIOUSREQUEST(notes, locationNodeID, completed, language) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name());
+        String insertQuery = ("INSERT INTO RELIGIOUSREQUEST(notes, locationNodeID, completed, religion) VALUES(?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name());
     }
 
     public boolean updateReligiousRequest(ReligiousRequest req) {
-        String query = "UPDATE RELIGIOUSREQUEST SET notes=?, locationNodeID=?, completed=?, language=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name(), req.getId());
+        String query = "UPDATE RELIGIOUSREQUEST SET notes=?, locationNodeID=?, completed=?, religion=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name(), req.getId());
     }
 
     public boolean deleteReligiousRequest(ReligiousRequest req) {
@@ -1037,8 +1037,8 @@ public class DatabaseService {
     }
     public List<ReligiousRequest> getAllIncompleteReligiousRequests() {
         String query = "Select * FROM RELIGIOUSREQUEST WHERE (completed = ?)";
-        return (List<ReligiousRequest>)(List<?>) executeGetMultiple(query, ReligiousRequest.class, false);
-
+        return (List<ReligiousRequest>) (List<?>) executeGetMultiple(query, ReligiousRequest.class, false);
+    }
 
 
 
