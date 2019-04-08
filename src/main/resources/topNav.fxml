@@ -48,6 +48,16 @@
                 <graphic>
                     <FontAwesomeIconView glyphName="PENCIL" size="60" />
                 </graphic></JFXButton>
+            <MenuButton mnemonicParsing="false" text="Search Nearest">
+                <items>
+                    <MenuItem mnemonicParsing="false" text="Restroom" onAction="#showREST"/>
+                    <MenuItem mnemonicParsing="false" text="Elevator" onAction="#showELEV"/>
+                    <MenuItem mnemonicParsing="false" text="Staircase" onAction="#showSTAI"/>
+                    <MenuItem mnemonicParsing="false" text="Information Desk" onAction="#showINFO"/>
+                    <MenuItem mnemonicParsing="false" text="Conference room" onAction="#showCONF"/>
+                    <MenuItem mnemonicParsing="false" text="Exit" onAction="#showEXIT"/>
+                </items>
+            </MenuButton>
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="time_label"/>
             <Region HBox.hgrow="ALWAYS" />

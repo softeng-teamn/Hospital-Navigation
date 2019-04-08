@@ -15,6 +15,7 @@ public class Event {
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
+    String filterSearch = ""; // filtered search
 
 
     public boolean isChangingStart() {
@@ -85,5 +86,7 @@ public class Event {
         isAdmin = admin;
     }
 
+    public String getFilterSearch() { return filterSearch; }
 
+    public void setFilterSearch(String filterSearch) { this.filterSearch = filterSearch; }
 }

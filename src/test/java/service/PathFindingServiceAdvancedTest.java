@@ -158,38 +158,38 @@ public class PathFindingServiceAdvancedTest {
 //        when(mockPF.getChildren(mn10)).thenReturn(list);
     }
 
-//    @Test
-//    @Category(FastTest.class)
-//    public void testAStar() {
-//        // a path can be found
-//        assertThat(mockPF.aStar(mn1, mn6, false), is(mn6));
-//        assertThat(mockPF.aStar(mn10, mn8, false), is(mn8));
-//        assertThat(mockPF.aStar(mn6, mn8, false), is(mn8));
-//        assertThat(mockPF.aStar(mn2, mn10, false), is(mn10));
-//        assertThat(mockPF.aStar(mn1, mn8, false), is(mn8));
-//    }
+    @Test
+    @Category(FastTest.class)
+    public void testAStar() {
+        // a path can be found
+        assertThat(mockPF.aStar(mn1, mn6, false), is(mn6));
+        assertThat(mockPF.aStar(mn10, mn8, false), is(mn8));
+        assertThat(mockPF.aStar(mn6, mn8, false), is(mn8));
+        assertThat(mockPF.aStar(mn2, mn10, false), is(mn10));
+        assertThat(mockPF.aStar(mn1, mn8, false), is(mn8));
+    }
 
-//    @Test
-//    @Category(FastTest.class)
-//    public void pathTester() throws IOException {
-////        createMap();
-//        mockingGetChildren();
-//        ArrayList<Node> expected = new ArrayList<Node>();
-//        expected.add(0, n8);
-//        expected.add(0, n7);
-//        expected.add(0, n2);
-//        expected.add(0, n3);
-//        expected.add(0, n9);
-//        expected.add(0, n10);
-//        assertThat(mockPF.genPath(mn10, mn8, false), is(expected));
-//        mockingGetChildren();
-//        expected = new ArrayList<Node>();
-//        expected.add(0, n8);
-//        expected.add(0, n7);
-//        expected.add(0, n2);
-//        expected.add(0, n1);
-//        assertThat(mockPF.genPath(mn1, mn8, false), is(expected));
-//    }
+    @Test
+    @Category(FastTest.class)
+    public void pathTester() throws IOException {
+//        createMap();
+        mockingGetChildren();
+        ArrayList<Node> expected = new ArrayList<Node>();
+        expected.add(0, n8);
+        expected.add(0, n7);
+        expected.add(0, n2);
+        expected.add(0, n3);
+        expected.add(0, n9);
+        expected.add(0, n10);
+        assertThat(mockPF.genPath(mn10, mn8, false, "astar"), is(expected));
+        mockingGetChildren();
+        expected = new ArrayList<Node>();
+        expected.add(0, n8);
+        expected.add(0, n7);
+        expected.add(0, n2);
+        expected.add(0, n1);
+        assertThat(mockPF.genPath(mn1, mn8, false, "astar"), is(expected));
+    }
 
     @Test
     @Category(FastTest.class)
@@ -199,11 +199,7 @@ public class PathFindingServiceAdvancedTest {
         expected.add(0, n4);
         expected.add(0, n3);
         expected.add(0, n2);
-        assertThat(mockPF.genPath(mn2, null, false), is(expected));
-//        mockingGetChildren();
-//        MapNode expected = new MapNode(1,3,n5);
-//        expected.setParent(mn2, 0);
-//        assertThat(mockPF.filteredBreadth(mn2, null, "REST"), is(expected));
+        assertThat(mockPF.genPath(mn2, null, false, "REST"), is(expected));
     }
 
 }

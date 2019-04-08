@@ -198,4 +198,50 @@ public class TopNav {
         sendEvent.setEventName("navigation");
         eventBus.post(sendEvent);
     }
+
+    public void showREST(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("REST");
+        eventBus.post(event);
+    }
+
+    public void showELEV(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("ELEV");
+        eventBus.post(event);
+    }
+
+    public void showSTAI(ActionEvent actionEvent) {
+        event.setEventName("filter");
+        event.setFilterSearch("STAI");
+        eventBus.post(event);
+    }
+
+    public void showINFO(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("INFO");
+        eventBus.post(event);
+    }
+
+    public void showCONF(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("CONF");
+        eventBus.post(event);
+    }
+
+    public void showEXIT(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("EXIT");
+        eventBus.post(event);
+    }
 }

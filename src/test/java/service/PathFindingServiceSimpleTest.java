@@ -126,7 +126,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n6);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn6, false), is(expected));
+        assertThat(mockPF.genPath(mn1, mn6, false, "astar"), is(expected));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n6);
         expected.add(0, n2);
         expected.add(0, n3);
-        assertThat(mockPF.genPath(mn3, mn6, false), is(expected));
+        assertThat(mockPF.genPath(mn3, mn6, false, "astar"), is(expected));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n2);
         expected.add(0, n3);
         expected.add(0, n4);
-        assertThat(mockPF.genPath(mn4, mn1, false), is(expected));
+        assertThat(mockPF.genPath(mn4, mn1, false, "astar"), is(expected));
     }
 
 }

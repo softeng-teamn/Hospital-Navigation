@@ -90,6 +90,8 @@ public class MapView {
                     case "node-select":
                         drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125));
                         break;
+                    case "filter":
+                        filteredHandler();
                     default:
                         break;
                 }
@@ -97,6 +99,8 @@ public class MapView {
         });
         this.event = event;
     }
+
+
 
     private void drawPoint(Node node, Circle circle, Color color) {
         // remove points
@@ -120,7 +124,7 @@ public class MapView {
         // set circle to selected
         selectCircle = circle;
         // Scroll to new point
-        scrollTo(event.getNodeSelected());
+        scrollTo(node);
 
     }
 
@@ -133,12 +137,46 @@ public class MapView {
         // check if the path need to be 'accessible'
         if (event.isAccessiblePath()) {
             // do something special
-            path = pathFinder.genPath(start, dest, true);
+            path = pathFinder.genPath(start, dest, true, "astar");
         } else {
             // not accessible
-            path = pathFinder.genPath(start, dest, false);
+            path = pathFinder.genPath(start, dest, false, "astar");
         }
 
+        drawPath(path);
+
+    }
+
+    private void filteredHandler() {
+        PathFindingService pathFinder = new PathFindingService();
+        ArrayList<Node> path;
+        MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
+        Boolean accessibility = event.isAccessiblePath();
+
+        switch (event.getFilterSearch()){
+            case "REST":
+                path = pathFinder.genPath(start, null, accessibility, "REST");
+                break;
+            case "ELEV":
+                path = pathFinder.genPath(start, null, accessibility, "ELEV");
+                break;
+            case "STAI":
+                path = pathFinder.genPath(start, null, false, "STAI");
+                break;
+            case "CONF":
+                path = pathFinder.genPath(start, null, accessibility, "CONF");
+                break;
+            case "INFO":
+                path = pathFinder.genPath(start, null, accessibility, "INFO");
+                break;
+            case "EXIT":
+                path = pathFinder.genPath(start, null, accessibility, "EXIT");
+                break;
+            default:
+                path = null;
+        }
+
+        drawPoint(path.get(path.size()-1), selectCircle, Color.rgb(72,87,125));
         drawPath(path);
 
     }

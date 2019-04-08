@@ -94,13 +94,13 @@ public class PathFindingServiceAccessibilityTest {
         expected.add(0, n3);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn3, false), is(expected));
+        assertThat(mockPF.genPath(mn1, mn3, false, "astar"), is(expected));
         mockingGetChildren();
         expected = new ArrayList<Node>();
         expected.add(0, n3);
         expected.add(0, n5);
         expected.add(0, n4);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn3, true), is(expected));
+        assertThat(mockPF.genPath(mn1, mn3, true, "astar"), is(expected));
     }
 }
