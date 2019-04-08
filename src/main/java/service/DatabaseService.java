@@ -1600,6 +1600,10 @@ public class DatabaseService {
             case "GIFT_BASKET":
                 giftType = GiftStoreRequest.GiftType.GIFT_BASKET;
                 break;
+            default:
+                System.out.println("Invalid gift typye entry (on DBS.extractGiftStoreRequest): " + typeString);
+                giftType = null;
+                break; // the loop
         }
 
         return new GiftStoreRequest(serviceID, notes, locationNode, completed, giftType, patientName);
