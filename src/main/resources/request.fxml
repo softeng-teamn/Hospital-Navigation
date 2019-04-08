@@ -98,7 +98,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode fx:id="selectSanitation" prefHeight="256.0" prefWidth="256.0" text="Sanitation Services (Maya)" textAlignment="CENTER" toggleGroup="$requestType" wrapText="true">
+                              <JFXToggleNode onAction="#selectSanitation" prefHeight="256.0" prefWidth="256.0" text="Sanitation Services (Maya)" textAlignment="CENTER" toggleGroup="$requestType" wrapText="true">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="TRASH" styleClass="button-glyph-icon" />
                                  </graphic>
