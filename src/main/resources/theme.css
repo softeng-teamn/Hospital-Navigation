@@ -208,7 +208,7 @@
 }
 
 .scroll-bar > .increment-button > .increment-arrow, .scroll-bar > .decrement-button > .decrement-arrow {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: -fx-unfocusedtext;
 }
 
 /* Up Arrow */
