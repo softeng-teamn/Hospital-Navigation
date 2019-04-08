@@ -217,9 +217,7 @@ public class RequestController extends Controller implements Initializable {
 
 
     public void externalTransportationRequest(ActionEvent actionEvent) throws IOException{
-
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.externalTransportRequest));
-
     }
 }

@@ -20,6 +20,9 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.scheduler, is(notNullValue()));
         assertThat(ResourceLoader.reservablespaces, is(notNullValue()));
         assertThat(ResourceLoader.maintenanceRequest, is(notNullValue()));
+        assertThat(ResourceLoader.externalTransportRequest, is(notNullValue()));
+        assertThat(ResourceLoader.giftStoreRequest, is(notNullValue()));
+        assertThat(ResourceLoader.ToyRequest, is(notNullValue()));
     }
 
 }

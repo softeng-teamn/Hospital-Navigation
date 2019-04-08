@@ -2561,22 +2561,23 @@ public class DatabaseServiceTest {
 
         // Verify successful insertion
         assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertNode(node2));
         assertTrue(myDBS.insertExtTransRequest(req1));
         assertTrue(myDBS.insertExtTransRequest(req2));
 
 
         // Check that there are two and only two, and that they are the right two
         List<ExternalTransportRequest> allExtTransRequests = myDBS.getAllIncompleteExtTransRequests();
-        assertThat(allExtTransRequests.size(), is(1));
+        assertThat(allExtTransRequests.size(), is(2));
         assertEquals(req1, allExtTransRequests.get(0));
 
         // Insert #3, and rerun checks
         assertTrue(myDBS.insertExtTransRequest(req3));
 
         allExtTransRequests = myDBS.getAllIncompleteExtTransRequests();
-        assertThat(allExtTransRequests.size(), is(2));
+        assertThat(allExtTransRequests.size(), is(3));
         assertEquals(req1, allExtTransRequests.get(0));
-        assertEquals(req3, allExtTransRequests.get(1));
+        assertEquals(req2, allExtTransRequests.get(1));
     }
 
 
