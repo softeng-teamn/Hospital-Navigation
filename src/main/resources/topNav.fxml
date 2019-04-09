@@ -6,20 +6,13 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 
-<HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="128.0" prefWidth="1920.0" spacing="5.0" styleClass="header" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TopNav">
+<HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="128.0" prefWidth="1920.0" spacing="5.0" styleClass="header" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TopNav">
       <padding><Insets bottom="6.0" left="24.0" right="24.0" top="6.0" /></padding>
         <children>
-      <JFXTextField fx:id="start_search_bar" labelFloat="true" onAction="#startSearchBarEnter" prefHeight="38.0" prefWidth="192.0" promptText="Search" styleClass="header-text-field" />
-      <Label styleClass="unfocused-header-label" text="to">
-         <padding>
-            <Insets left="8.0" right="8.0" />
-         </padding>
-      </Label>
-            <JFXTextField fx:id="end_search_bar" labelFloat="true" onAction="#endSearchBarEnter" prefHeight="27.0" prefWidth="192.0" promptText="Search" styleClass="header-text-field">
+            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="192.0" promptText="Search" styleClass="header-text-field">
                 <HBox.margin>
                     <Insets right="8.0" />
                 </HBox.margin></JFXTextField>

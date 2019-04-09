@@ -32,9 +32,9 @@
       </JFXTextArea>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <JFXDatePicker prefHeight="38.0" prefWidth="256.0" promptText="Select Date of Transport" HBox.hgrow="ALWAYS" />
+            <JFXDatePicker fx:id="datePicker" prefHeight="38.0" prefWidth="256.0" promptText="Select Date of Transport" HBox.hgrow="ALWAYS" />
             <Region prefHeight="38.0" prefWidth="40.0" />
-            <JFXTimePicker prefHeight="38.0" prefWidth="256.0" promptText="Select Time of Transport" />
+            <JFXTimePicker fx:id="timePicker" prefHeight="38.0" prefWidth="256.0" promptText="Select Time of Transport" />
          </children>
          <VBox.margin>
             <Insets bottom="24.0" />
