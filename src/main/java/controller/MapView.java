@@ -317,14 +317,24 @@ public class MapView {
         directions.add("\nStart at " + path.get(0).getLongName() + ".\n");    // First instruction
 
         // Make the first instruction cardinal
-        String cardinal = csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0).getXcoord(), path.get(0).getYcoord(), path.get(1).getXcoord(), path.get(1).getYcoord());
-        cardinal = convertToCardinal(cardinal);
-        directions.add(cardinal);
+        if (!path.get(0).getFloor().equals(path.get(1).getFloor())) {
+            if (path.get(0).getNodeType().equals("ELEV")) {
+                directions.add("Take the elevator from floor " + path.get(0).getFloor() + " to floor " + path.get(1).getFloor() + ".\n");
+            }
+            else {
+                directions.add("Take the stairs from floor " + path.get(0).getFloor() + " to floor " + path.get(1).getFloor() + ".\n");
+            }
+        }
+        else {
+            String cardinal = csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0).getXcoord(), path.get(0).getYcoord(), path.get(1).getXcoord(), path.get(1).getYcoord());
+            cardinal = convertToCardinal(cardinal);
+            directions.add(cardinal);
+        }
 
-        if (path.get(1).getNodeType().equals("ELEV")) {
+        if (path.get(1).getNodeType().equals("ELEV") && !directions.get(1).contains("Take")) {
             directions.add("Walk to the elevator.\n");
         }
-        else if (path.get(1).getNodeType().equals("STAI")) {
+        else if (path.get(1).getNodeType().equals("STAI") && !directions.get(1).contains("Take")) {
             directions.add("Walk to the stairs.\n");
         }
 
@@ -387,6 +397,18 @@ public class MapView {
                 directions.remove(i);    // Remove the two old directions and add the new one
                 directions.remove(i-1);
                 directions.add(i-1, newDir);
+                i--;
+            }
+        }
+
+        for (int i = 0; i < directions.size() - 1; i++) {
+            if (directions.get(i).contains("Take") && directions.get(i+1).contains("Take")) {
+                String newDir = directions.get(i);
+                String toCombine = directions.get(i+ 1);
+                newDir = newDir.substring(0, newDir.length() - 4) + toCombine.substring(toCombine.length() - 3);
+                directions.remove(i+1);
+                directions.remove(i);
+                directions.add(i, newDir);
                 i--;
             }
         }

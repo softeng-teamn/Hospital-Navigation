@@ -13,16 +13,19 @@ import static org.junit.Assert.*;
 public class MapViewTest {
     private MapView mp = new MapView();
     Node n0 = new Node(0,0,"ID 1", "L2", "Tower", "HALL", "Hallway A1", "HA1");
-    Node n2 = new Node(5,5,"ID 2", "1", "Tower", "HALL", "Hallway D2", "HD2");
-    Node n3 = new Node(5,0,"ID 3", "L1", "Tower", "HALL", "Hallway B1", "HB1");
-    Node n4 = new Node(5,-5,"ID 4", "2", "Tower", "HALL", "Hallway E2", "HE2");
-    Node n5 = new Node(0,-5,"ID 5", "3", "Tower", "HALL", "Hallway F1", "HF1");
+    Node n2 = new Node(5,5,"ID 2", "L2", "Tower", "HALL", "Hallway D2", "HD2");
+    Node n3 = new Node(5,0,"ID 3", "L2", "Tower", "HALL", "Hallway B1", "HB1");
+    Node n4 = new Node(5,-5,"ID 4", "L2", "Tower", "HALL", "Hallway E2", "HE2");
+    Node n5 = new Node(0,-5,"ID 5", "L2", "Tower", "HALL", "Hallway F1", "HF1");
     Node n6 = new Node(-5,-5,"ID 6", "L2", "Tower", "HALL", "Hallway A2", "HA2");
-    Node n7 = new Node(-5,0,"ID 7", "1", "Tower", "HALL", "Hallway D3", "HD3");
-    Node n8 = new Node(-5,5,"ID 8", "2", "Tower", "HALL", "Hallway F2", "HF2");
-    Node n1 = new Node(0,5,"ID 9", "2", "Tower", "HALL", "Hallway F3", "HF3");
+    Node n7 = new Node(-5,0,"ID 7", "L2", "Tower", "HALL", "Hallway D3", "HD3");
+    Node n8 = new Node(-5,5,"ID 8", "L2", "Tower", "HALL", "Hallway F2", "HF2");
+    Node n1 = new Node(0,5,"ID 9", "L2", "Tower", "HALL", "Hallway F3", "HF3");
     Node nE = new Node(0,0,"ID E", "L2", "Tower", "ELEV", "Elevator A5", "EA5");
+    Node nE2 = new Node(0,0,"ID E", "L1", "Tower", "ELEV", "Elevator B5", "EB5");
+    Node nE3 = new Node(0,0,"ID E", "G", "Tower", "ELEV", "Elevator C5", "EC5");
     Node nS =new Node(0,0,"ID S", "L2", "Tower", "STAI", "Staircase F9", "SF9");
+    Node topFloor = new Node(9,9,"top", "3", "Tower", "HALL", "top hall", "TH");
 
     @Test
     @Category( FastTest.class)
@@ -71,10 +74,10 @@ public class MapViewTest {
 
         // Second node tests
         path.clear();
-        path.addAll(Arrays.asList(n0, nE, n4));
+        path.addAll(Arrays.asList(n0, nE, topFloor));
         assertTrue(mp.makeDirections(path).get(2).contains("elevator"));
         path.clear();
-        path.addAll(Arrays.asList(n0, nS, n4));
+        path.addAll(Arrays.asList(n0, nS, topFloor));
         assertTrue(mp.makeDirections(path).get(2).contains("stairs"));
 
         // Third node tests
@@ -85,7 +88,21 @@ public class MapViewTest {
         path.addAll(Arrays.asList(n0, n6, nS));
         assertTrue(mp.makeDirections(path).get(2).contains("to the stairs"));
 
+        // Double elevator tests
+        path.clear();
+        path.addAll(Arrays.asList(n0, nE, nE2));
+        assertTrue(mp.makeDirections(path).get(2).contains("to the elevator"));
+        path.clear();
+        path.addAll(Arrays.asList(nE, nE2, topFloor));
+        assertTrue(mp.makeDirections(path).get(1).contains("the elevator"));
+        path.clear();
+        path.addAll(Arrays.asList(nE, n7, nE));
+        assertTrue(mp.makeDirections(path).get(2).contains("to the elevator"));
+        path.clear();
+        path.addAll(Arrays.asList(nE, nE2, nE3));
+        assertTrue(mp.makeDirections(path).get(1).contains("Take"));
 
+        //
 
         // TODO
     }
