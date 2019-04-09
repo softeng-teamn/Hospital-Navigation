@@ -1,18 +1,79 @@
 package controller;
 
+import model.Node;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.FastTest;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
 public class MapViewTest {
     private MapView mp = new MapView();
-    
+    Node n0 = new Node(0,0,"ID 1", "L2", "Tower", "HALL", "Hallway A1", "HA1");
+    Node n2 = new Node(5,5,"ID 2", "1", "Tower", "HALL", "Hallway D2", "HD2");
+    Node n3 = new Node(5,0,"ID 3", "L1", "Tower", "HALL", "Hallway B1", "HB1");
+    Node n4 = new Node(5,-5,"ID 4", "2", "Tower", "HALL", "Hallway E2", "HE2");
+    Node n5 = new Node(0,-5,"ID 5", "3", "Tower", "HALL", "Hallway F1", "HF1");
+    Node n6 = new Node(-5,-5,"ID 6", "L2", "Tower", "HALL", "Hallway A2", "HA2");
+    Node n7 = new Node(-5,0,"ID 7", "1", "Tower", "HALL", "Hallway D3", "HD3");
+    Node n8 = new Node(-5,5,"ID 8", "2", "Tower", "HALL", "Hallway F2", "HF2");
+    Node n1 = new Node(0,5,"ID 9", "2", "Tower", "HALL", "Hallway F3", "HF3");
+    Node nE = new Node(0,0,"ID E", "L2", "Tower", "ELEV", "Elevator A5", "EA5");
+    Node nS =new Node(0,0,"ID S", "L2", "Tower", "STAI", "Staircase F9", "SF9");
+
     @Test
     @Category( FastTest.class)
     public void makeDirections() {
+        assertNull(mp.makeDirections(null));
+        ArrayList<Node> path = new ArrayList<>();
+        path.add(n1);
+        assertNull(mp.makeDirections(path));
+        path.add(n2);
+        assertNull(mp.makeDirections(path));
+        path.add(n3);
+        assertNotNull(mp.makeDirections(path));
+        path.clear();
+        path.addAll(Arrays.asList(n0, n1, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("south west"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, n2, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("south"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, n3, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("east"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, n4, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("east"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, n5, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("north east"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, n6, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("north"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, n7, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("west"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, n8, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("west"));
+        path.clear();
+        path.addAll(Arrays.asList(nE, n8, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("west"));
+        path.clear();
+        path.addAll(Arrays.asList(nS, n8, n2));
+        assertTrue(mp.makeDirections(path).get(1).contains("west"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, nE, n4));
+        assertTrue(mp.makeDirections(path).get(1).contains("west"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, nS, n4));
+        assertTrue(mp.makeDirections(path).get(1).contains("west"));
 
+
+        // TODO
     }
 
     @Test
@@ -119,6 +180,12 @@ public class MapViewTest {
     @Test
     @Category( FastTest.class)
     public void showDirections() {
+        //TODO
+    }
+
+    @Test
+    @Category( FastTest.class)
+    public void printDirections() {
         //TODO
     }
 }

@@ -244,7 +244,7 @@ public class MapView {
                 lineCollection.add(line);
                 last = current;
             }
-            System.out.println(makeDirections(path));
+            makeDirections(path);
         }
     }
 
@@ -301,8 +301,14 @@ public class MapView {
      * @param path the list of nodes in the path
      * @return a String of the directions
      */
-    public String makeDirections(ArrayList<Node> path) {
-        System.out.println(path);
+    public ArrayList<String> makeDirections(ArrayList<Node> path) {
+        if (path == null || path.size() < 3) {
+            return null;
+        }
+
+        System.out.println(path);    // TODO: remove
+
+
         final int NORTH_I = 1122 - 1886;    // Measurements from maps
         final int NORTH_J = 642 - 1501;    // Measurements from maps
 
@@ -360,7 +366,6 @@ public class MapView {
                 else {
                     feetIndex += 4;
                 }
-                System.out.println(oldDir + currDir + "feet index "+ feetIndex);
                 int oldDist = Integer.parseInt(oldDir.substring(feetIndex, oldDir.indexOf("feet")-1));
                 int currDist = Integer.parseInt(currDir.substring(currDir.indexOf("walk") + 5, currDir.indexOf("feet")-1));
                 int totalDist = oldDist + currDist;    // Combine the distance of this direction with the previous one
@@ -379,6 +384,17 @@ public class MapView {
             }
         }
 
+        System.out.println(directions);
+      //  System.out.println(printDirections(directions));
+        return directions;
+    }
+
+    /**
+     * Populate the listview and turn the list of directions into one printable string.
+     * @param directions the list of directions as strings
+     * @return a String that is the sum of all the directions
+     */
+    public String printDirections(ArrayList<String> directions) {
         // Create labels for each direction and add them to the listview
         ObservableList<Label> dirs = FXCollections.observableArrayList();
         ArrayList<Label> labels = new ArrayList<>();
@@ -397,9 +413,9 @@ public class MapView {
             buf.append(directions.get(i));
         }
         String total = buf.toString();
-
         return total;
     }
+
 
     /**
      * Convert this direction to a cardinal direction
@@ -519,10 +535,10 @@ public class MapView {
             turn = "around";
         }
         else if (Math.abs(expectedVal - computedY1) < THRESHOLD) {    // Otherwise turn the correct direction
-            if (theta < Math.PI/4) {
+            if (theta <= Math.PI/4) {
                 turn = "slightly right";
             }
-            else if (theta > Math.PI*3/4) {
+            else if (theta >= Math.PI*3/4) {
                 turn = "sharply right";
             }
             else {
@@ -530,10 +546,10 @@ public class MapView {
             }
         }
         else {
-            if (theta < Math.PI/4) {
+            if (theta <= Math.PI/4) {
                 turn = "slightly left";
             }
-            else if (theta > Math.PI*3/4) {
+            else if (theta >= Math.PI*3/4) {
                 turn = "sharply left";
             }
             else {
