@@ -24,6 +24,10 @@ import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
+import static service.ResourceLoader.dfBundle;
+import static service.ResourceLoader.enBundle;
+import static service.ResourceLoader.esBundle;
+
 public class TopNav {
 
     private Event event = EventBusFactory.getEvent();
@@ -82,9 +86,10 @@ public class TopNav {
 
     @FXML
     void showRequest(ActionEvent e) throws Exception {
+        event.setCurrentBundle(dfBundle);
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.request);
-        StageManager.changeExistingWindow(stage, root, "Service Request");
+        Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"Service Request");
     }
 
     @FXML

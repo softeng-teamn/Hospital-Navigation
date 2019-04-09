@@ -1,33 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXListView?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXToggleNode?>
-<?import de.jensd.fx.glyphs.emojione.EmojiOneView?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import com.jfoenix.controls.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
 <?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 
+<?import javafx.geometry.Insets?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
    <children>
       <HBox alignment="CENTER" prefHeight="128.0" styleClass="header">
          <children>
-            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" promptText="Search Room" />
+            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" promptText="%SearchRoom" />
             <Region prefHeight="118.0" prefWidth="491.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
                </HBox.margin></Region>
-            <Label prefHeight="40.0" prefWidth="234.0" styleClass="big-label" text="Request Service" />
+            <Label prefHeight="40.0" prefWidth="234.0" styleClass="big-label" text="%RequestService" />
             <Region prefHeight="128.0" prefWidth="837.0" />
-            <JFXButton fx:id="cancelBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
+            <JFXButton fx:id="cancelBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="%Home">
                <graphic>
                   <FontAwesomeIconView glyphName="HOME" size="60" />
                </graphic></JFXButton>
@@ -51,7 +45,7 @@
                      <children>
                         <VBox prefWidth="256.0">
                            <children>
-                              <JFXToggleNode onAction="#itSelect" prefHeight="256.0" prefWidth="256.0" text="IT Request">
+                              <JFXToggleNode onAction="#itSelect" prefHeight="256.0" prefWidth="256.0" text="%ITRequest">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="DESKTOP" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -60,19 +54,19 @@
                                  </toggleGroup>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#interpreterRequestSelect" prefHeight="256.0" prefWidth="256.0" text="Interpreter&#10;Calvin" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#interpreterRequestSelect" prefHeight="256.0" prefWidth="256.0" text="%Interpreter" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="USER" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#securitySelect" prefHeight="256.0" prefWidth="256.0" text="Security Request&#10;Nathan" textAlignment="CENTER" toggleGroup="$requestType" wrapText="true">
+                              <JFXToggleNode onAction="#securitySelect" prefHeight="256.0" prefWidth="256.0" text="%SecurityRequest" textAlignment="CENTER" toggleGroup="$requestType" wrapText="true">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="SHIELD" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#floristSelect" prefHeight="256.0" prefWidth="256.0" text="Florist&#10;Nicolas" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#floristSelect" prefHeight="256.0" prefWidth="256.0" text="%Florist" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <MaterialIconView glyphName="LOCAL_FLORIST" size="128" styleClass="button-glyph-icon" />
                                  </graphic>

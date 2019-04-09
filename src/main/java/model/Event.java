@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ResourceBundle;
+
 public class Event {
 
     Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
@@ -15,6 +17,16 @@ public class Event {
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
+    ResourceBundle currentBundle = null;
+
+    public ResourceBundle getCurrentBundle() {
+        return currentBundle;
+    }
+
+    public void setCurrentBundle(ResourceBundle currentBundle) {
+        this.currentBundle = currentBundle;
+    }
+
 
 
     public boolean isChangingStart() {
