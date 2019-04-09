@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminServiceController">
    <children>
       <HBox prefHeight="100.0" prefWidth="200.0" spacing="40.0">
@@ -44,9 +45,21 @@
             <Label fx:id="selectPathfindingTitle" styleClass="big-label" text="Select Pathfinding Algorithm" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="52.0">
                <children>
-                  <JFXToggleNode fx:id="aStarToggle" text="A* (Default)" />
-                  <JFXToggleNode fx:id="depthFirstToggle" text="Depth First" />
-                  <JFXToggleNode fx:id="breadthFirstToggle" text="Breadth First" />
+                  <JFXToggleNode onAction="#astarSwitch" prefHeight="50.0" prefWidth="100.0" text="Astar (default)" textAlignment="CENTER">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="VCARD" styleClass="button-glyph-icon" />
+                     </graphic>
+                  </JFXToggleNode>
+                  <JFXToggleNode onAction="#depthSwitch" prefHeight="50.0" prefWidth="100.0" text="Depth Search" textAlignment="CENTER">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="VCARD" styleClass="button-glyph-icon" />
+                     </graphic>
+                  </JFXToggleNode>
+                  <JFXToggleNode onAction="#breadthSwitch" prefHeight="50.0" prefWidth="100.0" text="Breadth Search" textAlignment="CENTER">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="VCARD" styleClass="button-glyph-icon" />
+                     </graphic>
+                  </JFXToggleNode>
                </children>
             </HBox>
          </children>

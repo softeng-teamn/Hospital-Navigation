@@ -86,7 +86,6 @@ public class MainTest {
                 }
             }
         }
-
         // Kill the application thread
         thread.interrupt();
     }

@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-public class PathFindingServiceAccessibilityTest {
+public class AstarAccessibilityTest {
     // Map accessibility test
     //    1  -  2(stair)
     //    |     |
@@ -55,7 +55,7 @@ public class PathFindingServiceAccessibilityTest {
         mn5 = new MapNode(1,2,n5);
     }
 
-    final PathFindingService mockPF = spy(new PathFindingService());
+    final Astar mockPF = spy(new Astar());
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -94,13 +94,13 @@ public class PathFindingServiceAccessibilityTest {
         expected.add(0, n3);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn3, false), is(expected));
+        assertThat(mockPF.findDest(mn1, mn3, false, "astar"), is(expected));
         mockingGetChildren();
         expected = new ArrayList<Node>();
         expected.add(0, n3);
         expected.add(0, n5);
         expected.add(0, n4);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn3, true), is(expected));
+        assertThat(mockPF.findDest(mn1, mn3, true, "astar"), is(expected));
     }
 }
