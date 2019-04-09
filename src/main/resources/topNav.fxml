@@ -22,14 +22,16 @@
             <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2">
                 <HBox.margin>
                     <Insets right="8.0" />
-                </HBox.margin></JFXTextField>
+                </HBox.margin>
+            </JFXTextField>
             <JFXButton fx:id="navigate_btn" contentDisplay="GRAPHIC_ONLY" onAction="#startNavigation" prefHeight="80.0" prefWidth="80.0" text="Navigate Here">
                 <graphic>
                     <MaterialIconView glyphName="DIRECTIONS" size="60" />
                 </graphic>
                 <HBox.margin>
                     <Insets right="8.0" />
-                </HBox.margin></JFXButton>
+                </HBox.margin>
+            </JFXButton>
             <JFXToggleNode fx:id="accessibilityButton" maxHeight="80.0" maxWidth="80.0" prefHeight="0.0" prefWidth="80.0" styleClass="accessiblity-toggle-node">
                 <graphic>
                     <FontAwesomeIconView glyphName="WHEELCHAIR" size="50" styleClass="jfx-toggle-node" />
@@ -54,6 +56,16 @@
                     <Insets right="8.0" />
                 </HBox.margin>
             </JFXToggleNode>
+            <MenuButton mnemonicParsing="false" text="Search Nearest">
+                <items>
+                    <MenuItem mnemonicParsing="false" text="Restroom" onAction="#showREST"/>
+                    <MenuItem mnemonicParsing="false" text="Elevator" onAction="#showELEV"/>
+                    <MenuItem mnemonicParsing="false" text="Staircase" onAction="#showSTAI"/>
+                    <MenuItem mnemonicParsing="false" text="Information Desk" onAction="#showINFO"/>
+                    <MenuItem mnemonicParsing="false" text="Conference room" onAction="#showCONF"/>
+                    <MenuItem mnemonicParsing="false" text="Exit" onAction="#showEXIT"/>
+                </items>
+            </MenuButton>
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="time_label"/>
             <Region HBox.hgrow="ALWAYS" />
@@ -82,7 +94,7 @@
                 <graphic>
                     <FontAwesomeIconView fx:id="lock_icon" glyphName="LOCK" size="60" />
                 </graphic></JFXButton>
-        </children>
+      </children>
         <VBox.margin>
             <Insets bottom="0" left="0.0" right="0.0" top="0.0" />
         </VBox.margin>

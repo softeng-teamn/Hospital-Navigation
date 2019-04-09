@@ -67,6 +67,8 @@ public class MapView {
     private EventBus eventBus = EventBusFactory.getEventBus();
     private Event event = EventBusFactory.getEvent();
 
+    private String currentMethod;
+
     private Group zoomGroup;
     private Circle startCircle;
     private Circle selectCircle;
@@ -164,13 +166,13 @@ public class MapView {
             @Override public Void call() throws Exception {
                 while (true) {
                     Thread.sleep(1000);
-                    System.out.println("shit was fired");
+//                    System.out.println("shit was fired");
                     TimeUnit.SECONDS.sleep(1);
-                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
+//                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
                     Platform.runLater(new Runnable() {
                         @Override public void run() {
                             try {
-                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
+//                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
                                 cur_el_floor.setText(elevatorCon.getFloor("S"));
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -251,6 +253,12 @@ public class MapView {
                         directionsView.getItems().clear();
                         hideDirections();
                         break;
+                    case "filter":
+                        filteredHandler();
+                        break;
+                    case "methodSwitch":
+                        currentMethod = event.getSearchMethod();
+                        break;
                     case "editing":
                         editNodeHandler(event.isEditing());
                         break;
@@ -260,8 +268,8 @@ public class MapView {
                 }
             }
         });
-        this.event = event;
     }
+
 
     void editNodeHandler(boolean isEditing) {
         if (isEditing) {
@@ -322,6 +330,7 @@ public class MapView {
     }
 
 
+
     private void drawPoint(Node node, Circle circle, Color color) {
         // remove points
         for (Line line : lineCollection) {
@@ -344,11 +353,15 @@ public class MapView {
         // set circle to selected
         selectCircle = circle;
         // Scroll to new point
-        scrollTo(event.getNodeSelected());
+        scrollTo(node);
+
+
     }
 
     // generate path on the screen
     private void navigationHandler() {
+        currentMethod = event.getSearchMethod();
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!" + currentMethod + "!!!!!!!!!!!!!!!!!!");
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> path;
         MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
@@ -356,11 +369,53 @@ public class MapView {
         // check if the path need to be 'accessible'
         if (event.isAccessiblePath()) {
             // do something special
-            path = pathFinder.genPath(start, dest, true);
+            path = pathFinder.genPath(start, dest, true, currentMethod);
         } else {
             // not accessible
-            path = pathFinder.genPath(start, dest, false);
+            path = pathFinder.genPath(start, dest, false, currentMethod);
         }
+
+        drawPath(path);
+
+    }
+
+    private void filteredHandler() {
+        PathFindingService pathFinder = new PathFindingService();
+        ArrayList<Node> path;
+        MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
+        Boolean accessibility = event.isAccessiblePath();
+
+        switch (event.getFilterSearch()){
+            case "REST":
+                path = pathFinder.genPath(start, null, accessibility, "REST");
+                break;
+            case "ELEV":
+                path = pathFinder.genPath(start, null, accessibility, "ELEV");
+                break;
+            case "STAI":
+                path = pathFinder.genPath(start, null, false, "STAI");
+                break;
+            case "CONF":
+                path = pathFinder.genPath(start, null, accessibility, "CONF");
+                break;
+            case "INFO":
+                path = pathFinder.genPath(start, null, accessibility, "INFO");
+                break;
+            case "EXIT":
+                path = pathFinder.genPath(start, null, accessibility, "EXIT");
+                break;
+            default:
+                path = null;
+                break;
+        }
+
+        if (path == null){
+            System.out.println("DIDNT FIND A PATH");
+        } else {
+            drawPoint(path.get(path.size()-1), selectCircle, Color.rgb(72,87,125));
+        }
+
+
 
         drawPath(path);
     }

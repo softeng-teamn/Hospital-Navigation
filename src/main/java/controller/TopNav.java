@@ -51,9 +51,8 @@ public class TopNav {
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
         if (event.isAdmin()) {
-            Event sendEvent = new Event();
-            sendEvent.setEventName("login");
-            eventBus.post(sendEvent);
+            event.setAdmin(false);
+            event.setLoggedIn(false);
             resetBtn();
 
         } else {
@@ -187,10 +186,9 @@ public class TopNav {
     public void searchBarEnter(ActionEvent e) {
         String search = search_bar.getText();
 
-        Event sendEvent = new Event();
-        sendEvent.setSearchBarQuery(search);
-        sendEvent.setEventName("search-query");
-        eventBus.post(sendEvent);
+        event.setSearchBarQuery(search);
+        event.setEventName("search-query");
+        eventBus.post(event);
     }
 
     // when event comes in with a node-selected:
@@ -214,17 +212,71 @@ public class TopNav {
     }
 
     public void startNavigation(ActionEvent actionEvent) {
-        Event sendEvent = new Event();
         Boolean accessibility = accessibilityButton.isSelected();
-        sendEvent.setNodeSelected(event.getNodeSelected());
-        sendEvent.setAccessiblePath(accessibility);
-        sendEvent.setEventName("navigation");
-        eventBus.post(sendEvent);
+        event.setAccessiblePath(accessibility);
+        event.setEventName("navigation");
+        eventBus.post(event);
     }
+
+    public void showREST(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("REST");
+        eventBus.post(event);
+    }
+
 
     @FXML
     public void showStartSearch(ActionEvent actionEvent) {
         startSearch.setPromptText("Start Node");
         top_nav.getChildren().add(0, startSearch);
     }
+
+    public void showELEV(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("ELEV");
+        eventBus.post(event);
+    }
+
+    public void showSTAI(ActionEvent actionEvent) {
+        event.setEventName("filter");
+        event.setFilterSearch("STAI");
+        eventBus.post(event);
+    }
+
+    public void showINFO(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("INFO");
+        eventBus.post(event);
+    }
+
+    public void showCONF(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("CONF");
+        eventBus.post(event);
+    }
+
+    public void showEXIT(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("EXIT");
+        eventBus.post(event);
+    }
+
+    public void showEditEmployee(ActionEvent actionEvent) throws Exception {
+        Stage stage = (Stage) auth_btn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
+        StageManager.changeExistingWindow(stage, root, "Edit Employees");
+        stage.setFullScreen(true);
+
+    }
+
 }
