@@ -132,14 +132,14 @@ public class MapViewTest {
     @Test
     @Category( FastTest.class)
     public void convertToCardinal() {
-        System.out.println(mp.convertToCardinal("straight").contains("south"));
-        System.out.println(mp.convertToCardinal("around").contains("north"));
-        System.out.println(mp.convertToCardinal("slightly left").contains("south east"));
-        System.out.println(mp.convertToCardinal("slightly right").contains("south west"));
-        System.out.println(mp.convertToCardinal("sharply left").contains("north east"));
-        System.out.println(mp.convertToCardinal("sharply right").contains("north west"));
-        System.out.println(mp.convertToCardinal("left").contains("east"));
-        System.out.println(mp.convertToCardinal("right").contains("west"));
+        assertTrue(mp.convertToCardinal("A").contains("W"));
+        assertTrue(mp.convertToCardinal("B").contains("Y"));
+        assertTrue(mp.convertToCardinal("C").contains("X"));
+        assertTrue(mp.convertToCardinal("D").contains("Z"));
+        assertTrue(mp.convertToCardinal("E").contains("U"));
+        assertTrue(mp.convertToCardinal("F").contains("V"));
+        assertTrue(mp.convertToCardinal("G").contains("T"));
+        assertTrue(mp.convertToCardinal("H").contains("S"));
     }
 
     @Test
@@ -241,4 +241,6 @@ public class MapViewTest {
     public void printDirections() {
         //TODO
     }
+
+    // Other/changed funcionts TODO
 }
