@@ -117,6 +117,7 @@ public class MapViewTest {
         path.addAll(Arrays.asList(nE, nE2, nE3, nE4, nE5, nE6));
         assertTrue(mp.makeDirections(path).get(1).contains("3"));
 
+
         // TODO - finish
     }
 
