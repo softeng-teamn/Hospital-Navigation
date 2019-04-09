@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import de.jensd.fx.glyphs.materialicons.MaterialIconView;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -30,7 +31,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -39,6 +40,8 @@ public class TopNav {
     private FontAwesomeIconView lock_icon;
     @FXML
     private Label time_label;
+    @FXML
+    private JFXToggleNode edit_btn;
 
     // events I send out/control
     @FXML
@@ -89,6 +92,11 @@ public class TopNav {
     @FXML
     void initialize() {
         eventBus.register(this);
+
+        // Turn off editing
+        event.setEventName("editing");
+        event.setEditing(false);
+        eventBus.post(event);
 
         // SHOULD THIS GO HERE? (was in intialize of old map controller)
         navigate_btn.setVisible(false);
@@ -158,6 +166,13 @@ public class TopNav {
         }
     }
 
+    @FXML
+    public void editButtonAction(ActionEvent e) throws Exception {
+        event.setEventName("editing");
+        event.setEditing(!event.isEditing());
+        System.out.println("Editing: " + event.isEditing());
+        eventBus.post(event);
+    }
 
     /**
      * searches for room

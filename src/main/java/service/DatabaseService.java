@@ -437,20 +437,6 @@ public class DatabaseService {
     }
 
     /**
-     * returns all edges on a specific floor
-     * not fully implemented yet
-     * not really that necessary
-     *
-     * @param floor
-     * @return
-     */
-    // get edges from a specific floor
-    public static Collection<Edge> getEdges(int floor) {
-        // DEPRECATED
-        return null;
-    }
-
-    /**
      * insert an edge. The method will fail and return false if the two nodes it points to
      * do not already exist in the database.
      *
@@ -507,6 +493,11 @@ public class DatabaseService {
     public ArrayList<Edge> getAllEdges() {
         String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID";
         return (ArrayList<Edge>) (List<?>) executeGetMultiple(query, Edge.class, new Object[]{});
+    }
+
+    public ArrayList<Edge> getAllEdgesWithNode(String nodeId) {
+        String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID Where (n1.NODEID = ? or n2.NODEID = ?)";
+        return (ArrayList<Edge>) (List<?>) executeGetMultiple(query, Edge.class, nodeId, nodeId);
     }
 
     /**
