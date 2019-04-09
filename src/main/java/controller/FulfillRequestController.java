@@ -3,6 +3,8 @@ package controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -85,11 +87,11 @@ public class FulfillRequestController extends Controller implements Initializabl
         switch (rType.getrType()) {
             case ITS:
                 ITupdate = (ITRequest) selected;
-                DatabaseService.getDatabaseService().updateITRequest(ITupdate);
+                myDBS.updateITRequest(ITupdate);
                 break;
             case MED:
                 medupdate = (MedicineRequest) selected;
-                DatabaseService.getDatabaseService().updateMedicineRequest(medupdate);
+                myDBS.updateMedicineRequest(medupdate);
                 break;
             case ABS:
                 //do nothing
@@ -108,7 +110,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
     /**
-     * TBD
+     * changes list, employee everytime radio button changes
      *
      * @param event
      */
@@ -116,7 +118,6 @@ public class FulfillRequestController extends Controller implements Initializabl
     public void radioChanged(ActionEvent event) {
         reloadList();
         reloadEmployees() ;
-
     }
 
     /**
@@ -127,28 +128,28 @@ public class FulfillRequestController extends Controller implements Initializabl
 
         if (allRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllITRequests();
 
                 newRequestlist = showProperRequest(newRequestlist, allMedReqList, allITReqList);
 
             } else if (medicineRadio.isSelected()) {
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
                 newRequestlist.addAll(allMedReqList);
             } else if (ITRadio.isSelected()) {
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllITRequests();
                 newRequestlist.addAll(allITReqList);
             }
         } else if (uncRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllIncompleteITRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests();
                 newRequestlist = showProperRequest(newRequestlist, allMedReqList, allITReqList);
             } else if (medicineRadio.isSelected()) {
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllIncompleteMedicineRequests();
+                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests();
                 newRequestlist.addAll(allMedReqList);
             } else if (ITRadio.isSelected()) {
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllIncompleteITRequests();
+                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests();
                 newRequestlist.addAll(allITReqList);
             }
         }
@@ -182,22 +183,20 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
 
-
-
     /**
      * Prints out the list of Employees
      *
-     * @param newEList
+     * @param employeeList
      */
-    /*
+
     public void printEList(ObservableList<Employee> employeeList) {
         employeeListView.getItems().clear();
         employeeListView.setItems(employeeList);
 
         // Set the cell to display only the name of the reservableSpace
-        employeeListView.setCellFactory(param -> new ListCell<Request>() {
+        employeeListView.setCellFactory(param -> new ListCell<Employee>() {
             @Override
-            protected void updateItem(Request item, boolean empty) {
+            protected void updateItem(Employee item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (empty || item == null || printEmployee(item) == null) {
@@ -207,9 +206,17 @@ public class FulfillRequestController extends Controller implements Initializabl
                 }
             }
         });
-        employeeListView.setEditable(false);
+        requestListView.setEditable(false);
     }
-*/
+
+
+    /**
+     * relaod employees when selected changes
+     */
+    @FXML
+    public void requestSelectionChanged() {
+        reloadEmployees() ;
+    }
 
 
 
@@ -221,18 +228,7 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     public void reloadEmployees() {
 
-
-        Request selected;
-        // if there are extisting requests
-        if (requestListView != null) {
-            // get the select the first request in the list
-            requestListView.getSelectionModel().select(0);
-            // assign the selected item to a variable
-            selected = (Request) requestListView.getSelectionModel().getSelectedItem();
-            // otherwise set to null
-        } else {
-            selected = null;
-        }
+        Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
 
         // fetch all the employees from databse
         ArrayList<Employee> allEmployees = (ArrayList) myDBS.getAllEmployees();
@@ -240,18 +236,17 @@ public class FulfillRequestController extends Controller implements Initializabl
         ObservableList<Employee> returnList = FXCollections.observableArrayList();
 
         // if all requests radio (either fulfilled and unfulfilled) is selected
-        if (allRadio.isSelected() || uncRadio.isSelected()) {
-            // if all types of request radio is selected
+       if (allRadio.isSelected() || uncRadio.isSelected()) {
+           // if all types of request radio is selected
             if (allTypeRadio.isSelected()) {
                 // if no filters selected, but unfulfilled request is selected in list
-                if (selected != null && selected.isCompleted() == false) {
+                if (selected.isCompleted() == false) {
                     returnList = employeeForSelectedJob();
                     // if no filters selected, but FULFILLED request is selected in list
-                } else if (selected != null && selected.isCompleted() == true) {
+                } else if (selected.isCompleted() == true) {
                     // give back all employees
                     returnList.addAll(allEmployees);
                 }
-                // do i need a case for if select == null
             } else if (medicineRadio.isSelected()) {
                 // show medical staff
                 returnList = employeeForSelectedJob();
@@ -260,14 +255,8 @@ public class FulfillRequestController extends Controller implements Initializabl
                 returnList = employeeForSelectedJob();
             }
         }
-        // printEList(returnList);
-
+        printEList(returnList);
     }
-
-
-
-
-
 
 
     /**
@@ -277,8 +266,24 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     public ObservableList<Employee> employeeForSelectedJob() {
 
+
+
+
+        Request selected;
+        // if there are extisting requests
+        if (requestListView != null) {
+            // get the select the first request in the list
+            //requestListView.getSelectionModel().select(0);
+            // assign the selected item to a variable
+            selected = (Request) requestListView.getSelectionModel().getSelectedItem();
+            // otherwise set to null
+        } else {
+            selected = null;
+        }
+
+
         // selected request
-        Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
+        //Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
 
         // new list for correct employees based on request type
         ArrayList<Employee> newEmployeeList;
@@ -335,13 +340,6 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
 
-
-
-
-
-
-
-
     /**
      * Prints out a single request
      *
@@ -358,7 +356,12 @@ public class FulfillRequestController extends Controller implements Initializabl
                 " Description: " + request.getNotes();
     }
 
-
+    /**
+     * Prints out a single employee
+     *
+     * @param e
+     * @return
+     */
     public String printEmployee(Employee e) {
         if (e == null) {
             return null;
@@ -382,7 +385,6 @@ public class FulfillRequestController extends Controller implements Initializabl
                 newRequestList.addAll(allMedReqList);
                 newRequestList.addAll(allITReqList);
                 typeVBox.getChildren().addAll(medicineRadio,ITRadio);
-
                 break;
             case DOCTOR:
                 newRequestList.addAll(allMedReqList);
@@ -424,14 +426,26 @@ public class FulfillRequestController extends Controller implements Initializabl
         ObservableList<Employee> EmployeeList = FXCollections.observableArrayList();
 
         ArrayList<Employee> allEs = (ArrayList) myDBS.getAllEmployees();
-        ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) DatabaseService.getDatabaseService().getAllMedicineRequests();
-        ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) DatabaseService.getDatabaseService().getAllITRequests();
+        ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
+        ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) myDBS.getAllITRequests();
 
         requestlist = showProperRequest(requestlist, medicineReq, itReq);
         EmployeeList.addAll(allEs);
 
         printList(requestlist);
-        // printEList(EmployeeList);
+        printEList(EmployeeList);
+
+        Request selected;
+        // if there are extisting requests
+        if (requestListView != null) {
+            // get the select the first request in the list
+            requestListView.getSelectionModel().select(0);
+            // assign the selected item to a variable
+            selected = (Request) requestListView.getSelectionModel().getSelectedItem();
+            // otherwise set to null
+        } else {
+            selected = null;
+        }
 
     }
 }
