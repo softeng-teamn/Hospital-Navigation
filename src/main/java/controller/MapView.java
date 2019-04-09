@@ -100,6 +100,9 @@ public class MapView {
     private
     HashMap<String, Integer> floors = new HashMap<String, Integer>();
 
+    private static HashMap<String, ImageView> imageCache = new HashMap<>();
+    private static boolean imagesCached = false;
+
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
@@ -158,6 +161,21 @@ public class MapView {
         zoom(0.3);
 
         directionsView.setVisible(false);
+
+        // Cache imageViews so they can be reused, but only if they haven't already been cached
+        if(!imagesCached) {
+            try {
+                imageCache.put("Floor 3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
+                imageCache.put("Floor 2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
+                imageCache.put("Floor 1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
+                imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
+                imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
+                imageCache.put("Ground", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
+                imagesCached = true;
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     void pingTiming() {
@@ -196,33 +214,27 @@ public class MapView {
         event.setFloor(btn.getText());
         switch (btn.getText()) {
             case "Floor 3":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.thirdFloor.openStream()));
+                imageView = imageCache.get("Floor 3");
                 floorName = "3";
                 break;
             case "Floor 2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondFloor.openStream()));
+                imageView = imageCache.get("Floor 2");
                 floorName = "2";
                 break;
             case "Floor 1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstFloor.openStream()));
+                imageView = imageCache.get("Floor 1");
                 floorName = "1";
                 break;
             case "L1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstLowerFloor.openStream()));
+                imageView = imageCache.get("L1");
                 floorName = "L1";
                 break;
             case "L2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondLowerFloor.openStream()));
+                imageView = imageCache.get("L2");
                 floorName = "L2";
                 break;
             case "Ground":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
+                imageView = imageCache.get("Ground");
                 floorName = "G";
                 break;
             default:
