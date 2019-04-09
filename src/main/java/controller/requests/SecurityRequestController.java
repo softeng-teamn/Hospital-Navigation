@@ -16,7 +16,6 @@ public class SecurityRequestController extends RequestController {
     @FXML
     private ToggleGroup urgency;
 
-
     @FXML
     void submitRequest(ActionEvent event) {
 
