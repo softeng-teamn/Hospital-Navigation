@@ -43,6 +43,22 @@ public class Node {
         return floor;
     }
 
+    public int getIntFloor() {
+
+        if (floor.equals("L2")){
+            return -2;
+        }
+        else if (floor.equals("L1")){
+            return -1;
+        }
+        else if (floor.equals("G")){
+            return 0;
+        }
+        else{
+            return Integer.parseInt(floor);
+        }
+    }
+
     public void setFloor(String floor) {
         this.floor = floor;
     }
