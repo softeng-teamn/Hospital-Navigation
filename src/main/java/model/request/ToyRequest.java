@@ -33,7 +33,7 @@ public class ToyRequest extends Request {
     @Override
     public void fillRequest() {
         this.setCompleted(true);
-        this.setCompletedBy(this.getCompletedBy());
+        this.setAssignedTo(this.getAssignedTo());
         DatabaseService.getDatabaseService().updateToyRequest((ToyRequest)this);
     }
 

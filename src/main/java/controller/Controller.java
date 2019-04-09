@@ -23,6 +23,10 @@ public class Controller {
     public static void setIsEmployee(boolean isEmployee) { Controller.isEmployee = isEmployee; }
 
     static HashMap<String, ArrayList<Node>> connections;
+    @SuppressWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
+    static Node nodeToEdit = new Node("BHALL01402",3296,880,"2","45 Francis","HALL","Hallway Intersection 14 Level 2","Hallway B1402");
+    static ArrayList<Edge> edgesToEdit;
+    //BHALL01402,3296,880,2,45 Francis,HALL,Hallway Intersection 14 Level 2,Hallway B1402
     static ElevatorCon elevatorCon = new ElevatorCon();
     static String floorIsAt = "0";
 
