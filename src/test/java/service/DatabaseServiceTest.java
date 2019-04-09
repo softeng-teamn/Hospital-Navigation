@@ -293,6 +293,29 @@ public class DatabaseServiceTest {
         assertTrue(connectedNodes.get(3).equals(testNode5));
     }
 
+    @Test
+    @Category(FastTest.class)
+    public void deleteNodeCascade() {
+        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
+
+        AVServiceRequest req1 = new AVServiceRequest(-1, "", testNode, false, AVServiceRequest.AVServiceType.Audio);
+        ExternalTransportRequest req2 = new ExternalTransportRequest(-1, "", otherNode, false, new Date(), ExternalTransportRequest.TransportationType.BUS, "");
+
+        assertTrue(myDBS.insertNode(testNode));
+        assertTrue(myDBS.insertNode(otherNode));
+        assertTrue(myDBS.insertEdge(newEdge));
+        assertTrue(myDBS.insertAVServiceRequest(req1));
+        assertTrue(myDBS.insertExtTransRequest(req2));
+
+        assertTrue(myDBS.deleteNode(testNode));
+
+        assertThat(myDBS.getEdge("ACONF00102-ACONF00103"), is(nullValue()));
+        assertThat(myDBS.getAVServiceRequest(0), is(nullValue()));
+        assertThat(myDBS.getAllExtTransRequests(), hasSize(1));
+    }
+
 
     @Test
     @Category(FastTest.class)
@@ -744,6 +767,21 @@ public class DatabaseServiceTest {
 
         assertTrue(myDBS.deleteEmployee(employee));
         assertNull(myDBS.getEmployee(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getEmployeeByUsername() {
+        assertThat(myDBS.getEmployeeByUsername("doc"), is(nullValue()));
+        assertThat(myDBS.getEmployeeByUsername("brown"), is(nullValue()));
+
+        Employee employee1 = new Employee(0, "doc", JobType.DOCTOR, false, "password");
+        Employee employee2 = new Employee(1, "brown", JobType.DOCTOR, false, "password");
+        assertTrue(myDBS.insertEmployee(employee1));
+        assertTrue(myDBS.insertEmployee(employee2));
+
+        assertThat(myDBS.getEmployeeByUsername("doc"), is(employee1));
+        assertThat(myDBS.getEmployeeByUsername("brown"), is(employee2));
     }
 
     @Test
