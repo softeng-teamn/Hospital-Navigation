@@ -305,40 +305,64 @@ public class MapView {
      * @return a String of the directions
      */
     public ArrayList<String> makeDirections(ArrayList<Node> path) {
+        HashMap<String, Integer> floors = new HashMap<>();
+        floors.put("L2", -2);
+        floors.put("L1", -1);
+        floors.put("G", 0);
+        floors.put("1", 1);
+        floors.put("2", 2);
+        floors.put("3", 3);
+        HashMap<String, String> floorsQR = new HashMap<>();
+        floorsQR.put("L2", "A");
+        floorsQR.put("L1", "B");
+        floorsQR.put("G", "C");
+        floorsQR.put("1", "D");
+        floorsQR.put("2", "E");
+        floorsQR.put("3", "F");
+
         if (path == null || path.size() < 2) {
             return null;
         }
 
         System.out.println(path);    // TODO: remove
 
-
         final int NORTH_I = 1122 - 1886;    // Measurements from maps
         final int NORTH_J = 642 - 1501;    // Measurements from maps
 
-        double oldX, oldY;
         ArrayList<String> directions = new ArrayList<>();    // Collection of instructions
         directions.add("\nStart at " + path.get(0).getLongName() + ".\n");    // First instruction
 
-        // Make the first instruction cardinal
-        if (!path.get(0).getFloor().equals(path.get(1).getFloor())) {
+        // Make the next instruction cardinal, or up/down if it is a floor connector
+        String oldFloor = path.get(0).getFloor();
+        String newFloor = path.get(1).getFloor();
+        if (floors.get(oldFloor) < floors.get(newFloor)) {
             if (path.get(0).getNodeType().equals("ELEV")) {
-                directions.add("Take the elevator from floor " + path.get(0).getFloor() + " to floor " + path.get(1).getFloor() + ".\n");
+                directions.add("N" + floorsQR.get(oldFloor) + floorsQR.get(newFloor));
             }
             else {
-                directions.add("Take the stairs from floor " + path.get(0).getFloor() + " to floor " + path.get(1).getFloor() + ".\n");
+                directions.add("P" + floorsQR.get(oldFloor) + floorsQR.get(newFloor));
+            }
+        }
+        else if(floors.get(oldFloor) > floors.get(newFloor)) {
+            if (path.get(0).getNodeType().equals("ELEV")) {
+                directions.add("O" + floorsQR.get(oldFloor) + floorsQR.get(newFloor));
+            }
+            else {
+                directions.add("Q" + floorsQR.get(oldFloor) + floorsQR.get(newFloor));
             }
         }
         else {
-            String cardinal = csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0).getXcoord(), path.get(0).getYcoord(), path.get(1).getXcoord(), path.get(1).getYcoord());
-            cardinal = convertToCardinal(cardinal);
-            directions.add(cardinal);
+            Node basis = path.get(0);
+            basis.setXcoord(path.get(0).getXcoord() + NORTH_I);
+            basis.setYcoord(path.get(0).getYcoord() + NORTH_J);
+            directions.add(convertToCardinal(csDirPrint(basis, path.get(0), path.get(1)));
         }
 
-        if (path.get(1).getNodeType().equals("ELEV") && !directions.get(1).contains("Take")) {
-            directions.add("Walk to the elevator.\n");
+        if (path.get(1).getNodeType().equals("ELEV") && !(directions.get(1).length() > 3)) {
+            directions.add("I");
         }
-        else if (path.get(1).getNodeType().equals("STAI") && !directions.get(1).contains("Take")) {
-            directions.add("Walk to the stairs.\n");
+        else if (path.get(1).getNodeType().equals("STAI") && !(directions.get(1).length() > 3)) {
+            directions.add("J");
         }
 
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
@@ -481,7 +505,7 @@ public class MapView {
      * @param directions the list of directions as strings
      * @return a String that is the sum of all the directions
      */
-    public String printDirections(ArrayList<String> directions) {
+    public String printDirections(ArrayList<String> directions) {    // TODO
         // Create labels for each direction and add them to the listview
         ObservableList<Label> dirs = FXCollections.observableArrayList();
         ArrayList<Label> labels = new ArrayList<>();
@@ -511,55 +535,51 @@ public class MapView {
      * @return the direction as a cardinal direction
      */
     public String convertToCardinal(String cardinal) {
-        String feet = cardinal.substring(cardinal.indexOf("walk")+5)+ "\n";
-        if (cardinal.contains("slightly left")) {
-            cardinal = "Walk south east for " + feet;
+        if (cardinal.contains("C")) {
+            cardinal = "X" + cardinal.substring(1);
         }
-        else if (cardinal.contains("slightly right")) {
-            cardinal = "Walk south west for " + feet;
+        else if (cardinal.contains("F")) {
+            cardinal = "V" + cardinal.substring(1);
         }
-        else if (cardinal.contains("sharply left")) {
-            cardinal = "Walk north east for " + feet;
+        else if (cardinal.contains("D")) {
+            cardinal = "Z" + cardinal.substring(1);
         }
-        else if (cardinal.contains("sharply right")) {
-            cardinal = "Walk north west for " + feet;
+        else if (cardinal.contains("G")) {
+            cardinal = "T " + cardinal.substring(1);
         }
-        else if (cardinal.contains("left")) {
-            cardinal = "Walk east for " + feet;
+        else if (cardinal.contains("B")) {
+            cardinal = "Y" + cardinal.substring(1);
         }
-        else if (cardinal.contains("right")) {
-            cardinal = "Walk west for " + feet;
+        else if (cardinal.contains("E")) {
+            cardinal = "U" + cardinal.substring(1);
         }
-        else if (cardinal.contains("straight")) {
-            cardinal = "Walk south for " + feet;
+        else if (cardinal.contains("A")) {
+            cardinal = "W" + cardinal.substring(1);
         }
         else {
-            cardinal = "Walk north for " + feet;
+            cardinal = "S" + cardinal.substring(1);
         }
         return cardinal;
     }
 
     /**
      * Compute the direction turned and distance between the middle and last point for the given 3 points.
-     * @param pX previous point's x
-     * @param pY previous point's y
-     * @param cX current point's x
-     * @param cY current point's y
-     * @param nX next point's x
-     * @param nY next point's y
+     * @param prev the previous node
+     * @param curr the current node
+     * @param next the next node
      * @return the direction for someone walking from points 1 to 3 with the turn direction and distance
-     *          between the middle and last point
+     *      *          between the middle and last point
      */
-    public String csDirPrint(double pX, double pY, double cX, double cY, double nX, double nY) {
-        final double THRESHOLD = .0001;   // Double comparison standard
-
+    public String csDirPrint(Node prev, Node curr, Node next) {
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
-        prevXd = pX;
-        prevYd = pY;
-        currXd = cX;
-        currYd = cY;
-        nextXd = nX;
-        nextYd = nY;
+        prevXd = prev.getXcoord();
+        prevYd = prev.getYcoord();
+        currXd = curr.getXcoord();
+        currYd = curr.getYcoord();
+        nextXd = next.getXcoord();
+        nextYd = next.getYcoord();
+
+        final double THRESHOLD = .0001;   // Double comparison standard
 
         // The slopes for the two vectors and y-intercept for the second vector as a line
         double slope1, slope2, intercept;
@@ -616,36 +636,36 @@ public class MapView {
         String turn = "";
 
         if (Math.abs(plus - minus) < Math.PI/8) {    // Say straight within a small angle
-            turn = "straight";
+            turn = "A";
         }
         else if (Math.abs(theta - Math.PI) < THRESHOLD) {    // Turn around if theta is to behind you
-            turn = "around";
+            turn = "H";
         }
         else if (Math.abs(expectedVal - computedY1) < THRESHOLD) {    // Otherwise turn the correct direction
             if (theta <= Math.PI/4) {
-                turn = "slightly right";
+                turn = "F";
             }
             else if (theta >= Math.PI*3/4) {
-                turn = "sharply right";
+                turn = "G";
             }
             else {
-                turn = "right";
+                turn = "E";
             }
         }
         else {
             if (theta <= Math.PI/4) {
-                turn = "slightly left";
+                turn = "C";
             }
             else if (theta >= Math.PI*3/4) {
-                turn = "sharply left";
+                turn = "D";
             }
             else {
-                turn = "left";
+                turn = "C";
             }
         }
 
         // Create and return the direction
-        String direction = String.format("Turn " + turn + " and walk %.0f feet.", distance);
+        String direction = String.format(turn +  "%.0f", distance);
         return direction;
     }
 
@@ -654,6 +674,7 @@ public class MapView {
      */
     @FXML
     public void showDirections() {
+        // TODO
         directionsView.setVisible(!directionsView.isVisible());
         if (showDirectionsBtn.getText().contains("Show")) {
             showDirectionsBtn.setText("Close Textual Directions");
@@ -678,80 +699,7 @@ public class MapView {
      * @return the String to use in the QR code
      */
     private String convertToQRCode(ArrayList<String> directions) {
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < directions.size(); i++) {
-            String dir = directions.get(i);
-            if (dir.contains("straight")) {
-                buf.append("A");
-            }
-            else if (dir.contains("slight left")) {
-                buf.append("C");
-            }
-            else if (dir.contains("sharp left")) {
-                buf.append("D");
-            }
-            else if (dir.contains("left")) {
-                buf.append("B");
-            }
-            else if (dir.contains("sharp right")) {
-                buf.append("G");
-            }
-            else if (dir.contains("slight right")) {
-                buf.append("F");
-            }
-            else if (dir.contains("right")) {
-                buf.append("E");
-            }
-            else if (dir.contains("elevator") && dir.contains("down")) {
-                buf.append("O");
-            }
-            else if (dir.contains("elevator") && dir.contains("up")) {
-                buf.append("N");
-            }
-            else if (dir.contains("stairs") && dir.contains("up")) {
-                buf.append("P");
-            }
-            else if (dir.contains("stairs") && dir.contains("down")) {
-                buf.append("Q");
-            }
-            else if (dir.contains("north west")) {
-                buf.append("T");
-            }
-            else if (dir.contains("north east")) {
-                buf.append("Z");
-            }
-            else if (dir.contains("north")) {
-                buf.append("S");
-            }
-            else if (dir.contains("south west")) {
-                buf.append("V");
-            }
-            else if (dir.contains("south east")) {
-                buf.append("X");
-            }
-            else if (dir.contains("south")) {
-                buf.append("W");
-            }
-            else if (dir.contains("east")) {
-                buf.append("Y");
-            }
-            else if (dir.contains("west")) {
-                buf.append("U");
-            }
-
-            if (buf.indexOf("O") > 0 || buf.indexOf("N") > 0 || buf.indexOf("P") > 0 || buf.indexOf("Q") > 0) {
-                buf.append(dir.substring(dir.length() - 2));
-            }
-            else {
-                if (dir.contains("for")) {
-                    buf.append(dir.substring(dir.indexOf("for") + 4));
-                }
-                else {
-                    buf.append(dir.substring(dir.indexOf("walk") + 5));
-                }
-            }
-
-        }
+        // TODO if necc - ex all into one
         return "";
     }
 }
