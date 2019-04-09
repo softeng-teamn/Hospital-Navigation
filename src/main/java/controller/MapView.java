@@ -48,7 +48,7 @@ public class MapView {
     private EventBus eventBus = EventBusFactory.getEventBus();
     private Event event = EventBusFactory.getEvent();
 
-    private String currentMethod = "depth";
+    private String currentMethod;
 
     private Group zoomGroup;
     private Circle startCircle;
@@ -182,7 +182,6 @@ public class MapView {
                 }
             }
         });
-        this.event = event;
     }
 
 
@@ -216,6 +215,7 @@ public class MapView {
 
     // generate path on the screen
     private void navigationHandler() {
+        currentMethod = event.getSearchMethod();
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!" + currentMethod + "!!!!!!!!!!!!!!!!!!");
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> path;

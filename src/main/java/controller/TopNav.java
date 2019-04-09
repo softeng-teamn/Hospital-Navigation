@@ -44,9 +44,8 @@ public class TopNav {
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
         if (event.isAdmin()) {
-            Event sendEvent = new Event();
-            sendEvent.setEventName("login");
-            eventBus.post(sendEvent);
+            event.setAdmin(false);
+            event.setLoggedIn(false);
             resetBtn();
 
         } else {
@@ -190,12 +189,10 @@ public class TopNav {
     }
 
     public void startNavigation(ActionEvent actionEvent) {
-        Event sendEvent = new Event();
         Boolean accessibility = accessibilityButton.isSelected();
-        sendEvent.setNodeSelected(event.getNodeSelected());
-        sendEvent.setAccessiblePath(accessibility);
-        sendEvent.setEventName("navigation");
-        eventBus.post(sendEvent);
+        event.setAccessiblePath(accessibility);
+        event.setEventName("navigation");
+        eventBus.post(event);
     }
 
     public void showREST(ActionEvent actionEvent) {
