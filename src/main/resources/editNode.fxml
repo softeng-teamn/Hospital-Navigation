@@ -21,11 +21,11 @@
    <children>
       <VBox prefHeight="335.0" prefWidth="148.0" spacing="5.0">
          <children>
-            <Label text="building" />
+            <Label text="Building" />
             <JFXTextField fx:id="building_field" promptText="building" />
-            <Label text="node type" />
+            <Label text="Node Type" />
             <JFXTextField fx:id="type_field" promptText="type" />
-            <Label text="floor" />
+            <Label text="Floor" />
             <JFXComboBox fx:id="floor_combo" maxWidth="1.7976931348623157E308" onAction="#comboAction" promptText="floor" />
             <Label text="Short Name" />
             <JFXTextField fx:id="short_field" promptText="short name" />
@@ -111,12 +111,12 @@
                         </Pane>
                         <VBox fx:id="floor_change_vbox">
                            <children>
-                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="53.0" prefWidth="98.0" text="Floor 3" />
-                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Floor 2" />
-                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Floor 1" />
-                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="L1" />
-                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="L2" />
-                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Ground" />
+                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="53.0" prefWidth="98.0" text="Floor 3" />
+                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="Floor 2" />
+                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="Floor 1" />
+                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="L1" />
+                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="L2" />
+                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="Ground" />
                            </children>
                         </VBox>
                      </children>
