@@ -194,6 +194,7 @@ public class MapViewTest extends ApplicationTest {
         path.addAll(Arrays.asList(ns6, ns5, ns4, ns3, ns2, ns1));
         assertTrue(mp.makeDirections(path).get(1).contains("QFA"));
 
+
         // TODO - finish
         // test afterFloorchange ->, write
     }
