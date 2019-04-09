@@ -140,7 +140,6 @@ public class MapView {
             @Override public Void call() throws Exception {
                 while (true) {
                     Thread.sleep(1000);
-                    System.out.println("shit was fired");
                     TimeUnit.SECONDS.sleep(1);
                     System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
                     Platform.runLater(new Runnable() {
@@ -348,7 +347,6 @@ public class MapView {
             if (afterFloorChange && !path.get(i + 2).getNodeType().equals("ELEV") && !path.get(i + 2).getNodeType().equals("STAI")) {
                 afterFloorChange = false;
                 directions.add(convertToCardinal(csDirPrint(path.get(i+1).getXcoord() + NORTH_I, path.get(i+1).getYcoord() + NORTH_J, path.get(i+1), path.get(i+2))));
-                System.out.println("after floor change");
             }
             else if(!path.get(i+1).getNodeType().equals("ELEV") && !path.get(i+1).getNodeType().equals("STAI") && (path.get(i+2).getNodeType().equals("ELEV") || path.get(i+2).getNodeType().equals("STAI"))
                     && ((i < path.size() - 3 && (path.get(i+3).getNodeType().equals("ELEV") || path.get(i+3).getNodeType().equals("STAI"))) || i == path.size() -3)) {    // If next node is elevator, say so
@@ -361,8 +359,6 @@ public class MapView {
             else if (floors.get(oldFl) != floors.get(newFl)) {    // Otherwise if we're changing floors, give a floor change direction
                 directions.add(upDownConverter(oldFl, newFl, path.get(i+1).getNodeType()));
                 afterFloorChange = true;
-                System.out.println("diff floors");
-                System.out.println(directions);
             }
             else {    // Otherwise provide a normal direction
                 directions.add(csDirPrint(path.get(i), path.get(i+1), path.get(i+2)));
@@ -370,7 +366,6 @@ public class MapView {
             }
         }
 
-        System.out.println("dirs before simplification" + directions);
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
@@ -401,7 +396,6 @@ public class MapView {
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
 
-        System.out.println(directions);
         printDirections(directions);
         return directions;
     }
@@ -561,7 +555,6 @@ public class MapView {
             buf.append(directions.get(i));
         }
         String total = buf.toString();
-        System.out.println(total);    // TODO cut
         return total;
     }
 
