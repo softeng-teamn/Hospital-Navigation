@@ -102,9 +102,22 @@ public class MapViewTest {
         path.addAll(Arrays.asList(nE, nE2, nE3));
         assertTrue(mp.makeDirections(path).get(1).contains("Take"));
 
-        //
+        //Progressions
+        Node str1 = new Node(0,-5,"ID 6", "L2", "Tower", "HALL", "Hallway A2", "HA2");
+        Node str2 = new Node(0,0,"ID 7", "L2", "Tower", "HALL", "Hallway D3", "HD3");
+        Node str3 = new Node(0,5,"ID 8", "L2", "Tower", "HALL", "Hallway F2", "HF2");
+        Node str4 = new Node(0,15,"ID 9", "L2", "Tower", "HALL", "Hallway F3", "HF3");
+        path.clear();
+        path.addAll(Arrays.asList(str1, str2, str3, str4));
+        assertTrue(mp.makeDirections(path).get(1).contains("7"));
+        Node nE4 = new Node(0,0,"ID E", "1", "Tower", "ELEV", "Elevator B5", "EB5");
+        Node nE5 = new Node(0,0,"ID E", "2", "Tower", "ELEV", "Elevator C5", "EC5");
+        Node nE6 = new Node(0,0,"ID E", "3", "Tower", "ELEV", "Elevator C5", "EC5");
+        path.clear();
+        path.addAll(Arrays.asList(nE, nE2, nE3, nE4, nE5, nE6));
+        assertTrue(mp.makeDirections(path).get(1).contains("3"));
 
-        // TODO
+        // TODO - finish
     }
 
     @Test
