@@ -491,10 +491,11 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ObservableList<Request> requestlist = FXCollections.observableArrayList();
+       // ObservableList<Request> requestlist = FXCollections.observableArrayList();
         ObservableList<Employee> EmployeeList = FXCollections.observableArrayList();
 
         ArrayList<Employee> allEs = (ArrayList) myDBS.getAllEmployees();
+/*
         ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
         ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) myDBS.getAllITRequests();
         ArrayList<AVServiceRequest> avReq = (ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests();
@@ -510,7 +511,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         ArrayList<SanitationRequest> sanitReq = (ArrayList<SanitationRequest>) myDBS.getAllSanitationRequests();
         ArrayList<SecurityRequest> secReq = (ArrayList<SecurityRequest>) myDBS.getAllSecurityRequests();
         ArrayList<ToyRequest> toyReq = (ArrayList<ToyRequest>) myDBS.getAllToyRequests();
-
+*/
 
 
         // total requests
