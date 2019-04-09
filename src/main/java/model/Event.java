@@ -27,6 +27,15 @@ public class Event {
 
     public void setCallElev(boolean callElev) {this.callElev = callElev;}
 
+    boolean endNode = true; //true for end node, false for start node
+
+
+    public boolean isEndNode() { return endNode; }
+
+    public void setEndNode(boolean startEnd) { this.endNode = startEnd; }
+
+    public void setDefaultStartNode (){this.nodeStart = DEFAULT_NODE;}
+
     public String getFloor() {
         return floor;
     }

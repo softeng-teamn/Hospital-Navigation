@@ -16,6 +16,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
@@ -28,11 +30,12 @@ import java.util.concurrent.TimeUnit;
 
 public class TopNav {
 
+    public HBox top_nav;
     private Event event = EventBusFactory.getEvent();
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn, startNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -47,6 +50,8 @@ public class TopNav {
     @FXML
     private JFXCheckBox callElev;
 
+
+    JFXTextField startSearch = new JFXTextField();
 
     // events I send out/control
     @FXML
@@ -145,7 +150,11 @@ public class TopNav {
                 // show navigation button
                 // navigate_btn.setVisible(true);
                 //showNavigationBtn(event);
-                nodeSelectedHandler(newEvent.getNodeSelected());        // will make nav btn visible, fill search with node
+                if (event.isEndNode()){
+                    nodeSelectedHandler(newEvent.getNodeSelected());        // will make nav btn visible, fill search with node
+                } else {
+                    nodeSelectedHandler(newEvent.getNodeStart());
+                }
                 break;
 
             case "login":     // receives from AdminLoginContoller?
@@ -184,11 +193,26 @@ public class TopNav {
      * @param e
      */
     @FXML
+    public void startNodeEnter(ActionEvent e) {
+        String search = search_bar.getText();
+
+        event.setSearchBarQuery(search);
+        event.setEventName("search-query");
+        event.setEndNode(false);
+        eventBus.post(event);
+    }
+
+    /**
+     * searches for room
+     * @param e
+     */
+    @FXML
     public void searchBarEnter(ActionEvent e) {
         String search = search_bar.getText();
 
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
+        event.setEndNode(true);
         eventBus.post(event);
     }
 
@@ -204,8 +228,12 @@ public class TopNav {
 
         // show node-selected in search
         String fillNodeinSearch = selected.getLongName();
-        search_bar.setText(fillNodeinSearch);
 
+        if(event.isEndNode()){
+            search_bar.setText(fillNodeinSearch);
+        } else {
+            startSearch.setText(fillNodeinSearch);
+        }
     }
 
     public void startNavigation(ActionEvent actionEvent) {
@@ -218,6 +246,35 @@ public class TopNav {
         eventBus.post(event);
     }
 
+
+    public void setEventEndNode(MouseEvent mouseEvent){
+        event.setEndNode(false);
+    }
+
+
+    public void setEventStartNode(MouseEvent mouseEvent) {
+        event.setEndNode(true);
+    }
+
+    @FXML
+    public void showStartSearch(ActionEvent actionEvent) {
+        if (startNode_btn.getText().equals("Start Node")){
+            startSearch.setPromptText("Start Node");
+            startSearch.setOnAction(this::startNodeEnter);
+            startSearch.setOnMouseClicked(this::setEventEndNode);
+            top_nav.getChildren().add(0, startSearch);
+            event.setEndNode(false);
+            startNode_btn.setText("Use default");
+        } else {
+            top_nav.getChildren().remove(startSearch);
+            event.setEndNode(true);
+            event.setDefaultStartNode();
+            event.setEventName("refresh");
+            eventBus.post(event);
+            startNode_btn.setText("Start Node");
+        }
+    }
+
     public void showREST(ActionEvent actionEvent) {
         Boolean accessibility = accessibilityButton.isSelected();
         event.setAccessiblePath(accessibility);
@@ -225,6 +282,7 @@ public class TopNav {
         event.setFilterSearch("REST");
         eventBus.post(event);
     }
+
 
     public void showELEV(ActionEvent actionEvent) {
         Boolean accessibility = accessibilityButton.isSelected();

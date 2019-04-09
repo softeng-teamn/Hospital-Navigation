@@ -1,6 +1,11 @@
 package model.request;
 
+import javafx.collections.ObservableList;
+import model.Employee;
+import model.JobType;
 import model.Node;
+
+import java.util.ArrayList;
 import java.util.Objects;
 
 public abstract class Request {
@@ -18,9 +23,9 @@ public abstract class Request {
         this.assignedTo = -1;
     }
 
-    public abstract void  makeRequest() ;
+    public abstract void makeRequest();
 
-    public abstract void fillRequest() ;
+    public abstract void fillRequest();
 
     public int getId() {
         return id;
@@ -89,4 +94,10 @@ public abstract class Request {
                 ", assignedTo='" + assignedTo + '\'' +
                 '}';
     }
+
+    //Show Requests based on Job
+    public abstract ObservableList<Request> showProperRequest();
+
+    public abstract ObservableList<Employee> returnCorrectEmployee();
+
 }

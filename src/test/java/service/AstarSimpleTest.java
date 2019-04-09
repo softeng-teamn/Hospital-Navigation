@@ -28,17 +28,17 @@ import static org.mockito.Mockito.*;
 
 public class AstarSimpleTest {
 
-    final Node n1 = new Node("n1", 0, 0, "f", "f", "f", "f", "f");
+    final Node n1 = new Node("n1", 0, 0, "1", "f", "f", "f", "f");
     final MapNode mn1 = new MapNode(0,0, n1);
-    final Node n2 = new Node("n2", 1, 0, "f", "f", "f", "f", "f");
+    final Node n2 = new Node("n2", 1, 0, "1", "f", "f", "f", "f");
     final MapNode mn2 = new MapNode(1,0,n2);
-    final Node n3 = new Node("n3", 1, 1, "f", "f", "f", "f", "f");
+    final Node n3 = new Node("n3", 1, 1, "1", "f", "f", "f", "f");
     final MapNode mn3 = new MapNode(1,1, n3);
-    final Node n4 = new Node("n4", 2, 1, "f", "f", "f", "f", "f");
+    final Node n4 = new Node("n4", 2, 1, "1", "f", "f", "f", "f");
     final MapNode mn4 = new MapNode(2, 1, n4);
-    final Node n5 = new Node("n5", 3, 1, "f", "f", "f", "f", "f");
+    final Node n5 = new Node("n5", 3, 1, "1", "f", "f", "f", "f");
     final MapNode mn5 = new MapNode(3, 1, n5);
-    final Node n6 = new Node("n6", 4, 0, "f", "f", "f", "f", "f");
+    final Node n6 = new Node("n6", 4, 0, "1", "f", "f", "f", "f");
     final MapNode mn6 = new MapNode(4, 0, n6);
     final Astar mockPF = spy(new Astar());
     @Mock
