@@ -151,6 +151,10 @@ public class FulfillRequestController extends Controller implements Initializabl
         // return requests
         ObservableList<Request> finalRequestList = FXCollections.observableArrayList();
 
+        /*ObservableList<Request> obsRequestList = FXCollections.observableArrayList();
+        //List<AVServiceRequest> av = myDBS.getAllAVServiceRequests();
+        List<MedicineRequest> mr =  myDBS.getAllMedicineRequests();
+        List<ITRequest> it = myDBS.getAllITRequests();*/
         // total requests
         ObservableList<Request> allRequestlist = FXCollections.observableArrayList();
         allRequestlist.addAll((ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests());
@@ -190,9 +194,11 @@ public class FulfillRequestController extends Controller implements Initializabl
         if (allRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
                 finalRequestList = allRequestlist;
-            } else if (medicineRadio.isSelected()) {
+            } else if (medicineRadio.isSelected() && (Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
+                    Controller.getCurrentJob().name().equals("DOCTOR"))) {
                 finalRequestList.addAll((ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests());
-            } else if (ITRadio.isSelected()) {
+            } else if (ITRadio.isSelected() && (Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
+                    Controller.getCurrentJob().name().equals("IT"))) {
                 finalRequestList.addAll((ArrayList<ITRequest>) myDBS.getAllITRequests());
             } else if (avReqRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests());
@@ -223,9 +229,11 @@ public class FulfillRequestController extends Controller implements Initializabl
         } else if (uncRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
                 finalRequestList = allIncompleteRequestlist;
-            } else if (medicineRadio.isSelected()) {
+            } else if (medicineRadio.isSelected() && (Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
+                    Controller.getCurrentJob().name().equals("DOCTOR"))) {
                 finalRequestList.addAll((ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests());
-            } else if (ITRadio.isSelected()) {
+            } else if (ITRadio.isSelected() && (Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
+                    Controller.getCurrentJob().name().equals("IT"))) {
                 finalRequestList.addAll((ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests());
             } else if (avReqRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<AVServiceRequest>) myDBS.getAllIncompleteAVServiceRequests());
