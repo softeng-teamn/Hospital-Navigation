@@ -24,6 +24,7 @@
 
 .interaction-area {
     -fx-background-color: #C6C9CC;
+    /*-fx-background-color: -fx-primary;*/
 }
 
 .big-label{
@@ -72,6 +73,14 @@
     -fx-font-size: 14pt;
     -fx-focus-color: #C6C9CC;
     -fx-unfocus-color: #C6C9CC;
+    -fx-background-color: #C6C9CC;
+}
+.jfx-text-area{
+    -fx-border-color: #C6C9CC;
+    -fx-focus-color: #C6C9CC;
+    -fx-unfocus-color: #C6C9CC;
+    -fx-background-color: #C6C9CC;
+
 }
 
 /*******************************************************************************

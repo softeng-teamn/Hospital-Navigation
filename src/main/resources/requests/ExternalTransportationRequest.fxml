@@ -13,7 +13,7 @@
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.requests.ExternalTransportationController">
    <children>
       <Label styleClass="big-label" text="Enter External Transport Details:" textFill="WHITE" />
-      <JFXTextArea fx:id="description" focusColor="WHITE" labelFloat="true" minHeight="-Infinity" prefHeight="308.0" prefWidth="534.0" unFocusColor="WHITE">
+      <JFXTextArea fx:id="description" focusColor="WHITE" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" unFocusColor="WHITE">
          <VBox.margin>
             <Insets left="12.0" right="12.0" />
          </VBox.margin>
