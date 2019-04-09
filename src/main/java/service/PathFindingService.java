@@ -1,6 +1,7 @@
 package service;
 
 import controller.MapController;
+import controller.NodeFacade;
 import model.MapNode;
 import model.Node;
 

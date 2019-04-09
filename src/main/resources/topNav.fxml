@@ -61,14 +61,7 @@
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="time_label"/>
             <Region HBox.hgrow="ALWAYS" />
-            <JFXButton fx:id="employeeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showEditEmployee" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
-                <graphic>
-                    <FontAwesomeIconView glyphName="USER" size="60" />
-                </graphic>
-                <HBox.margin>
-                    <Insets right="8.0" />
-                </HBox.margin></JFXButton>
-            <JFXButton fx:id="fulfillBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showFulfillRequest" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
+            <JFXButton fx:id="fulfillBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showAdminScene" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
                 <graphic>
                     <FontAwesomeIconView glyphName="CHECK" size="60" />
                 </graphic>

@@ -30,7 +30,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn, employeeBtn;
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -65,10 +65,10 @@ public class TopNav {
 
     @FXML
     // switches window to map editor screen.
-    public void showFulfillRequest() throws Exception {
+    public void showAdminScene() throws Exception {
         Stage stage = (Stage) fulfillBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
-        StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
+        Parent root = FXMLLoader.load(ResourceLoader.adminServices);
+        StageManager.changeExistingWindow(stage, root, "Administrator Services");
     }
 
     @FXML
@@ -150,13 +150,11 @@ public class TopNav {
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
             newNode_btn.setVisible(true);
-            employeeBtn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
         } else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             newNode_btn.setVisible(false);
-            employeeBtn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
         }
     }
@@ -199,7 +197,6 @@ public class TopNav {
         sendEvent.setEventName("navigation");
         eventBus.post(sendEvent);
     }
-
 
     public void showREST(ActionEvent actionEvent) {
         Boolean accessibility = accessibilityButton.isSelected();
@@ -254,4 +251,5 @@ public class TopNav {
         stage.setFullScreen(true);
 
     }
+
 }
