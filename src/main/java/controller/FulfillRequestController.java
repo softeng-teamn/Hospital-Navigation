@@ -148,7 +148,6 @@ public class FulfillRequestController extends Controller implements Initializabl
         allRequestlist.addAll((ArrayList<SecurityRequest>) myDBS.getAllSecurityRequests());
         allRequestlist.addAll((ArrayList<ToyRequest>) myDBS.getAllToyRequests());
 
-
         // total incomplete requests
         ObservableList<Request> allIncompleteRequestlist = FXCollections.observableArrayList();
         allIncompleteRequestlist.addAll((ArrayList<AVServiceRequest>) myDBS.getAllIncompleteAVServiceRequests());
@@ -446,24 +445,6 @@ public class FulfillRequestController extends Controller implements Initializabl
         ObservableList<Employee> EmployeeList = FXCollections.observableArrayList();
 
         ArrayList<Employee> allEs = (ArrayList) myDBS.getAllEmployees();
-/*
-        ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
-        ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) myDBS.getAllITRequests();
-        ArrayList<AVServiceRequest> avReq = (ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests();
-        ArrayList<ExternalTransportRequest> exTransReq = (ArrayList<ExternalTransportRequest>) myDBS.getAllExtTransRequests();
-        ArrayList<FloristRequest> floristReq = (ArrayList<FloristRequest>) myDBS.getAllFloristRequests();
-        ArrayList<GiftStoreRequest> gsReqC = (ArrayList<GiftStoreRequest>) myDBS.getAllCompleteGiftStoreRequests();
-        ArrayList<GiftStoreRequest> gsReqI = (ArrayList<GiftStoreRequest>) myDBS.getAllIncompleteGiftStoreRequests();
-        ArrayList<InternalTransportRequest> internalTReq = (ArrayList<InternalTransportRequest>) myDBS.getAllInternalTransportRequest();
-        ArrayList<InterpreterRequest> interpReq = (ArrayList<InterpreterRequest>) myDBS.getAllInterpreterRequests();
-        ArrayList<MaintenanceRequest> mainReq = (ArrayList<MaintenanceRequest>) myDBS.getAllMaintenanceRequests();
-        ArrayList<PatientInfoRequest> patientReq = (ArrayList<PatientInfoRequest>) myDBS.getAllPatientInfoRequests();
-        ArrayList<ReligiousRequest> religReq = (ArrayList<ReligiousRequest>) myDBS.getAllReligiousRequests();
-        ArrayList<SanitationRequest> sanitReq = (ArrayList<SanitationRequest>) myDBS.getAllSanitationRequests();
-        ArrayList<SecurityRequest> secReq = (ArrayList<SecurityRequest>) myDBS.getAllSecurityRequests();
-        ArrayList<ToyRequest> toyReq = (ArrayList<ToyRequest>) myDBS.getAllToyRequests();
-*/
-
 
         // total requests
         ObservableList<Request> allRequestlist = FXCollections.observableArrayList();
