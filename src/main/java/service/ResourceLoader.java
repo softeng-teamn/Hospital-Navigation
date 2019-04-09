@@ -31,6 +31,9 @@ public class  ResourceLoader {
     public static final URL employees = service.ResourceLoader.class.getResource("/employees.csv");
     public static final URL employeeEdit = service.ResourceLoader.class.getResource("/employeeEdit.fxml");
 
+    public static final URL adminServices = service.ResourceLoader.class.getResource("/adminServices.fxml");
+
+
     // Images
     public static final URL firstFloor = service.ResourceLoader.class.getResource("/Images/01_thefirstfloor.png");
     public static final URL calendarIcon = service.ResourceLoader.class.getResource("/Images/calendar.png");
