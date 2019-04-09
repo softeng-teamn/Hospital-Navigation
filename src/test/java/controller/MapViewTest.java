@@ -116,7 +116,15 @@ public class MapViewTest {
         path.clear();
         path.addAll(Arrays.asList(nE, nE2, nE3, nE4, nE5, nE6));
         assertTrue(mp.makeDirections(path).get(1).contains("3"));
-
+        Node ns1 = new Node(0,0,"ID E", "L2", "Tower", "STAI", "Stairs B5", "SB5");
+        Node ns2 = new Node(0,0,"ID E", "L1", "Tower", "STAI", "Stairs C5", "SC5");
+        Node ns3 = new Node(0,0,"ID E", "G", "Tower", "STAI", "Stairs C5", "SC5");
+        Node ns4 = new Node(0,0,"ID E", "1", "Tower", "STAI", "Stairs B5", "SB5");
+        Node ns5 = new Node(0,0,"ID E", "2", "Tower", "STAI", "Stairs C5", "SC5");
+        Node ns6 = new Node(0,0,"ID E", "3", "Tower", "STAI", "Stairs C5", "SF5");
+        path.clear();
+        path.addAll(Arrays.asList(ns1, ns2, ns3, ns4, ns5, ns6));
+        assertTrue(mp.makeDirections(path).get(1).contains("3"));
 
         // TODO - finish
     }
