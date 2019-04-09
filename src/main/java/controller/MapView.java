@@ -71,6 +71,9 @@ public class MapView {
     @FXML
     private VBox showDirVbox;
 
+    private
+    HashMap<String, Integer> floors = new HashMap<>();
+
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
@@ -129,6 +132,12 @@ public class MapView {
         zoom(0.3);
 
         directionsView.setVisible(false);
+        floors.put("L2", -2);
+        floors.put("L1", -1);
+        floors.put("G", 0);
+        floors.put("1", 1);
+        floors.put("2", 2);
+        floors.put("3", 3);
     }
 
     void pingTiming() {
@@ -305,20 +314,6 @@ public class MapView {
      * @return a String of the directions
      */
     public ArrayList<String> makeDirections(ArrayList<Node> path) {
-        HashMap<String, Integer> floors = new HashMap<>();
-        floors.put("L2", -2);
-        floors.put("L1", -1);
-        floors.put("G", 0);
-        floors.put("1", 1);
-        floors.put("2", 2);
-        floors.put("3", 3);
-        HashMap<String, String> floorsQR = new HashMap<>();
-        floorsQR.put("L2", "A");
-        floorsQR.put("L1", "B");
-        floorsQR.put("G", "C");
-        floorsQR.put("1", "D");
-        floorsQR.put("2", "E");
-        floorsQR.put("3", "F");
 
         if (path == null || path.size() < 2) {
             return null;
@@ -335,21 +330,8 @@ public class MapView {
         // Make the next instruction cardinal, or up/down if it is a floor connector
         String oldFloor = path.get(0).getFloor();
         String newFloor = path.get(1).getFloor();
-        if (floors.get(oldFloor) < floors.get(newFloor)) {
-            if (path.get(0).getNodeType().equals("ELEV")) {
-                directions.add("N" + floorsQR.get(oldFloor) + floorsQR.get(newFloor));
-            }
-            else {
-                directions.add("P" + floorsQR.get(oldFloor) + floorsQR.get(newFloor));
-            }
-        }
-        else if(floors.get(oldFloor) > floors.get(newFloor)) {
-            if (path.get(0).getNodeType().equals("ELEV")) {
-                directions.add("O" + floorsQR.get(oldFloor) + floorsQR.get(newFloor));
-            }
-            else {
-                directions.add("Q" + floorsQR.get(oldFloor) + floorsQR.get(newFloor));
-            }
+        if (floors.get(oldFloor) != floors.get(newFloor)) {
+            directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
         }
         else {
             Node basis = path.get(0);
@@ -358,65 +340,15 @@ public class MapView {
             directions.add(convertToCardinal(csDirPrint(basis, path.get(0), path.get(1)));
         }
 
-        if (path.get(1).getNodeType().equals("ELEV") && !(directions.get(1).length() > 3)) {
-            directions.add("I");
-        }
-        else if (path.get(1).getNodeType().equals("STAI") && !(directions.get(1).length() > 3)) {
-            directions.add("J");
-        }
-
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
-            System.out.println(afterFloorChange + " " + path.get(i+1).getNodeType());   // TODO
-            if (afterFloorChange && !path.get(i+1).getNodeType().equals("ELEV") && !path.get(i+1).getNodeType().equals("STAI")) {    // If we just changed floors, give a cardinal direction
-                String afterEl = csDirPrint(path.get(i+1).getXcoord() + NORTH_I, path.get(i+1).getYcoord() + NORTH_J, path.get(i+1).getXcoord(), path.get(i+1).getYcoord(), path.get(i+2).getXcoord(), path.get(i+2).getYcoord());
-                directions.add(convertToCardinal(afterEl));
+            int oldFl = floors.get(path.get(i+1).getFloor());
+            int newFl = floors.get(path.get(i+2).getFloor());
+            if (afterFloorChange ) { // TODO
                 afterFloorChange = false;
             }
-            else if (!path.get(i+1).getFloor().equals(path.get(i+2).getFloor())) {    // Otherwise if we're changing floors, give a floor change direction
-                String oldFloorstr = path.get(i+1).getFloor();
-                String newFloorStr = path.get(i+2).getFloor();
-                int newFloor, oldFloor;
-                switch (oldFloorstr) {
-                    case "L2":
-                        oldFloor = -2;
-                        break;
-                    case "L1":
-                        oldFloor = -1;
-                        break;
-                    case "G":
-                        oldFloor = 0;
-                        break;
-                    case "1":
-                        oldFloor = 1;
-                        break;
-                    case "2":
-                        oldFloor = 2;
-                        break;
-                    default:
-                        oldFloor = 3;
-                        break;
-                }
-                switch (newFloorStr) {
-                    case "L2":
-                        newFloor = -2;
-                        break;
-                    case "L1":
-                        newFloor = -1;
-                        break;
-                    case "G":
-                        newFloor = 0;
-                        break;
-                    case "1":
-                        newFloor = 1;
-                        break;
-                    case "2":
-                        newFloor = 2;
-                        break;
-                    default:
-                        newFloor = 3;
-                        break;
-                }
+            else if (oldFl) {    // Otherwise if we're changing floors, give a floor change direction
+
 
                 String transport;
                 if (path.get(i+1).getNodeType().equals("ELEV")) {
@@ -498,6 +430,43 @@ public class MapView {
         System.out.println(directions);
         printDirections(directions);
         return directions;
+    }
+
+    /**
+     * Convert two floors into an up/down elevator/stairs instruction
+     * @param f1 the first floor
+     * @param f2 the second floor
+     * @param type the nodeType of the first node
+     * @return the instruction for up/down stairs/elevator
+     */
+    public String upDownConverter(String f1, String f2, String type) {
+        HashMap<String, String> floorsQR = new HashMap<>();
+        floorsQR.put("L2", "A");
+        floorsQR.put("L1", "B");
+        floorsQR.put("G", "C");
+        floorsQR.put("1", "D");
+        floorsQR.put("2", "E");
+        floorsQR.put("3", "F");
+
+        String ret;
+
+        if (floors.get(f1) < floors.get(f2)) {
+            if (type.equals("ELEV")) {
+                ret = ("N" + floorsQR.get(f1) + floorsQR.get(f2));
+            }
+            else {
+                ret = ("P" + floorsQR.get(f1) + floorsQR.get(f2));
+            }
+        }
+        else if(floors.get(f1) > floors.get(f2)) {
+        if (type.equals("ELEV")) {
+            ret = ("O" + floorsQR.get(f1) + floorsQR.get(f2));
+        }
+        else {
+            ret = ("Q" + floorsQR.get(f1) + floorsQR.get(f2));
+        }
+
+        return ret;
     }
 
     /**
