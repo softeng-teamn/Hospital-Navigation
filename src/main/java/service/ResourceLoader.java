@@ -12,6 +12,7 @@ public class  ResourceLoader {
     public static final URL deleteNodeConfirm = service.ResourceLoader.class.getResource("/deleteNodeConfirm.fxml");
     public static final URL saveNodeConfirm = service.ResourceLoader.class.getResource("/saveNodeConfirm.fxml");
 
+
     public static final URL maintenanceRequest = service.ResourceLoader.class.getResource("/requests/maintenance_requests.fxml");
     public static final URL avServiceRequest = service.ResourceLoader.class.getResource("/requests/avservice_requests.fxml");
     public static final URL floristRequest = service.ResourceLoader.class.getResource("/requests/floristRequest.fxml");

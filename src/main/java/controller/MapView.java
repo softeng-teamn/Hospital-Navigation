@@ -87,7 +87,7 @@ public class MapView {
     private Label cur_el_floor;
 
     @FXML
-    private JFXListView directionsView;
+    public JFXListView directionsView;
 
     @FXML
     private JFXButton showDirectionsBtn;
@@ -101,9 +101,6 @@ public class MapView {
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
-
-
-
         JFXButton myBtn = (JFXButton) e.getSource();
         char elevNum = myBtn.getText().charAt(myBtn.getText().length()-1);
 
@@ -394,7 +391,8 @@ public class MapView {
                 lineCollection.add(line);
                 last = current;
             }
-            makeDirections(path);
+
+            printDirections(makeDirections(path));
         }
     }
 
@@ -540,8 +538,6 @@ public class MapView {
 
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
-
-        printDirections(directions);
         return directions;
     }
 
