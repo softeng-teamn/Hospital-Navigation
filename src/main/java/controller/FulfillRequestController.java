@@ -8,11 +8,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Employee;
@@ -76,6 +79,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     private VBox typeVBox;
 
 
+
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     /**
@@ -95,8 +99,6 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     @FXML
     public void fulfillRequest() {
-
-
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
         selected.fillRequest();
         reloadList();
@@ -120,6 +122,24 @@ public class FulfillRequestController extends Controller implements Initializabl
         reloadList();
         reloadEmployees();
     }
+
+    @FXML
+    public void assignEmployee (ActionEvent event) {
+        Request selectedTask = (Request) requestListView.getSelectionModel().getSelectedItem();
+        Employee selectedEmp = (Employee) employeeListView.getSelectionModel().getSelectedItem();
+        selectedTask.setCompletedBy(selectedEmp.getUsername());
+
+        requestListView.getItems().set(requestListView.getSelectionModel().getSelectedIndex(), selectedTask) ;
+        ObservableList<Request> x = FXCollections.observableArrayList();
+        for (int i = 0 ; i < requestListView.getItems().size() ; i ++) {
+            x.add((Request)requestListView.getItems().get(i));
+        }
+        printList(x);
+    }
+
+
+
+
 
 
     /**
@@ -258,7 +278,7 @@ public class FulfillRequestController extends Controller implements Initializabl
                 }
             }
         });
-        requestListView.setEditable(false);
+        requestListView.setEditable(true);
     }
 
 
@@ -371,8 +391,9 @@ public class FulfillRequestController extends Controller implements Initializabl
         }
 
         return "ID: " + request.getId() +
-                " Request Type: " + request.getClass().getCanonicalName() +
-                " Description: " + request.getNotes();
+                " Request Type: " + request.getClass().getSimpleName() +
+                " Description: " + request.getNotes() +
+                " Assigned To: " + request.getCompletedBy();
     }
 
     /**
@@ -386,7 +407,8 @@ public class FulfillRequestController extends Controller implements Initializabl
             return null;
         }
         return "ID: " + e.getID() +
-                " Job: " + e.getJob().toString();
+                " Job: " + e.getJob().toString() +
+                 " Username: " + e.getUsername() ;
     }
 
 
