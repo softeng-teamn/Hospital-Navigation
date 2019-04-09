@@ -164,6 +164,8 @@ public class MapView {
                         break;
                     case "node-select":
                         drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125));
+                        directionsView.getItems().clear();
+                        hideDirections();
                         break;
                     default:
                         break;
@@ -562,5 +564,12 @@ public class MapView {
         else {
             showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
         }
+    }
+
+    private void hideDirections() {
+        showDirectionsBtn.setText("Show Textual Directions");
+        showDirVbox.toFront();
+        showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
+        directionsView.setVisible(false);
     }
 }
