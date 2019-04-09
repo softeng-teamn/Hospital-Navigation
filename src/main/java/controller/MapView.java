@@ -258,6 +258,7 @@ public class MapView {
                         break;
                     case "methodSwitch":
                         currentMethod = event.getSearchMethod();
+                        break;
                     case "editing":
                         editNodeHandler(event.isEditing());
                         break;
