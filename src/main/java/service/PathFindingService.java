@@ -27,7 +27,6 @@ public class PathFindingService {
 
         ArrayList<Node> target;
 
-
         switch (filter) {
             case "astar":
                 ctx.setStrategy(new Astar());
