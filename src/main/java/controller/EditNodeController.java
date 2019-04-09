@@ -20,6 +20,7 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
@@ -79,11 +80,17 @@ public class EditNodeController extends Control {
     private JFXButton edit_show_btn;
     @FXML
     private MaterialIconView edit_icon_down, edit_icon_up;
+    @FXML
+    private Label node_id_label;
+
 
     @FXML
     void initialize() {
 
         tempEditNode = nodeToEdit;
+
+        node_id_label.setText("Node: " + tempEditNode.getNodeID());
+
 
         fillEdges(tempEditNode);
 
@@ -258,10 +265,22 @@ public class EditNodeController extends Control {
         stage.initOwner(image_pane.getScene().getWindow());
         stage.showAndWait();
 
+        if (nodeToEdit == null) {
+            try {
+                Parent myRoot = FXMLLoader.load(ResourceLoader.home);
+                Stage myStage = (Stage)map_scrollpane.getScene().getWindow();
+                StageManager.changeExistingWindow(myStage, myRoot, "Home");
+            } catch (Exception execp) {
+                execp.printStackTrace();
+            }
+
+        }
+
     }
 
     @FXML
     void saveAction(ActionEvent e) throws IOException {
+        updateNode();
         nodeToEdit = tempEditNode;
         // remove old edges
         for (Edge edge : oldEdgesFromEditNode) {
@@ -276,6 +295,8 @@ public class EditNodeController extends Control {
         }
         // updating node
         DatabaseService.getDatabaseService().updateNode(nodeToEdit);
+        System.out.println("SHOW UPDATED NODE:");
+        System.out.println(DatabaseService.getDatabaseService().getNode(nodeToEdit.getNodeID()));
         // set edges globally
         edgesToEdit = newEdges;
         // fire confirmation
@@ -286,6 +307,14 @@ public class EditNodeController extends Control {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initOwner(image_pane.getScene().getWindow());
         stage.showAndWait();
+    }
+
+    void updateNode() {
+//        tempEditNode.set
+        tempEditNode.setNodeType(type_field.getText());
+        tempEditNode.setBuilding(building_field.getText());
+        tempEditNode.setLongName(long_field.getText());
+        tempEditNode.setShortName(short_field.getText());
     }
 
     @FXML
