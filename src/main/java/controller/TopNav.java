@@ -34,7 +34,7 @@ public class TopNav {
     @FXML
     private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn, employeeBtn;
     @FXML
-    private JFXTextField search_bar ;
+    private JFXTextField start_search_bar, end_search_bar;
     @FXML
     private JFXToggleNode accessibilityButton;
     @FXML
@@ -100,7 +100,7 @@ public class TopNav {
         resetBtn();
 
         // set Default time
-        timeWatcher();
+        //timeWatcher();
     }
 
     private void timeWatcher() {
@@ -171,8 +171,22 @@ public class TopNav {
      * @param e
      */
     @FXML
-    public void searchBarEnter(ActionEvent e) {
-        String search = search_bar.getText();
+    public void startSearchBarEnter(ActionEvent e) {
+        String search = start_search_bar.getText();
+
+        Event sendEvent = new Event();
+        sendEvent.setSearchBarQuery(search);
+        sendEvent.setEventName("search-query");
+        eventBus.post(sendEvent);
+    }
+
+    /**
+     * searches for room
+     * @param e
+     */
+    @FXML
+    public void endSearchBarEnter(ActionEvent e) {
+        String search = end_search_bar.getText();
 
         Event sendEvent = new Event();
         sendEvent.setSearchBarQuery(search);
@@ -192,7 +206,7 @@ public class TopNav {
 
         // show node-selected in search
         String fillNodeinSearch = selected.getLongName();
-        search_bar.setText(fillNodeinSearch);
+        end_search_bar.setText(fillNodeinSearch);
 
     }
 

@@ -20,11 +20,23 @@
 
 .header {
     -fx-background-color: -fx-complementary;
-    -fx
+    -fx-border-color: transparent transparent -fx-unfocusedtext transparent;
 }
 
 .interaction-area {
     -fx-background-color: #C6C9CC;
+}
+
+.header-label{
+    -fx-text-fill: -fx-complementarytext;
+    -fx-font-family: Roboto;
+    -fx-font-size: 24pt;
+}
+
+.unfocused-header-label{
+    -fx-text-fill: -fx-unfocusedtext;
+    -fx-font-family: Roboto;
+    -fx-font-size: 18pt;
 }
 
 .big-label{
