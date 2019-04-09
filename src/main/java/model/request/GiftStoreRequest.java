@@ -84,7 +84,8 @@ public class GiftStoreRequest extends Request {
     @Override
     public ObservableList<Employee> returnCorrectEmployee () {
         ObservableList<Employee> rightEmployee = FXCollections.observableArrayList();
-        ObservableList<Employee> allEmployee = (ObservableList<Employee>) myDBS.getAllEmployees() ;
+        ObservableList<Employee> allEmployee = FXCollections.observableArrayList();
+        allEmployee.addAll( myDBS.getAllEmployees()) ;
 
         for (int i = 0; i < allEmployee.size(); i++) {
             if (allEmployee.get(i).getJob() == GIFT_SERVICES || allEmployee.get(i).getJob() == ADMINISTRATOR) {

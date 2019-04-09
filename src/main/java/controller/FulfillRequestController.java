@@ -313,24 +313,26 @@ public class FulfillRequestController extends Controller implements Initializabl
         // final list of "correct" employees
         ObservableList<Employee> returnList = FXCollections.observableArrayList();
 
-        // if all requests radio (either fulfilled and unfulfilled) is selected
-        if (allRadio.isSelected() || uncRadio.isSelected()) {
-            // if all types of request radio is selected
-            if (allTypeRadio.isSelected()) {
-                // if no filters selected, but unfulfilled request is selected in list
-                if (selected.isCompleted() == false) {
+        if (selected != null) {
+            // if all requests radio (either fulfilled and unfulfilled) is selected
+            if (allRadio.isSelected() || uncRadio.isSelected()) {
+                // if all types of request radio is selected
+                if (allTypeRadio.isSelected()) {
+                    // if no filters selected, but unfulfilled request is selected in list
+                    if (selected.isCompleted() == false) {
+                        returnList = employeeForSelectedJob();
+                        // if no filters selected, but FULFILLED request is selected in list
+                    } else if (selected.isCompleted() == true) {
+                        // give back all employees
+                        returnList.addAll(allEmployees);
+                    }
+                } else if (medicineRadio.isSelected()) {
+                    // show medical staff
                     returnList = employeeForSelectedJob();
-                    // if no filters selected, but FULFILLED request is selected in list
-                } else if (selected.isCompleted() == true) {
-                    // give back all employees
-                    returnList.addAll(allEmployees);
+                    // same for IT
+                } else if (ITRadio.isSelected()) {
+                    returnList = employeeForSelectedJob();
                 }
-            } else if (medicineRadio.isSelected()) {
-                // show medical staff
-                returnList = employeeForSelectedJob();
-                // same for IT
-            } else if (ITRadio.isSelected()) {
-                returnList = employeeForSelectedJob();
             }
         }
         printEList(returnList);
@@ -344,20 +346,18 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     public ObservableList<Employee> employeeForSelectedJob() {
 
-        Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
-
-
-        // get all Employees from database
-        // ArrayList<Employee> newEmployeeList = (ArrayList) myDBS.getAllEmployees();
-        /*
-        ArrayList<Employee> newITEmployeeList = new ArrayList<>();
-        ArrayList<Employee> newMedEmployeeList = new ArrayList<>();
-        ArrayList<Employee> newAbsEmployeeList = new ArrayList<>();
-        */
         ObservableList<Employee> returnEmployeeList = FXCollections.observableArrayList();
 
-        returnEmployeeList = selected.returnCorrectEmployee();
+        Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
 
+
+            // get all Employees from database
+            // ArrayList<Employee> newEmployeeList = (ArrayList) myDBS.getAllEmployees();
+
+            returnEmployeeList = selected.returnCorrectEmployee();
+        }
+        return returnEmployeeList;
 /*
         // ****** sort employees by job  **********
         // loop over all employees and sort by job responsisbilities
@@ -403,7 +403,7 @@ public class FulfillRequestController extends Controller implements Initializabl
 */
 
 
-        return returnEmployeeList;
+
 
 
     }

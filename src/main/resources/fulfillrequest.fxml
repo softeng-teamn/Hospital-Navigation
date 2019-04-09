@@ -89,7 +89,7 @@
                 </JFXListView>
             <VBox prefHeight="200.0" prefWidth="350.0">
                <children>
-                  <JFXListView fx:id="employeeListView" prefWidth="350.0">
+                  <JFXListView fx:id="employeeListView" prefHeight="380.0" prefWidth="350.0">
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
