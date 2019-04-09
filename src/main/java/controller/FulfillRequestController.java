@@ -27,6 +27,7 @@ import service.StageManager;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static model.JobType.*;
@@ -413,7 +414,7 @@ public class FulfillRequestController extends Controller implements Initializabl
 
 
     //Show Requests based on Job
-    private ObservableList<Request> showProperRequest(ObservableList<Request> newRequestList, ArrayList<MedicineRequest> allMedReqList,ArrayList<ITRequest> allITReqList){
+    private ObservableList<Request> showProperRequest(ObservableList<Request> newRequestList, List<MedicineRequest> allMedReqList,List<ITRequest> allITReqList){
 
         //Add request radio button
         typeVBox.getChildren().removeAll(medicineRadio,ITRadio);
@@ -461,7 +462,15 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       // ObservableList<Request> requestlist = FXCollections.observableArrayList();
+       ObservableList<Request> obsRequestList = FXCollections.observableArrayList();
+        //List<AVServiceRequest> av = myDBS.getAllAVServiceRequests();
+        List<MedicineRequest> mr =  myDBS.getAllMedicineRequests();
+        List<ITRequest> it = myDBS.getAllITRequests();
+        //List<ExternalTransportRequest> ex = myDBS.getAllExtTransRequests();
+        //List<FloristRequest> fl = myDBS.getAllFloristRequests();
+        //List<GiftStoreRequest>
+
+        ObservableList<Request> requestList = showProperRequest(obsRequestList, mr, it);
         ObservableList<Employee> EmployeeList = FXCollections.observableArrayList();
 
         ArrayList<Employee> allEs = (ArrayList) myDBS.getAllEmployees();
@@ -485,11 +494,11 @@ public class FulfillRequestController extends Controller implements Initializabl
         allRequestlist.addAll((ArrayList<ToyRequest>) myDBS.getAllToyRequests());
 
 
-        // requestlist = showProperRequest(requestlist, medicineReq, itReq, avReq, exTransReq, floristReq, gsReqC, gsReqI, internalTReq, interpReq, mainReq, patientReq, religReq, sanitReq, secReq, toyReq);
+        //requestlist = showProperRequest(requestlist, medicineReq, itReq, avReq, exTransReq, floristReq, gsReqC, gsReqI, internalTReq, interpReq, mainReq, patientReq, religReq, sanitReq, secReq, toyReq);
         EmployeeList.addAll(allEs);
 
-        printList(allRequestlist);
-        printEList(EmployeeList);
+        printList(requestList);
+        //printEList(EmployeeList);
 
         Request selected;
         // if there are extisting requests
