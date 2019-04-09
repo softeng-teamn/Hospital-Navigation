@@ -330,8 +330,12 @@ public class MapView {
         String newFloor = path.get(1).getFloor();
         if (floors.get(oldFloor) != floors.get(newFloor)) {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
-            System.out.println("up down conv");
-            System.out.println(directions);
+        }
+        else if (path.get(1).getNodeType().equals("ELEV")) {
+            directions.add("I");
+        }
+        else if (path.get(1).getNodeType().equals("STAI")) {
+            directions.add("J");
         }
         else {
             directions.add(convertToCardinal(csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0), path.get(1))));
@@ -341,9 +345,18 @@ public class MapView {
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
             String oldFl = (path.get(i+1).getFloor());
             String newFl = (path.get(i+2).getFloor());
-            if (afterFloorChange && !path.get(i + 1).getNodeType().equals("ELEV") && !path.get(i + 1).getNodeType().equals("STAI")) {
-                afterFloorChange = false;// TODO
+            if (afterFloorChange && !path.get(i + 2).getNodeType().equals("ELEV") && !path.get(i + 2).getNodeType().equals("STAI")) {
+                afterFloorChange = false;
+                directions.add(convertToCardinal(csDirPrint(path.get(i+1).getXcoord() + NORTH_I, path.get(i+1).getYcoord() + NORTH_J, path.get(i+1), path.get(i+2))));
                 System.out.println("after floor change");
+            }
+            else if(!path.get(i+1).getNodeType().equals("ELEV") && !path.get(i+1).getNodeType().equals("STAI") && (path.get(i+2).getNodeType().equals("ELEV") || path.get(i+2).getNodeType().equals("STAI"))
+                    && ((i < path.size() - 3 && (path.get(i+3).getNodeType().equals("ELEV") || path.get(i+3).getNodeType().equals("STAI"))) || i == path.size() -3)) {    // If next node is elevator, say so
+                if (path.get(i+2).getNodeType().equals("ELEV")) {
+                    directions.add("I");
+                } else {
+                    directions.add("J");
+                }
             }
             else if (floors.get(oldFl) != floors.get(newFl)) {    // Otherwise if we're changing floors, give a floor change direction
                 directions.add(upDownConverter(oldFl, newFl, path.get(i+1).getNodeType()));
@@ -357,6 +370,7 @@ public class MapView {
             }
         }
 
+        System.out.println("dirs before simplification" + directions);
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
@@ -444,6 +458,12 @@ public class MapView {
         directions.add(ds.get(0));
         ObservableList<Label> dirs = FXCollections.observableArrayList();
         ArrayList<Label> labels = new ArrayList<>();
+
+        Label first = new Label(ds.get(0));
+        first.setWrapText(true);
+        first.setTextFill(Color.WHITE);
+        labels.add(first);
+
         for (int i = 1; i < ds.size() - 1; i++) {
             String direct = ds.get(i);
             switch(direct.substring(0,1)) {
@@ -481,11 +501,14 @@ public class MapView {
                     direct = "Take the elevator up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
                     break;
                 case "O":
-                    direct = "Take the elevator down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";                    break;
+                    direct = "Take the elevator down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    break;
                 case "P":
-                    direct = "Take the stairs up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";                    break;
+                    direct = "Take the stairs up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    break;
                 case "Q":
-                    direct = "Take the stairs down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";                    break;
+                    direct = "Take the stairs down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    break;
                 case "S":
                     direct = "Walk north for " + direct.substring(1) + " feet.\n";
                     break;
@@ -515,15 +538,21 @@ public class MapView {
                     break;
             }
 
-//            Label l = new Label(direct);
-//            l.setWrapText(true);
-//            l.setTextFill(Color.WHITE);
-//            labels.add(l); TODO TESTING
+            Label l = new Label(direct);
+            l.setWrapText(true);
+            l.setTextFill(Color.WHITE);
+            labels.add(l);
             directions.add(direct);
         }
+        directions.add(ds.get(ds.size() -1));
 
-//        dirs.addAll(labels);
-//        directionsView.setItems(dirs);
+        Label last = new Label(ds.get(ds.size() - 1));
+        last.setWrapText(true);
+        last.setTextFill(Color.WHITE);
+        labels.add(last);
+
+        dirs.addAll(labels);
+        directionsView.setItems(dirs);
 
         // Print out the directions TODO cut
         directions.add(ds.get(ds.size() -1));
@@ -588,14 +617,6 @@ public class MapView {
      *      *          between the middle and last point
      */
     public String csDirPrint(Node prev, Node curr, Node next) {
-        if(!curr.getNodeType().equals("ELEV") && !curr.getNodeType().equals("STAI") && (next.getNodeType().equals("ELEV") || next.getNodeType().equals("STAI"))) {    // If next node is elevator, say so
-            if (next.getNodeType().equals("ELEV")) {
-                return "I";
-            } else {
-                return "J";
-            }
-        }
-
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
         prevXd = prev.getXcoord();
         prevYd = prev.getYcoord();
