@@ -27,15 +27,18 @@ public class MapViewTest {
     @Test
     @Category( FastTest.class)
     public void makeDirections() {
+        // Empty/too short path tests
         assertNull(mp.makeDirections(null));
         ArrayList<Node> path = new ArrayList<>();
         path.add(n1);
         assertNull(mp.makeDirections(path));
         path.add(n2);
-        assertNull(mp.makeDirections(path));
+        assertNotNull(mp.makeDirections(path));
         path.add(n3);
         assertNotNull(mp.makeDirections(path));
         path.clear();
+
+        // First node tests
         path.addAll(Arrays.asList(n0, n1, n2));
         assertTrue(mp.makeDirections(path).get(1).contains("south west"));
         path.clear();
@@ -65,12 +68,23 @@ public class MapViewTest {
         path.clear();
         path.addAll(Arrays.asList(nS, n8, n2));
         assertTrue(mp.makeDirections(path).get(1).contains("west"));
+
+        // Second node tests
         path.clear();
         path.addAll(Arrays.asList(n0, nE, n4));
         assertTrue(mp.makeDirections(path).get(2).contains("elevator"));
         path.clear();
         path.addAll(Arrays.asList(n0, nS, n4));
         assertTrue(mp.makeDirections(path).get(2).contains("stairs"));
+
+        // Third node tests
+        path.clear();
+        path.addAll(Arrays.asList(n0, n6, nE));
+        assertTrue(mp.makeDirections(path).get(2).contains("to the elevator"));
+        path.clear();
+        path.addAll(Arrays.asList(n0, n6, nS));
+        assertTrue(mp.makeDirections(path).get(2).contains("to the stairs"));
+
 
 
         // TODO

@@ -302,7 +302,7 @@ public class MapView {
      * @return a String of the directions
      */
     public ArrayList<String> makeDirections(ArrayList<Node> path) {
-        if (path == null || path.size() < 3) {
+        if (path == null || path.size() < 2) {
             return null;
         }
 
