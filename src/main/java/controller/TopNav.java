@@ -51,7 +51,7 @@ public class TopNav {
     // events I send out/control
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
-        if (event.isAdmin()) {
+        if (event.isAdmin() || event.isLoggedIn()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
             resetBtn();
@@ -73,9 +73,16 @@ public class TopNav {
     @FXML
     // switches window to map editor screen.
     public void showAdminScene() throws Exception {
-        Stage stage = (Stage) fulfillBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.adminServices);
-        StageManager.changeExistingWindow(stage, root, "Administrator Services");
+        if(event.isAdmin()) {
+            Stage stage = (Stage) fulfillBtn.getScene().getWindow();
+            Parent root = FXMLLoader.load(ResourceLoader.adminServices);
+            StageManager.changeExistingWindow(stage, root, "Administrator Services");
+        }
+        else {
+            Stage stage = (Stage) fulfillBtn.getScene().getWindow();
+            Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
+            StageManager.changeExistingWindow(stage, root, "Fulfill Request");
+        }
     }
 
     @FXML
@@ -154,6 +161,7 @@ public class TopNav {
 
             case "login":     // receives from AdminLoginContoller?
                 event.setAdmin(newEvent.isAdmin());
+                event.setLoggedIn(newEvent.isLoggedIn());
                 break;
             default:
                 break;
@@ -167,7 +175,14 @@ public class TopNav {
             edit_btn.setVisible(true);
             newNode_btn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
-        } else {
+        }
+        else if(event.isLoggedIn()){
+            fulfillBtn.setVisible(true);
+            edit_btn.setVisible(false);
+            newNode_btn.setVisible(false);
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
+        }
+        else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             newNode_btn.setVisible(false);
