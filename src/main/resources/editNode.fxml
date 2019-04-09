@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import javafx.geometry.Insets?>
@@ -16,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditNodeController">
+<HBox prefHeight="580.0" prefWidth="949.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditNodeController">
    <children>
       <VBox prefHeight="335.0" prefWidth="148.0" spacing="5.0">
          <children>
@@ -30,6 +31,23 @@
             <JFXTextField fx:id="short_field" promptText="short name" />
             <Label text="Long Name" />
             <JFXTextField fx:id="long_field" promptText="long name" />
+            <VBox fx:id="edges_container" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <HBox prefHeight="30.0" prefWidth="258.0">
+                     <children>
+                        <Label text="Edges" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <JFXButton fx:id="edit_show_btn" contentDisplay="GRAPHIC_ONLY" onAction="#editToggle" prefHeight="30.0" prefWidth="34.0">
+                           <graphic>
+                              <MaterialIconView fx:id="edit_icon_down" glyphName="KEYBOARD_ARROW_DOWN" size="20" />
+                              <MaterialIconView fx:id="edit_icon_up" glyphName="KEYBOARD_ARROW_UP" size="20" />
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                  </HBox>
+                  <JFXListView fx:id="edges_list" prefHeight="200.0" prefWidth="200.0" />
+               </children>
+            </VBox>
             <Region VBox.vgrow="ALWAYS" />
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
@@ -79,9 +97,9 @@
                   </Pane>
                </content>
             </ScrollPane>
-            <Pane maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="40.0" StackPane.alignment="TOP_RIGHT">
+            <Pane maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="40.0" stylesheets="@theme.css" StackPane.alignment="TOP_RIGHT">
                <children>
-                  <VBox prefHeight="309.0" prefWidth="92.0">
+                  <VBox fx:id="controlls_vbox" prefHeight="309.0" prefWidth="92.0">
                      <children>
                         <Pane prefHeight="200.0" prefWidth="200.0">
                            <children>
@@ -91,6 +109,16 @@
                               <Insets right="50.0" />
                            </padding>
                         </Pane>
+                        <VBox fx:id="floor_change_vbox">
+                           <children>
+                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="53.0" prefWidth="98.0" text="Floor 3" />
+                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Floor 2" />
+                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Floor 1" />
+                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="L1" />
+                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="L2" />
+                              <JFXButton onAction="#floorChangeAction" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Ground" />
+                           </children>
+                        </VBox>
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />

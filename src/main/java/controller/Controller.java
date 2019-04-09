@@ -11,7 +11,9 @@ import java.util.HashMap;
 public class Controller {
     static boolean isAdmin = false;
     static HashMap<String, ArrayList<Node>> connections;
-    static Node nodeToEdit;
+    static Node nodeToEdit = new Node("BHALL01402",3296,880,"2","45 Francis","HALL","Hallway Intersection 14 Level 2","Hallway B1402");
+    static ArrayList<Edge> edgesToEdit;
+    //BHALL01402,3296,880,2,45 Francis,HALL,Hallway Intersection 14 Level 2,Hallway B1402
 
 
     public static boolean getIsAdmin() {

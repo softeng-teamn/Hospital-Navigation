@@ -4,35 +4,46 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
+import de.jensd.fx.glyphs.materialicons.MaterialIconView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Edge;
 import model.EventBusFactory;
 import model.Node;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import static controller.Controller.edgesToEdit;
 import static controller.Controller.nodeToEdit;
 
 public class EditNodeController extends Control {
@@ -41,8 +52,13 @@ public class EditNodeController extends Control {
     private EventBus eventBus = EventBusFactory.getEventBus();
     Circle selectedCircle = new Circle();
     Node tempEditNode;
+    boolean isEditEdges = false;
+    ArrayList<Circle> circleCollection = new ArrayList<>();
+    ArrayList<Node> edgeNodeCollection;
+    static ArrayList<Edge> oldEdgesFromEditNode;
 
-//    @FXML
+
+    //    @FXML
 //    private Pane img_pane;
     @FXML
     private ScrollPane map_scrollpane;
@@ -54,11 +70,21 @@ public class EditNodeController extends Control {
     private JFXComboBox<String> floor_combo;
     @FXML
     private Pane image_pane;
+    @FXML
+    private VBox floor_change_vbox, controlls_vbox, edges_container;
+    @FXML
+    private JFXListView<String> edges_list;
+    @FXML
+    private JFXButton edit_show_btn;
+    @FXML
+    private MaterialIconView edit_icon_down, edit_icon_up;
 
     @FXML
     void initialize() {
 
         tempEditNode = nodeToEdit;
+
+        fillEdges(tempEditNode);
 
         // set image
         try {
@@ -80,8 +106,46 @@ public class EditNodeController extends Control {
         zoom_slider.setMax(0.9);
         zoom_slider.setValue(0.3);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
-        zoom(0.6);
+        zoom(0.4);
         drawSelectedCircle(tempEditNode.getXcoord(), tempEditNode.getYcoord());
+
+        hideEdges();
+
+    }
+
+    void fillEdges(Node node) {
+        edgeNodeCollection = DatabaseService.getDatabaseService().getNodesConnectedTo(node);
+        for (Node n : edgeNodeCollection) {
+            edges_list.getItems().add(n.getNodeID());
+        }
+//        oldEdgesFromEditNode = DatabaseService.getDatabaseService().ged
+        // I CANT DELETE MY OLD EDGE because I need a query to get them
+    }
+
+    @FXML
+    void editToggle(ActionEvent e) {
+        isEditEdges = !isEditEdges;
+        if (isEditEdges) {
+            showEdges();
+        } else {
+            hideEdges();
+        }
+    }
+
+    void hideEdges() {
+        edit_show_btn.setGraphic(edit_icon_down);
+        controlls_vbox.getChildren().remove(floor_change_vbox);
+        edges_container.getChildren().remove(edges_list);
+        zoomGroup.getChildren().removeAll(circleCollection);
+        circleCollection.clear();
+    }
+
+    void showEdges() {
+        edit_show_btn.setGraphic(edit_icon_up);
+        controlls_vbox.getChildren().add(floor_change_vbox);
+        edges_container.getChildren().add(edges_list);
+        drawFloorNodes(tempEditNode.getFloor());
+
     }
 
     void drawSelectedCircle(double x, double y) {
@@ -126,15 +190,17 @@ public class EditNodeController extends Control {
 
     @FXML
     void mapClickedHandler(MouseEvent e) {
-        double mouseX = e.getX();
-        double mouseY = e.getY();
-        zoomGroup.getChildren().remove(selectedCircle);
-        drawSelectedCircle(mouseX, mouseY);
+        if (!isEditEdges) {
+            double mouseX = e.getX();
+            double mouseY = e.getY();
+            zoomGroup.getChildren().remove(selectedCircle);
+            drawSelectedCircle(mouseX, mouseY);
+        }
     }
 
     private void setMapFloor(String floor) throws IOException {
         ImageView imageView;
-        switch (tempEditNode.getFloor()) {
+        switch (floor) {
             case "3":
                 imageView = new ImageView(new Image(
                         ResourceLoader.thirdFloor.openStream()));
@@ -173,19 +239,42 @@ public class EditNodeController extends Control {
     void comboAction(ActionEvent e) throws IOException {
         String newFloor = floor_combo.getSelectionModel().getSelectedItem();
         tempEditNode.setFloor(newFloor);
+        // hide any nodes on screen
+        hideEdges();
         setMapFloor(newFloor);
         scrollTo(tempEditNode);
         System.out.println("Selecting NEW FLOOR RENDER: " + newFloor);
     }
 
     @FXML
-    void deleteAction(ActionEvent e) {
+    void deleteAction(ActionEvent e) throws IOException {
+        Parent root = FXMLLoader.load(ResourceLoader.deleteNodeConfirm);
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Delete Confirmation");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(image_pane.getScene().getWindow());
+        stage.showAndWait();
 
     }
 
     @FXML
-    void saveAction(ActionEvent e) {
-
+    void saveAction(ActionEvent e) throws IOException {
+        nodeToEdit = tempEditNode;
+        // ADD EDGES TO THE DB
+        for (Node node : edgeNodeCollection) {
+            DatabaseService.getDatabaseService().insertEdge(new Edge(tempEditNode, node));
+        }
+        // updating node
+        DatabaseService.getDatabaseService().updateNode(nodeToEdit);
+        // fire confirmation
+        Parent root = FXMLLoader.load(ResourceLoader.saveNodeConfirm);
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Save Confirmation");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(image_pane.getScene().getWindow());
+        stage.showAndWait();
     }
 
     @FXML
@@ -230,6 +319,76 @@ public class EditNodeController extends Control {
         map_scrollpane.setVvalue(scrollV);
     }
 
+    void drawFloorNodes(String floor){
+        ArrayList<Node> floorNodes = DatabaseService.getDatabaseService().getNodesByFloor(floor);
+        zoomGroup.getChildren().removeAll(circleCollection);
+        circleCollection.clear();
+        for (Node node : floorNodes) {
+            if (!node.equals(tempEditNode)) {
+                Circle circle = new Circle();
+                circle.setCenterX(node.getXcoord());
+                circle.setCenterY(node.getYcoord());
+                if (edgeNodeCollection.contains(node)) {
+                    circle.setFill(Color.BLUE);
+                } else {
+                    circle.setFill(Color.BLACK);
+                }
+                circle.setRadius(20);
+                circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        if (circle.getFill().equals(Color.BLUE)) {
+                            edgeNodeCollection.remove(node);
+                            circle.setFill(Color.BLACK);
+                            edges_list.getItems().remove(node.getNodeID());
+                        } else {
+                            edgeNodeCollection.add(node);
+                            circle.setFill(Color.BLUE);
+                            edges_list.getItems().add(node.getNodeID());
+                        }
+                    }
+                });
+                circleCollection.add(circle);
+            }
+        }
+        zoomGroup.getChildren().addAll(circleCollection);
+    }
+
+
+    @FXML
+    void floorChangeAction(ActionEvent e) throws IOException {
+        JFXButton clickedBtn = (JFXButton) e.getSource();
+        switch (clickedBtn.getText()) {
+            case "Floor 3":
+                setMapFloor("3");
+                System.out.println(circleCollection);
+                drawFloorNodes("3");
+                break;
+            case "Floor 2":
+                setMapFloor("2");
+                drawFloorNodes("2");
+                break;
+            case "Floor 1":
+                setMapFloor("1");
+                drawFloorNodes("1");
+                break;
+            case "L1":
+                setMapFloor("L1");
+                drawFloorNodes("L1");
+                break;
+            case "L2":
+                setMapFloor("L2");
+                drawFloorNodes("L2");
+                break;
+            case "Ground":
+                setMapFloor("G");
+                drawFloorNodes("G");
+                break;
+            default:
+                System.out.println("WHAT BUTTON WAS PRESSED?????");
+                break;
+        }
+    }
 
 
 }
