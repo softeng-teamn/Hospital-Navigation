@@ -334,10 +334,7 @@ public class MapView {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
         }
         else {
-            Node basis = path.get(0);
-            basis.setXcoord(path.get(0).getXcoord() + NORTH_I);
-            basis.setYcoord(path.get(0).getYcoord() + NORTH_J);
-            directions.add(convertToCardinal(csDirPrint(basis, path.get(0), path.get(1))));
+            directions.add(convertToCardinal(csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0), path.get(1))));
         }
 
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
@@ -385,6 +382,7 @@ public class MapView {
             }
         }
 
+        System.out.println(directions);
         printDirections(directions);
         return directions;
     }
@@ -438,9 +436,10 @@ public class MapView {
         backToFloors.put("E", "2");
         backToFloors.put("F", "3");
         ArrayList<String> directions = new ArrayList<>();
+        directions.add(ds.get(0));
         ObservableList<Label> dirs = FXCollections.observableArrayList();
         ArrayList<Label> labels = new ArrayList<>();
-        for (int i = 0; i < ds.size(); i++) {
+        for (int i = 1; i < ds.size() - 1; i++) {
             String direct = ds.get(i);
             switch(direct.substring(0,1)) {
                 case "A":
@@ -511,16 +510,18 @@ public class MapView {
                     break;
             }
 
-            Label l = new Label(direct);
-            l.setWrapText(true);
-            l.setTextFill(Color.WHITE);
-            labels.add(l);
+//            Label l = new Label(direct);
+//            l.setWrapText(true);
+//            l.setTextFill(Color.WHITE);
+//            labels.add(l); TODO TESTING
+            directions.add(direct);
         }
 
-        dirs.addAll(labels);
-        directionsView.setItems(dirs);
+//        dirs.addAll(labels);
+//        directionsView.setItems(dirs);
 
         // Print out the directions TODO cut
+        directions.add(ds.get(ds.size() -1));
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < directions.size(); ++i) {
             buf.append(directions.get(i));
@@ -565,6 +566,11 @@ public class MapView {
         return cardinal;
     }
 
+    public String csDirPrint(int x, int y, Node curr, Node next) {
+        Node n1 = new Node("ID", x, y, "HALL");
+        return csDirPrint(n1, curr, next);
+    }
+
     /**
      * Compute the direction turned and distance between the middle and last point for the given 3 points.
      * @param prev the previous node
@@ -574,13 +580,13 @@ public class MapView {
      *      *          between the middle and last point
      */
     public String csDirPrint(Node prev, Node curr, Node next) {
-        if(!curr.getNodeType().equals("ELEV") && !curr.getNodeType().equals("STAI") && (next.getNodeType().equals("ELEV") || next.getNodeType().equals("STAI"))) {    // If next node is elevator, say so
-            if (next.getNodeType().equals("ELEV")) {
-                return "I";
-            } else {
-                return "J";
-            }
-        }
+//        if(!curr.getNodeType().equals("ELEV") && !curr.getNodeType().equals("STAI") && (next.getNodeType().equals("ELEV") || next.getNodeType().equals("STAI"))) {    // If next node is elevator, say so
+//            if (next.getNodeType().equals("ELEV")) {
+//                return "I";
+//            } else {
+//                return "J";
+//            }
+//        } TODO
 
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
         prevXd = prev.getXcoord();
