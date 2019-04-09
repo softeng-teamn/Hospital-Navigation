@@ -183,8 +183,8 @@ public class TopNav {
      * @param e
      */
     @FXML
-    public void startSearchBarEnter(ActionEvent e) {
-        String search = start_search_bar.getText();
+    public void searchBarEnter(ActionEvent e) {
+        String search = search_bar.getText();
 
         Event sendEvent = new Event();
         sendEvent.setSearchBarQuery(search);
@@ -192,18 +192,6 @@ public class TopNav {
         eventBus.post(sendEvent);
     }
 
-    /**
-     * searches for room
-     * @param e
-     */
-    @FXML
-    public void endSearchBarEnter(ActionEvent e) {
-        String search = end_search_bar.getText();
-
-        event.setSearchBarQuery(search);
-        event.setEventName("search-query");
-        eventBus.post(event);
-    }
 
     // when event comes in with a node-selected:
     //      show navigation button
