@@ -187,6 +187,12 @@ public class RequestController extends Controller implements Initializable {
     }
 
     @FXML
+    public void religiousRequestSelect(ActionEvent e) throws IOException{
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.religiousRequest));
+    }
+
+    @FXML
     public void patientSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.patientInfoRequest));
@@ -226,7 +232,17 @@ public class RequestController extends Controller implements Initializable {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.ToyRequest));
     }
-
+  
+    public void avSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.avServiceRequest));
+   }
+  
+    public void externalTransportationRequest(ActionEvent actionEvent) throws IOException{
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.externalTransportRequest));
+    }
+  
     public void medicineSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.medicineRequest));

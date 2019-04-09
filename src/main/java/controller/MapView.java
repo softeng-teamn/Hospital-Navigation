@@ -38,6 +38,10 @@ import java.util.concurrent.TimeUnit;
 
 import static controller.Controller.elevatorCon;
 import static controller.Controller.floorIsAt;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 public class MapView {
 
@@ -294,7 +298,7 @@ public class MapView {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
-
+  
     /**
      * Create textual instructions for the given path.
      * @param path the list of nodes in the path

@@ -16,25 +16,27 @@ public class SecurityRequestController extends RequestController {
     @FXML
     private ToggleGroup urgency;
 
-    SecurityRequest.Urgency urgencyLevel;
-
     @FXML
     void submitRequest(ActionEvent event) {
 
+        SecurityRequest.Urgency urgencyLevel = SecurityRequest.Urgency.NOT;
+
         JFXToggleNode selected = (JFXToggleNode) urgency.getSelectedToggle();
 
-        switch (selected.getText()){
-            case "Low":
-                urgencyLevel = SecurityRequest.Urgency.NOT;
-                break;
-            case "Medium":
-                urgencyLevel = SecurityRequest.Urgency.SOMEWHAT;
-                break;
-            case "High":
-                urgencyLevel = SecurityRequest.Urgency.VERY;
-                break;
-            default:
-                urgencyLevel = SecurityRequest.Urgency.NOT;
+        if (selected != null) {
+            switch (selected.getText()) {
+                case "Low":
+                    urgencyLevel = SecurityRequest.Urgency.NOT;
+                    break;
+                case "Medium":
+                    urgencyLevel = SecurityRequest.Urgency.SOMEWHAT;
+                    break;
+                case "High":
+                    urgencyLevel = SecurityRequest.Urgency.VERY;
+                    break;
+                default:
+                    urgencyLevel = SecurityRequest.Urgency.NOT;
+            }
         }
 
         if(selectedNode != null) {
