@@ -249,9 +249,17 @@ public class MapView {
                         navigationHandler();
                         break;
                     case "node-select":
-                        drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125));
+                        if(event.isEndNode()){
+                            drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125), false);
+                        } else {
+                            drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
+                        }
                         directionsView.getItems().clear();
                         hideDirections();
+                        break;
+                    case "refresh":
+                        drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
+                        drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125), false);
                         break;
                     case "filter":
                         filteredHandler();
@@ -330,8 +338,17 @@ public class MapView {
     }
 
 
+    private void clearBothPoint(){
+        if (zoomGroup.getChildren().contains(selectCircle)){
+            zoomGroup.getChildren().remove((selectCircle));
+        }
+        if (zoomGroup.getChildren().contains(startCircle)){
+            zoomGroup.getChildren().remove(startCircle);
+        }
+    }
 
-    private void drawPoint(Node node, Circle circle, Color color) {
+
+    private void drawPoint(Node node, Circle circle, Color color, boolean start) {
         // remove points
         for (Line line : lineCollection) {
             if (zoomGroup.getChildren().contains(line)) {
@@ -339,9 +356,9 @@ public class MapView {
             }
         }
         // remove old selected Circle
-        if (zoomGroup.getChildren().contains(selectCircle)) {
+        if (zoomGroup.getChildren().contains(circle)) {
             System.out.println("we found new Selected Circles");
-            zoomGroup.getChildren().remove(selectCircle);
+            zoomGroup.getChildren().remove(circle);
         }
         // create new Circle
         circle = new Circle();
@@ -351,7 +368,11 @@ public class MapView {
         circle.setFill(color);
         zoomGroup.getChildren().add(circle);
         // set circle to selected
-        selectCircle = circle;
+        if (start){
+            startCircle = circle;
+        } else {
+            selectCircle = circle;
+        }
         // Scroll to new point
         scrollTo(node);
 
@@ -361,7 +382,6 @@ public class MapView {
     // generate path on the screen
     private void navigationHandler() {
         currentMethod = event.getSearchMethod();
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!" + currentMethod + "!!!!!!!!!!!!!!!!!!");
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> path;
         MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
@@ -412,7 +432,7 @@ public class MapView {
         if (path == null){
             System.out.println("DIDNT FIND A PATH");
         } else {
-            drawPoint(path.get(path.size()-1), selectCircle, Color.rgb(72,87,125));
+            drawPoint(path.get(path.size()-1), selectCircle, Color.rgb(72,87,125), false);
         }
 
 
