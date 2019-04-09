@@ -1,6 +1,11 @@
 package model.request;
 
+import javafx.collections.ObservableList;
+import model.Employee;
+import model.JobType;
 import model.Node;
+
+import java.util.ArrayList;
 import java.util.Objects;
 
 public abstract class Request {
@@ -89,4 +94,8 @@ public abstract class Request {
                 ", completedBy='" + completedBy + '\'' +
                 '}';
     }
+
+
+    public abstract ObservableList<Employee> returnCorrectEmployee ();
+
 }

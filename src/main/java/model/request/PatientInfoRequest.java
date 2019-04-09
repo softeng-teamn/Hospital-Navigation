@@ -1,9 +1,15 @@
 package model.request;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.Employee;
 import model.Node;
 import service.DatabaseService;
 
+import java.util.ArrayList;
 import java.util.Objects;
+
+import static model.JobType.*;
 
 public class PatientInfoRequest extends Request{
 
@@ -93,4 +99,20 @@ public class PatientInfoRequest extends Request{
     public int hashCode() {
         return Objects.hash(super.hashCode(), firstName, lastName, birthDay, description);
     }
+
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    @Override
+    public ObservableList<Employee> returnCorrectEmployee () {
+        ObservableList<Employee> rightEmployee = FXCollections.observableArrayList();
+        ObservableList<Employee> allEmployee = (ObservableList<Employee>) myDBS.getAllEmployees() ;
+
+        for (int i = 0; i < allEmployee.size(); i++) {
+            if (allEmployee.get(i).getJob() == DOCTOR || allEmployee.get(i).getJob() == NURSE || allEmployee.get(i).getJob() == ADMINISTRATOR) {
+                rightEmployee.add(allEmployee.get(i)) ;
+            }
+        }
+        return rightEmployee ;
+    }
+
 }

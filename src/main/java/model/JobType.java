@@ -14,7 +14,10 @@ public enum JobType {
     JANITOR,
     MAINTENANCE_WORKER,
     GUEST,
-    IT;
+    IT,
+    RELIGIOUS_OFFICIAL,
+    GIFT_SERVICES,
+    MISCELLANEOUS;
 
 
 }

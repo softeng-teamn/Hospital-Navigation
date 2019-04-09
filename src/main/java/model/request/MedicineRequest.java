@@ -1,13 +1,19 @@
 package model.request;
 
 import com.jfoenix.controls.JFXToggleNode;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.Employee;
 import model.Node;
 import service.DatabaseService;
 
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import java.util.Objects;
+
+import static model.JobType.*;
 
 public class MedicineRequest extends Request {
 
@@ -75,5 +81,21 @@ public class MedicineRequest extends Request {
     public void fillRequest () {
         this.setCompleted(true);
         DatabaseService.getDatabaseService().updateMedicineRequest(this);
+    }
+
+
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    @Override
+    public ObservableList<Employee> returnCorrectEmployee () {
+        ObservableList<Employee> rightEmployee = FXCollections.observableArrayList();
+        ObservableList<Employee> allEmployee = (ObservableList<Employee>) myDBS.getAllEmployees() ;
+
+        for (int i = 0; i < allEmployee.size(); i++) {
+            if (allEmployee.get(i).getJob() == NURSE || allEmployee.get(i).getJob() == DOCTOR || allEmployee.get(i).getJob() == ADMINISTRATOR)  {
+                rightEmployee.add(allEmployee.get(i)) ;
+            }
+        }
+        return rightEmployee ;
     }
 }

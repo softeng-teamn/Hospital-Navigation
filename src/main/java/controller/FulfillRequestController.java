@@ -17,7 +17,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Employee;
 import model.JobType;
-import model.RequestType;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
@@ -270,34 +269,21 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     public ObservableList<Employee> employeeForSelectedJob() {
 
+        Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
 
 
-
-        Request selected;
-        // if there are extisting requests
-       // if (requestListView != null) {
-            // assign the selected item to a variable
-            selected = (Request) requestListView.getSelectionModel().getSelectedItem();
-            // otherwise set to null
-        //} else {
-            //selected = null;
-       // }
-
-
-        // selected request
-        //Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
-
-        // new list for correct employees based on request type
-        ArrayList<Employee> newEmployeeList;
+        // get all Employees from database
+        // ArrayList<Employee> newEmployeeList = (ArrayList) myDBS.getAllEmployees();
+        /*
         ArrayList<Employee> newITEmployeeList = new ArrayList<>();
         ArrayList<Employee> newMedEmployeeList = new ArrayList<>();
         ArrayList<Employee> newAbsEmployeeList = new ArrayList<>();
+        */
         ObservableList<Employee> returnEmployeeList = FXCollections.observableArrayList();
 
-        // get all Employees from database
-        newEmployeeList = (ArrayList) myDBS.getAllEmployees();
+        returnEmployeeList = selected.returnCorrectEmployee() ;
 
-
+/*
         // ****** sort employees by job  **********
         // loop over all employees and sort by job responsisbilities
         for (int i = 0; i < newEmployeeList.size(); i++) {
@@ -320,7 +306,8 @@ public class FulfillRequestController extends Controller implements Initializabl
                 newAbsEmployeeList.add(newEmployeeList.get(i));
             }
         }
-
+        */
+/*
         // switch case
         // return proper employeelist based on Request type
         if (selected.getRequestType() != null ) {
@@ -336,12 +323,26 @@ public class FulfillRequestController extends Controller implements Initializabl
                 default:
                     System.out.println("Incorrect Job Type: + " + selected.getRequestType().getrType());
             }
+
         }
+*/
+
+
+
 
         return returnEmployeeList;
 
 
     }
+
+
+
+
+
+
+
+
+
 
 
     /**

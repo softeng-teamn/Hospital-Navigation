@@ -1,9 +1,16 @@
 package model.request;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.Employee;
 import model.Node;
 import service.DatabaseService;
 
+import java.util.ArrayList;
 import java.util.Objects;
+
+import static model.JobType.IT;
+import static model.JobType.MAINTENANCE_WORKER;
 
 public class MaintenanceRequest extends Request {
     public enum MaintenanceType {
@@ -58,5 +65,20 @@ public class MaintenanceRequest extends Request {
     public void fillRequest() {
         this.setCompleted(true);
         DatabaseService.getDatabaseService().updateMaintenanceRequest(this);
+    }
+
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    @Override
+    public ObservableList<Employee> returnCorrectEmployee () {
+        ObservableList<Employee> rightEmployee = FXCollections.observableArrayList();
+        ObservableList<Employee> allEmployee = (ObservableList<Employee>) myDBS.getAllEmployees() ;
+
+        for (int i = 0; i < allEmployee.size(); i++) {
+            if (allEmployee.get(i).getJob() == MAINTENANCE_WORKER) {
+                rightEmployee.add(allEmployee.get(i)) ;
+            }
+        }
+        return rightEmployee ;
     }
 }

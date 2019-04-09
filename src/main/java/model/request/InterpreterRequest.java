@@ -1,9 +1,16 @@
 package model.request;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.Employee;
 import model.Node;
 import service.DatabaseService;
 
+import java.util.ArrayList;
 import java.util.Objects;
+
+import static model.JobType.ADMINISTRATOR;
+import static model.JobType.MISCELLANEOUS;
 
 
 public class InterpreterRequest extends Request{
@@ -58,5 +65,20 @@ public class InterpreterRequest extends Request{
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), l);
+    }
+
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    @Override
+    public ObservableList<Employee> returnCorrectEmployee () {
+        ObservableList<Employee> rightEmployee = FXCollections.observableArrayList();
+        ObservableList<Employee> allEmployee = (ObservableList<Employee>) myDBS.getAllEmployees() ;
+
+        for (int i = 0; i < allEmployee.size(); i++) {
+            if (allEmployee.get(i).getJob() == MISCELLANEOUS || allEmployee.get(i).getJob() == ADMINISTRATOR) {
+                rightEmployee.add(allEmployee.get(i)) ;
+            }
+        }
+        return rightEmployee ;
     }
 }
