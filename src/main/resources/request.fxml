@@ -51,7 +51,7 @@
                      <children>
                         <VBox prefWidth="256.0">
                            <children>
-                              <JFXToggleNode onAction="#itSelect" prefHeight="256.0" prefWidth="256.0" text="IT Request">
+                              <JFXToggleNode id="itNode" onAction="#itSelect" prefHeight="256.0" prefWidth="256.0" text="IT Request">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="DESKTOP" styleClass="button-glyph-icon" />
                                  </graphic>
