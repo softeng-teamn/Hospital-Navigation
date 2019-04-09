@@ -109,7 +109,7 @@ public class RequestControllerTest {
         RC.fufillRequest(ITReqB, "Jane");
         ITRequest filledITReqR = ITReqB;
         filledITReqR.setCompleted(true);
-        filledITReqR.setCompletedBy("Jane");
+        filledITReqR.setAssignedTo("Jane");
         unfilledRequests = RC.dbs.getAllIncompleteITRequests();
         assertThat(unfilledRequests.contains(ITReqB), equalTo(false));
         assertThat(unfilledRequests.contains(filledITReqR), equalTo(false));
@@ -128,7 +128,7 @@ public class RequestControllerTest {
         RC.fufillRequest(medReqR, "Shawn");
         MedicineRequest filledMedReqR = medReqR;
         filledMedReqR.setCompleted(true);
-        filledMedReqR.setCompletedBy("Shawn");
+        filledMedReqR.setAssignedTo("Shawn");
         unfilledRequests = RC.dbs.getAllIncompleteMedicineRequests();
         assertThat(unfilledRequests.contains(medReqR), equalTo(false));
         assertThat(unfilledRequests.contains(filledMedReqR), equalTo(false));
