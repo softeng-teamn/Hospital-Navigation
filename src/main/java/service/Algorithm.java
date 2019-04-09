@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public interface Algorithm {
 
     ArrayList<Node> findDest(MapNode start, MapNode dest, boolean accessibility, String filter);
+    int getEstimatedTime();
 
     /**
      * Gets reachable MapNodes from given MapNode

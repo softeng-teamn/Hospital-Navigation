@@ -133,7 +133,8 @@ public class AstarSimpleTest {
     public void testPathBackTracking2() {
         ArrayList<Node> expected = new ArrayList<Node>();
         expected.add(0, n6);
-        expected.add(0, n2);
+        expected.add(0, n5);
+        expected.add(0, n4);
         expected.add(0, n3);
         assertThat(mockPF.findDest(mn3, mn6, false, "astar"), is(expected));
     }

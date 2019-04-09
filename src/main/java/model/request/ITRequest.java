@@ -1,36 +1,31 @@
 package model.request;
 
-import com.jfoenix.controls.JFXToggleNode;
 import model.Node;
-import model.RequestType;
 import service.DatabaseService;
-
-import static model.RequestType.RType.ITS;
-
 import java.util.Objects;
 
 public class ITRequest extends Request {
 
-    String description;
+    public enum ITRequestType {
+        Maintenance,
+        New_Computer,
+        Accessories,
+        Assistance
+    }
 
-    public ITRequest(int id, String notes, Node location, boolean completed) {
+    ITRequestType itRequestType;
+
+    public ITRequest(int id, String notes, Node location, boolean completed, ITRequestType type) {
         super(id, notes, location, completed);
-        this.description = "";
-        //this.requestType = new Request(ITS);
+        this.itRequestType = type;
     }
 
-    public ITRequest(int id, String notes, Node location, boolean completed, String description) {
-        super(id, notes, location, completed);
-        this.description = description;
-        //this.requestType = new RequestType(ITS);
+    public ITRequestType getItRequestType() {
+        return itRequestType;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setItRequestType(ITRequestType itRequestType) {
+        this.itRequestType = itRequestType;
     }
 
     @Override
@@ -39,19 +34,24 @@ public class ITRequest extends Request {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ITRequest itRequest = (ITRequest) o;
-        return Objects.equals(description, itRequest.description);
+        return itRequestType == itRequest.itRequestType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), description);
+        return Objects.hash(super.hashCode(), itRequestType);
     }
 
+    @Override
+    public String toString() {
+        return "ITRequest{" +
+                "itRequestType=" + itRequestType +
+                '}';
+    }
 
     @Override
     public void makeRequest () {
-        ITRequest newITRequest = new ITRequest(-1, description, this.getLocation(), false);
-        DatabaseService.getDatabaseService().insertITRequest(newITRequest);
+        DatabaseService.getDatabaseService().insertITRequest(this);
     }
 
     @Override

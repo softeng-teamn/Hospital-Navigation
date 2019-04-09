@@ -30,7 +30,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn;
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn, employeeBtn;
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -150,11 +150,13 @@ public class TopNav {
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
             newNode_btn.setVisible(true);
+            employeeBtn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
         } else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             newNode_btn.setVisible(false);
+            employeeBtn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
         }
     }
@@ -197,6 +199,7 @@ public class TopNav {
         sendEvent.setEventName("navigation");
         eventBus.post(sendEvent);
     }
+
 
     public void showREST(ActionEvent actionEvent) {
         Boolean accessibility = accessibilityButton.isSelected();
@@ -242,5 +245,12 @@ public class TopNav {
         event.setEventName("filter");
         event.setFilterSearch("EXIT");
         eventBus.post(event);
+
+    public void showEditEmployee(ActionEvent actionEvent) throws Exception {
+        Stage stage = (Stage) employeeBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
+        StageManager.changeExistingWindow(stage, root, "Edit Employees");
+        stage.setFullScreen(true);
+
     }
 }

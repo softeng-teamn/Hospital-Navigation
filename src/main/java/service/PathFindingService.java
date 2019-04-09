@@ -8,8 +8,7 @@ import java.util.*;
 
 public class PathFindingService {
 
-    private static final int DEFAULT_HV_COST = 10;
-    private static final int DEFAULT_DIAGONAL_COST = 14;
+    public int estimatedTimeOfArrival;
 
     public PathFindingService() { }
 
@@ -23,6 +22,8 @@ public class PathFindingService {
      * */
     public ArrayList<Node> genPath(MapNode start, MapNode dest, Boolean accessibility, String filter) {
 
+        public int estimatedTimeOfArrival;
+
         AlgorithmContext ctx = new AlgorithmContext(new Astar());
 
         ArrayList<Node> target;
@@ -32,6 +33,7 @@ public class PathFindingService {
             case "astar":
                 ctx.setStrategy(new Astar());
                 target = ctx.findPathCTX(start, dest, accessibility, null);
+                estimatedTimeOfArrival = getEstimatedTimeOfArrival();
                 break;
             case "breadth":
                 ctx.setStrategy(new BreadthFS());
@@ -45,6 +47,7 @@ public class PathFindingService {
                 ctx.setStrategy(new BreadthFS());
                 target = ctx.findPathCTX(start, null, accessibility, filter);
                 break;
+
         }
 
         if (target != null){
@@ -57,15 +60,8 @@ public class PathFindingService {
     }
 
 
-
-
-
-
-
-
-
-
-
-
+    int getEstimatedTimeOfArrival(){
+         return estimatedTimeOfArrival;
+    }
 
 }

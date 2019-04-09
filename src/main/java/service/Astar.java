@@ -10,6 +10,8 @@ import java.util.Set;
 
 public class Astar implements Algorithm {
 
+    public int estimatedTime;
+
     @Override
     public ArrayList<Node> findDest(MapNode start, MapNode dest, boolean accessibility, String filter) {
         MapNode target = aStar(start, dest, accessibility, null);
@@ -25,6 +27,11 @@ public class Astar implements Algorithm {
             return path;
         }
         return null;
+    }
+
+    @Override
+    public int getEstimatedTime() {
+        return estimatedTime;
     }
 
 
@@ -63,6 +70,7 @@ public class Astar implements Algorithm {
                 if (child.equals(dest)) {
                     //System.out.println("This child is our destination node!");
                     child.setParent(current, current.getG() + child.getG());
+                    estimatedTime = child.getG()/734;
                     return child;
                 }
 

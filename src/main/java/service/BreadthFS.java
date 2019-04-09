@@ -26,6 +26,11 @@ public class BreadthFS implements Algorithm {
         return null;
     }
 
+    @Override
+    public int getEstimatedTime() {
+        return 0;
+    }
+
     /**
      *  Will either return the last MapNode with a parent chain back to the start
      *  or returns null if we CANT get to the dest node

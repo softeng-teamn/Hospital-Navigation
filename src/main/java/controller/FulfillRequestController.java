@@ -3,7 +3,6 @@ package controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
-import com.jfoenix.controls.JFXToggleNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,12 +12,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import javafx.stage.Stage;
-import model.Node;
-import model.RequestType;
 import model.request.ITRequest;
 import model.request.MedicineRequest;
 import model.request.Request;
-import model.request.RequestFacade;
 import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -61,35 +57,12 @@ public class FulfillRequestController extends Controller implements Initializabl
     /**
      * sets a request as completed in the database
      */
-
     @FXML
     public void fulfillRequest(){
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
-        MedicineRequest medupdate;
-        ITRequest ITupdate;
-
-        selected.setCompleted(true);
-
-        RequestType rType = selected.getRequestType();
-
-        switch(rType.getrType()){
-            case ITS:
-                ITupdate = (ITRequest) selected;
-                myDBS.updateITRequest(ITupdate);
-                break;
-            case MED:
-                medupdate = (MedicineRequest) selected;
-                myDBS.updateMedicineRequest(medupdate);
-                break;
-            case ABS:
-                //do nothing
-        }
-
+        selected.fillRequest();
         reloadList();
-
     }
-
-
 
     /**
      * TBD
@@ -114,7 +87,6 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     public void reloadList(){
         ObservableList<Request> newRequestlist = FXCollections.observableArrayList();
-
         if (allRadio.isSelected()){
             if(allTypeRadio.isSelected()){
                 ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
@@ -182,7 +154,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         }
 
         return "ID: " + request.getId() +
-                " Request Type: " + request.getRequestType().getrType().toString() +
+                " Request Type: " + request.getClass().getCanonicalName() +
                 " Description: " + request.getNotes();
     }
 
