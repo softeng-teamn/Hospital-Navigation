@@ -35,7 +35,7 @@ public class TopNav {
     @FXML
     private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
-    private JFXTextField start_search_bar, end_search_bar;
+    private JFXTextField search_bar;
     @FXML
     private JFXToggleNode accessibilityButton;
     @FXML
