@@ -236,13 +236,11 @@ public class TopNav {
 
 
     public void setEventEndNode(MouseEvent mouseEvent){
-        System.out.println("set to false");
         event.setEndNode(false);
     }
 
 
     public void setEventStartNode(MouseEvent mouseEvent) {
-        System.out.println("set to true");
         event.setEndNode(true);
     }
 

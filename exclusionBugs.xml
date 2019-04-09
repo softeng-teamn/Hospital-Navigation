@@ -15,5 +15,9 @@
     <Bug code="ST" />
     <Class name="controller.MapView$5" />
   </Match>
+  <Match>
+    <Bug code="NP,UwF" />
+    <Class name="controller.TopNav" />
+  </Match>
 </FindBugsFilter>
 
