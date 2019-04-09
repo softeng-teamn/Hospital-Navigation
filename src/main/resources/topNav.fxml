@@ -11,12 +11,12 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import com.jfoenix.controls.JFXSlider?>
 
 <?import com.jfoenix.controls.JFXToggleNode?>
-<HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="1385.0" spacing="5.0" styleClass="header" xmlns="http://javafx.com/javafx"
+<HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="128.0" prefWidth="1920.0" spacing="5.0" styleClass="header" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="controller.TopNav">
+      <padding><Insets bottom="6.0" left="24.0" right="24.0" top="6.0"/></padding>
         <children>
             <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2">
                 <HBox.margin>
@@ -51,14 +51,7 @@
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="time_label"/>
             <Region HBox.hgrow="ALWAYS" />
-            <JFXButton fx:id="employeeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showEditEmployee" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
-                <graphic>
-                    <FontAwesomeIconView glyphName="USER" size="60" />
-                </graphic>
-                <HBox.margin>
-                    <Insets right="8.0" />
-                </HBox.margin></JFXButton>
-            <JFXButton fx:id="fulfillBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showFulfillRequest" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
+            <JFXButton fx:id="fulfillBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showAdminScene" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
                 <graphic>
                     <FontAwesomeIconView glyphName="CHECK" size="60" />
                 </graphic>
@@ -85,7 +78,7 @@
                 </graphic></JFXButton>
         </children>
         <VBox.margin>
-            <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
+            <Insets bottom="0" left="0.0" right="0.0" top="0.0" />
         </VBox.margin>
     </HBox>
 

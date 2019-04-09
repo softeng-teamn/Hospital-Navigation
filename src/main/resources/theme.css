@@ -1,5 +1,7 @@
 * {
     -fx-primary: #48577D;
+    -fx-complementary: #1C2E51;
+    -fx-highlight: #456AAC;
     -fx-secondary: #F5F5F5;
     -fx-primarytext: #F7FAFF;
     -fx-unfocusedtext: #9E9E9E;
@@ -16,6 +18,10 @@
     -fx-background-color: -fx-primary;
 }
 
+.header {
+    -fx-background-color: -fx-complementary;
+}
+
 .big-label{
     -fx-text-fill: -fx-primaryText;
     -fx-font-family: Roboto;
@@ -23,6 +29,8 @@
 }
 
 .small-label{
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-family: Roboto;
     -fx-font-size: 12pt;
 }
 
@@ -157,12 +165,12 @@
  ******************************************************************************/
 
 .list-view {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: -fx-complementary;
     -fx-border-radius: 0px;
 }
 
 .list-view .list-cell {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: -fx-complementary;
     -fx-text-fill: -fx-primarytext;
     -fx-font-size: 13pt;
 }
@@ -173,7 +181,7 @@
 }
 
 .list-view .list-cell:selected {
-    -fx-background-color: #434343;
+    -fx-background-color: #7683ac;
 }
 
 /*******************************************************************************

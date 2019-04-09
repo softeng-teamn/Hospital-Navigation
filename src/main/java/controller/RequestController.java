@@ -1,6 +1,7 @@
 package controller;
 
 import com.jfoenix.controls.*;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,20 +10,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import model.Node;
-import model.RequestType;
-import model.request.ITRequest;
-import model.request.MedicineRequest;
 import model.request.Request;
-import model.request.RequestFacade;
 import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
@@ -36,10 +35,6 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     private JFXListView list_view;
     @FXML
-    private JFXTextArea textArea;
-    @FXML
-    private ToggleGroup requestType;
-    @FXML
     private JFXTextField search_bar;
     @FXML
     private Pane subSceneHolder;
@@ -51,6 +46,21 @@ public class RequestController extends Controller implements Initializable {
     private ObservableList<Node> allNodesObservable;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    @SuppressFBWarnings(value="MS_CANNOT_BE_FINAL", justification = "I need to")
+    public static Node selectedNode = null;
+
+    /**
+     * initializes the request controller
+     *
+     * @param location
+     * @param resources
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        repopulateList();
+    }
+
     /**
      * switches window to home screen
      *
@@ -72,6 +82,12 @@ public class RequestController extends Controller implements Initializable {
         String search = search_bar.getText();
         System.out.println(search);
         filterList(search);
+    }
+
+    @FXML
+    public void securitySelect(ActionEvent e) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.securityRequest));
     }
 
     /**
@@ -108,110 +124,6 @@ public class RequestController extends Controller implements Initializable {
             list_view.getItems().clear();
             list_view.getItems().addAll(toShow);
         }
-    }
-
-
-    /**
-     * collects user input information, calls Facade class to create object and submit to database
-     * "confirm" button
-     */
-    @FXML
-    public void makeRequest() {
-
-        JFXToggleNode selected = (JFXToggleNode) requestType.getSelectedToggle();
-        String description = textArea.getText();
-        Node requestLocation = (Node) list_view.getSelectionModel().getSelectedItem();
-
-        // make sure fields are filled in
-        if (requestLocation == null) {
-            textArea.setText("Please select location");
-        } else if (selected == null) {
-            textArea.setText("Please select type");
-        }
-
-        // new Facade object
-        RequestFacade reqFacade = new RequestFacade(selected,description, requestLocation) ;
-
-
-
-        // if feilds are populted and are of type:
-        if ((selected != null) && (selected.getText().contains("Medicine"))) {
-            reqFacade.makeMedRequest();
-        } else if ((selected != null) && (selected.getText().contains("IT"))) {
-            reqFacade.makeITRequest();
-        }
-        textArea.clear();
-    }
-
-
-    /**
-     * Generates a request of the given type
-     *
-     * @param type
-     */
-    void makeRequest(Request type) {
-        RequestType rType = type.getRequestType();
-        switch (rType.getrType()) {
-            case ITS:
-                ITRequest ITType = (ITRequest) type;
-                if (myDBS.getITRequest(ITType.getId()) == null) {
-                    myDBS.insertITRequest(ITType);
-                }
-                break;
-            case MED:
-                MedicineRequest medReq = (MedicineRequest) type;
-                if (myDBS.getMedicineRequest(medReq.getId()) == null) {
-                    myDBS.insertMedicineRequest(medReq);
-                }
-                break;
-            case ABS:
-                //dont make a request if its not a real type
-        }
-    }
-
-    /**
-     * removes object from database through Facade class
-     *
-     * @param type
-     * @param byWho
-     */
-    void fufillRequest(Request type, String byWho) {
-        RequestFacade reqFacade = new RequestFacade(type,byWho);
-        RequestType rType = type.getRequestType();
-        switch (rType.getrType()) {
-            case ITS:
-                reqFacade.fillITRequest();
-                break;
-            case MED:
-                reqFacade.fillMedRequest();
-                break;
-            case ABS:
-                //do nothing
-        }
-    }
-
-    /**
-     * getter for pendingRequests
-     *
-     * @return
-     */
-    public Collection<Request> getPendingRequests() {
-        ArrayList<Request> requests = new ArrayList<>();
-        requests.addAll(myDBS.getAllIncompleteITRequests());
-        requests.addAll(myDBS.getAllIncompleteMedicineRequests());
-        return requests;
-    }
-
-
-    /**
-     * initializes the request controller
-     *
-     * @param location
-     * @param resources
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        repopulateList();
     }
 
     /**
@@ -260,5 +172,84 @@ public class RequestController extends Controller implements Initializable {
                 }
             }
         });
+    }
+
+    @FXML
+    public void internalTransportSelect(ActionEvent e) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.internalTransportRequest));
+    }
+
+    @FXML
+    public void interpreterRequestSelect(ActionEvent e) throws IOException{
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.interpreterRequest));
+    }
+
+    @FXML
+    public void religiousRequestSelect(ActionEvent e) throws IOException{
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.religiousRequest));
+    }
+
+    @FXML
+    public void patientSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.patientInfoRequest));
+    }
+
+    @FXML
+    public void maintenanceRequest(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.maintenanceRequest));
+    }
+
+    @FXML
+    public void floristSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.floristRequest));
+    }
+
+    @FXML
+    public void giftSelect (ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.giftStoreRequest));
+    }
+
+    @FXML
+    public void selectSanitation(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.sanitationRequest));
+    }
+
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "I need to")
+    @FXML
+    public void locationSelected(MouseEvent mouseEvent) {
+        selectedNode = (Node) list_view.getSelectionModel().getSelectedItem();
+    }
+
+    public void toyRequestSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.ToyRequest));
+    }
+  
+    public void avSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.avServiceRequest));
+   }
+  
+    public void externalTransportationRequest(ActionEvent actionEvent) throws IOException{
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.externalTransportRequest));
+    }
+  
+    public void medicineSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.medicineRequest));
+    }
+
+    public void itSelect(ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.itRequest));
     }
 }
