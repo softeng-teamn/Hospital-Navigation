@@ -119,7 +119,7 @@ public class CSVServiceTest {
         when(dbs.getEmployee(emp2.getID())).thenReturn(emp2);
         when(dbs.getEmployee(emp3.getID())).thenReturn(emp3);
 
-        DatabaseService.setDatabaseForMocking(dbs);
+        CSVService.myDBS = dbs;
     }
 
     @After
@@ -316,7 +316,7 @@ public class CSVServiceTest {
         CSVService.importNodes();
 
         // Capture the calls to insert node
-        verify(DatabaseService.getDatabaseService(false), times(1)).insertAllNodes(nodeCaptor.capture());
+        verify(CSVService.myDBS, times(1)).insertAllNodes(nodeCaptor.capture());
 
         // Check that each node captured is equal to the test nodes
         List<ArrayList<Node>> capturedNodes = nodeCaptor.getAllValues();
@@ -340,7 +340,7 @@ public class CSVServiceTest {
         CSVService.importEdges();
 
         // Capture the calls to insert edge
-        verify(DatabaseService.getDatabaseService(false), times(3)).insertEdge(edgeCaptor.capture());
+        verify(CSVService.myDBS, times(3)).insertEdge(edgeCaptor.capture());
 
         // Check that each edge captured is equal to the test edge
         List<Edge> capturedEdges = edgeCaptor.getAllValues();
@@ -367,7 +367,7 @@ public class CSVServiceTest {
         CSVService.importReservableSpaces();
 
         // Capture the calls to insert spaces
-        verify(DatabaseService.getDatabaseService(false), times(3)).insertReservableSpace(spaceCaptor.capture());
+        verify(CSVService.myDBS, times(3)).insertReservableSpace(spaceCaptor.capture());
 
         // Check that each node captured is equal to the test spaces
         List<ReservableSpace> capturedSpaces = spaceCaptor.getAllValues();
@@ -393,7 +393,7 @@ public class CSVServiceTest {
         // Action being tested
         CSVService.importEmployees();
         // Capture the calls to insert employees
-        verify(DatabaseService.getDatabaseService(false), times(3)).insertEmployee(empCaptor.capture());
+        verify(CSVService.myDBS, times(3)).insertEmployee(empCaptor.capture());
 
         // Check that each node captured is equal to the test employee
         List<Employee> capturedEmp = empCaptor.getAllValues();

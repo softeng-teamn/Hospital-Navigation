@@ -39,6 +39,11 @@ public class Employee {
         return isAdmin;
     }
 
+    // Required in for JavaFx PropertyValueFactory
+    public boolean getIsAdmin() {
+        return isAdmin;
+    }
+
     public void setID(int ID) {
         this.ID = ID;
     }

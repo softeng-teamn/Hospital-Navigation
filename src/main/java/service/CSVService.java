@@ -22,6 +22,8 @@ public class CSVService extends Controller {
     private static final String SPACE_HEADER = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n";
     private static final String EMPLOYEE_HEADER ="ID,username,job,isAdmin,password\n";
 
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
     /**
      * Export the Nodes table
      * @throws IOException
@@ -35,7 +37,7 @@ public class CSVService extends Controller {
             writer.write(NODE_HEADER);
 
             // Write out each node
-            for (Node node : DatabaseService.getDatabaseService().getAllNodes()) {
+            for (Node node : myDBS.getAllNodes()) {
                 writer.write(node.getNodeID() + ",");
                 writer.write(node.getXcoord() + ",");
                 writer.write(node.getYcoord() + ",");
@@ -72,7 +74,7 @@ public class CSVService extends Controller {
             writer.write(EDGES_HEADER);
 
             // Write out each node
-            for (Edge edge : DatabaseService.getDatabaseService().getAllEdges()) {
+            for (Edge edge : myDBS.getAllEdges()) {
                 writer.write(edge.getEdgeID() + ",");
                 writer.write(edge.getNode1().getNodeID() + ",");
                 writer.write(edge.getNode2().getNodeID() + "\n");
@@ -104,7 +106,7 @@ public class CSVService extends Controller {
             writer.write(SPACE_HEADER);
 
             // Write out each space
-            for (ReservableSpace space : DatabaseService.getDatabaseService().getAllReservableSpaces()) {
+            for (ReservableSpace space : myDBS.getAllReservableSpaces()) {
                 writer.write(space.getSpaceID() + ",");
                 writer.write(space.getSpaceName() + ",");
                 writer.write(space.getSpaceType() + ",");
@@ -140,7 +142,7 @@ public class CSVService extends Controller {
             writer.write(EMPLOYEE_HEADER);
 
             // Write out each node
-            for (Employee emp : DatabaseService.getDatabaseService().getAllEmployees()) {
+            for (Employee emp : myDBS.getAllEmployees()) {
                 writer.write(emp.getID() + ",");
                 writer.write(emp.getUsername() + ",");
                 writer.write(emp.getJob().name() + ",");
@@ -188,7 +190,7 @@ public class CSVService extends Controller {
                 nodes.add(node);
             }
 
-            DatabaseService.getDatabaseService().insertAllNodes(nodes);
+            myDBS.insertAllNodes(nodes);
 
             //close reader
             reader.close();
@@ -226,8 +228,8 @@ public class CSVService extends Controller {
                 String[] data = line.split(",");
 
                 //retrieve nodes from database based on ID
-                Node node1 = DatabaseService.getDatabaseService().getNode(data[1]);
-                Node node2 = DatabaseService.getDatabaseService().getNode(data[2]);
+                Node node1 = myDBS.getNode(data[1]);
+                Node node2 = myDBS.getNode(data[2]);
 
                 //checks to see if nodes are not null before creating and adding an edge
                 if ((node1 != null) && (node2 != null)) {
@@ -235,7 +237,7 @@ public class CSVService extends Controller {
                     Edge edge = new Edge(node1, node2);
 
                     //Add edge to the database
-                    DatabaseService.getDatabaseService().insertEdge(edge);
+                    myDBS.insertEdge(edge);
                 } else {
                     //Print out error statement
                     System.out.println("Invalid Edge Found: " + line);
@@ -306,7 +308,7 @@ public class CSVService extends Controller {
                     ReservableSpace space = new ReservableSpace(data[0], data[1], data[2], data[3], openCalender, closedCalender);
 
                     //insert space into database
-                    DatabaseService.getDatabaseService().insertReservableSpace(space);
+                    myDBS.insertReservableSpace(space);
                 } else {
                     System.out.println("Invalid Time Found: " + line);
                 }
@@ -341,48 +343,18 @@ public class CSVService extends Controller {
             //read first line
             reader.readLine();
 
-            String line = null;
+            String line;
 
             //loop until there is nothing to read
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
-                JobType job;
-
-                switch (data[2].toUpperCase()) {
-                    case "ADMINISTRATOR":
-                        job = JobType.ADMINISTRATOR;
-                        break;
-                    case "DOCTOR":
-                        job = JobType.DOCTOR;
-                        break;
-                    case "JANITOR":
-                        job = JobType.JANITOR;
-                        break;
-                    case "NURSE":
-                        job = JobType.NURSE;
-                        break;
-                    case "MAINTENANCE_WORKER":
-                        job = JobType.MAINTENANCE_WORKER;
-                        break;
-                    case "SECURITY_PERSONNEL":
-                        job = JobType.SECURITY_PERSONNEL;
-                        break;
-                    case "GUEST":
-                        job = JobType.GUEST;
-                        break;
-                    case "IT":
-                        job = JobType.IT;
-                        break;
-                    default:
-                        System.out.println("Invalid employee entry: " + line);
-                        continue; // the loop
-                }
+                JobType job = JobType.valueOf(data[2]);
 
                 Employee emp = new Employee(Integer.parseInt(data[0]), data[1], job, Boolean.parseBoolean(data[3]),data[4]);
 
                 //Add edge to the database
-                DatabaseService.getDatabaseService().insertEmployee(emp);
+                myDBS.insertEmployee(emp);
             }
 
             //close reader

@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.jfoenix.controls.*;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,14 +19,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
+import model.Employee;
 import model.ReservableSpace;
 import model.Reservation;
 import service.CSVService;
@@ -33,6 +37,29 @@ import service.StageManager;
 
 public class ScheduleController extends Controller {
 
+    private static class ScheduleWrapper {
+        private String time;
+        public void setTime(String value) { this.time = value; }
+        public String getTime() { return time; }
+
+        private String availability;
+        public void setAvailability(String value) { this.availability = value; }
+        public String getAvailability() { return availability; }
+
+        public ScheduleWrapper(String time) {
+            this.time = time;
+            this.availability = "Available";
+        }
+
+        @Override
+        public String toString() {
+            return "ScheduleWrapper{" +
+                    "time='" + time + '\'' +
+                    ", availability='" + availability + '\'' +
+                    '}';
+        }
+    }
+
     @FXML
     public JFXButton homeBtn, makeReservationBtn, availRoomsBtn, bookedRoomsBtn;
 
@@ -40,10 +67,10 @@ public class ScheduleController extends Controller {
     public JFXButton submitBtn;
 
     @FXML
-    public VBox schedule, checks;
+    public JFXTextField eventName, employeeID, searchBar;
 
     @FXML
-    public JFXTextField eventName, employeeID, searchBar;
+    private TableView<ScheduleWrapper> scheduleTable;
 
     @FXML
     public JFXListView reservableList;
@@ -55,7 +82,7 @@ public class ScheduleController extends Controller {
     public JFXTimePicker startTimePicker, endTimePicker;
 
     @FXML
-    public Label errorLbl, timeLbl, confErrorLbl;
+    public Label timeErrorLbl, resInfoLbl, inputErrorLbl;
 
     @FXML
     public JFXComboBox<String> privacyLvlBox;
@@ -69,29 +96,56 @@ public class ScheduleController extends Controller {
     public ReservableSpace currentSelection;
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
-
     // LIst of spaces to display
     private ObservableList<ReservableSpace> resSpaces;
+    // Error messages
+    private String timeErrorText, availRoomsText, bookedRoomsText, clearFilterText, conflictErrorText, pastDateErrorText;
+    // Database
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
-    private String timeErrorText, availRoomsText, bookedRoomsText, clearFilterText;
+    public int getOpenTime() {
+        return openTime;
+    }
+
+    public void setOpenTime(int openTime) {
+        this.openTime = openTime;
+    }
+
+    public int getCloseTime() {
+        return closeTime;
+    }
+
+    public void setCloseTime(int closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public int getTimeStep() {
+        return timeStep;
+    }
+
+    public void setTimeStep(int timeStep) {
+        this.timeStep = timeStep;
+    }
 
     /**
      * Set up scheduler page.
      */
     @FXML
     public void initialize() {
+        resInfoLbl.setText("");
         timeErrorText = "Please enter valid start and end times.";
         availRoomsText = "Show Available Spaces";
         bookedRoomsText = "Show Booked Spaces";
         clearFilterText = "Clear Filter";
+        conflictErrorText = "Please select times that do not conflict with currently scheduled times.";
+        pastDateErrorText = "Please select a date that is not in the past.";
 
         // Read in reservable Spaces
         CSVService.importReservableSpaces();
 
-        // Disable things that can't be used yet
-        errorLbl.setVisible(false);
-        confErrorLbl.setVisible(false);
-        makeReservationBtn.setDisable(true);
+        // Don't show errors yet
+        timeErrorLbl.setVisible(false);
+        inputErrorLbl.setVisible(false);
 
         // Set event privacy options
         ObservableList<String> options =
@@ -99,29 +153,38 @@ public class ScheduleController extends Controller {
                         "Public",
                         "Private"
                 );
-        privacyLvlBox.getItems().addAll(options);
-
-        // Create arraylists
-        currentSchedule = new ArrayList<Integer>();
-        resSpaces = FXCollections.observableArrayList();
+        privacyLvlBox.setItems(options);
 
         // Set default date to today's date
         LocalDate date =  LocalDate.now();
         datePicker.setValue(date);
 
-        // Set default start time to open time
-        LocalTime startTime = LocalTime.of(LocalTime.now().getHour(), 0);
+        // Set default start time to current time, or the closest open hour
+        int startHour = LocalTime.now().getHour();
+        if (startHour < openTime) {
+            startHour = openTime;
+        }
+        if (startHour >= closeTime) {
+            startHour = closeTime - 1;
+        }
+        LocalTime startTime = LocalTime.of(startHour, 0);
         startTimePicker.setValue(startTime);
 
         // Set default end time to an hour after open time
-        LocalTime endTime = LocalTime.of(startTime.getHour() + 1, 0);
+        LocalTime endTime = LocalTime.of(startHour + 1, 0);
         endTimePicker.setValue(endTime);
 
+
+        // Create arraylists
+        currentSchedule = new ArrayList<Integer>();
+        resSpaces = FXCollections.observableArrayList();
+
         //  Pull spaces from database, sort, add to list and listview
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
         Collections.sort(dbResSpaces);
         resSpaces.addAll(dbResSpaces);
         reservableList.setItems(resSpaces);
+        reservableList.setEditable(false);
 
         // Set the cell to display only the name of the reservableSpace
         reservableList.setCellFactory(param -> new ListCell<ReservableSpace>() {
@@ -137,11 +200,30 @@ public class ScheduleController extends Controller {
                 }
             }
         });
-        reservableList.setEditable(false);
 
         // Select the first item and display its schedule
         reservableList.getSelectionModel().select(0);
         reservableList.getFocusModel().focus(0);
+
+        // Create table columns, set what they display, and add to the table
+        TableColumn<ScheduleWrapper, String> timeCol = new TableColumn<>("Time");
+        TableColumn<ScheduleWrapper, String> bookingCol = new TableColumn<>("Availability");
+        bookingCol.setPrefWidth(400);
+        scheduleTable.setEditable(false);
+        timeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyStringWrapper(p.getValue().getTime());
+            }
+        });
+        bookingCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+            }
+        });
+        scheduleTable.getColumns().addAll(timeCol, bookingCol);
+        scheduleTable.setPrefHeight(900);
         showRoomSchedule();
 
         // Set listeners to update listview and label
@@ -160,28 +242,32 @@ public class ScheduleController extends Controller {
     }
 
     /**
-     * Listener to update listview and info label
+     * Listener to update listview of rooms and info label
      * @param value
      */
     private void focusState(boolean value) {
-        if (!value) {
-            makeTimeValid();
-            LocalTime start = startTimePicker.getValue();
-            LocalTime end = endTimePicker.getValue();
+        if (!value && validTimes(false)) {
             if (availRoomsBtn.getText().contains("ear")) {
                 availRooms();
-                System.out.println("here");
             }
             else if (bookedRoomsBtn.getText().contains("ear")) {
                 bookedRooms();
             }
+            showRoomSchedule();
 
             // Display the current information
-            timeLbl.setText("Reservation Location:      " + currentSelection.getSpaceName()
-                    + "\n\nReservation Date:            " + datePicker.getValue()
-                    + "\n\nReservation Start Time:   " + start
-                    + "\n\nReservation End Time:    " + end);
+            changeResInfo();
         }
+    }
+
+    /**
+     * Display the current reservation information for the user
+     */
+    private void changeResInfo() {
+        resInfoLbl.setText("Location:      " + currentSelection.getSpaceName()
+            + "\n\nDate:            " + datePicker.getValue()
+            + "\n\nStart Time:   " + startTimePicker.getValue()
+            + "\n\nEnd Time:    " + endTimePicker.getValue());
     }
 
     /**
@@ -190,15 +276,8 @@ public class ScheduleController extends Controller {
      */
     private void listFocus(boolean value) {
         if (!value) {
-            makeTimeValid();
-            LocalTime start = startTimePicker.getValue();
-            LocalTime end = endTimePicker.getValue();
-
             // Display the current information
-            timeLbl.setText("Reservation Location:      " + currentSelection.getSpaceName()
-                    + "\n\nReservation Date:            " + datePicker.getValue()
-                    + "\n\nReservation Start Time:   " + start
-                    + "\n\nReservation End Time:    " + end);
+            changeResInfo();
         }
     }
 
@@ -217,9 +296,9 @@ public class ScheduleController extends Controller {
       */
     @FXML
     public void showRoomSchedule() {
-        errorLbl.setVisible(false);
-        // Having chosen a location, users can now make a reservation
-        makeReservationBtn.setDisable(false);
+        System.out.println("showing schedule");
+        // Clear the previous schedule
+        currentSchedule.clear();
 
         // Get the selected location
         ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
@@ -231,17 +310,8 @@ public class ScheduleController extends Controller {
         GregorianCalendar gcalStart = GregorianCalendar.from(chosenDate.atStartOfDay(ZoneId.systemDefault()));
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
 
-        // Get reservations for this space and these times
-        ArrayList<Reservation> reservations = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
-
-        // clear the previous schedule
-        schedule.getChildren().clear();
-        checks.getChildren().clear();
-        currentSchedule.clear();
-
         // Make a list of time and activity labels for the schedule
-        ArrayList<HBox> schedToAdd = new ArrayList<HBox>();
-        ArrayList<Label> labelsToAdd = new ArrayList<Label>();
+        ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
 
         // For every hour between the time the room closes and the time it opens
         for (int i = openTime; i < closeTime; i++) {
@@ -257,29 +327,21 @@ public class ScheduleController extends Controller {
 
             // For each time step in that hour, create a time label and activity label
             for (int j = 0; j < timeStep; j++) {
-                Label actLabel = new Label("Available");    // Default activity is available
-                String minutes = "00";
-                if (j > 0) {    // Set the minutes
-                    minutes = String.format("%d", (60 / timeStep));
+                String minutes = String.format("%d", timeStepMinutes * j);
+                if (Integer.parseInt(minutes) == 0) {
+                    minutes = "00";
                 }
-                actLabel.setMaxWidth(Double.MAX_VALUE);
-
-                // Create a new hbox to contain both labels and fill
-                HBox hBox = new HBox();
-                hBox.setAlignment(Pos.BASELINE_RIGHT);
-                Label timeInc = new Label(time + ":" + minutes + " " + amPm);
-                timeInc.setMinWidth(68);
-                timeInc.setTextAlignment(TextAlignment.CENTER);
-                timeInc.setTextFill(Color.web("#FFFEFE"));
-                timeInc.setStyle("-fx-background-color: #0f9d58; ");    // Default color is green, ie available
-                hBox.getChildren().add(timeInc);
+                String timeInc = time + ":" + minutes + " " + amPm;
 
                 // Add the labels to the lists
-                schedToAdd.add(hBox);
-                labelsToAdd.add(actLabel);
+                ScheduleWrapper toAdd = new ScheduleWrapper(timeInc);
+                schedToAdd.add(toAdd);
                 currentSchedule.add(0);    // Default is 0, available
             }
         }
+
+        // Get reservations for this space and these times
+        ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
 
         /**
          * For each of this location's reservations, mark it booked on the schedule
@@ -299,22 +361,23 @@ public class ScheduleController extends Controller {
             // Mark it as booked, color it red, and display the event name
             // or "Booked" depending on its privacy level
             for (int box = (startHour - openTime)*timeStep + startFrac; box < (endHour - openTime)*timeStep + endFrac; box++) {
-                Label time = (Label) schedToAdd.get(box).getChildren().get(0);
-                time.setStyle("-fx-background-color: #9b0f16; ");
-                Label actLabel = (Label) labelsToAdd.get(box);
+                ScheduleWrapper time = schedToAdd.get(box);
                 if (res.getPrivacyLevel() == 0) {
-                    actLabel.setText(res.getEventName());
+                    time.setAvailability(res.getEventName());
                 }
                 else {
-                    actLabel.setText("Booked");
+                    time.setAvailability("Booked");
                 }
                 currentSchedule.set(box, 1);
             }
         }
 
-        // Add everything to the schedule to display
-        schedule.getChildren().addAll(schedToAdd);
-        checks.getChildren().addAll(labelsToAdd);
+        ObservableList<ScheduleWrapper> wrap = FXCollections.observableArrayList();
+        wrap.addAll(schedToAdd);
+        scheduleTable.setItems(wrap);
+        for (int i = 0; i < schedToAdd.size(); i++) {
+            System.out.println(scheduleTable.getItems().get(i));
+        }
     }
 
     /**
@@ -323,10 +386,10 @@ public class ScheduleController extends Controller {
      */
     @FXML
     public void makeReservation() {
-        makeTimeValid();
         boolean valid = validTimes(true);
 
-        confErrorLbl.setVisible(false);
+        // Check user input for valid ID
+        inputErrorLbl.setVisible(false);
         String id = employeeID.getText();
         boolean badId = false;
 
@@ -340,20 +403,26 @@ public class ScheduleController extends Controller {
         // If the user has not entered an event name, has entered an invalid ID,
         // or has not chosen a privacy level, display an error message
         if (eventName.getText().length() < 1 || employeeID.getText().length() < 1 || privacyLvlBox.getValue() == null) {
-            confErrorLbl.setText("Error: Please complete all fields to make a reservation.");
-            confErrorLbl.setVisible(true);
+            inputErrorLbl.setText("Error: Please complete all fields to make a reservation.");
+            inputErrorLbl.setVisible(true);
+            valid = false;
         }
-        else if (eventName.getText().length() > 50) {
-            confErrorLbl.setText("Error: Please enter a shorter reservation name.");
-            confErrorLbl.setVisible(true);
+        // If the event name is too long, show an error
+        if (eventName.getText().length() > 50) {
+            inputErrorLbl.setText("Error: Please enter a shorter reservation name.");
+            inputErrorLbl.setVisible(true);
+            valid = false;
         }
-        // TODO: validate id
+
         // If the ID number is bad, display an error message.
-        else if (badId /*|| DatabaseService.getDatabaseService().getEmployee(Integer.parseInt(employeeID.getText())) == null*/) {
-            confErrorLbl.setText("Error: Please provide a valid employee ID number.");
-            confErrorLbl.setVisible(true);
+        if (badId || myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null) {
+            inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
+            inputErrorLbl.setVisible(true);
+            valid = false;
         }
-        else if (valid){    // Otherwise, create the reservation
+
+        // If evreything is okay, create the reservation
+        if (valid){
             createReservation();
         }
     }
@@ -364,11 +433,7 @@ public class ScheduleController extends Controller {
     @FXML
     public void createReservation() {
         // Get the times and dates and turn them into gregorian calendars
-        LocalDate chosenDate = datePicker.getValue();
-        LocalTime startTime = startTimePicker.getValue();
-        LocalTime endTime = endTimePicker.getValue();
-        GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
-        GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
+        ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
 
         // Get the privacy level
         int privacy = 0;
@@ -377,17 +442,40 @@ public class ScheduleController extends Controller {
         }
 
         // Create the new reservation
-        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),gcalStart,gcalEnd);
-        DatabaseService.getDatabaseService().insertReservation(newRes);
+        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),cals.get(0),cals.get(1));
+        myDBS.insertReservation(newRes);
 
         // Reset the screen
+        resetView();
+    }
+
+    /**
+     * Make gregorian calendars from the currently selected date and time.
+     * @return a list of gregorian calendars of the current start time/date and end time/date
+     */
+    private ArrayList<GregorianCalendar> gCalsFromCurrTimes() {
+        LocalDate chosenDate = datePicker.getValue();
+        LocalTime startTime = startTimePicker.getValue();
+        LocalTime endTime = endTimePicker.getValue();
+        GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
+        ArrayList<GregorianCalendar> cals = new ArrayList<>();
+        cals.add(gcalStart);
+        cals.add(gcalEnd);
+        return cals;
+    }
+
+    /**
+     * Show the current schedule, clear errors, and clear user input.
+     */
+    private void resetView() {
         showRoomSchedule();
-        confErrorLbl.setVisible(false);
-        errorLbl.setVisible(false);
+        inputErrorLbl.setVisible(false);
+        timeErrorLbl.setVisible(false);
         eventName.setText("");
         employeeID.setText("");
         privacyLvlBox.setValue(null);
-        timeLbl.setText("");
+        resInfoLbl.setText("");
     }
 
     /**
@@ -395,11 +483,12 @@ public class ScheduleController extends Controller {
      * Valid times must: be within the chosen location's start and end times.
      *      Have an end time greater than the start time.
      *      Not conflict with any existing reservation.
-     *      Be in the future. TODO
+     *      Be in the future.
      * @return true if the selected times are valid, false otherwise
      */
     private boolean validTimes(boolean forRes) {
-        boolean valid = true;
+        timeErrorLbl.setVisible(false);
+        makeMinutesValid();
         // Get the selected times
         int start = startTimePicker.getValue().getHour();
         int mins = startTimePicker.getValue().getMinute()/(timeStepMinutes);
@@ -408,26 +497,32 @@ public class ScheduleController extends Controller {
         int endMins = endTimePicker.getValue().getMinute()/(timeStepMinutes);
         int endIndex = (end - openTime) * timeStep + endMins;
 
+        // If the chosen date is in the past, show an error
+        if (forRes && datePicker.getValue().atStartOfDay().isBefore(LocalDate.now().atStartOfDay())) {
+            timeErrorLbl.setText(pastDateErrorText);
+            timeErrorLbl.setVisible(true);
+            return false;
+        }
+
         // If the times are outside the location's open times
         // or end is greater than start, the times are invalid
         if (endIndex <= index || start < openTime || closeTime < end) {
-            valid = false;
+            timeErrorLbl.setText(timeErrorText);
+            timeErrorLbl.setVisible(true);
+            return false;
         }
 
         if (forRes) {
             // For each time in the reservation, check whether it is already booked
             for (int i = index; i < endIndex; i++) {
-                if (currentSchedule.get(i) == 1) {
-                    valid = false;
+                if (currentSchedule.get(i) == 1) {    // If so, show an error
+                    timeErrorLbl.setText(conflictErrorText);
+                    timeErrorLbl.setVisible(true);
+                    return false;
                 }
             }
         }
-
-        if (!valid) {
-            errorLbl.setText(timeErrorText);
-            errorLbl.setVisible(true);
-        }
-        return valid;
+        return true;
     }
 
     /**
@@ -436,7 +531,7 @@ public class ScheduleController extends Controller {
      *  then :30 and :00 are valid but :04 and :15, etc. are not),
      *  round them down to the closest time step.
      */
-    private void makeTimeValid() {
+    private void makeMinutesValid() {
         // If the start minutes selected are not divisible by the timeStep (ex. 30 minutes)
         if (startTimePicker.getValue().getMinute()%(timeStepMinutes)!= 0) {
             // Then round them down to the nearest timeStep
@@ -466,7 +561,7 @@ public class ScheduleController extends Controller {
      */
     private void filterList(String findStr) {
         ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
         resSpaces.addAll(dbResSpaces);
         if (findStr.equals("")) {
             reservableList.getItems().clear();
@@ -506,30 +601,12 @@ public class ScheduleController extends Controller {
      * Displays rooms without reservations that overlap those times
      */
     public void availRooms() {
-        errorLbl.setVisible(false);
         boolean valid = validTimes(false);
         if (valid) {
             // Get selected times
-            LocalDate chosenDate = datePicker.getValue();
-            LocalTime startTime = startTimePicker.getValue();
-            LocalTime endTime = endTimePicker.getValue();
-            GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
-            GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
-
+            ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
             // Get reservations between selected times
-            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(gcalStart, gcalEnd);
-            ArrayList<ReservableSpace> allSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
-
-            int startSize = allSpaces.size();
-            for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
-                for (int j = 0; j < startSize; j++) {    // Go through all the spaces to remove that space from the list
-                    if (allSpaces.get(j).getSpaceID().equals(reservationsBetween.get(i).getLocationID())) {
-                        allSpaces.remove(j);
-                        startSize--;
-                        j--;
-                    }
-                }
-            }
+            ArrayList<ReservableSpace> availBetween = (ArrayList<ReservableSpace>) myDBS.getAvailableReservableSpacesBetween(cals.get(0), cals.get(1));
 
             // Set button
             availRoomsBtn.setOnAction(EventHandler -> {
@@ -539,11 +616,10 @@ public class ScheduleController extends Controller {
             bookedRoomsBtn.setText(bookedRoomsText);
             bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
 
-            Collections.sort(allSpaces);
+            Collections.sort(availBetween);
             resSpaces.clear();
-            resSpaces.addAll(allSpaces);
+            resSpaces.addAll(availBetween);
             reservableList.setItems(resSpaces);
-
 
             // Clear the current schedule
             reservableList.getSelectionModel().select(0);
@@ -556,37 +632,17 @@ public class ScheduleController extends Controller {
      * Display booked rooms for currently selected date and times
      */
     public void bookedRooms() {
-        errorLbl.setVisible(false);
         boolean valid = validTimes(false);
         if (valid) {
             // Get selected times
-            LocalDate chosenDate = datePicker.getValue();
-            LocalTime startTime = startTimePicker.getValue();
-            LocalTime endTime = endTimePicker.getValue();
-            GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
-            GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
-
-            ArrayList<ReservableSpace> bookedSpaces = new ArrayList<>();
-            ArrayList<ReservableSpace> allSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+            ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
 
             // Get reservations between selected times
-            ArrayList<Reservation> reservationsBetween = (ArrayList<Reservation>) DatabaseService.getDatabaseService().getReservationsBetween(gcalStart, gcalEnd);
+            ArrayList<ReservableSpace> bookedBetween = (ArrayList<ReservableSpace>) myDBS.getBookedReservableSpacesBetween(cals.get(0), cals.get(1));
 
-            int startSize = allSpaces.size();
-            for (int i = 0; i < reservationsBetween.size(); i++) {    // For each reservation
-                for (int j = 0; j < startSize; j++) {    // Go through all the spaces to remove that space from the list
-                    if (allSpaces.get(j).getSpaceID().equals(reservationsBetween.get(i).getLocationID())) {
-                        bookedSpaces.add(allSpaces.get(j));
-                        allSpaces.remove(j);
-                        startSize--;
-                        j--;
-                    }
-                }
-            }
-
-            Collections.sort(bookedSpaces);
+            Collections.sort(bookedBetween);
             resSpaces.clear();
-            resSpaces.addAll(bookedSpaces);
+            resSpaces.addAll(bookedBetween);
 
             // Set button
             bookedRoomsBtn.setOnAction(EventHandler -> {
@@ -597,7 +653,6 @@ public class ScheduleController extends Controller {
             availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
 
             reservableList.setItems(resSpaces);
-
 
             // Clear the current schedule
             reservableList.getSelectionModel().select(0);
@@ -610,9 +665,9 @@ public class ScheduleController extends Controller {
      * Reset display to show all spaces
      */
     public void clearFilter() {
-        errorLbl.setVisible(false);
+        timeErrorLbl.setVisible(false);
         // Set list to all spaces
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
         Collections.sort(dbResSpaces);
         resSpaces.clear();
         resSpaces.addAll(dbResSpaces);

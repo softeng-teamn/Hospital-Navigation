@@ -6,6 +6,7 @@ public enum JobType {
     // and add it to the CSVService (importEmployees)
     // and add to showProperRequest in FulfillRequestController
 
+
     ADMINISTRATOR,
     DOCTOR,
     NURSE,

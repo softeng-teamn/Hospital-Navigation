@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="10.0" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.requests.SanitationRequestController">
+   <children>
+      <Label styleClass="big-label" text="Sanitation Request Details" />
+      <JFXTextArea fx:id="notes" prefHeight="308.0" prefWidth="534.0" promptText="Describe your request  - clearer details will help us help you." styleClass="text-area">
+         <VBox.margin>
+            <Insets left="12.0" right="12.0" />
+         </VBox.margin>
+      </JFXTextArea>
+      <Label styleClass="big-label" text="Select Urgency" />
+      <JFXComboBox fx:id="urgencyBox" promptText="Urgency" />
+      <Label styleClass="big-label" text="Select Material Descriptor" />
+      <JFXComboBox fx:id="materialBox" promptText="Material" />
+      <JFXButton fx:id="submitBtn" onAction="#submitRequest" styleClass="confirm-button" text="Submit" />
+      <Label fx:id="errorLbl" text="Error: Please select a location." />
+   </children>
+   <padding>
+      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+   </padding>
+</VBox>

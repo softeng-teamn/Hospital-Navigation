@@ -1,13 +1,6 @@
 package model.request;
 
 import model.Node;
-import model.RequestType;
-//import sun.plugin.services.AxBridgeBrowserService;
-
-import static model.RequestType.RType.ABS;
-
-import java.util.Objects;
-
 import java.util.Objects;
 
 public abstract class Request {
@@ -15,26 +8,19 @@ public abstract class Request {
     private String notes;
     private Node location;
     private boolean completed;
-    RequestType requestType;
     private String completedBy;
-
-    public Request(int id, String notes, Node location, boolean completed, RequestType requestType) {
-        this.id = id;
-        this.notes = notes;
-        this.location = location;
-        this.completed = completed;
-        this.requestType = requestType;
-        this.completedBy = "";
-    }
 
     public Request(int id, String notes, Node location, boolean completed) {
         this.id = id;
         this.notes = notes;
         this.location = location;
         this.completed = completed;
-        this.requestType = new RequestType(ABS);
         this.completedBy = "";
     }
+
+    public abstract void  makeRequest() ;
+
+    public abstract void fillRequest() ;
 
     public int getId() {
         return id;
@@ -92,14 +78,6 @@ public abstract class Request {
         return Objects.hash(id, notes, location, completed);
     }
 
-    public RequestType getRequestType() {
-        return requestType;
-    }
-
-    public void setRequestType(RequestType requestType) {
-        this.requestType = requestType;
-    }
-
     @Override
     public String toString() {
         return "Request{" +
@@ -107,7 +85,7 @@ public abstract class Request {
                 ", notes='" + notes + '\'' +
                 ", location=" + location +
                 ", completed=" + completed +
-                ", requestType=" + requestType +
+               // ", requestType=" + requestType +
                 ", completedBy='" + completedBy + '\'' +
                 '}';
     }

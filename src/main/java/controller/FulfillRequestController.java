@@ -82,10 +82,7 @@ public class FulfillRequestController extends Controller implements Initializabl
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
-
-    /**
-     * switches window to home screen
-     *
+    /**switches window to home screen
      * @throws Exception
      */
     @FXML
@@ -103,29 +100,7 @@ public class FulfillRequestController extends Controller implements Initializabl
 
 
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
-
-        if (selected != null) {
-            MedicineRequest medupdate;
-            ITRequest ITupdate;
-
-            selected.setCompleted(true);
-
-            RequestType rType = selected.getRequestType();
-
-            switch (rType.getrType()) {
-                case ITS:
-                    ITupdate = (ITRequest) selected;
-                    myDBS.updateITRequest(ITupdate);
-                    break;
-                case MED:
-                    medupdate = (MedicineRequest) selected;
-                    myDBS.updateMedicineRequest(medupdate);
-                    break;
-                case ABS:
-                    //do nothing
-            }
-        }
-
+        selected.fillRequest();
         reloadList();
     }
 
@@ -381,7 +356,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         }
 
         return "ID: " + request.getId() +
-                " Request Type: " + request.getRequestType().getrType().toString() +
+                " Request Type: " + request.getClass().getCanonicalName() +
                 " Description: " + request.getNotes();
     }
 
@@ -450,7 +425,6 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         ObservableList<Request> requestlist = FXCollections.observableArrayList();
         ObservableList<Employee> EmployeeList = FXCollections.observableArrayList();
 
