@@ -42,12 +42,12 @@ public class DepthFS implements Algorithm {
         //System.out.println("Created open PriorityQueue");
         HashMap<MapNode, String> visited = new HashMap<MapNode, String>();
 
-        MapNode path = depthUtil(start, visited, dest);
+        MapNode path = depthUtil(start, visited, dest, accessibility);
 
         return path;
     }
 
-    private MapNode depthUtil(MapNode current, HashMap<MapNode, String> visited, MapNode dest) {
+    private MapNode depthUtil(MapNode current, HashMap<MapNode, String> visited, MapNode dest, boolean accessibility) {
         visited.put(current, "true");
 
         ArrayList<MapNode> children = getChildren(current);
@@ -58,9 +58,12 @@ public class DepthFS implements Algorithm {
         }
 
         for (MapNode child : children){
-            if (!visited.containsKey(child)){
+            if(child.getData().getNodeType().equals("STAI") && accessibility) {
+                //System.out.println("skipping this node because the cost is to big");
+                continue;
+            } else if (!visited.containsKey(child)){
                 child.setParent(current, 0);
-                MapNode path = depthUtil(child, visited, dest);
+                MapNode path = depthUtil(child, visited, dest, accessibility);
                 if (path != null){
                     return path;
                 }

@@ -16,6 +16,7 @@ public class Event {
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
     String filterSearch = ""; // filtered search
+    String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar
 
 
     public boolean isChangingStart() {
@@ -89,4 +90,8 @@ public class Event {
     public String getFilterSearch() { return filterSearch; }
 
     public void setFilterSearch(String filterSearch) { this.filterSearch = filterSearch; }
+
+    public String getSearchMethod() { return searchMethod; }
+
+    public void setSearchMethod(String searchMethod) { this.searchMethod = searchMethod; }
 }

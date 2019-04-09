@@ -245,7 +245,7 @@ public class TopNav {
     }
 
     public void showEditEmployee(ActionEvent actionEvent) throws Exception {
-        Stage stage = (Stage) employeeBtn.getScene().getWindow();
+        Stage stage = (Stage) auth_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
         StageManager.changeExistingWindow(stage, root, "Edit Employees");
         stage.setFullScreen(true);

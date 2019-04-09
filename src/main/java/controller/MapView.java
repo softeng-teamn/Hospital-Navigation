@@ -48,6 +48,8 @@ public class MapView {
     private EventBus eventBus = EventBusFactory.getEventBus();
     private Event event = EventBusFactory.getEvent();
 
+    private String currentMethod = "depth";
+
     private Group zoomGroup;
     private Circle startCircle;
     private Circle selectCircle;
@@ -137,13 +139,13 @@ public class MapView {
             @Override public Void call() throws Exception {
                 while (true) {
                     Thread.sleep(1000);
-                    System.out.println("shit was fired");
+//                    System.out.println("shit was fired");
                     TimeUnit.SECONDS.sleep(1);
-                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
+//                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
                     Platform.runLater(new Runnable() {
                         @Override public void run() {
                             try {
-                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
+//                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
                                 cur_el_floor.setText(elevatorCon.getFloor("S"));
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -171,6 +173,9 @@ public class MapView {
                         break;
                     case "filter":
                         filteredHandler();
+                        break;
+                    case "methodSwitch":
+                        currentMethod = event.getSearchMethod();
                         break;
                     default:
                         break;
@@ -211,6 +216,7 @@ public class MapView {
 
     // generate path on the screen
     private void navigationHandler() {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!" + currentMethod + "!!!!!!!!!!!!!!!!!!");
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> path;
         MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
@@ -218,10 +224,10 @@ public class MapView {
         // check if the path need to be 'accessible'
         if (event.isAccessiblePath()) {
             // do something special
-            path = pathFinder.genPath(start, dest, true, "astar");
+            path = pathFinder.genPath(start, dest, true, currentMethod);
         } else {
             // not accessible
-            path = pathFinder.genPath(start, dest, false, "astar");
+            path = pathFinder.genPath(start, dest, false, currentMethod);
         }
 
         drawPath(path);
