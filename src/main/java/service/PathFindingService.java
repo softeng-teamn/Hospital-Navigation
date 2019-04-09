@@ -1,6 +1,7 @@
 package service;
 
 import controller.MapController;
+import controller.NodeFacade;
 import model.MapNode;
 import model.Node;
 
@@ -65,9 +66,10 @@ public class PathFindingService {
             }
             //System.out.println("Iterating through children of current...");
             for (MapNode child : getChildren(current)){
+                NodeFacade Nf = new NodeFacade(child);
                 //System.out.println("child: " + child.getData().getNodeID());
-                child.calculateG(current);
-                child.calculateHeuristic(dest);
+                Nf.MapNodeCalculateG(current);
+                Nf.MapNodeCalculateHeuristic(dest);
                 double cost = current.getG() + child.getG() + child.getH();
 
                 if (child.equals(dest)) {
