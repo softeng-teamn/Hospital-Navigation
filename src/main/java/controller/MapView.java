@@ -168,6 +168,8 @@ public class MapView {
                         break;
                     case "node-select":
                         drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125));
+                        directionsView.getItems().clear();
+                        hideDirections();
                         break;
                     default:
                         break;
@@ -616,6 +618,13 @@ public class MapView {
         }
     }
 
+    private void hideDirections() {
+        showDirectionsBtn.setText("Show Textual Directions");
+        showDirVbox.toFront();
+        showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
+        directionsView.setVisible(false);
+    }
+  
     /**
      * Compress a given set of directions into a series of characters
      * to be used in a QR code
