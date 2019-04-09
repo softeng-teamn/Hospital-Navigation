@@ -1,5 +1,6 @@
 package model;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.FastTest;
@@ -14,6 +15,7 @@ public class ElevatorConTest {
 
     @Test
     @Category(FastTest.class)
+    @Ignore
     public void postTest(){
         ElevatorCon e = new ElevatorCon();
         GregorianCalendar cal = new GregorianCalendar();
@@ -26,6 +28,7 @@ public class ElevatorConTest {
 
     @Test
     @Category(FastTest.class)
+    @Ignore
     public void getTest(){
         String floor = "";
         ElevatorCon e = new ElevatorCon();

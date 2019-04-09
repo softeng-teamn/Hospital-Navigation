@@ -10,12 +10,14 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.requests.AVServiceRequestController">
    <children>
-      <Label alignment="CENTER" prefHeight="73.0" prefWidth="534.0" styleClass="big-label" text="Enter Audio Visual Service Request" />
-      <Label alignment="CENTER" prefHeight="73.0" prefWidth="534.0" styleClass="big-label" text="Details:" />
-      <JFXTextArea fx:id="description">
+      <Label alignment="CENTER" prefHeight="73.0" prefWidth="534.0" styleClass="big-label" text="Enter AV Request Details:" />
+      <JFXTextArea styleClass="text-area" fx:id="description" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0">
          <VBox.margin>
             <Insets left="12.0" right="12.0" />
          </VBox.margin>
+         <padding>
+            <Insets left="12.0" right="12.0" top="12.0" />
+         </padding>
       </JFXTextArea>
       <Label styleClass="big-label" text="Select Request Type:" />
       <JFXComboBox fx:id="type" prefHeight="31.0" prefWidth="358.0" promptText="Request Type" />
