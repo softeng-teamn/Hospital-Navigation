@@ -2,6 +2,7 @@ package service;
 
 import controller.MapController;
 import controller.NodeFacade;
+import model.ElevatorFloor;
 import model.MapNode;
 import model.Node;
 
@@ -10,6 +11,7 @@ import java.util.*;
 public class PathFindingService {
 
     public int estimatedTimeOfArrival;
+    public HashMap<String, ElevatorFloor> elevTimes;
 
     public PathFindingService() { }
 
@@ -24,23 +26,26 @@ public class PathFindingService {
     public ArrayList<Node> genPath(MapNode start, MapNode dest, Boolean accessibility, String filter) {
 
         AlgorithmContext ctx = new AlgorithmContext(new Astar());
-
         ArrayList<Node> target;
-
 
         switch (filter) {
             case "astar":
                 ctx.setStrategy(new Astar());
                 target = ctx.findPathCTX(start, dest, accessibility, null);
                 estimatedTimeOfArrival = ctx.getEstimatedTime();
+                elevTimes = ctx.getElevTimes();
                 break;
             case "breadth":
                 ctx.setStrategy(new BreadthFS());
                 target = ctx.findPathCTX(start, dest, accessibility, null);
+                estimatedTimeOfArrival = ctx.getEstimatedTime();
+                elevTimes = ctx.getElevTimes();
                 break;
             case "depth":
                 ctx.setStrategy(new DepthFS());
                 target = ctx.findPathCTX(start, dest, accessibility, null);
+                estimatedTimeOfArrival = ctx.getEstimatedTime();
+                elevTimes = ctx.getElevTimes();
                 break;
             default:
                 ctx.setStrategy(new BreadthFS());
@@ -54,10 +59,11 @@ public class PathFindingService {
         } else {
             return null;
         }
-
-
     }
 
+    public HashMap<String, ElevatorFloor> getElevTimes() {
+        return elevTimes;
+    }
 
     int getEstimatedTimeOfArrival(){
          return estimatedTimeOfArrival;

@@ -21,7 +21,7 @@ public class ElevatorConTest {
 
         GregorianCalendar cal = new GregorianCalendar();
         try {
-            e.postFloor("S", 3, cal);
+            e.postFloor("S", "3", cal);
         }catch (IOException ioe){
             System.out.println("IO Exception");
         }

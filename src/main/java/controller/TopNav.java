@@ -3,6 +3,7 @@ package controller;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -42,6 +43,10 @@ public class TopNav {
     private Label time_label;
     @FXML
     private JFXToggleNode edit_btn;
+
+    @FXML
+    private JFXCheckBox callElev;
+
 
     // events I send out/control
     @FXML
@@ -205,6 +210,9 @@ public class TopNav {
 
     public void startNavigation(ActionEvent actionEvent) {
         Boolean accessibility = accessibilityButton.isSelected();
+        //if(callElev.isSelected()){
+            event.setCallElev(true);
+        //}
         event.setAccessiblePath(accessibility);
         event.setEventName("navigation");
         eventBus.post(event);

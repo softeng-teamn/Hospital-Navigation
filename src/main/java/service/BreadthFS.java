@@ -1,5 +1,6 @@
 package service;
 
+import model.ElevatorFloor;
 import model.MapNode;
 import model.Node;
 
@@ -29,6 +30,11 @@ public class BreadthFS implements Algorithm {
     @Override
     public int getEstimatedTime() {
         return 0;
+    }
+
+    @Override
+    public HashMap<String, ElevatorFloor> getElevTimes() {
+        return null;
     }
 
     /**

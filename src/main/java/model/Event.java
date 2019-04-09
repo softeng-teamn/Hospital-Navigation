@@ -19,7 +19,13 @@ public class Event {
     String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
+    boolean callElev = false;
 
+    public boolean isCallElev() {
+        return callElev;
+    }
+
+    public void setCallElev(boolean callElev) {this.callElev = callElev;}
 
     public String getFloor() {
         return floor;

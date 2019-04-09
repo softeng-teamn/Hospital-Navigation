@@ -27,7 +27,7 @@ public class ElevatorCon {
      * @throws IOException
      */
     //tell the elevator to go to this floor at this time, will hold for 30s
-    public void postFloor(String elevator, int floorNum, GregorianCalendar time) throws MalformedURLException,
+    public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws MalformedURLException,
             ProtocolException, IOException {
         String URL = "https://aldenhallpianos.com/softEngPost.php";
         //change into time since 12
