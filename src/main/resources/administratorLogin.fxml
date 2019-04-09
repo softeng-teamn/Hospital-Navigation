@@ -20,7 +20,7 @@
                   <Insets left="2.0" right="16.0" top="5.0" />
                </HBox.margin>
             </FontAwesomeIconView>
-            <JFXTextField fx:id="idText" labelFloat="true" prefHeight="34.0" prefWidth="202.0" promptText="ID Number" />
+            <JFXTextField fx:id="usernameText" labelFloat="true" prefHeight="34.0" prefWidth="202.0" promptText="Username" />
          </children>
       </HBox>
       <HBox prefHeight="75.0" prefWidth="200.0">

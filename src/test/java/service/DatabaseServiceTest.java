@@ -748,6 +748,21 @@ public class DatabaseServiceTest {
 
     @Test
     @Category(FastTest.class)
+    public void getEmployeeByUsername() {
+        assertThat(myDBS.getEmployeeByUsername("doc"), is(nullValue()));
+        assertThat(myDBS.getEmployeeByUsername("brown"), is(nullValue()));
+
+        Employee employee1 = new Employee(0, "doc", JobType.DOCTOR, false, "password");
+        Employee employee2 = new Employee(1, "brown", JobType.DOCTOR, false, "password");
+        assertTrue(myDBS.insertEmployee(employee1));
+        assertTrue(myDBS.insertEmployee(employee2));
+
+        assertThat(myDBS.getEmployeeByUsername("doc"), is(employee1));
+        assertThat(myDBS.getEmployeeByUsername("brown"), is(employee2));
+    }
+
+    @Test
+    @Category(FastTest.class)
     public void insertAndGetReservableSpace()  {
         // Assume an empty DB (ensured by setUp())
 

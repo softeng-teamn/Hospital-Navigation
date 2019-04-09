@@ -615,6 +615,11 @@ public class DatabaseService {
         return executeUpdate(query, employee.getID());
     }
 
+    public Employee getEmployeeByUsername(String username) {
+        String query = "SELECT * FROM EMPLOYEE WHERE (username = ?)";
+        return (Employee) executeGetById(query, Employee.class, username);
+    }
+
     /**
      * @param space space to insert into the database
      * @return true if the insert succeeded and false if otherwise
