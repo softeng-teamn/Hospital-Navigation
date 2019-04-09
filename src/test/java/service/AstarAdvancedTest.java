@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-public class PathFindingServiceAdvancedTest {
+public class AstarAdvancedTest {
 
     // MAP (Diaginal testing)
     //
@@ -98,7 +98,7 @@ public class PathFindingServiceAdvancedTest {
         mn10 = new MapNode(2,0,n10);
     }
 
-    final PathFindingService mockPF = spy(new PathFindingService());
+    final Astar mockPF = spy(new Astar());
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -162,11 +162,11 @@ public class PathFindingServiceAdvancedTest {
     @Category(FastTest.class)
     public void testAStar() {
         // a path can be found
-        assertThat(mockPF.aStar(mn1, mn6, false), is(mn6));
-        assertThat(mockPF.aStar(mn10, mn8, false), is(mn8));
-        assertThat(mockPF.aStar(mn6, mn8, false), is(mn8));
-        assertThat(mockPF.aStar(mn2, mn10, false), is(mn10));
-        assertThat(mockPF.aStar(mn1, mn8, false), is(mn8));
+        assertThat(mockPF.aStar(mn1, mn6, false, null), is(mn6));
+        assertThat(mockPF.aStar(mn10, mn8, false, null), is(mn8));
+        assertThat(mockPF.aStar(mn6, mn8, false, null), is(mn8));
+        assertThat(mockPF.aStar(mn2, mn10, false, null), is(mn10));
+        assertThat(mockPF.aStar(mn1, mn8, false, null), is(mn8));
     }
 
     @Test
@@ -181,14 +181,14 @@ public class PathFindingServiceAdvancedTest {
         expected.add(0, n3);
         expected.add(0, n9);
         expected.add(0, n10);
-        assertThat(mockPF.genPath(mn10, mn8, false, "astar"), is(expected));
+        assertThat(mockPF.findDest(mn10, mn8, false, "astar"), is(expected));
         mockingGetChildren();
         expected = new ArrayList<Node>();
         expected.add(0, n8);
         expected.add(0, n7);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn8, false, "astar"), is(expected));
+        assertThat(mockPF.findDest(mn1, mn8, false, "astar"), is(expected));
     }
 
     @Test
@@ -199,7 +199,7 @@ public class PathFindingServiceAdvancedTest {
         expected.add(0, n4);
         expected.add(0, n3);
         expected.add(0, n2);
-        assertThat(mockPF.genPath(mn2, null, false, "REST"), is(expected));
+        assertThat(mockPF.findDest(mn2, null, false, "REST"), is(expected));
     }
 
 }
