@@ -23,9 +23,9 @@ public abstract class Request {
         this.completedBy = "";
     }
 
-    public abstract void  makeRequest() ;
+    public abstract void makeRequest();
 
-    public abstract void fillRequest() ;
+    public abstract void fillRequest();
 
     public int getId() {
         return id;
@@ -90,12 +90,14 @@ public abstract class Request {
                 ", notes='" + notes + '\'' +
                 ", location=" + location +
                 ", completed=" + completed +
-               // ", requestType=" + requestType +
+                // ", requestType=" + requestType +
                 ", completedBy='" + completedBy + '\'' +
                 '}';
     }
 
+    //Show Requests based on Job
+    public abstract ObservableList<Request> showProperRequest();
 
-    public abstract ObservableList<Employee> returnCorrectEmployee ();
+    public abstract ObservableList<Employee> returnCorrectEmployee();
 
 }

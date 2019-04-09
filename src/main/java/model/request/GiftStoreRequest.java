@@ -94,4 +94,12 @@ public class GiftStoreRequest extends Request {
         return rightEmployee ;
     }
 
+    @Override
+    public ObservableList<Request> showProperRequest() {
+        ObservableList<Request> x = FXCollections.observableArrayList();
+        x.addAll(myDBS.getAllCompleteGiftStoreRequests()) ;
+        x.addAll(myDBS.getAllIncompleteGiftStoreRequests()) ;
+        return x ;
+    }
+
 }

@@ -110,4 +110,9 @@ public class ExternalTransportRequest extends Request {
         }
         return rightEmployee ;
     }
+
+    @Override
+    public ObservableList<Request> showProperRequest() {
+        return (ObservableList) myDBS.getAllExtTransRequests() ;
+    }
 }

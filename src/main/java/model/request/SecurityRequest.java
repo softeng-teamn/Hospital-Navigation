@@ -84,4 +84,9 @@ public class SecurityRequest extends Request {
         }
         return rightEmployee ;
     }
+
+    @Override
+    public ObservableList<Request> showProperRequest() {
+        return (ObservableList) myDBS.getAllSecurityRequests() ;
+    }
 }

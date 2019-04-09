@@ -81,4 +81,8 @@ public class InterpreterRequest extends Request{
         }
         return rightEmployee ;
     }
+    @Override
+    public ObservableList<Request> showProperRequest() {
+        return (ObservableList) myDBS.getAllInterpreterRequests() ;
+    }
 }

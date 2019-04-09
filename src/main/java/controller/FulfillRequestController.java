@@ -17,9 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Employee;
 import model.JobType;
-import model.request.ITRequest;
-import model.request.MedicineRequest;
-import model.request.Request;
+import model.request.*;
 import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -78,10 +76,11 @@ public class FulfillRequestController extends Controller implements Initializabl
     private VBox typeVBox;
 
 
-
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
-    /**switches window to home screen
+    /**
+     * switches window to home screen
+     *
      * @throws Exception
      */
     @FXML
@@ -119,7 +118,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     public void radioChanged(ActionEvent event) {
         reloadList();
-        reloadEmployees() ;
+        reloadEmployees();
     }
 
 
@@ -127,37 +126,115 @@ public class FulfillRequestController extends Controller implements Initializabl
      * reloads the list of requests
      */
     public void reloadList() {
-        ObservableList<Request> newRequestlist = FXCollections.observableArrayList();
+
+        // return requests
+        ObservableList<Request> finalRequestList = FXCollections.observableArrayList();
+
+        // total requests
+        ObservableList<Request> allRequestlist = FXCollections.observableArrayList();
+        allRequestlist.addAll((ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests());
+        allRequestlist.addAll((ArrayList<ExternalTransportRequest>) myDBS.getAllExtTransRequests());
+        allRequestlist.addAll((ArrayList<FloristRequest>) myDBS.getAllFloristRequests());
+        allRequestlist.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllCompleteGiftStoreRequests());
+        allRequestlist.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllIncompleteGiftStoreRequests());
+        allRequestlist.addAll((ArrayList<InternalTransportRequest>) myDBS.getAllInternalTransportRequest());
+        allRequestlist.addAll((ArrayList<InterpreterRequest>) myDBS.getAllInterpreterRequests());
+        allRequestlist.addAll((ArrayList<ITRequest>) myDBS.getAllITRequests());
+        allRequestlist.addAll((ArrayList<MaintenanceRequest>) myDBS.getAllMaintenanceRequests());
+        allRequestlist.addAll((ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests());
+        allRequestlist.addAll((ArrayList<PatientInfoRequest>) myDBS.getAllPatientInfoRequests());
+        allRequestlist.addAll((ArrayList<ReligiousRequest>) myDBS.getAllReligiousRequests());
+        allRequestlist.addAll((ArrayList<SanitationRequest>) myDBS.getAllSanitationRequests());
+        allRequestlist.addAll((ArrayList<SecurityRequest>) myDBS.getAllSecurityRequests());
+        allRequestlist.addAll((ArrayList<ToyRequest>) myDBS.getAllToyRequests());
+
+
+        // total incomplete requests
+        ObservableList<Request> allIncompleteRequestlist = FXCollections.observableArrayList();
+        allIncompleteRequestlist.addAll((ArrayList<AVServiceRequest>) myDBS.getAllIncompleteAVServiceRequests());
+        allIncompleteRequestlist.addAll((ArrayList<ExternalTransportRequest>) myDBS.getAllIncompleteExtTransRequests());
+        allIncompleteRequestlist.addAll((ArrayList<FloristRequest>) myDBS.getAllFloristRequests());
+        allIncompleteRequestlist.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllIncompleteGiftStoreRequests());
+        allIncompleteRequestlist.addAll((ArrayList<InternalTransportRequest>) myDBS.getAllIncompleteInternalTransportRequests());
+        allIncompleteRequestlist.addAll((ArrayList<InterpreterRequest>) myDBS.getAllIncompleteInterpreterRequests());
+        allIncompleteRequestlist.addAll((ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests());
+        allIncompleteRequestlist.addAll((ArrayList<MaintenanceRequest>) myDBS.getAllIncompleteMaintenanceRequests());
+        allIncompleteRequestlist.addAll((ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests());
+        allIncompleteRequestlist.addAll((ArrayList<PatientInfoRequest>) myDBS.getAllIncompletePatientInfoRequests());
+        allIncompleteRequestlist.addAll((ArrayList<ReligiousRequest>) myDBS.getAllIncompleteReligiousRequests());
+        allIncompleteRequestlist.addAll((ArrayList<SanitationRequest>) myDBS.getAllIncompleteSanitationRequests());
+        allIncompleteRequestlist.addAll((ArrayList<SecurityRequest>) myDBS.getAllIncompleteSecurityRequests());
+        allIncompleteRequestlist.addAll((ArrayList<ToyRequest>) myDBS.getAllIncompleteToyRequests());
+
 
         if (allRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllITRequests();
-
-                newRequestlist = showProperRequest(newRequestlist, allMedReqList, allITReqList);
-
+                finalRequestList = allRequestlist;
             } else if (medicineRadio.isSelected()) {
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
-                newRequestlist.addAll(allMedReqList);
+                finalRequestList.addAll((ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests());
             } else if (ITRadio.isSelected()) {
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllITRequests();
-                newRequestlist.addAll(allITReqList);
+                finalRequestList.addAll((ArrayList<ITRequest>) myDBS.getAllITRequests());
+            } else if (avReqRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests());
+            } else if (religiousRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<ReligiousRequest>) myDBS.getAllReligiousRequests());
+            } else if (interpretRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<InterpreterRequest>) myDBS.getAllInterpreterRequests());
+            } else if (maintenanceRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<MaintenanceRequest>) myDBS.getAllMaintenanceRequests());
+            } else if (toyRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<ToyRequest>) myDBS.getAllToyRequests());
+            } else if (securityRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<SecurityRequest>) myDBS.getAllSecurityRequests());
+            } else if (sanitationRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<SanitationRequest>) myDBS.getAllSanitationRequests());
+            } else if (patientInfoRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<PatientInfoRequest>) myDBS.getAllPatientInfoRequests());
+            } else if (floristRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<FloristRequest>) myDBS.getAllFloristRequests());
+            } else if (giftRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllCompleteGiftStoreRequests());
+                finalRequestList.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllIncompleteGiftStoreRequests());
+            } else if (internalTransRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<InternalTransportRequest>) myDBS.getAllInternalTransportRequest());
+            } else if (externalTransRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<ExternalTransportRequest>) myDBS.getAllExtTransRequests());
             }
         } else if (uncRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests();
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests();
-                newRequestlist = showProperRequest(newRequestlist, allMedReqList, allITReqList);
+                finalRequestList = allIncompleteRequestlist;
             } else if (medicineRadio.isSelected()) {
-                ArrayList<MedicineRequest> allMedReqList = (ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests();
-                newRequestlist.addAll(allMedReqList);
+                finalRequestList.addAll((ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests());
             } else if (ITRadio.isSelected()) {
-                ArrayList<ITRequest> allITReqList = (ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests();
-                newRequestlist.addAll(allITReqList);
+                finalRequestList.addAll((ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests());
+            } else if (avReqRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<AVServiceRequest>) myDBS.getAllIncompleteAVServiceRequests());
+            } else if (religiousRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<ReligiousRequest>) myDBS.getAllIncompleteReligiousRequests());
+            } else if (interpretRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<InterpreterRequest>) myDBS.getAllIncompleteInterpreterRequests());
+            } else if (maintenanceRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<MaintenanceRequest>) myDBS.getAllIncompleteMaintenanceRequests());
+            } else if (toyRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<ToyRequest>) myDBS.getAllIncompleteToyRequests());
+            } else if (securityRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<SecurityRequest>) myDBS.getAllIncompleteSecurityRequests());
+            } else if (sanitationRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<SanitationRequest>) myDBS.getAllIncompleteSanitationRequests());
+            } else if (patientInfoRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<PatientInfoRequest>) myDBS.getAllIncompletePatientInfoRequests());
+            } else if (floristRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<FloristRequest>) myDBS.getAllFloristRequests());
+            } else if (giftRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllIncompleteGiftStoreRequests());
+            } else if (internalTransRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<InternalTransportRequest>) myDBS.getAllIncompleteInternalTransportRequests());
+            } else if (externalTransRadio.isSelected()) {
+                finalRequestList.addAll((ArrayList<ExternalTransportRequest>) myDBS.getAllIncompleteExtTransRequests());
             }
         }
 
-        printList(newRequestlist);
+        printList(finalRequestList);
     }
 
     /**
@@ -218,10 +295,8 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     @FXML
     public void requestSelectionChanged() {
-        reloadEmployees() ;
+        reloadEmployees();
     }
-
-
 
 
     /**
@@ -239,8 +314,8 @@ public class FulfillRequestController extends Controller implements Initializabl
         ObservableList<Employee> returnList = FXCollections.observableArrayList();
 
         // if all requests radio (either fulfilled and unfulfilled) is selected
-       if (allRadio.isSelected() || uncRadio.isSelected()) {
-           // if all types of request radio is selected
+        if (allRadio.isSelected() || uncRadio.isSelected()) {
+            // if all types of request radio is selected
             if (allTypeRadio.isSelected()) {
                 // if no filters selected, but unfulfilled request is selected in list
                 if (selected.isCompleted() == false) {
@@ -281,7 +356,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         */
         ObservableList<Employee> returnEmployeeList = FXCollections.observableArrayList();
 
-        returnEmployeeList = selected.returnCorrectEmployee() ;
+        returnEmployeeList = selected.returnCorrectEmployee();
 
 /*
         // ****** sort employees by job  **********
@@ -328,21 +403,10 @@ public class FulfillRequestController extends Controller implements Initializabl
 */
 
 
-
-
         return returnEmployeeList;
 
 
     }
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -376,7 +440,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
 
-
+/*
     //Show Requests based on Job
     private ObservableList<Request> showProperRequest(ObservableList<Request> newRequestList, ArrayList<MedicineRequest> allMedReqList,ArrayList<ITRequest> allITReqList){
 
@@ -417,6 +481,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         return newRequestList;
     }
 
+**/
 
     /**
      * initialize the list of requests
@@ -432,11 +497,45 @@ public class FulfillRequestController extends Controller implements Initializabl
         ArrayList<Employee> allEs = (ArrayList) myDBS.getAllEmployees();
         ArrayList<MedicineRequest> medicineReq = (ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests();
         ArrayList<ITRequest> itReq = (ArrayList<ITRequest>) myDBS.getAllITRequests();
+        ArrayList<AVServiceRequest> avReq = (ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests();
+        ArrayList<ExternalTransportRequest> exTransReq = (ArrayList<ExternalTransportRequest>) myDBS.getAllExtTransRequests();
+        ArrayList<FloristRequest> floristReq = (ArrayList<FloristRequest>) myDBS.getAllFloristRequests();
+        ArrayList<GiftStoreRequest> gsReqC = (ArrayList<GiftStoreRequest>) myDBS.getAllCompleteGiftStoreRequests();
+        ArrayList<GiftStoreRequest> gsReqI = (ArrayList<GiftStoreRequest>) myDBS.getAllIncompleteGiftStoreRequests();
+        ArrayList<InternalTransportRequest> internalTReq = (ArrayList<InternalTransportRequest>) myDBS.getAllInternalTransportRequest();
+        ArrayList<InterpreterRequest> interpReq = (ArrayList<InterpreterRequest>) myDBS.getAllInterpreterRequests();
+        ArrayList<MaintenanceRequest> mainReq = (ArrayList<MaintenanceRequest>) myDBS.getAllMaintenanceRequests();
+        ArrayList<PatientInfoRequest> patientReq = (ArrayList<PatientInfoRequest>) myDBS.getAllPatientInfoRequests();
+        ArrayList<ReligiousRequest> religReq = (ArrayList<ReligiousRequest>) myDBS.getAllReligiousRequests();
+        ArrayList<SanitationRequest> sanitReq = (ArrayList<SanitationRequest>) myDBS.getAllSanitationRequests();
+        ArrayList<SecurityRequest> secReq = (ArrayList<SecurityRequest>) myDBS.getAllSecurityRequests();
+        ArrayList<ToyRequest> toyReq = (ArrayList<ToyRequest>) myDBS.getAllToyRequests();
 
-        requestlist = showProperRequest(requestlist, medicineReq, itReq);
+
+
+        // total requests
+        ObservableList<Request> allRequestlist = FXCollections.observableArrayList();
+        allRequestlist.addAll((ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests());
+        allRequestlist.addAll((ArrayList<ExternalTransportRequest>) myDBS.getAllExtTransRequests());
+        allRequestlist.addAll((ArrayList<FloristRequest>) myDBS.getAllFloristRequests());
+        allRequestlist.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllCompleteGiftStoreRequests());
+        allRequestlist.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllIncompleteGiftStoreRequests());
+        allRequestlist.addAll((ArrayList<InternalTransportRequest>) myDBS.getAllInternalTransportRequest());
+        allRequestlist.addAll((ArrayList<InterpreterRequest>) myDBS.getAllInterpreterRequests());
+        allRequestlist.addAll((ArrayList<ITRequest>) myDBS.getAllITRequests());
+        allRequestlist.addAll((ArrayList<MaintenanceRequest>) myDBS.getAllMaintenanceRequests());
+        allRequestlist.addAll((ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests());
+        allRequestlist.addAll((ArrayList<PatientInfoRequest>) myDBS.getAllPatientInfoRequests());
+        allRequestlist.addAll((ArrayList<ReligiousRequest>) myDBS.getAllReligiousRequests());
+        allRequestlist.addAll((ArrayList<SanitationRequest>) myDBS.getAllSanitationRequests());
+        allRequestlist.addAll((ArrayList<SecurityRequest>) myDBS.getAllSecurityRequests());
+        allRequestlist.addAll((ArrayList<ToyRequest>) myDBS.getAllToyRequests());
+
+
+        // requestlist = showProperRequest(requestlist, medicineReq, itReq, avReq, exTransReq, floristReq, gsReqC, gsReqI, internalTReq, interpReq, mainReq, patientReq, religReq, sanitReq, secReq, toyReq);
         EmployeeList.addAll(allEs);
 
-        printList(requestlist);
+        printList(allRequestlist);
         printEList(EmployeeList);
 
         Request selected;

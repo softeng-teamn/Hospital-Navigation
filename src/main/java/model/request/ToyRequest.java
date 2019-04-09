@@ -80,4 +80,8 @@ public class ToyRequest extends Request {
         }
         return rightEmployee ;
     }
+    @Override
+    public ObservableList<Request> showProperRequest() {
+        return (ObservableList) myDBS.getAllToyRequests() ;
+    }
 }
