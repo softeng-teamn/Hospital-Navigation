@@ -94,7 +94,11 @@ public class SearchResults {
         // set destination node
         destNode = selectedNode;
 
-        event.setNodeSelected(destNode);
+        if (event.isEndNode()){
+            event.setNodeSelected(destNode);
+        } else {
+            event.setNodeStart(destNode);
+        }
         event.setEventName("node-select");
         eventBus.post(event);
 

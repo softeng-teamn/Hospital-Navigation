@@ -15,6 +15,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
@@ -27,11 +29,12 @@ import java.util.concurrent.TimeUnit;
 
 public class TopNav {
 
+    public HBox top_nav;
     private Event event = EventBusFactory.getEvent();
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn, startNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -43,13 +46,14 @@ public class TopNav {
     @FXML
     private JFXToggleNode edit_btn;
 
+    JFXTextField startSearch = new JFXTextField();
+
     // events I send out/control
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
         if (event.isAdmin()) {
-            Event sendEvent = new Event();
-            sendEvent.setEventName("login");
-            eventBus.post(sendEvent);
+            event.setAdmin(false);
+            event.setLoggedIn(false);
             resetBtn();
 
         } else {
@@ -141,7 +145,11 @@ public class TopNav {
                 // show navigation button
                 // navigate_btn.setVisible(true);
                 //showNavigationBtn(event);
-                nodeSelectedHandler(newEvent.getNodeSelected());        // will make nav btn visible, fill search with node
+                if (event.isEndNode()){
+                    nodeSelectedHandler(newEvent.getNodeSelected());        // will make nav btn visible, fill search with node
+                } else {
+                    nodeSelectedHandler(newEvent.getNodeStart());
+                }
                 break;
 
             case "login":     // receives from AdminLoginContoller?
@@ -180,13 +188,27 @@ public class TopNav {
      * @param e
      */
     @FXML
+    public void startNodeEnter(ActionEvent e) {
+        String search = search_bar.getText();
+
+        event.setSearchBarQuery(search);
+        event.setEventName("search-query");
+        event.setEndNode(false);
+        eventBus.post(event);
+    }
+
+    /**
+     * searches for room
+     * @param e
+     */
+    @FXML
     public void searchBarEnter(ActionEvent e) {
         String search = search_bar.getText();
 
-        Event sendEvent = new Event();
-        sendEvent.setSearchBarQuery(search);
-        sendEvent.setEventName("search-query");
-        eventBus.post(sendEvent);
+        event.setSearchBarQuery(search);
+        event.setEventName("search-query");
+        event.setEndNode(true);
+        eventBus.post(event);
     }
 
     // when event comes in with a node-selected:
@@ -201,16 +223,103 @@ public class TopNav {
 
         // show node-selected in search
         String fillNodeinSearch = selected.getLongName();
-        search_bar.setText(fillNodeinSearch);
 
+        if(event.isEndNode()){
+            search_bar.setText(fillNodeinSearch);
+        } else {
+            startSearch.setText(fillNodeinSearch);
+        }
     }
 
     public void startNavigation(ActionEvent actionEvent) {
-        Event sendEvent = new Event();
         Boolean accessibility = accessibilityButton.isSelected();
-        sendEvent.setNodeSelected(event.getNodeSelected());
-        sendEvent.setAccessiblePath(accessibility);
-        sendEvent.setEventName("navigation");
-        eventBus.post(sendEvent);
+        event.setAccessiblePath(accessibility);
+        event.setEventName("navigation");
+        eventBus.post(event);
     }
+
+
+    public void setEventEndNode(MouseEvent mouseEvent){
+        event.setEndNode(false);
+    }
+
+
+    public void setEventStartNode(MouseEvent mouseEvent) {
+        event.setEndNode(true);
+    }
+
+    @FXML
+    public void showStartSearch(ActionEvent actionEvent) {
+        if (startNode_btn.getText().equals("Start Node")){
+            startSearch.setPromptText("Start Node");
+            startSearch.setOnAction(this::startNodeEnter);
+            startSearch.setOnMouseClicked(this::setEventEndNode);
+            top_nav.getChildren().add(0, startSearch);
+            event.setEndNode(false);
+            startNode_btn.setText("Use default");
+        } else {
+            top_nav.getChildren().remove(startSearch);
+            event.setEndNode(true);
+            event.setDefaultStartNode();
+            event.setEventName("refresh");
+            eventBus.post(event);
+            startNode_btn.setText("Start Node");
+        }
+    }
+
+    public void showREST(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("REST");
+        eventBus.post(event);
+    }
+
+
+    public void showELEV(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("ELEV");
+        eventBus.post(event);
+    }
+
+    public void showSTAI(ActionEvent actionEvent) {
+        event.setEventName("filter");
+        event.setFilterSearch("STAI");
+        eventBus.post(event);
+    }
+
+    public void showINFO(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("INFO");
+        eventBus.post(event);
+    }
+
+    public void showCONF(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("CONF");
+        eventBus.post(event);
+    }
+
+    public void showEXIT(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("EXIT");
+        eventBus.post(event);
+    }
+
+    public void showEditEmployee(ActionEvent actionEvent) throws Exception {
+        Stage stage = (Stage) auth_btn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
+        StageManager.changeExistingWindow(stage, root, "Edit Employees");
+        stage.setFullScreen(true);
+
+    }
+
 }

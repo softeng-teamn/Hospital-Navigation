@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -7,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
+import model.Event;
+import model.EventBusFactory;
 import service.CSVService;
 import service.DatabaseService;
 import service.ResourceLoader;
@@ -17,6 +20,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AdminServiceController extends Controller{
+
+    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event = EventBusFactory.getEvent();
+
 
     @FXML
     private JFXButton fulfillRequestBtn, editEmployeeBtn, mapEditorController, exportCSVBtn, showHomeBtn;
@@ -65,5 +72,24 @@ public class AdminServiceController extends Controller{
         CSVService.exportNodes();
         CSVService.exportEmployees();
         CSVService.importEmployees();
+    }
+
+    public void astarSwitch(ActionEvent actionEvent) {
+        event.setEventName("methodSwitch");
+        event.setSearchMethod("astar");
+        eventBus.post(event);
+    }
+
+    public void depthSwitch(ActionEvent actionEvent) {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!! function called !!!!!!!!!!!!!!!!!!");
+        event.setEventName("methodSwitch");
+        event.setSearchMethod("depth");
+        eventBus.post(event);
+    }
+
+    public void breadthSwitch(ActionEvent actionEvent) {
+        event.setEventName("methodSwitch");
+        event.setSearchMethod("breadth");
+        eventBus.post(event);
     }
 }

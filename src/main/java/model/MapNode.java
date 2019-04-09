@@ -13,6 +13,8 @@ public class MapNode implements Comparable<MapNode>{
     MapNode parent;
     Node data;
 
+    int FLOOR_MULTIPLIER = 43;
+
     public MapNode(int x, int y, Node data) {
         this.x = x;
         this.y = y;
@@ -66,7 +68,8 @@ public class MapNode implements Comparable<MapNode>{
     public void calculateHeuristic(MapNode destination) {
         double dx = (double) destination.x - this.x;
         double dy = (double) destination.y - this.y;
-        this.h = Math.sqrt(Math.pow(dx, 2.0) + Math.pow(dy, 2.0));
+        double dz = destination.getData().getIntFloor() - this.getData().getIntFloor();
+        this.h = Math.sqrt(Math.pow(dx, 2.0) + Math.pow(dy, 2.0) + Math.pow(FLOOR_MULTIPLIER*dz, 2.0));
     }
 
     /**
@@ -76,7 +79,8 @@ public class MapNode implements Comparable<MapNode>{
     public void calculateG(MapNode nextNode) {
         int dx = nextNode.x - this.x;
         int dy = nextNode.y - this.y;
-        this.g = (int) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+        double dz = nextNode.getData().getIntFloor() - this.getData().getIntFloor();
+        this.g = (int) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(FLOOR_MULTIPLIER*dz, 2));
     }
 
     public void setParent(MapNode n, int cost) {
