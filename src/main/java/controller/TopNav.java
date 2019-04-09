@@ -145,7 +145,11 @@ public class TopNav {
                 // show navigation button
                 // navigate_btn.setVisible(true);
                 //showNavigationBtn(event);
-                nodeSelectedHandler(newEvent.getNodeSelected());        // will make nav btn visible, fill search with node
+                if (event.isEndNode()){
+                    nodeSelectedHandler(newEvent.getNodeSelected());        // will make nav btn visible, fill search with node
+                } else {
+                    nodeSelectedHandler(newEvent.getNodeStart());
+                }
                 break;
 
             case "login":     // receives from AdminLoginContoller?
