@@ -3,7 +3,6 @@ package service;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import me.xdrop.fuzzywuzzy.Extractor;
 import model.*;
-
 import model.request.*;
 
 import java.io.File;
@@ -235,9 +234,8 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE AVSERVICEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
-
+          
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
-
 
             statement.executeBatch();
         } catch (SQLException e) {
@@ -737,7 +735,6 @@ public class DatabaseService {
         return (List<ITRequest>) (List<?>) executeGetMultiple(query, ITRequest.class, false);
     }
 
-
     /**
      * @param req the request to insert into the database
      * @return true if the insert succeeds and false if otherwise
@@ -890,10 +887,8 @@ public class DatabaseService {
         String query = "Select * FROM SECURITYREQUEST WHERE (completed = ?)";
         return (List<SecurityRequest>) (List<?>) executeGetMultiple(query, SecurityRequest.class, true);
     }
-    //////////////////////// END REQUEST 2 QUERIES /////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 3 QUERIES ////////////////////////////////////////////////////////////////////////
 
-    /**
+  /**
      * @param id the id of the request to get from the database
      * @return the sanitation request object with the given ID
      */
@@ -986,7 +981,6 @@ public class DatabaseService {
         String query = "UPDATE GIFTSTOREREQUEST SET notes=?, locationNodeID=?, completed=?, gType=?, patientName=? WHERE (serviceID = ?)";
         return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getgType().name(), req.getPatientName(), req.getId());
     }
-
 
     /**
      * deletes a given GiftStoreRequest request from the database
@@ -1204,9 +1198,6 @@ public class DatabaseService {
         return (List<InternalTransportRequest>) (List<?>) executeGetMultiple(query, InternalTransportRequest.class, true);
     }
 
-
-    //////////////////////// END REQUEST 8 QUERIES /////////////////////////////////////////////////////////////////////
-    ///////////////////////// REQUEST 9 QUERIES ////////////////////////////////////////////////////////////////////////
     public ExternalTransportRequest getExtTransRequest(int id) {
         String query = "SELECT * FROM EXTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
         return (ExternalTransportRequest) executeGetById(query, ExternalTransportRequest.class, id);
@@ -1220,7 +1211,6 @@ public class DatabaseService {
         String insertQuery = ("INSERT INTO EXTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, time, transportType, description) VALUES(?, ?, ?, ?, ?,?)");
         return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType().name(), req.getDescription());
     }
-
 
     /**
      * deletes a given IT request from the database
@@ -1743,6 +1733,7 @@ public class DatabaseService {
         return new FloristRequest(serviceID, notes, locationNode, completed, bouquetType, quantity);
     }
 
+
     private FloristRequest extractFloristRequest(ResultSet rs) throws SQLException {
         return extractFloristRequest(rs, "");
     }
@@ -1786,7 +1777,6 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String religion = rs.getString("religion");
-
         return new ReligiousRequest(serviceID, notes, locationNode, completed, ReligiousRequest.Religion.valueOf(religion));
     }
 
