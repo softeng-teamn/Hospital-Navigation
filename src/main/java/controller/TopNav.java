@@ -33,7 +33,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn, startNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -183,11 +183,27 @@ public class TopNav {
      * @param e
      */
     @FXML
+    public void startNodeEnter(ActionEvent e) {
+        System.out.println("start searchbar called");
+        String search = search_bar.getText();
+
+        event.setSearchBarQuery(search);
+        event.setEventName("search-query");
+        event.setEndNode(false);
+        eventBus.post(event);
+    }
+
+    /**
+     * searches for room
+     * @param e
+     */
+    @FXML
     public void searchBarEnter(ActionEvent e) {
         String search = search_bar.getText();
 
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
+        event.setEndNode(true);
         eventBus.post(event);
     }
 
@@ -218,6 +234,19 @@ public class TopNav {
         eventBus.post(event);
     }
 
+    @FXML
+    public void showStartSearch(ActionEvent actionEvent) {
+        if (startNode_btn.getText().equals("Start Node")){
+            startSearch.setPromptText("Start Node");
+            startSearch.setOnAction(this::startNodeEnter);
+            top_nav.getChildren().add(0, startSearch);
+            startNode_btn.setText("Use default");
+        } else {
+            top_nav.getChildren().remove(startSearch);
+            startNode_btn.setText("Start Node");
+        }
+    }
+
     public void showREST(ActionEvent actionEvent) {
         Boolean accessibility = accessibilityButton.isSelected();
         event.setAccessiblePath(accessibility);
@@ -226,12 +255,6 @@ public class TopNav {
         eventBus.post(event);
     }
 
-
-    @FXML
-    public void showStartSearch(ActionEvent actionEvent) {
-        startSearch.setPromptText("Start Node");
-        top_nav.getChildren().add(0, startSearch);
-    }
 
     public void showELEV(ActionEvent actionEvent) {
         Boolean accessibility = accessibilityButton.isSelected();
