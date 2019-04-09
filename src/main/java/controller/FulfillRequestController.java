@@ -351,61 +351,12 @@ public class FulfillRequestController extends Controller implements Initializabl
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
         if (selected != null) {
 
-
             // get all Employees from database
             // ArrayList<Employee> newEmployeeList = (ArrayList) myDBS.getAllEmployees();
 
             returnEmployeeList = selected.returnCorrectEmployee();
         }
         return returnEmployeeList;
-/*
-        // ****** sort employees by job  **********
-        // loop over all employees and sort by job responsisbilities
-        for (int i = 0; i < newEmployeeList.size(); i++) {
-            // if admin, add to all lists
-            if (newEmployeeList.get(i).getJob() == ADMINISTRATOR) {
-                newITEmployeeList.add(newEmployeeList.get(i));
-                newMedEmployeeList.add(newEmployeeList.get(i));
-                newAbsEmployeeList.add(newEmployeeList.get(i));
-            }
-            // if IT employee add to IT
-            if (newEmployeeList.get(i).getJob() == IT) {
-                newITEmployeeList.add(newEmployeeList.get(i));
-            }
-            // add doctors and nurses to medList
-            if (newEmployeeList.get(i).getJob() == DOCTOR || newEmployeeList.get(i).getJob() == NURSE) {
-                newMedEmployeeList.add(newEmployeeList.get(i));
-            }
-            // everything else add to "ABS" list - can adjust as needed as we create more Request types
-            if (newEmployeeList.get(i).getJob() == SECURITY_PERSONNEL || newEmployeeList.get(i).getJob() == JANITOR || newEmployeeList.get(i).getJob() == MAINTENANCE_WORKER) {
-                newAbsEmployeeList.add(newEmployeeList.get(i));
-            }
-        }
-        */
-/*
-        // switch case
-        // return proper employeelist based on Request type
-        if (selected.getRequestType() != null ) {
-            switch (selected.getRequestType().getrType()) {
-                case ITS:
-                    returnEmployeeList.addAll(newITEmployeeList);
-                    break;
-                case MED:
-                    returnEmployeeList.addAll(newMedEmployeeList);
-                    break;
-                case ABS:
-                    returnEmployeeList.addAll(newAbsEmployeeList);
-                default:
-                    System.out.println("Incorrect Job Type: + " + selected.getRequestType().getrType());
-            }
-
-        }
-*/
-
-
-
-
-
     }
 
 
