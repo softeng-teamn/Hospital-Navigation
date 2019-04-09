@@ -127,7 +127,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     public void assignEmployee (ActionEvent event) {
         Request selectedTask = (Request) requestListView.getSelectionModel().getSelectedItem();
         Employee selectedEmp = (Employee) employeeListView.getSelectionModel().getSelectedItem();
-        selectedTask.setCompletedBy(selectedEmp.getUsername());
+        selectedTask.setAssignedTo(selectedEmp.getID());
 
         requestListView.getItems().set(requestListView.getSelectionModel().getSelectedIndex(), selectedTask) ;
         ObservableList<Request> x = FXCollections.observableArrayList();
@@ -393,7 +393,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         return "ID: " + request.getId() +
                 " Request Type: " + request.getClass().getSimpleName() +
                 " Description: " + request.getNotes() +
-                " Assigned To: " + request.getCompletedBy();
+                " Assigned To: " + request.getAssignedTo();
     }
 
     /**
