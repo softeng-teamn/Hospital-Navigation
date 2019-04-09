@@ -343,6 +343,7 @@ public class MapView {
 
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
+            System.out.println(afterFloorChange + " " + path.get(i+1).getNodeType());   // TODO
             if (afterFloorChange && !path.get(i+1).getNodeType().equals("ELEV") && !path.get(i+1).getNodeType().equals("STAI")) {    // If we just changed floors, give a cardinal direction
                 String afterEl = csDirPrint(path.get(i+1).getXcoord() + NORTH_I, path.get(i+1).getYcoord() + NORTH_J, path.get(i+1).getXcoord(), path.get(i+1).getYcoord(), path.get(i+2).getXcoord(), path.get(i+2).getYcoord());
                 directions.add(convertToCardinal(afterEl));
@@ -411,6 +412,7 @@ public class MapView {
             }
             else {    // Otherwise provide a normal direction
                 directions.add(csDirPrint(path.get(i).getXcoord(), path.get(i).getYcoord(), path.get(i + 1).getXcoord(), path.get(i + 1).getYcoord(), path.get(i + 2).getXcoord(), path.get(i + 2).getYcoord()) + "\n");
+                afterFloorChange = false;
             }
 
             if(path.get(i+2).getNodeType().equals("ELEV") && !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is elevator, say so
@@ -470,7 +472,7 @@ public class MapView {
         }
 
         System.out.println(directions);
-      //  System.out.println(printDirections(directions));
+        printDirections(directions);
         return directions;
     }
 
