@@ -43,6 +43,22 @@ public class Node {
         return floor;
     }
 
+    public int getIntFloor() {
+
+        if (floor.equals("L2")){
+            return -2;
+        }
+        else if (floor.equals("L1")){
+            return -1;
+        }
+        else if (floor.equals("G")){
+            return 0;
+        }
+        else{
+            return Integer.parseInt(floor);
+        }
+    }
+
     public void setFloor(String floor) {
         this.floor = floor;
     }
@@ -103,6 +119,13 @@ public class Node {
         xcoord = x;
         ycoord = y;
         nodeID = id;
+    }
+
+    public Node(String nodeID, int xcord, int ycord, String nodeType){
+        this.nodeID = nodeID;
+        this.xcoord = xcord;
+        this.ycoord = ycord;
+        this.nodeType = nodeType;
     }
 
     public Node( String nodeID, int xcoord, int ycoord, String floor, String building, String nodeType, String longName, String shortName) {

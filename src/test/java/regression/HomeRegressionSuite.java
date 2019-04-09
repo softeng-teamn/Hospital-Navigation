@@ -51,7 +51,7 @@ public class HomeRegressionSuite extends ApplicationTest {
     @After
     public void cleanup() {
         System.out.println("Cleanup!");
-        DatabaseService.wipeOutFiles();
+        DatabaseService.getDatabaseService().wipeTables();
     }
 
 

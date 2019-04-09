@@ -1,15 +1,11 @@
 package model.request;
 
-import com.jfoenix.controls.JFXToggleNode;
+import javafx.collections.ObservableList;
+import model.Employee;
+import model.JobType;
 import model.Node;
-import model.RequestType;
-import service.DatabaseService;
-//import sun.plugin.services.AxBridgeBrowserService;
 
-import static model.RequestType.RType.ABS;
-
-import java.util.Objects;
-
+import java.util.ArrayList;
 import java.util.Objects;
 
 public abstract class Request {
@@ -17,29 +13,19 @@ public abstract class Request {
     private String notes;
     private Node location;
     private boolean completed;
-    private RequestType requestType;
-    private String completedBy;
-
-    public Request(int id, String notes, Node location, boolean completed, RequestType requestType) {
-        this.id = id;
-        this.notes = notes;
-        this.location = location;
-        this.completed = completed;
-        this.requestType = requestType;
-        this.completedBy = "";
-    }
+    private int assignedTo;
 
     public Request(int id, String notes, Node location, boolean completed) {
         this.id = id;
         this.notes = notes;
         this.location = location;
         this.completed = completed;
-        this.requestType = new RequestType(ABS);
-        this.completedBy = "";
+        this.assignedTo = -1;
     }
 
-    public abstract void  makeRequest() ;
-    public abstract void fillRequest() ;
+    public abstract void makeRequest();
+
+    public abstract void fillRequest();
 
     public int getId() {
         return id;
@@ -73,15 +59,13 @@ public abstract class Request {
         this.completed = completed;
     }
 
-    public String getCompletedBy() {
-        return completedBy;
+    public int getAssignedTo() {
+        return assignedTo;
     }
 
-    public void setCompletedBy(String completedBy) {
-        this.completedBy = completedBy;
+    public void setAssignedTo(int assignedTo) {
+        this.assignedTo = assignedTo;
     }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -99,14 +83,6 @@ public abstract class Request {
         return Objects.hash(id, notes, location, completed);
     }
 
-    public RequestType getRequestType() {
-        return requestType;
-    }
-
-    public void setRequestType(RequestType requestType) {
-        this.requestType = requestType;
-    }
-
     @Override
     public String toString() {
         return "Request{" +
@@ -115,17 +91,13 @@ public abstract class Request {
                 ", location=" + location +
                 ", completed=" + completed +
                // ", requestType=" + requestType +
-                ", completedBy='" + completedBy + '\'' +
+                ", assignedTo='" + assignedTo + '\'' +
                 '}';
     }
 
+    //Show Requests based on Job
+    public abstract ObservableList<Request> showProperRequest();
 
-
-
+    public abstract ObservableList<Employee> returnCorrectEmployee();
 
 }
-
-
-
-
-

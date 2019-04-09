@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXSlider?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleNode?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import javafx.geometry.Insets?>
@@ -11,24 +13,18 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <children>
-      <fx:include fx:id="topNav" source="topNav.fxml"/>
+      <fx:include fx:id="topNav" source="topNav.fxml" />
       <HBox fx:id="hbox_container" VBox.vgrow="ALWAYS">
          <children>
-            <fx:include source="searchResults.fxml" fx:id="searchResults"/>
-            <fx:include source="mapView.fxml" fx:id="mapView" />
+            <fx:include fx:id="searchResults" source="searchResults.fxml" />
+            <fx:include fx:id="mapView" source="mapView.fxml" />
          </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
       </HBox>
    </children>
 </VBox>

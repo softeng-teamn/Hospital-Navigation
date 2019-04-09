@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-public class PathFindingServiceAdvancedTest {
+public class AstarAdvancedTest {
 
     // MAP (Diaginal testing)
     //
@@ -76,29 +76,39 @@ public class PathFindingServiceAdvancedTest {
     MapNode mn10;
 
     public void createMap() {
-        n1 = new Node("node1",0,2);
+        n1 = new Node("node1",0,2, "CONF");
         mn1 = new MapNode(0,2,n1);
-        n2 = new Node("node2",1, 2);
+        n2 = new Node("node2",1, 2, "CONF");
         mn2 = new MapNode(1,2,n2);
-        n3 = new Node("node3",2, 2);
+        n3 = new Node("node3",2, 2, "CONF");
         mn3 = new MapNode(2,2,n3);
-        n4 = new Node("node4",3, 2);
+        n4 = new Node("node4",3, 2, "REST");
         mn4 = new MapNode(3,2,n4);
-        n5 = new Node("node5",1, 3);
+        n5 = new Node("node5",1, 3, "CONF");
         mn5 = new MapNode(1,3,n5);
-        n6 = new Node("node6",1, 4);
+        n6 = new Node("node6",1, 4, "CONF");
         mn6 = new MapNode(1,4,n6);
-        n7 = new Node("node7",2, 3);
+        n7 = new Node("node7",2, 3, "CONF");
         mn7 = new MapNode(2,3,n7);
-        n8 = new Node("node8",3, 4);
+        n8 = new Node("node8",3, 4, "CONF");
         mn8 = new MapNode(3,4,n8);
-        n9 = new Node("node9",2, 1);
+        n9 = new Node("node9",2, 1, "CONF");
         mn9 = new MapNode(2,1,n9);
-        n10 = new Node("node10",2, 0);
+        n10 = new Node("node10",2, 0, "REST");
         mn10 = new MapNode(2,0,n10);
+        n1.setFloor("1");
+        n2.setFloor("1");
+        n3.setFloor("1");
+        n4.setFloor("1");
+        n5.setFloor("1");
+        n6.setFloor("1");
+        n7.setFloor("1");
+        n8.setFloor("1");
+        n9.setFloor("1");
+        n10.setFloor("1");
     }
 
-    final PathFindingService mockPF = spy(new PathFindingService());
+    final Astar mockPF = spy(new Astar());
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -162,11 +172,11 @@ public class PathFindingServiceAdvancedTest {
     @Category(FastTest.class)
     public void testAStar() {
         // a path can be found
-        assertThat(mockPF.aStar(mn1, mn6), is(mn6));
-        assertThat(mockPF.aStar(mn10, mn8), is(mn8));
-        assertThat(mockPF.aStar(mn6, mn8), is(mn8));
-        assertThat(mockPF.aStar(mn2, mn10), is(mn10));
-        assertThat(mockPF.aStar(mn1, mn8), is(mn8));
+        assertThat(mockPF.aStar(mn1, mn6, false, null), is(mn6));
+        assertThat(mockPF.aStar(mn10, mn8, false, null), is(mn8));
+        assertThat(mockPF.aStar(mn6, mn8, false, null), is(mn8));
+        assertThat(mockPF.aStar(mn2, mn10, false, null), is(mn10));
+        assertThat(mockPF.aStar(mn1, mn8, false, null), is(mn8));
     }
 
     @Test
@@ -181,14 +191,25 @@ public class PathFindingServiceAdvancedTest {
         expected.add(0, n3);
         expected.add(0, n9);
         expected.add(0, n10);
-        assertThat(mockPF.genPath(mn10, mn8), is(expected));
+        assertThat(mockPF.findDest(mn10, mn8, false, "astar"), is(expected));
         mockingGetChildren();
         expected = new ArrayList<Node>();
         expected.add(0, n8);
         expected.add(0, n7);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn8), is(expected));
+        assertThat(mockPF.findDest(mn1, mn8, false, "astar"), is(expected));
     }
+
+//    @Test
+//    @Category(FastTest.class)
+//    public void filteredBreadthTest() throws IOException {
+//        mockingGetChildren();
+//        ArrayList<Node> expected = new ArrayList<Node>();
+//        expected.add(0, n4);
+//        expected.add(0, n3);
+//        expected.add(0, n2);
+//        assertThat(mockPF.findDest(mn2, null, false, "REST"), is(expected));
+//    }
 
 }

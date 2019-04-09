@@ -26,22 +26,21 @@ import java.util.PriorityQueue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class PathFindingServiceSimpleTest {
+public class AstarSimpleTest {
 
-    final Node n1 = new Node("n1", 0, 0, "f", "f", "f", "f", "f");
+    final Node n1 = new Node("n1", 0, 0, "1", "f", "f", "f", "f");
     final MapNode mn1 = new MapNode(0,0, n1);
-    final Node n2 = new Node("n2", 1, 0, "f", "f", "f", "f", "f");
+    final Node n2 = new Node("n2", 1, 0, "1", "f", "f", "f", "f");
     final MapNode mn2 = new MapNode(1,0,n2);
-    final Node n3 = new Node("n3", 1, 1, "f", "f", "f", "f", "f");
+    final Node n3 = new Node("n3", 1, 1, "1", "f", "f", "f", "f");
     final MapNode mn3 = new MapNode(1,1, n3);
-    final Node n4 = new Node("n4", 2, 1, "f", "f", "f", "f", "f");
+    final Node n4 = new Node("n4", 2, 1, "1", "f", "f", "f", "f");
     final MapNode mn4 = new MapNode(2, 1, n4);
-    final Node n5 = new Node("n5", 3, 1, "f", "f", "f", "f", "f");
+    final Node n5 = new Node("n5", 3, 1, "1", "f", "f", "f", "f");
     final MapNode mn5 = new MapNode(3, 1, n5);
-    final Node n6 = new Node("n6", 4, 0, "f", "f", "f", "f", "f");
+    final Node n6 = new Node("n6", 4, 0, "1", "f", "f", "f", "f");
     final MapNode mn6 = new MapNode(4, 0, n6);
-    final PathFindingService mockPF = spy(new PathFindingService());
-
+    final Astar mockPF = spy(new Astar());
     @Mock
     MapController mockMapController;
 
@@ -54,7 +53,7 @@ public class PathFindingServiceSimpleTest {
 //
 //    }
 
-    // generates the mock sinerio
+    // generates the mock scenario
     //
     //  1 - 2 - - - 6
     //      |       |
@@ -94,7 +93,7 @@ public class PathFindingServiceSimpleTest {
         //when(mockPF.getChildren(mn6)).thenReturn(list);
     }
 
-    // make sure I built the sinerio correctly
+    // make sure I built the scenario correctly
     @Test
     @Category(FastTest.class)
     public void testMocking() throws IOException {
@@ -116,7 +115,7 @@ public class PathFindingServiceSimpleTest {
     @Category(FastTest.class)
     public void testAStar() {
         // a path can be found
-        assertThat(mockPF.aStar(mn1, mn6), is(mn6));
+        assertThat(mockPF.aStar(mn1, mn6, false, null), is(mn6));
     }
 
     @Test
@@ -126,7 +125,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n6);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.genPath(mn1, mn6), is(expected));
+        assertThat(mockPF.findDest(mn1, mn6, false, "astar"), is(expected));
     }
 
     @Test
@@ -136,7 +135,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n6);
         expected.add(0, n2);
         expected.add(0, n3);
-        assertThat(mockPF.genPath(mn3, mn6), is(expected));
+        assertThat(mockPF.findDest(mn3, mn6, false, "astar"), is(expected));
     }
 
     @Test
@@ -147,7 +146,7 @@ public class PathFindingServiceSimpleTest {
         expected.add(0, n2);
         expected.add(0, n3);
         expected.add(0, n4);
-        assertThat(mockPF.genPath(mn4, mn1), is(expected));
+        assertThat(mockPF.findDest(mn4, mn1, false, "astar"), is(expected));
     }
 
 }

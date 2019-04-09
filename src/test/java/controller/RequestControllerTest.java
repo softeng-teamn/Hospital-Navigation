@@ -22,8 +22,8 @@ public class RequestControllerTest {
     private RequestController RC = new RequestController();
     private MedicineRequest medReqR = new MedicineRequest(2,"Fast",n,false);
     private MedicineRequest medReqM = new MedicineRequest(2,"take your time", n, false, "Morphine", 200.0);
-    private ITRequest ITReqA = new ITRequest(2,"3/31/2019 1:21 PM",n,false,"Hard Drive Broke When I peed on it");
-    private ITRequest ITReqB = new ITRequest(3,"4/1/2019 2:30 PM", n, false, "Can't wifi");
+    private ITRequest ITReqA = new ITRequest(2,"3/31/2019 1:21 PM",n,false,ITRequest.ITRequestType.New_Computer);
+    private ITRequest ITReqB = new ITRequest(3,"4/1/2019 2:30 PM", n, false, ITRequest.ITRequestType.Assistance);
 
     @Before
     public void setupTest() {
@@ -45,7 +45,7 @@ public class RequestControllerTest {
 
     @AfterClass
     public static void cleanup() {
-        DatabaseService.wipeOutFiles();
+        RequestController.myDBS.wipeTables();
     }
 
     private ArrayList<MedicineRequest> medList = new ArrayList<>();
@@ -61,7 +61,7 @@ public class RequestControllerTest {
 
         requests.add(ITReqA);
 
-        RC.makeRequest(ITReqA);
+        //RC.makeRequest(ITReqA);
         List<ITRequest> requests1 = RequestController.myDBS.getAllIncompleteITRequests();
 
         assertThat(requests1, is(notNullValue()));
@@ -69,7 +69,7 @@ public class RequestControllerTest {
         assertThat(requests.containsAll(requests1), equalTo(true));
         requests = requests1;
         //don't make two of the same exact req
-        RC.makeRequest(ITReqA);
+        //RC.makeRequest(ITReqA);
         requests1 = RequestController.myDBS.getAllIncompleteITRequests();
 
         assertThat(requests.size(), is(requests1.size()));
@@ -80,7 +80,7 @@ public class RequestControllerTest {
     public void makeMedRequestTest () {
         List<MedicineRequest> requests = RequestController.myDBS.getAllIncompleteMedicineRequests();
         requests.add(medReqM);
-        RC.makeRequest(medReqM);
+        //RC.makeRequest(medReqM);
         List<MedicineRequest> requests1 = RequestController.myDBS.getAllIncompleteMedicineRequests();
 
         System.out.println(requests);
@@ -90,7 +90,7 @@ public class RequestControllerTest {
 
         requests = requests1;
         //don't make two of the same exact req
-        RC.makeRequest(ITReqA);
+        //RC.makeRequest(ITReqA);
         requests1 = RequestController.myDBS.getAllIncompleteMedicineRequests();
         assertThat(requests.size() == requests1.size(), equalTo(true));
 
@@ -109,7 +109,7 @@ public class RequestControllerTest {
         RC.fufillRequest(ITReqB, "Jane");
         ITRequest filledITReqR = ITReqB;
         filledITReqR.setCompleted(true);
-        filledITReqR.setCompletedBy("Jane");
+        filledITReqR.setAssignedTo("Jane");
         unfilledRequests = RC.dbs.getAllIncompleteITRequests();
         assertThat(unfilledRequests.contains(ITReqB), equalTo(false));
         assertThat(unfilledRequests.contains(filledITReqR), equalTo(false));
@@ -128,7 +128,7 @@ public class RequestControllerTest {
         RC.fufillRequest(medReqR, "Shawn");
         MedicineRequest filledMedReqR = medReqR;
         filledMedReqR.setCompleted(true);
-        filledMedReqR.setCompletedBy("Shawn");
+        filledMedReqR.setAssignedTo("Shawn");
         unfilledRequests = RC.dbs.getAllIncompleteMedicineRequests();
         assertThat(unfilledRequests.contains(medReqR), equalTo(false));
         assertThat(unfilledRequests.contains(filledMedReqR), equalTo(false));
