@@ -18,7 +18,7 @@
       fx:controller="controller.TopNav">
       <padding><Insets bottom="6.0" left="24.0" right="24.0" top="6.0"/></padding>
         <children>
-            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2">
+            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="Search" styleClass="header-text-field">
                 <HBox.margin>
                     <Insets right="8.0" />
                 </HBox.margin></JFXTextField>
@@ -48,7 +48,6 @@
                 <graphic>
                     <FontAwesomeIconView glyphName="PENCIL" size="60" />
                 </graphic></JFXButton>
-            <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="time_label"/>
             <Region HBox.hgrow="ALWAYS" />
             <JFXButton fx:id="employeeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showEditEmployee" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">

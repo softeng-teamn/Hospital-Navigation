@@ -15,12 +15,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.*;
 import service.ResourceLoader;
 import service.StageManager;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
@@ -103,15 +105,17 @@ public class TopNav {
 
     private void timeWatcher() {
         time_label.setTextFill(Color.WHITE);
+        time_label.setStyle("-fx-font: 32 roboto;");
         Task task = new Task<Void>() {
             @Override public Void call() throws Exception {
                 while (true) {
                     Thread.sleep(100);
-                    GregorianCalendar calendar = new GregorianCalendar();
+                    Calendar calendar = new GregorianCalendar();
                     TimeUnit.SECONDS.sleep(1);
                     Platform.runLater(new Runnable() {
                         @Override public void run() {
-                            time_label.setText(calendar.getTime().toString());
+                            String curTime = String.format("%02d:%02d:%02d", calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+                            time_label.setText(curTime);
                         }
                     });
                 }
