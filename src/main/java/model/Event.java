@@ -28,6 +28,8 @@ public class Event {
 
     public void setEndNode(boolean startEnd) { this.endNode = startEnd; }
 
+    public void setDefaultStartNode (){this.nodeStart = DEFAULT_NODE;}
+
     public String getFloor() {
         return floor;
     }

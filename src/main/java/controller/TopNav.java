@@ -253,9 +253,14 @@ public class TopNav {
             startSearch.setOnAction(this::startNodeEnter);
             startSearch.setOnMouseClicked(this::setEventEndNode);
             top_nav.getChildren().add(0, startSearch);
+            event.setEndNode(false);
             startNode_btn.setText("Use default");
         } else {
             top_nav.getChildren().remove(startSearch);
+            event.setEndNode(true);
+            event.setDefaultStartNode();
+            event.setEventName("refresh");
+            eventBus.post(event);
             startNode_btn.setText("Start Node");
         }
     }
