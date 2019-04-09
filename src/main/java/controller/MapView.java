@@ -677,9 +677,12 @@ public class MapView {
                 turn = "D";
             }
             else {
-                turn = "C";
+                turn = "B";
             }
         }
+        System.out.println(" turn " + turn + " theta " + theta + " alpha " + alpha + " expected " +
+                        expectedVal + " computed " + computedY1 + "\n  PLUS " + plus +
+                        " minus " + minus);
 
         // Create and return the direction
         String direction = String.format(turn +  "%.0f", distance);
