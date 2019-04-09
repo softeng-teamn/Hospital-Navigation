@@ -31,13 +31,15 @@
       </HBox>
       <HBox fx:id="hbox_container" alignment="CENTER" VBox.vgrow="ALWAYS">
          <children>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="807.0">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="1307.0">
                <children>
-                  <TableView fx:id="employee_table" editable="false" maxHeight="600.0" prefHeight="600.0" prefWidth="800.0">
+                  <TableView fx:id="employee_table" editable="false" maxHeight="600.0" prefHeight="600.0" prefWidth="1300.0">
                      <columns>
                         <TableColumn fx:id="col_id" editable="false" prefWidth="70.0" resizable="false" text="ID" />
                         <TableColumn fx:id="col_username" editable="true" prefWidth="210.0" resizable="false" text="Username" />
                         <TableColumn fx:id="col_job" editable="true" prefWidth="260.0" resizable="false" text="Job" />
+                        <TableColumn fx:id="col_phone" editable="true" prefWidth="200.0" resizable="false" text="Phone" />
+                        <TableColumn fx:id="col_email" editable="true" prefWidth="300.0" resizable="false" text="Email" />
                         <TableColumn fx:id="col_admin" editable="true" prefWidth="260.0" resizable="false" text="Is Kiosk Administrator?" />
                      </columns>
                      <VBox.margin>
