@@ -270,15 +270,13 @@ public class FulfillRequestController extends Controller implements Initializabl
 
         Request selected;
         // if there are extisting requests
-        if (requestListView != null) {
-            // get the select the first request in the list
-            //requestListView.getSelectionModel().select(0);
+       // if (requestListView != null) {
             // assign the selected item to a variable
             selected = (Request) requestListView.getSelectionModel().getSelectedItem();
             // otherwise set to null
-        } else {
-            selected = null;
-        }
+        //} else {
+            //selected = null;
+       // }
 
 
         // selected request
@@ -320,17 +318,19 @@ public class FulfillRequestController extends Controller implements Initializabl
 
         // switch case
         // return proper employeelist based on Request type
-        switch (selected.getRequestType().getrType()) {
-            case ITS:
-                returnEmployeeList.addAll(newITEmployeeList);
-                break;
-            case MED:
-                returnEmployeeList.addAll(newMedEmployeeList);
-                break;
-            case ABS:
-                returnEmployeeList.addAll(newAbsEmployeeList);
-            default:
-                System.out.println("Incorrect Job Type: + " + selected.getRequestType().getrType());
+        if (selected.getRequestType() != null ) {
+            switch (selected.getRequestType().getrType()) {
+                case ITS:
+                    returnEmployeeList.addAll(newITEmployeeList);
+                    break;
+                case MED:
+                    returnEmployeeList.addAll(newMedEmployeeList);
+                    break;
+                case ABS:
+                    returnEmployeeList.addAll(newAbsEmployeeList);
+                default:
+                    System.out.println("Incorrect Job Type: + " + selected.getRequestType().getrType());
+            }
         }
 
         return returnEmployeeList;
@@ -439,8 +439,6 @@ public class FulfillRequestController extends Controller implements Initializabl
         if (requestListView != null) {
             // get the select the first request in the list
             requestListView.getSelectionModel().select(0);
-            // assign the selected item to a variable
-            selected = (Request) requestListView.getSelectionModel().getSelectedItem();
             // otherwise set to null
         } else {
             selected = null;
