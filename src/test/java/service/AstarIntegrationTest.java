@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class PathFindingServiceIntegrationTest {
+public class AstarIntegrationTest {
 
-    final PathFindingService pathFindingService = new PathFindingService();
+    final Astar astar = new Astar();
     final Node testNode = new Node("AHALL00202", 1590,2604,"2","BTM","HALL","Hall","Hall");
     final MapNode testMapNode = new MapNode(testNode.getXcoord(), testNode.getYcoord(), testNode);
     final Node testNodeChild1 = new Node("AHALL00302", 1590,2745,"2","BTM","HALL","Hall","Hall");
@@ -40,7 +40,7 @@ public class PathFindingServiceIntegrationTest {
 //    @Test
 //    @Category(FastTest.class)
 //    public void testGetChildren(){
-//        assertThat(pathFindingService.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
+//        assertThat(astar.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
 //    }
 
 }
