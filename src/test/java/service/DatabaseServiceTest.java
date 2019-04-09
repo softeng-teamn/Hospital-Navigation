@@ -8,7 +8,6 @@ import model.request.ITRequest;
 import model.request.InterpreterRequest;
 import model.request.InternalTransportRequest;
 import model.request.MaintenanceRequest;
-
 import model.request.AVServiceRequest;
 import model.request.MedicineRequest;
 import model.request.SecurityRequest;
@@ -1537,7 +1536,6 @@ public class DatabaseServiceTest {
         value = myDBS.getSecurityRequest(2);
         assertThat(value, is(nullValue()));
 
-        SecurityRequest value;
 
         // Create a some requests - don't care about node, so all the same
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
@@ -1643,7 +1641,6 @@ public class DatabaseServiceTest {
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
         SanitationRequest req = new SanitationRequest(0, "No notes", node, false, "High", "Other");
 
-
         assertTrue(myDBS.insertNode(node));
         assertTrue(myDBS.insertSanitationRequest(req));
         assertEquals(req, myDBS.getSanitationRequest(0));
@@ -1684,9 +1681,6 @@ public class DatabaseServiceTest {
         value = myDBS.getSanitationRequest(2);
         assertThat(value, is(nullValue()));
 
-        // Create a request
-        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        SanitationRequest req = new SanitationRequest(0, "No notes", node, false, "High", "Liquid");
 
         // Create a some requests - don't care about node, so all the same
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
@@ -1754,11 +1748,6 @@ public class DatabaseServiceTest {
         value = myDBS.getGiftStoreRequest(2);
         assertThat(value, is(nullValue()));
 
-    @Test
-    @Category(FastTest.class)
-    public void deleteSanitationRequest() {
-        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-        SanitationRequest req = new SanitationRequest(0, "No notes", node, false, "Low", "Solid");
 
         // Create a some requests - don't care about node, so all the same
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
@@ -1915,7 +1904,6 @@ public class DatabaseServiceTest {
 
         // Create a some requests - don't care about node, so all the same
         Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
-
         ReligiousRequest req1 = new ReligiousRequest(0, "No notes", node, false, ReligiousRequest.Religion.CHRISTIAN);
         ReligiousRequest req2 = new ReligiousRequest(1, "Priority", node, true, ReligiousRequest.Religion.JEWISH);
         ReligiousRequest req3 = new ReligiousRequest(2, "Notes go here", node, false, ReligiousRequest.Religion.CATHOLIC);
@@ -2944,7 +2932,7 @@ public class DatabaseServiceTest {
         assertTrue(myDBS.deleteMaintenanceRequest(req));
         assertNull(myDBS.getMaintenanceRequest(0));
     }
-      
+
     @Test
     @Category(FastTest.class)
     public void insertAndGetToyRequest() {

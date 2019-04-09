@@ -898,15 +898,6 @@ public class DatabaseService {
     }
 
     /**
-     * @param id the id of the request to get from the database
-     * @return the sanitation request object with the given ID
-     */
-    public SanitationRequest getSanitationRequest(int id) {
-        String query = "SELECT * FROM SANITATIONREQUEST WHERE (serviceID = ?)";
-        return (SanitationRequest) executeGetById(query, SanitationRequest.class, id);
-    }
-
-    /**
      * @param req the request to insert to the database
      * @return true if the insert succeeds and false if otherwise
      */
