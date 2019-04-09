@@ -205,7 +205,7 @@ public class TopNav {
 
         // show node-selected in search
         String fillNodeinSearch = selected.getLongName();
-        end_search_bar.setText(fillNodeinSearch);
+        search_bar.setText(fillNodeinSearch);
 
     }
 
