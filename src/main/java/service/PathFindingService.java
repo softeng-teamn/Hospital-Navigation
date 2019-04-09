@@ -22,8 +22,6 @@ public class PathFindingService {
      * */
     public ArrayList<Node> genPath(MapNode start, MapNode dest, Boolean accessibility, String filter) {
 
-        public int estimatedTimeOfArrival;
-
         AlgorithmContext ctx = new AlgorithmContext(new Astar());
 
         ArrayList<Node> target;
@@ -33,7 +31,7 @@ public class PathFindingService {
             case "astar":
                 ctx.setStrategy(new Astar());
                 target = ctx.findPathCTX(start, dest, accessibility, null);
-                estimatedTimeOfArrival = getEstimatedTimeOfArrival();
+                estimatedTimeOfArrival = ctx.getEstimatedTime();
                 break;
             case "breadth":
                 ctx.setStrategy(new BreadthFS());

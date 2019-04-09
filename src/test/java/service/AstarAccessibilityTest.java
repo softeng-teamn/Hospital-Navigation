@@ -94,13 +94,13 @@ public class AstarAccessibilityTest {
         expected.add(0, n3);
         expected.add(0, n2);
         expected.add(0, n1);
-        assertThat(mockPF.findDest(mn1, mn3, false, null), is(expected));
+        assertThat(mockPF.findDest(mn1, mn3, false, "astar"), is(expected));
         mockingGetChildren();
         expected = new ArrayList<Node>();
         expected.add(0, n3);
         expected.add(0, n5);
         expected.add(0, n4);
         expected.add(0, n1);
-        assertThat(mockPF.findDest(mn1, mn3, true, null), is(expected));
+        assertThat(mockPF.findDest(mn1, mn3, true, "astar"), is(expected));
     }
 }

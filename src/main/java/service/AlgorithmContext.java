@@ -25,4 +25,8 @@ public class AlgorithmContext {
         return strategy.findDest(start, dest, accessibility, filter);
     }
 
+    public int getEstimatedTime() {
+        return strategy.getEstimatedTime();
+    }
+
 }

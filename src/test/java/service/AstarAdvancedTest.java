@@ -191,15 +191,15 @@ public class AstarAdvancedTest {
         assertThat(mockPF.findDest(mn1, mn8, false, "astar"), is(expected));
     }
 
-    @Test
-    @Category(FastTest.class)
-    public void filteredBreadthTest() throws IOException {
-        mockingGetChildren();
-        ArrayList<Node> expected = new ArrayList<Node>();
-        expected.add(0, n4);
-        expected.add(0, n3);
-        expected.add(0, n2);
-        assertThat(mockPF.findDest(mn2, null, false, "REST"), is(expected));
-    }
+//    @Test
+//    @Category(FastTest.class)
+//    public void filteredBreadthTest() throws IOException {
+//        mockingGetChildren();
+//        ArrayList<Node> expected = new ArrayList<Node>();
+//        expected.add(0, n4);
+//        expected.add(0, n3);
+//        expected.add(0, n2);
+//        assertThat(mockPF.findDest(mn2, null, false, "REST"), is(expected));
+//    }
 
 }

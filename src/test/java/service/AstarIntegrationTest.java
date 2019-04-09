@@ -37,10 +37,10 @@ public class AstarIntegrationTest {
 
     }
 
-    @Test
-    @Category(FastTest.class)
-    public void testGetChildren(){
-        assertThat(astar.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
-    }
+//    @Test
+//    @Category(FastTest.class)
+//    public void testGetChildren(){
+//        assertThat(astar.getChildren(testMapNode), containsInAnyOrder(testMapNodeChild1, testMapNodeChild2, testMapNodeChild3));
+//    }
 
 }

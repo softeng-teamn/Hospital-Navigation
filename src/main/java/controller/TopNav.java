@@ -245,6 +245,7 @@ public class TopNav {
         event.setEventName("filter");
         event.setFilterSearch("EXIT");
         eventBus.post(event);
+    }
 
     public void showEditEmployee(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) employeeBtn.getScene().getWindow();
