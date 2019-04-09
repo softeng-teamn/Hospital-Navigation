@@ -132,12 +132,6 @@ public class MapView {
         zoom(0.3);
 
         directionsView.setVisible(false);
-        floors.put("L2", -2);
-        floors.put("L1", -1);
-        floors.put("G", 0);
-        floors.put("1", 1);
-        floors.put("2", 2);
-        floors.put("3", 3);
     }
 
     void pingTiming() {
@@ -314,12 +308,16 @@ public class MapView {
      * @return a String of the directions
      */
     public ArrayList<String> makeDirections(ArrayList<Node> path) {
+        floors.put("L2", -2);
+        floors.put("L1", -1);
+        floors.put("G", 0);
+        floors.put("1", 1);
+        floors.put("2", 2);
+        floors.put("3", 3);
 
         if (path == null || path.size() < 2) {
             return null;
         }
-
-        System.out.println(path);    // TODO: remove
 
         final int NORTH_I = 1122 - 1886;    // Measurements from maps
         final int NORTH_J = 642 - 1501;    // Measurements from maps
@@ -332,6 +330,8 @@ public class MapView {
         String newFloor = path.get(1).getFloor();
         if (floors.get(oldFloor) != floors.get(newFloor)) {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
+            System.out.println("up down conv");
+            System.out.println(directions);
         }
         else {
             directions.add(convertToCardinal(csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0), path.get(1))));
@@ -348,6 +348,8 @@ public class MapView {
             else if (floors.get(oldFl) != floors.get(newFl)) {    // Otherwise if we're changing floors, give a floor change direction
                 directions.add(upDownConverter(oldFl, newFl, path.get(i+1).getNodeType()));
                 afterFloorChange = true;
+                System.out.println("diff floors");
+                System.out.println(directions);
             }
             else {    // Otherwise provide a normal direction
                 directions.add(csDirPrint(path.get(i), path.get(i+1), path.get(i+2)));
@@ -362,18 +364,18 @@ public class MapView {
         for (int i = 1; i < directions.size() - 1; i++) {
             String currDir = directions.get(i);
             String currOne = currDir.substring(0,1);
-            String oldDir = directions.get(i+1);
-            String oldOne = oldDir.substring(0,1);
+            String nextDir = directions.get(i+1);
+            String oldOne = nextDir.substring(0,1);
             if ("ANOPQ".contains(currOne) && currOne.equals(oldOne)) {    // If the current direction contains straight, get the distance substring
                 String newDir = "";
                 if (currOne.equals("A")) {
-                    int oldDist = Integer.parseInt(oldDir.substring(1));
+                    int oldDist = Integer.parseInt(nextDir.substring(1));
                     int currDist = Integer.parseInt(currDir.substring(1));
                     int totalDist = oldDist + currDist;    // Combine the distance of this direction with the previous one
                     newDir = currOne + totalDist;
                 }
                 else {
-                    newDir = currOne + oldDir.substring(1,2) + currDir.substring(2,3);
+                    newDir = currOne + currDir.substring(1,2) + nextDir.substring(2,3);
                 }
                 directions.remove(i+1);
                 directions.remove(i);
@@ -549,7 +551,7 @@ public class MapView {
             cardinal = "Z" + cardinal.substring(1);
         }
         else if (cardinal.contains("G")) {
-            cardinal = "T " + cardinal.substring(1);
+            cardinal = "T" + cardinal.substring(1);
         }
         else if (cardinal.contains("B")) {
             cardinal = "Y" + cardinal.substring(1);
@@ -559,6 +561,9 @@ public class MapView {
         }
         else if (cardinal.contains("A")) {
             cardinal = "W" + cardinal.substring(1);
+        }
+        else if (cardinal.contains("I") || cardinal.contains("J")) {
+            // Leave as is
         }
         else {
             cardinal = "S" + cardinal.substring(1);
@@ -580,13 +585,13 @@ public class MapView {
      *      *          between the middle and last point
      */
     public String csDirPrint(Node prev, Node curr, Node next) {
-//        if(!curr.getNodeType().equals("ELEV") && !curr.getNodeType().equals("STAI") && (next.getNodeType().equals("ELEV") || next.getNodeType().equals("STAI"))) {    // If next node is elevator, say so
-//            if (next.getNodeType().equals("ELEV")) {
-//                return "I";
-//            } else {
-//                return "J";
-//            }
-//        } TODO
+        if(!curr.getNodeType().equals("ELEV") && !curr.getNodeType().equals("STAI") && (next.getNodeType().equals("ELEV") || next.getNodeType().equals("STAI"))) {    // If next node is elevator, say so
+            if (next.getNodeType().equals("ELEV")) {
+                return "I";
+            } else {
+                return "J";
+            }
+        }
 
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
         prevXd = prev.getXcoord();
@@ -680,9 +685,6 @@ public class MapView {
                 turn = "B";
             }
         }
-        System.out.println(" turn " + turn + " theta " + theta + " alpha " + alpha + " expected " +
-                        expectedVal + " computed " + computedY1 + "\n  PLUS " + plus +
-                        " minus " + minus);
 
         // Create and return the direction
         String direction = String.format(turn +  "%.0f", distance);
