@@ -300,11 +300,11 @@ public class MapViewTest extends ApplicationTest {
         assertTrue(mp.csDirPrint(new Node(0,0), new Node(6,0), new Node(99, -88)).contains("C"));
     }
 
-    @Test
-    @Category( FastTest.class)
-    public void showDirections() {
-        //TODO
-    }
+//    @Test
+//    @Category( FastTest.class)
+//    public void showDirections() {
+//        //TODO
+//    }
 
     @Test
     @Category( FastTest.class)
