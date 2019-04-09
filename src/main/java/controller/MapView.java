@@ -337,48 +337,24 @@ public class MapView {
             Node basis = path.get(0);
             basis.setXcoord(path.get(0).getXcoord() + NORTH_I);
             basis.setYcoord(path.get(0).getYcoord() + NORTH_J);
-            directions.add(convertToCardinal(csDirPrint(basis, path.get(0), path.get(1)));
+            directions.add(convertToCardinal(csDirPrint(basis, path.get(0), path.get(1))));
         }
 
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
-            int oldFl = floors.get(path.get(i+1).getFloor());
-            int newFl = floors.get(path.get(i+2).getFloor());
-            if (afterFloorChange ) { // TODO
-                afterFloorChange = false;
+            String oldFl = (path.get(i+1).getFloor());
+            String newFl = (path.get(i+2).getFloor());
+            if (afterFloorChange && !path.get(i + 1).getNodeType().equals("ELEV") && !path.get(i + 1).getNodeType().equals("STAI")) {
+                afterFloorChange = false;// TODO
+                System.out.println("after floor change");
             }
-            else if (oldFl) {    // Otherwise if we're changing floors, give a floor change direction
-
-
-                String transport;
-                if (path.get(i+1).getNodeType().equals("ELEV")) {
-                    transport = "elevator";
-                }
-                else {
-                    transport = "stairs";
-                }
-
-                if (oldFloor < newFloor) {
-                    directions.add("Take the " + transport + " up from floor " + oldFloorstr + " to floor " + newFloorStr + ".\n");
-                }
-                else {
-                    directions.add("Take the " + transport + " down from floor " + oldFloorstr + " to floor " + newFloorStr + ".\n");
-                }
+            else if (floors.get(oldFl) != floors.get(newFl)) {    // Otherwise if we're changing floors, give a floor change direction
+                directions.add(upDownConverter(oldFl, newFl, path.get(i+1).getNodeType()));
                 afterFloorChange = true;
             }
             else {    // Otherwise provide a normal direction
-                directions.add(csDirPrint(path.get(i).getXcoord(), path.get(i).getYcoord(), path.get(i + 1).getXcoord(), path.get(i + 1).getYcoord(), path.get(i + 2).getXcoord(), path.get(i + 2).getYcoord()) + "\n");
-                afterFloorChange = false;
-            }
-
-            if(path.get(i+2).getNodeType().equals("ELEV") && !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is elevator, say so
-                System.out.println("damn " + directions.get(directions.size() - 1));
-                directions.remove(directions.size()-1);
-                directions.add("Walk to the elevator.\n");
-            }
-            else if (path.get(i+2).getNodeType().equals("STAI")&& !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is stairs, say so
-                directions.remove(directions.size()-1);
-                directions.add("Walk to the stairs.\n");
+                directions.add(csDirPrint(path.get(i), path.get(i+1), path.get(i+2)));
+                afterFloorChange = false;    // TODO cut?
             }
         }
 
@@ -386,40 +362,22 @@ public class MapView {
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
 
         // Simplify directions that continue approximately straight from each other
-        for (int i = 1; i < directions.size(); i++) {
+        for (int i = 1; i < directions.size() - 1; i++) {
             String currDir = directions.get(i);
-            String oldDir = directions.get(i-1);
-            if (currDir.contains("straight")) {    // If the current direction contains straight, get the distance substring
-                int feetIndex = oldDir.indexOf("for");
-                if (feetIndex < 0) {    // If it's not cardinal, get the correct distance substring index
-                    feetIndex = oldDir.indexOf("walk") + 5;
-                }
-                else {
-                    feetIndex += 4;
-                }
-                int oldDist = Integer.parseInt(oldDir.substring(feetIndex, oldDir.indexOf("feet")-1));
-                int currDist = Integer.parseInt(currDir.substring(currDir.indexOf("walk") + 5, currDir.indexOf("feet")-1));
-                int totalDist = oldDist + currDist;    // Combine the distance of this direction with the previous one
-
+            String currOne = currDir.substring(0,1);
+            String oldDir = directions.get(i+1);
+            String oldOne = oldDir.substring(0,1);
+            if ("ANOPQ".contains(currOne) && currOne.equals(oldOne)) {    // If the current direction contains straight, get the distance substring
                 String newDir = "";
-                if (oldDir.contains("for")) {    // Create the new direction as cardinal or not based on the old direction
-                    newDir = oldDir.substring(0, oldDir.indexOf("for") + 4) + totalDist + " feet\n";
+                if (currOne.equals("A")) {
+                    int oldDist = Integer.parseInt(oldDir.substring(1));
+                    int currDist = Integer.parseInt(currDir.substring(1));
+                    int totalDist = oldDist + currDist;    // Combine the distance of this direction with the previous one
+                    newDir = currOne + totalDist;
                 }
                 else {
-                    newDir = oldDir.substring(0, oldDir.indexOf("walk") + 5) + totalDist + " feet\n";
+                    newDir = currOne + oldDir.substring(1,2) + currDir.substring(2,3);
                 }
-                directions.remove(i);    // Remove the two old directions and add the new one
-                directions.remove(i-1);
-                directions.add(i-1, newDir);
-                i--;
-            }
-        }
-
-        for (int i = 0; i < directions.size() - 1; i++) {
-            if (directions.get(i).contains("Take") && directions.get(i+1).contains("Take")) {
-                String newDir = directions.get(i);
-                String toCombine = directions.get(i+ 1);
-                newDir = newDir.substring(0, newDir.indexOf("floor", 28) + 5) + toCombine.substring(toCombine.indexOf("floor", 28) + 5);
                 directions.remove(i+1);
                 directions.remove(i);
                 directions.add(i, newDir);
@@ -427,7 +385,6 @@ public class MapView {
             }
         }
 
-        System.out.println(directions);
         printDirections(directions);
         return directions;
     }
@@ -448,51 +405,128 @@ public class MapView {
         floorsQR.put("2", "E");
         floorsQR.put("3", "F");
 
-        String ret;
+        String ret = "";
 
         if (floors.get(f1) < floors.get(f2)) {
             if (type.equals("ELEV")) {
                 ret = ("N" + floorsQR.get(f1) + floorsQR.get(f2));
-            }
-            else {
+            } else {
                 ret = ("P" + floorsQR.get(f1) + floorsQR.get(f2));
             }
         }
-        else if(floors.get(f1) > floors.get(f2)) {
-        if (type.equals("ELEV")) {
-            ret = ("O" + floorsQR.get(f1) + floorsQR.get(f2));
-        }
         else {
-            ret = ("Q" + floorsQR.get(f1) + floorsQR.get(f2));
+            if (type.equals("ELEV")) {
+                ret = ("O" + floorsQR.get(f1) + floorsQR.get(f2));
+            } else {
+                ret = ("Q" + floorsQR.get(f1) + floorsQR.get(f2));
+            }
         }
-
         return ret;
     }
 
     /**
      * Populate the listview and turn the list of directions into one printable string.
-     * @param directions the list of directions as strings
+     * @param ds the list of directions as strings
      * @return a String that is the sum of all the directions
      */
-    public String printDirections(ArrayList<String> directions) {    // TODO
-        // Create labels for each direction and add them to the listview
+    public String printDirections(ArrayList<String> ds) {    // TODO
+        HashMap<String, String> backToFloors = new HashMap<>();
+        backToFloors.put("A", "L2");
+        backToFloors.put("B", "L1");
+        backToFloors.put("C", "G");
+        backToFloors.put("D", "1");
+        backToFloors.put("E", "2");
+        backToFloors.put("F", "3");
+        ArrayList<String> directions = new ArrayList<>();
         ObservableList<Label> dirs = FXCollections.observableArrayList();
         ArrayList<Label> labels = new ArrayList<>();
-        for (int i = 0; i < directions.size(); i++) {
-            Label l = new Label(directions.get(i));
+        for (int i = 0; i < ds.size(); i++) {
+            String direct = ds.get(i);
+            switch(direct.substring(0,1)) {
+                case "A":
+                    direct = "Walk straight for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "B":
+                    direct = "Turn left and walk for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "C":
+                    direct = "Turn slightly left and walk for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "D":
+                    direct = "Turn sharply left and walk for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "E":
+                    direct = "Turn right and walk for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "F":
+                    direct = "Turn slightly right and walk for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "G":
+                    direct = "Turn sharply right and walk for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "H":
+                    direct = "Turn around and walk for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "I":
+                    direct = "Walk to the elevator.\n";
+                    break;
+                case "J":
+                    direct = "Walk to the stairs.\n";
+                    break;
+                case "N":
+                    direct = "Take the elevator up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    break;
+                case "O":
+                    direct = "Take the elevator down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";                    break;
+                case "P":
+                    direct = "Take the stairs up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";                    break;
+                case "Q":
+                    direct = "Take the stairs down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";                    break;
+                case "S":
+                    direct = "Walk north for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "T":
+                    direct = "Walk north west for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "U":
+                    direct = "Walk west for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "V":
+                    direct = "Walk south west for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "W":
+                    direct = "Walk south for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "X":
+                    direct = "Walk south east for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "Y":
+                    direct = "Walk east for " + direct.substring(1) + " feet.\n";
+                    break;
+                case "Z":
+                    direct = "Walk north east for " + direct.substring(1) + " feet.\n";
+                    break;
+                default:
+                    direct = "Houston we have a problem";
+                    break;
+            }
+
+            Label l = new Label(direct);
             l.setWrapText(true);
             l.setTextFill(Color.WHITE);
             labels.add(l);
         }
+
         dirs.addAll(labels);
         directionsView.setItems(dirs);
 
-        // Print out the directions
+        // Print out the directions TODO cut
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < directions.size(); ++i) {
             buf.append(directions.get(i));
         }
         String total = buf.toString();
+        System.out.println(total);    // TODO cut
         return total;
     }
 
@@ -540,6 +574,14 @@ public class MapView {
      *      *          between the middle and last point
      */
     public String csDirPrint(Node prev, Node curr, Node next) {
+        if(!curr.getNodeType().equals("ELEV") && !curr.getNodeType().equals("STAI") && (next.getNodeType().equals("ELEV") || next.getNodeType().equals("STAI"))) {    // If next node is elevator, say so
+            if (next.getNodeType().equals("ELEV")) {
+                return "I";
+            } else {
+                return "J";
+            }
+        }
+
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
         prevXd = prev.getXcoord();
         prevYd = prev.getYcoord();

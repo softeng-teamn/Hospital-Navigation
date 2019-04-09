@@ -146,88 +146,88 @@ public class MapViewTest {
     @Category( FastTest.class)
     public void csDirPrint() {
         // Up right diagonal
-        assertTrue(mp.csDirPrint(0, 0, 3, 3, 4, 4).contains("straight"));
-        assertTrue(mp.csDirPrint(0, 0, 3, 3, 4, 8).contains("right"));
-        assertTrue(mp.csDirPrint(0, 0, 3, 3, 4, 0).contains("left"));
-        assertTrue(mp.csDirPrint(0, 0, 3, 3, 2, 2).contains("around"));
+        assertTrue(mp.csDirPrint(new Node(0, 0), new Node(3, 3), new Node(4, 4)).contains("A"));
+        assertTrue(mp.csDirPrint(new Node(0, 0), new Node(3, 3), new Node(4, 8)).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(3,3), new Node(4, 0)).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(0,0),new Node(3,3), new Node(2, 2)).contains("H"));
         // Horiz and vert
-        assertTrue(mp.csDirPrint(0, 0, 3, 3, 3, 9).contains("right"));
-        assertTrue(mp.csDirPrint(0, 0, 3, 3, 3, -8).contains("left"));
-        assertTrue(mp.csDirPrint(0, 0, 3, 3, 5, 3).contains("left"));
-        assertTrue(mp.csDirPrint(0, 0, 3, 3, 0, 3).contains("right"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(3,3), new Node(3, 9)).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(3,3), new Node(3, -8)).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(3,3), new Node(5, 3)).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(3,3), new Node(0, 3)).contains("E"));
 
-        // Up left diagonal
-        assertTrue(mp.csDirPrint(6, 0, 3, 3, 2, 4).contains("straight"));
-        assertTrue(mp.csDirPrint(5, 0, 3, 3, 1, 9).contains("left"));
-        assertTrue(mp.csDirPrint(5, 0, 3, 3, 1, -9).contains("right"));
-        assertTrue(mp.csDirPrint(6, 0, 3, 3, 4, 2).contains("around"));
+        // Up right diagonal
+        assertTrue(mp.csDirPrint(new Node(6,0), new Node(3,3), new Node(2, 4)).contains("A"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(1, 9)).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(1, -9)).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(4, 2)).contains("H"));
         // Horiz and vert
-        assertTrue(mp.csDirPrint(5, 0, 3, 3, 3, 9).contains("left"));
-        assertTrue(mp.csDirPrint(5, 0, 3, 3, 3, -8).contains("right"));
-        assertTrue(mp.csDirPrint(5, 0, 3, 3, 5, 3).contains("left"));
-        assertTrue(mp.csDirPrint(5, 0, 3, 3, 0, 3).contains("right"));
-
-        // Down right diagonal
-        assertTrue(mp.csDirPrint(0, 5, 3, 2, 5, 0).contains("straight"));
-        assertTrue(mp.csDirPrint(0, 5, 3, 2, 0, 8).contains("right"));
-        assertTrue(mp.csDirPrint(0, 5, 3, 2, 5, -7).contains("left"));
-        assertTrue(mp.csDirPrint(0, 5, 3, 2, 1, 4).contains("around"));
-        // Horiz and vert
-        assertTrue(mp.csDirPrint(0, 5, 3, 3, 3, 9).contains("right"));
-        assertTrue(mp.csDirPrint(0, 5, 3, 3, 3, -8).contains("left"));
-        assertTrue(mp.csDirPrint(0, 5, 3, 3, 5, 3).contains("right"));
-        assertTrue(mp.csDirPrint(0, 5, 3, 3, 0, 3).contains("left"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(3, 9)).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(3, -8)).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(5, 3)).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(0, 3)).contains("E"));
 
         // Down left diagonal
-        assertTrue(mp.csDirPrint(5, 5, 3, 3, 0, 0).contains("straight"));
-        assertTrue(mp.csDirPrint(5, 5, 3, 3, 0, 1).contains("left"));
-        assertTrue(mp.csDirPrint(5, 5, 3, 3, 0, -8).contains("right"));
-        assertTrue(mp.csDirPrint(5, 5, 3, 3, 6, 6).contains("around"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3, 2), new Node(5,0)).contains("A"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3, 2), new Node(0, 8)).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3, 2), new Node(5, -7)).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3, 2), new Node(1, 4)).contains("H"));
         // Horiz and vert
-        assertTrue(mp.csDirPrint(0, 5, -3, 3, -3, 9).contains("left"));
-        assertTrue(mp.csDirPrint(0, 5, -3, 3, -3, -8).contains("right"));
-        assertTrue(mp.csDirPrint(0, 5, -3, 3, -5, 3).contains("left"));
-        assertTrue(mp.csDirPrint(0, 5, -3, 3, 0, 3).contains("right"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(3, 9)).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(3, -8)).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(5, 3)).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(0, 3)).contains("B"));
+
+        // Down right diagonal
+        assertTrue(mp.csDirPrint(5, 5, new Node(3,3), 0, 0).contains("A"));
+        assertTrue(mp.csDirPrint(5, 5, new Node(3,3), 0, 1).contains("B"));
+        assertTrue(mp.csDirPrint(5, 5, new Node(3,3), 0, -8).contains("E"));
+        assertTrue(mp.csDirPrint(5, 5, new Node(3,3), 6, 6).contains("H"));
+        // Horiz and vert
+        assertTrue(mp.csDirPrint(new Node(5,0), -new Node(3,3), -3, 9).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), -new Node(3,3), -3, -8).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0), -new Node(3,3), -5, 3).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), -new Node(3,3), 0, 3).contains("E"));
 
         // Straight up
-        assertTrue(mp.csDirPrint(0, 0, 0, 5, 1, 6).contains("left"));
-        assertTrue(mp.csDirPrint(0, 0, 0, 5, -1, 2).contains("right"));
-        assertTrue(mp.csDirPrint(0, 0, 0, 5, -2, 9).contains("right"));
-        assertTrue(mp.csDirPrint(0, 0, 0, 5, 7, 9).contains("left"));
-        assertTrue(mp.csDirPrint(0, 0, 0, 5, 5, 5).contains("left"));
-        assertTrue(mp.csDirPrint(0, 0, 0, 5, -9, 5).contains("right"));
-        assertTrue(mp.csDirPrint(0, 0, 0, 5, 0, 19).contains("straight"));
-        assertTrue(mp.csDirPrint(0, 0, 0, 5, 0, -7).contains("around"));
+        assertTrue(mp.csDirPrint(new Node(0,0) new Node(5,0), 1, 6).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(0,0) new Node(5,0), -1, 2).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(0,0) new Node(5,0), -2, 9).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(0,0)new Node(5,0), 7, 9).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(0,0), 0, new Node(5,5), 5).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(0,0) new Node(5,0), -9, 5).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(0,0) 0, new Node(5,0), 19).contains("A"));
+        assertTrue(mp.csDirPrint(new Node(0,0) 0, new Node(5,0), -7).contains("H"));
 
         // Straight down
-        assertTrue(mp.csDirPrint(0, 5, 0, 0, 5, 5).contains("right"));
-        assertTrue(mp.csDirPrint(0, 5, 0, 0, 9, 0).contains("right"));
-        assertTrue(mp.csDirPrint(0, 5, 0, 0, 0, -9).contains("straight"));
-        assertTrue(mp.csDirPrint(0, 5, 0, 0, 0, 10).contains("around"));
-        assertTrue(mp.csDirPrint(0, 5, 0, 0, 5, -5).contains("right"));
-        assertTrue(mp.csDirPrint(0, 5, 0, 0, -2, -2).contains("left"));
-        assertTrue(mp.csDirPrint(0, 5, 0, 0, -3, 0).contains("left"));
-        assertTrue(mp.csDirPrint(0, 5, 0, 0, -7, 19).contains("left"));
+        assertTrue(mp.csDirPrint(new Node(5,0),0, 0, new Node(5,5)).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0),0, 0, 9, 0).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0),0 0, 0, -9).contains("A"));
+        assertTrue(mp.csDirPrint(new Node(5,0),0, 0, 0, 10).contains("H"));
+        assertTrue(mp.csDirPrint(new Node(5,0),0, 0, 5, -5).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0),0, 0, -2, -2).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0),0, 0, -3, 0).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), 0, 0, -7, 19).contains("B"));
 
         // Straight left
-        assertTrue(mp.csDirPrint(5, 0, 0, 0, -1, 0).contains("straight"));
-        assertTrue(mp.csDirPrint(5, 0, 0, 0, 3, 4).contains("left"));
-        assertTrue(mp.csDirPrint(5, 0, 0, 0, 0, 9).contains("left"));
-        assertTrue(mp.csDirPrint(5, 0, 0, 0, 9, 10).contains("left"));
-        assertTrue(mp.csDirPrint(5, 0, 0, 0, 10, 0).contains("around"));
-        assertTrue(mp.csDirPrint(5, 0, 0, 0, -9, -17).contains("right"));
-        assertTrue(mp.csDirPrint(5, 0, 0, 0, 0, -2).contains("right"));
-        assertTrue(mp.csDirPrint(5, 0, 0, 0, 9, -8).contains("right"));
+        assertTrue(mp.csDirPrint(new Node(5,0), 0, 0, -1, 0).contains("A"));
+        assertTrue(mp.csDirPrint(new Node(5,0), 0, 0, 3, 4).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), 0, 0, 0, 9).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), 0, 0, 9, 10).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(5,0), 0, 0, 10, 0).contains("H"));
+        assertTrue(mp.csDirPrint(new Node(5,0), 0, 0, -9, -17).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0), 0, 0, 0, -2).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(5,0), 0, 0, 9, -8).contains("E"));
 
         // Straight right
-        assertTrue(mp.csDirPrint(0, 0, 6, 0, 9, 0).contains("straight"));
-        assertTrue(mp.csDirPrint(0, 0, 6, 0, 1, 0).contains("around"));
-        assertTrue(mp.csDirPrint(0, 0, 6, 0, -9, 8).contains("right"));
-        assertTrue(mp.csDirPrint(0, 0, 6, 0, 6, 9).contains("right"));
-        assertTrue(mp.csDirPrint(0, 0, 6, 0, 10, 8).contains("right"));
-        assertTrue(mp.csDirPrint(0, 0, 6, 0, 8, -9).contains("left"));
-        assertTrue(mp.csDirPrint(0, 0, 6, 0, 6, -10).contains("left"));
-        assertTrue(mp.csDirPrint(0, 0, 6, 0, 99, -88).contains("left"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(6,0), new Node(6,0)).contains("A"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(6,0), new Node(1,0)).contains("H"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(6,0), -9, 8).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(6,0), 6, 9).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(6,0), 10, 8).contains("E"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(6,0), 8, -9).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(6,0), 6, -10).contains("B"));
+        assertTrue(mp.csDirPrint(new Node(0,0), new Node(6,0), 99, -88).contains("B"));
     }
 
     @Test
