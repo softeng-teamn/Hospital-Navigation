@@ -100,8 +100,8 @@ public class MapView {
     private
     HashMap<String, Integer> floors = new HashMap<String, Integer>();
 
-    private HashMap<String, ImageView> imageCache = new HashMap<>();
-    private boolean imagesCached = false;
+    private static HashMap<String, ImageView> imageCache = new HashMap<>();
+    private static boolean imagesCached = false;
 
     // ELEVATOR CALL BUTTONS
     @FXML
