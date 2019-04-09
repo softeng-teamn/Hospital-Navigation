@@ -2,6 +2,7 @@ package controller;
 
 
 import model.Edge;
+import model.ElevatorCon;
 import model.Node;
 import service.DatabaseService;
 
@@ -14,6 +15,8 @@ public class Controller {
     static Node nodeToEdit = new Node("BHALL01402",3296,880,"2","45 Francis","HALL","Hallway Intersection 14 Level 2","Hallway B1402");
     static ArrayList<Edge> edgesToEdit;
     //BHALL01402,3296,880,2,45 Francis,HALL,Hallway Intersection 14 Level 2,Hallway B1402
+    static ElevatorCon elevatorCon = new ElevatorCon();
+    static String floorIsAt = "0";
 
 
     public static boolean getIsAdmin() {

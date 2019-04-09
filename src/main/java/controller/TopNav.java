@@ -31,7 +31,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn;
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -68,10 +68,10 @@ public class TopNav {
 
     @FXML
     // switches window to map editor screen.
-    public void showFulfillRequest() throws Exception {
+    public void showAdminScene() throws Exception {
         Stage stage = (Stage) fulfillBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
-        StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
+        Parent root = FXMLLoader.load(ResourceLoader.adminServices);
+        StageManager.changeExistingWindow(stage, root, "Administrator Services");
     }
 
     @FXML
