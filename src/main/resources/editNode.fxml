@@ -23,9 +23,9 @@
          <children>
             <Label text="Building" />
             <JFXTextField fx:id="building_field" promptText="building" />
-            <Label text="Node Type" />
+            <Label text="node type" />
             <JFXTextField fx:id="type_field" promptText="type" />
-            <Label text="Floor" />
+            <Label text="floor" />
             <JFXComboBox fx:id="floor_combo" maxWidth="1.7976931348623157E308" onAction="#comboAction" promptText="floor" />
             <Label text="Short Name" />
             <JFXTextField fx:id="short_field" promptText="short name" />
