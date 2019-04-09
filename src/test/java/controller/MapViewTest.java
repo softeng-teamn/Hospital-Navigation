@@ -67,10 +67,10 @@ public class MapViewTest {
         assertTrue(mp.makeDirections(path).get(1).contains("west"));
         path.clear();
         path.addAll(Arrays.asList(n0, nE, n4));
-        assertTrue(mp.makeDirections(path).get(1).contains("west"));
+        assertTrue(mp.makeDirections(path).get(2).contains("elevator"));
         path.clear();
         path.addAll(Arrays.asList(n0, nS, n4));
-        assertTrue(mp.makeDirections(path).get(1).contains("west"));
+        assertTrue(mp.makeDirections(path).get(2).contains("stairs"));
 
 
         // TODO

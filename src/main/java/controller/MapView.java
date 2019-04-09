@@ -321,6 +321,13 @@ public class MapView {
         cardinal = convertToCardinal(cardinal);
         directions.add(cardinal);
 
+        if (path.get(1).getNodeType().equals("ELEV")) {
+            directions.add("Walk to the elevator.\n");
+        }
+        else if (path.get(1).getNodeType().equals("STAI")) {
+            directions.add("Walk to the stairs.\n");
+        }
+
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
             if (afterFloorChange) {    // If we just changed floors, give a cardinal direction
@@ -328,12 +335,12 @@ public class MapView {
                 directions.add(convertToCardinal(afterEl));
                 afterFloorChange = false;
             }
-            else if (!path.get(i).getFloor().equals(path.get(i+1).getFloor())) {    // Otherwise if we're changing floors, give a floor change direction
-                if (path.get(i).getNodeType().equals("ELEV")) {
-                    directions.add("Take the elevator from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
+            else if (!path.get(i+1).getFloor().equals(path.get(i+2).getFloor())) {    // Otherwise if we're changing floors, give a floor change direction
+                if (path.get(i+1).getNodeType().equals("ELEV")) {
+                    directions.add("Take the elevator from floor " + path.get(i+1).getFloor() + " to floor " + path.get(i+2).getFloor() + "\n");
                 }
                 else {
-                    directions.add("Take the stairs from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
+                    directions.add("Take the stairs from floor " + path.get(i+1).getFloor() + " to floor " + path.get(i+2).getFloor() + "\n");
                 }
                 afterFloorChange = true;
             }
@@ -341,11 +348,11 @@ public class MapView {
                 directions.add(csDirPrint(path.get(i).getXcoord(), path.get(i).getYcoord(), path.get(i + 1).getXcoord(), path.get(i + 1).getYcoord(), path.get(i + 2).getXcoord(), path.get(i + 2).getYcoord()) + "\n");
             }
 
-            if(path.get(i+1).getNodeType().equals("ELEV") && !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is elevator, say so
+            if(path.get(i+2).getNodeType().equals("ELEV") && !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is elevator, say so
                 directions.remove(directions.size()-1);
                 directions.add("Walk to the elevator.\n");
             }
-            else if (path.get(i+1).getNodeType().equals("STAI")&& !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is stairs, say so
+            else if (path.get(i+2).getNodeType().equals("STAI")&& !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is stairs, say so
                 directions.remove(directions.size()-1);
                 directions.add("Walk to the stairs.\n");
             }
