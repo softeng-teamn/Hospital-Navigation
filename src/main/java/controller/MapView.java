@@ -196,7 +196,6 @@ public class MapView {
         selectCircle = circle;
         // Scroll to new point
         scrollTo(event.getNodeSelected());
-
     }
 
     // generate path on the screen
