@@ -589,7 +589,7 @@ public class DatabaseService {
      */
     public boolean insertEmployee(Employee employee) {
         String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?, ?, ?, ?)");
-        return executeInsert(insertStatement, employee.getID(), employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getPassword(), employee.getUsername(), employee.getPhone());
+        return executeInsert(insertStatement, employee.getID(), employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getPassword(), employee.getPhone(), employee.getEmail());
     }
 
     /**

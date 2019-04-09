@@ -87,9 +87,11 @@ public class Employee {
     public String toString() {
         return "Employee{" +
                 "ID=" + ID +
-                ", job='" + job + '\'' +
+                ", job=" + job +
                 ", isAdmin=" + isAdmin +
                 ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
                 ", username='" + username + '\'' +
                 '}';
     }
@@ -101,13 +103,15 @@ public class Employee {
         Employee employee = (Employee) o;
         return ID == employee.ID &&
                 isAdmin == employee.isAdmin &&
-                Objects.equals(job, employee.job) &&
+                job == employee.job &&
                 Objects.equals(password, employee.password) &&
+                Objects.equals(email, employee.email) &&
+                Objects.equals(phone, employee.phone) &&
                 Objects.equals(username, employee.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, job, isAdmin, password, username);
+        return Objects.hash(ID, job, isAdmin, password, email, phone, username);
     }
 }
