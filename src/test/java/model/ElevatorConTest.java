@@ -14,7 +14,8 @@ public class ElevatorConTest {
 
     @Test
     @Category(FastTest.class)
-    public void postTest(){
+    public void getTest(){
+        String floor = "";
         ElevatorCon e = new ElevatorCon();
         GregorianCalendar cal = new GregorianCalendar();
         try {
@@ -22,13 +23,6 @@ public class ElevatorConTest {
         }catch (IOException ioe){
             System.out.println("IO Exception");
         }
-    }
-
-    @Test
-    @Category(FastTest.class)
-    public void getTest(){
-        String floor = "";
-        ElevatorCon e = new ElevatorCon();
         try {
             floor = e.getFloor("S");
         }catch (IOException ioe){
