@@ -182,6 +182,7 @@ public class MapView {
         };
 
         new Thread(task).start();
+
     }
 
     @FXML
@@ -250,7 +251,9 @@ public class MapView {
                         break;
                     case "editing":
                         editNodeHandler(event.isEditing());
+                        break;
                     default:
+//                        System.out.println("I don'");
                         break;
                 }
             }

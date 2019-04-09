@@ -12,8 +12,8 @@
     <Class name="controller.EditNodeController" />
   </Match>
   <Match>
-    <Bug code="SF" />
-    <Class name="controller.MapView" />
+    <Bug code="ST" />
+    <Class name="controller.MapView$5" />
   </Match>
 </FindBugsFilter>
 
