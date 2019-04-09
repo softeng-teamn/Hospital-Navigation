@@ -98,7 +98,7 @@ public class MapView {
     private VBox showDirVbox;
 
     private
-    HashMap<String, Integer> floors = new HashMap<>();
+    HashMap<String, Integer> floors = new HashMap<String, Integer>();
 
     // ELEVATOR CALL BUTTONS
     @FXML
@@ -526,7 +526,7 @@ public class MapView {
         // Make the next instruction cardinal, or up/down if it is a floor connector
         String oldFloor = path.get(0).getFloor();
         String newFloor = path.get(1).getFloor();
-        if (floors.get(oldFloor) != floors.get(newFloor)) {
+        if (!floors.get(oldFloor).equals(floors.get(newFloor))) {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
         }
         else if (path.get(1).getNodeType().equals("ELEV")) {
@@ -555,7 +555,7 @@ public class MapView {
                     directions.add("J");
                 }
             }
-            else if (floors.get(oldFl) != floors.get(newFl)) {    // Otherwise if we're changing floors, give a floor change direction
+            else if (!floors.get(oldFl).equals(floors.get(newFl))) {    // Otherwise if we're changing floors, give a floor change direction
                 directions.add(upDownConverter(oldFl, newFl, path.get(i+1).getNodeType()));
                 afterFloorChange = true;
             }
