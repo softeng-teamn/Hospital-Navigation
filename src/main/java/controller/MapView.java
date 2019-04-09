@@ -343,7 +343,7 @@ public class MapView {
 
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
-            if (afterFloorChange) {    // If we just changed floors, give a cardinal direction
+            if (afterFloorChange && !path.get(i+1).getNodeType().equals("ELEV") && !path.get(i+1).getNodeType().equals("STAI")) {    // If we just changed floors, give a cardinal direction
                 String afterEl = csDirPrint(path.get(i+1).getXcoord() + NORTH_I, path.get(i+1).getYcoord() + NORTH_J, path.get(i+1).getXcoord(), path.get(i+1).getYcoord(), path.get(i+2).getXcoord(), path.get(i+2).getYcoord());
                 directions.add(convertToCardinal(afterEl));
                 afterFloorChange = false;
@@ -402,10 +402,10 @@ public class MapView {
                 }
 
                 if (oldFloor < newFloor) {
-                    directions.add("Take the " + transport + " up from floor " + oldFloor + " to floor " + newFloor + "\n");
+                    directions.add("Take the " + transport + " up from floor " + oldFloorstr + " to floor " + newFloorStr + ".\n");
                 }
                 else {
-                    directions.add("Take the " + transport + " down from floor " + oldFloor + " to floor " + newFloor + "\n");
+                    directions.add("Take the " + transport + " down from floor " + oldFloorstr + " to floor " + newFloorStr + ".\n");
                 }
                 afterFloorChange = true;
             }
@@ -414,6 +414,7 @@ public class MapView {
             }
 
             if(path.get(i+2).getNodeType().equals("ELEV") && !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is elevator, say so
+                System.out.println("damn " + directions.get(directions.size() - 1));
                 directions.remove(directions.size()-1);
                 directions.add("Walk to the elevator.\n");
             }
@@ -460,7 +461,7 @@ public class MapView {
             if (directions.get(i).contains("Take") && directions.get(i+1).contains("Take")) {
                 String newDir = directions.get(i);
                 String toCombine = directions.get(i+ 1);
-                newDir = newDir.substring(0, newDir.length() - 4) + toCombine.substring(toCombine.length() - 3);
+                newDir = newDir.substring(0, newDir.indexOf("floor", 28) + 5) + toCombine.substring(toCombine.indexOf("floor", 28) + 5);
                 directions.remove(i+1);
                 directions.remove(i);
                 directions.add(i, newDir);
