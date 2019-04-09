@@ -3,26 +3,32 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextArea?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.requests.ITRequestController">
    <children>
-      <Label styleClass="big-label" text="Enter IT Request Details:" />
-      <JFXTextArea fx:id="description" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0">
+      <FontAwesomeIconView glyphName="DESKTOP" size="240" styleClass="request-glyph">
          <VBox.margin>
-            <Insets left="12.0" right="12.0" />
+            <Insets bottom="24.0" />
+         </VBox.margin>
+      </FontAwesomeIconView>
+      <JFXTextArea fx:id="description" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="Enter IT Request Details">
+         <VBox.margin>
+            <Insets bottom="24.0" left="12.0" right="12.0" />
          </VBox.margin>
          <padding>
             <Insets left="12.0" right="12.0" top="12.0" />
          </padding>
       </JFXTextArea>
-      <Label styleClass="big-label" text="Select Request Type:" />
-      <JFXComboBox fx:id="type" prefHeight="31.0" prefWidth="358.0" promptText="Request Type" />
+      <JFXComboBox fx:id="type" prefHeight="31.0" prefWidth="358.0" promptText="Choose Request Type" />
       <Region prefHeight="391.0" prefWidth="522.0" />
-      <JFXButton fx:id="submit" onAction="#submitRequest" text="Submit Request" />
+      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="Submit Request">
+         <VBox.margin>
+            <Insets bottom="24.0" />
+         </VBox.margin></JFXButton>
    </children>
    <opaqueInsets>
       <Insets />
