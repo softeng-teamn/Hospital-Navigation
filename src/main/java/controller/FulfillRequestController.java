@@ -98,7 +98,6 @@ public class FulfillRequestController extends Controller implements Initializabl
         }
 
         reloadList();
-
     }
 
     /**
