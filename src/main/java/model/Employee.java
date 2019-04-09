@@ -7,6 +7,7 @@ public class Employee {
     JobType job;
     boolean isAdmin;
     String password;
+    String email, phone;
 
     String username;
 
@@ -24,6 +25,8 @@ public class Employee {
         this.job = job;
         this.isAdmin = isAdmin;
         this.password = password;
+        this.email = "";
+        this.phone = "";
         System.out.println(job);
     }
 
@@ -62,6 +65,22 @@ public class Employee {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @Override
