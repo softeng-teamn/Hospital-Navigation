@@ -15,7 +15,27 @@ public class Event {
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
+    String filterSearch = ""; // filtered search
+    String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar
+    boolean isEditing = false;      // editing
+    String floor = "1";      // floor
 
+
+    public String getFloor() {
+        return floor;
+    }
+
+    public void setFloor(String floor) {
+        this.floor = floor;
+    }
+
+    public boolean isEditing() {
+        return isEditing;
+    }
+
+    public void setEditing(boolean editing) {
+        isEditing = editing;
+    }
 
     public boolean isChangingStart() {
         return isChangingStart;
@@ -85,5 +105,11 @@ public class Event {
         isAdmin = admin;
     }
 
+    public String getFilterSearch() { return filterSearch; }
 
+    public void setFilterSearch(String filterSearch) { this.filterSearch = filterSearch; }
+
+    public String getSearchMethod() { return searchMethod; }
+
+    public void setSearchMethod(String searchMethod) { this.searchMethod = searchMethod; }
 }

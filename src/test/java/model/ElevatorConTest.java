@@ -1,5 +1,6 @@
 package model;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.ElevatorTest;
@@ -15,21 +16,16 @@ public class ElevatorConTest {
 
     @Test
     @Category(ElevatorTest.class)
-    public void postTest(){
+    public void getTest(){
+        String floor = "";
         ElevatorCon e = new ElevatorCon();
+
         GregorianCalendar cal = new GregorianCalendar();
         try {
             e.postFloor("S", 3, cal);
         }catch (IOException ioe){
             System.out.println("IO Exception");
         }
-    }
-
-    @Test
-    @Category(ElevatorTest.class)
-    public void getTest(){
-        String floor = "";
-        ElevatorCon e = new ElevatorCon();
         try {
             floor = e.getFloor("S");
         }catch (IOException ioe){
