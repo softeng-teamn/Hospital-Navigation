@@ -2,6 +2,7 @@ package model;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import testclassifications.ElevatorTest;
 import testclassifications.FastTest;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class ElevatorConTest {
 
     @Test
-    @Category(FastTest.class)
+    @Category(ElevatorTest.class)
     public void postTest(){
         ElevatorCon e = new ElevatorCon();
         GregorianCalendar cal = new GregorianCalendar();
@@ -25,7 +26,7 @@ public class ElevatorConTest {
     }
 
     @Test
-    @Category(FastTest.class)
+    @Category(ElevatorTest.class)
     public void getTest(){
         String floor = "";
         ElevatorCon e = new ElevatorCon();
