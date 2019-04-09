@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TopNav {
 
+    public HBox top_nav;
     private Event event = EventBusFactory.getEvent();
     private EventBus eventBus = EventBusFactory.getEventBus();
 
@@ -42,6 +44,8 @@ public class TopNav {
     private Label time_label;
     @FXML
     private JFXToggleNode edit_btn;
+
+    JFXTextField startSearch = new JFXTextField();
 
     // events I send out/control
     @FXML
@@ -201,8 +205,12 @@ public class TopNav {
 
         // show node-selected in search
         String fillNodeinSearch = selected.getLongName();
-        search_bar.setText(fillNodeinSearch);
 
+        if(event.isEndNode()){
+            search_bar.setText(fillNodeinSearch);
+        } else {
+            startSearch.setText(fillNodeinSearch);
+        }
     }
 
     public void startNavigation(ActionEvent actionEvent) {
@@ -212,5 +220,11 @@ public class TopNav {
         sendEvent.setAccessiblePath(accessibility);
         sendEvent.setEventName("navigation");
         eventBus.post(sendEvent);
+    }
+
+    @FXML
+    public void showStartSearch(ActionEvent actionEvent) {
+        startSearch.setPromptText("Start Node");
+        top_nav.getChildren().add(0, startSearch);
     }
 }

@@ -18,6 +18,15 @@ public class Event {
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
 
+
+
+    boolean endNode = true; //true for endNode node, false for start node
+
+
+    public boolean isEndNode() { return endNode; }
+
+    public void setEndNode(boolean startEnd) { this.endNode = startEnd; }
+
     public String getFloor() {
         return floor;
     }
