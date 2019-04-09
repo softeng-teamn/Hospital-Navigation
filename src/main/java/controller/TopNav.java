@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import de.jensd.fx.glyphs.materialicons.MaterialIconView;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -32,7 +33,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, edit_btn, newNode_btn, employeeBtn;
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField start_search_bar, end_search_bar;
     @FXML
@@ -41,14 +42,15 @@ public class TopNav {
     private FontAwesomeIconView lock_icon;
     @FXML
     private Label time_label;
+    @FXML
+    private JFXToggleNode edit_btn;
 
     // events I send out/control
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
         if (event.isAdmin()) {
-            Event sendEvent = new Event();
-            sendEvent.setEventName("login");
-            eventBus.post(sendEvent);
+            event.setAdmin(false);
+            event.setLoggedIn(false);
             resetBtn();
 
         } else {
@@ -67,10 +69,10 @@ public class TopNav {
 
     @FXML
     // switches window to map editor screen.
-    public void showFulfillRequest() throws Exception {
+    public void showAdminScene() throws Exception {
         Stage stage = (Stage) fulfillBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
-        StageManager.changeExistingWindow(stage, root, "Fulfill Service Request");
+        Parent root = FXMLLoader.load(ResourceLoader.adminServices);
+        StageManager.changeExistingWindow(stage, root, "Administrator Services");
     }
 
     @FXML
@@ -92,6 +94,11 @@ public class TopNav {
     @FXML
     void initialize() {
         eventBus.register(this);
+
+        // Turn off editing
+        event.setEventName("editing");
+        event.setEditing(false);
+        eventBus.post(event);
 
         // SHOULD THIS GO HERE? (was in intialize of old map controller)
         navigate_btn.setVisible(false);
@@ -154,17 +161,22 @@ public class TopNav {
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
             newNode_btn.setVisible(true);
-            employeeBtn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
         } else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             newNode_btn.setVisible(false);
-            employeeBtn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
         }
     }
 
+    @FXML
+    public void editButtonAction(ActionEvent e) throws Exception {
+        event.setEventName("editing");
+        event.setEditing(!event.isEditing());
+        System.out.println("Editing: " + event.isEditing());
+        eventBus.post(event);
+    }
 
     /**
      * searches for room
@@ -188,10 +200,9 @@ public class TopNav {
     public void endSearchBarEnter(ActionEvent e) {
         String search = end_search_bar.getText();
 
-        Event sendEvent = new Event();
-        sendEvent.setSearchBarQuery(search);
-        sendEvent.setEventName("search-query");
-        eventBus.post(sendEvent);
+        event.setSearchBarQuery(search);
+        event.setEventName("search-query");
+        eventBus.post(event);
     }
 
     // when event comes in with a node-selected:
@@ -211,18 +222,64 @@ public class TopNav {
     }
 
     public void startNavigation(ActionEvent actionEvent) {
-        Event sendEvent = new Event();
         Boolean accessibility = accessibilityButton.isSelected();
-        sendEvent.setNodeSelected(event.getNodeSelected());
-        sendEvent.setAccessiblePath(accessibility);
-        sendEvent.setEventName("navigation");
-        eventBus.post(sendEvent);
+        event.setAccessiblePath(accessibility);
+        event.setEventName("navigation");
+        eventBus.post(event);
+    }
+
+    public void showREST(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("REST");
+        eventBus.post(event);
+    }
+
+    public void showELEV(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("ELEV");
+        eventBus.post(event);
+    }
+
+    public void showSTAI(ActionEvent actionEvent) {
+        event.setEventName("filter");
+        event.setFilterSearch("STAI");
+        eventBus.post(event);
+    }
+
+    public void showINFO(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("INFO");
+        eventBus.post(event);
+    }
+
+    public void showCONF(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("CONF");
+        eventBus.post(event);
+    }
+
+    public void showEXIT(ActionEvent actionEvent) {
+        Boolean accessibility = accessibilityButton.isSelected();
+        event.setAccessiblePath(accessibility);
+        event.setEventName("filter");
+        event.setFilterSearch("EXIT");
+        eventBus.post(event);
     }
 
     public void showEditEmployee(ActionEvent actionEvent) throws Exception {
-        Stage stage = (Stage) employeeBtn.getScene().getWindow();
+        Stage stage = (Stage) auth_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
         StageManager.changeExistingWindow(stage, root, "Edit Employees");
         stage.setFullScreen(true);
+
     }
+
 }

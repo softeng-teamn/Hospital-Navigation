@@ -12,7 +12,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -24,10 +36,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.*;
+import service.DatabaseService;
 import service.PathFindingService;
-
+import service.ResourceLoader;
+import service.StageManager;
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -39,20 +60,29 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import static controller.Controller.nodeToEdit;
+
 public class MapView {
 
     private EventBus eventBus = EventBusFactory.getEventBus();
     private Event event = EventBusFactory.getEvent();
 
+    private String currentMethod;
+
     private Group zoomGroup;
     private Circle startCircle;
     private Circle selectCircle;
     private ArrayList<Line> lineCollection;
+    private ArrayList<Circle> circleCollection;
 
     @FXML
     private ScrollPane map_scrollpane;
     @FXML
     private Slider zoom_slider;
+    @FXML
+    private JFXButton f1_btn, f2_btn, f3_btn, l1_btn, l2_btn, ground_btn;
+    @FXML
+    private Pane image_pane;
     @FXML
     private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
@@ -108,6 +138,9 @@ public class MapView {
         // Set start circle
         startCircle = new Circle();
 
+        // Initialize Circle Collection
+        circleCollection = new ArrayList<Circle>();
+
         // Setting Up Circle Destination Point
         startCircle.setCenterX(event.getDefaultNode().getXcoord());
         startCircle.setCenterY(event.getDefaultNode().getYcoord());
@@ -133,13 +166,13 @@ public class MapView {
             @Override public Void call() throws Exception {
                 while (true) {
                     Thread.sleep(1000);
-                    System.out.println("shit was fired");
+//                    System.out.println("shit was fired");
                     TimeUnit.SECONDS.sleep(1);
-                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
+//                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
                     Platform.runLater(new Runnable() {
                         @Override public void run() {
                             try {
-                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
+//                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
                                 cur_el_floor.setText(elevatorCon.getFloor("S"));
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -151,6 +184,59 @@ public class MapView {
         };
 
         new Thread(task).start();
+
+    }
+
+    @FXML
+    void changeFloor(ActionEvent e) throws IOException {
+        JFXButton btn = (JFXButton)e.getSource();
+        ImageView imageView;
+        event.setEventName("floor");
+        String floorName = "";
+        event.setFloor(btn.getText());
+        switch (btn.getText()) {
+            case "Floor 3":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.thirdFloor.openStream()));
+                floorName = "3";
+                break;
+            case "Floor 2":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.secondFloor.openStream()));
+                floorName = "2";
+                break;
+            case "Floor 1":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.firstFloor.openStream()));
+                floorName = "1";
+                break;
+            case "L1":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.firstLowerFloor.openStream()));
+                floorName = "L1";
+                break;
+            case "L2":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.secondLowerFloor.openStream()));
+                floorName = "L2";
+                break;
+            case "Ground":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.groundFloor.openStream()));
+                floorName = "G";
+                break;
+            default:
+                System.out.println("We should not have default here!!!");
+                imageView = new ImageView(new Image(
+                        ResourceLoader.groundFloor.openStream()));
+                break;
+        }
+        image_pane.getChildren().clear();
+        image_pane.getChildren().add(imageView);
+        event.setFloor(floorName);
+        eventBus.post(event);
+        // Handle Floor changes
+        editNodeHandler(event.isEditing());
     }
 
     @Subscribe
@@ -164,14 +250,86 @@ public class MapView {
                         break;
                     case "node-select":
                         drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125));
+                        directionsView.getItems().clear();
+                        hideDirections();
+                        break;
+                    case "filter":
+                        filteredHandler();
+                        break;
+                    case "methodSwitch":
+                        currentMethod = event.getSearchMethod();
+                        break;
+                    case "editing":
+                        editNodeHandler(event.isEditing());
                         break;
                     default:
+//                        System.out.println("I don'");
                         break;
                 }
             }
         });
-        this.event = event;
     }
+
+
+    void editNodeHandler(boolean isEditing) {
+        if (isEditing) {
+            // remove previous selected circle
+            if (zoomGroup.getChildren().contains(selectCircle)) {
+                zoomGroup.getChildren().remove(selectCircle);
+            }
+            // remove old circles
+            zoomGroup.getChildren().removeAll(circleCollection);
+            circleCollection.clear();
+            // load all nodes for the floor
+            ArrayList<Node> nodeByFlooor = DatabaseService.getDatabaseService().getNodesByFloor(event.getFloor());
+            for (Node n : nodeByFlooor) {
+                Circle nodeCircle = new Circle();
+                nodeCircle.setCenterX(n.getXcoord());
+                nodeCircle.setCenterY(n.getYcoord());
+                nodeCircle.setRadius(20);
+                nodeCircle.setFill(Color.GREEN);
+                Tooltip tp = new Tooltip("ID: " + n.getNodeID() + ", Short Name: " + n.getShortName());
+                nodeCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        Stage stage = (Stage) image_pane.getScene().getWindow();
+                        Circle c = (Circle)event.getSource();
+                        tp.show(c, stage.getX()+event.getSceneX()+15, stage.getY()+event.getSceneY());
+                        image_pane.getScene().setCursor(Cursor.HAND);
+                    }
+                });
+                nodeCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        tp.hide();
+                        image_pane.getScene().setCursor(Cursor.DEFAULT);
+                    }
+                });
+                nodeCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        nodeToEdit = n;
+                        System.out.println("WE CLICKED THE CIRCLE");
+                        try {
+                            Stage stage = (Stage) image_pane.getScene().getWindow();
+                            Parent root = FXMLLoader.load(ResourceLoader.editNode);
+                            StageManager.changeExistingWindow(stage, root, "Node Editor");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                circleCollection.add(nodeCircle);
+            }
+            // Show on screen
+            zoomGroup.getChildren().addAll(circleCollection);
+        } else {
+            zoomGroup.getChildren().removeAll(circleCollection);
+            circleCollection.clear();
+        }
+    }
+
+
 
     private void drawPoint(Node node, Circle circle, Color color) {
         // remove points
@@ -195,12 +353,15 @@ public class MapView {
         // set circle to selected
         selectCircle = circle;
         // Scroll to new point
-        scrollTo(event.getNodeSelected());
+        scrollTo(node);
+
 
     }
 
     // generate path on the screen
     private void navigationHandler() {
+        currentMethod = event.getSearchMethod();
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!" + currentMethod + "!!!!!!!!!!!!!!!!!!");
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> path;
         MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
@@ -208,11 +369,53 @@ public class MapView {
         // check if the path need to be 'accessible'
         if (event.isAccessiblePath()) {
             // do something special
-            path = pathFinder.genPath(start, dest, true);
+            path = pathFinder.genPath(start, dest, true, currentMethod);
         } else {
             // not accessible
-            path = pathFinder.genPath(start, dest, false);
+            path = pathFinder.genPath(start, dest, false, currentMethod);
         }
+
+        drawPath(path);
+
+    }
+
+    private void filteredHandler() {
+        PathFindingService pathFinder = new PathFindingService();
+        ArrayList<Node> path;
+        MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
+        Boolean accessibility = event.isAccessiblePath();
+
+        switch (event.getFilterSearch()){
+            case "REST":
+                path = pathFinder.genPath(start, null, accessibility, "REST");
+                break;
+            case "ELEV":
+                path = pathFinder.genPath(start, null, accessibility, "ELEV");
+                break;
+            case "STAI":
+                path = pathFinder.genPath(start, null, false, "STAI");
+                break;
+            case "CONF":
+                path = pathFinder.genPath(start, null, accessibility, "CONF");
+                break;
+            case "INFO":
+                path = pathFinder.genPath(start, null, accessibility, "INFO");
+                break;
+            case "EXIT":
+                path = pathFinder.genPath(start, null, accessibility, "EXIT");
+                break;
+            default:
+                path = null;
+                break;
+        }
+
+        if (path == null){
+            System.out.println("DIDNT FIND A PATH");
+        } else {
+            drawPoint(path.get(path.size()-1), selectCircle, Color.rgb(72,87,125));
+        }
+
+
 
         drawPath(path);
     }
@@ -295,9 +498,7 @@ public class MapView {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
-
-    // todo: watch out for multiple floors? are those separate nodes -> problem w directions?
-
+  
     /**
      * Create textual instructions for the given path.
      * @param path the list of nodes in the path
@@ -324,11 +525,62 @@ public class MapView {
                 afterFloorChange = false;
             }
             else if (!path.get(i).getFloor().equals(path.get(i+1).getFloor())) {    // Otherwise if we're changing floors, give a floor change direction
+                String oldFloorstr = path.get(i).getFloor();
+                String newFloorStr = path.get(i+1).getFloor();
+                int newFloor, oldFloor;
+                switch (oldFloorstr) {
+                    case "L2":
+                        oldFloor = -2;
+                        break;
+                    case "L1":
+                        oldFloor = -1;
+                        break;
+                    case "G":
+                        oldFloor = 0;
+                        break;
+                    case "1":
+                        oldFloor = 1;
+                        break;
+                    case "2":
+                        oldFloor = 2;
+                        break;
+                    default:
+                        oldFloor = 3;
+                        break;
+                }
+                switch (newFloorStr) {
+                    case "L2":
+                        newFloor = -2;
+                        break;
+                    case "L1":
+                        newFloor = -1;
+                        break;
+                    case "G":
+                        newFloor = 0;
+                        break;
+                    case "1":
+                        newFloor = 1;
+                        break;
+                    case "2":
+                        newFloor = 2;
+                        break;
+                    default:
+                        newFloor = 3;
+                        break;
+                }
+
+                String transport;
                 if (path.get(i).getNodeType().equals("ELEV")) {
-                    directions.add("Take the elevator from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
+                    transport = "elevator";
                 }
                 else {
-                    directions.add("Take the stairs from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
+                    transport = "stairs";
+                }
+                if (oldFloor < newFloor) {
+                    directions.add("Take the " + transport + " up from floor " + oldFloor + " to floor " + newFloor + "\n");
+                }
+                else {
+                    directions.add("Take the " + transport + " down from floor " + oldFloor + " to floor " + newFloor + "\n");
                 }
                 afterFloorChange = true;
             }
@@ -562,5 +814,96 @@ public class MapView {
         else {
             showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
         }
+    }
+
+    private void hideDirections() {
+        showDirectionsBtn.setText("Show Textual Directions");
+        showDirVbox.toFront();
+        showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
+        directionsView.setVisible(false);
+    }
+  
+    /**
+     * Compress a given set of directions into a series of characters
+     * to be used in a QR code
+     * Format: <Instruction> <Distance/Floor> <Hint>
+     * @return the String to use in the QR code
+     */
+    private String convertToQRCode(ArrayList<String> directions) {
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < directions.size(); i++) {
+            String dir = directions.get(i);
+            if (dir.contains("straight")) {
+                buf.append("A");
+            }
+            else if (dir.contains("slight left")) {
+                buf.append("C");
+            }
+            else if (dir.contains("sharp left")) {
+                buf.append("D");
+            }
+            else if (dir.contains("left")) {
+                buf.append("B");
+            }
+            else if (dir.contains("sharp right")) {
+                buf.append("G");
+            }
+            else if (dir.contains("slight right")) {
+                buf.append("F");
+            }
+            else if (dir.contains("right")) {
+                buf.append("E");
+            }
+            else if (dir.contains("elevator") && dir.contains("down")) {
+                buf.append("O");
+            }
+            else if (dir.contains("elevator") && dir.contains("up")) {
+                buf.append("N");
+            }
+            else if (dir.contains("stairs") && dir.contains("up")) {
+                buf.append("P");
+            }
+            else if (dir.contains("stairs") && dir.contains("down")) {
+                buf.append("Q");
+            }
+            else if (dir.contains("north west")) {
+                buf.append("T");
+            }
+            else if (dir.contains("north east")) {
+                buf.append("Z");
+            }
+            else if (dir.contains("north")) {
+                buf.append("S");
+            }
+            else if (dir.contains("south west")) {
+                buf.append("V");
+            }
+            else if (dir.contains("south east")) {
+                buf.append("X");
+            }
+            else if (dir.contains("south")) {
+                buf.append("W");
+            }
+            else if (dir.contains("east")) {
+                buf.append("Y");
+            }
+            else if (dir.contains("west")) {
+                buf.append("U");
+            }
+
+            if (buf.indexOf("O") > 0 || buf.indexOf("N") > 0 || buf.indexOf("P") > 0 || buf.indexOf("Q") > 0) {
+                buf.append(dir.substring(dir.length() - 2));
+            }
+            else {
+                if (dir.contains("for")) {
+                    buf.append(dir.substring(dir.indexOf("for") + 4));
+                }
+                else {
+                    buf.append(dir.substring(dir.indexOf("walk") + 5));
+                }
+            }
+
+        }
+        return "";
     }
 }

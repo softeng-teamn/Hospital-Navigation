@@ -8,14 +8,14 @@ public abstract class Request {
     private String notes;
     private Node location;
     private boolean completed;
-    private String completedBy;
+    private int assignedTo;
 
     public Request(int id, String notes, Node location, boolean completed) {
         this.id = id;
         this.notes = notes;
         this.location = location;
         this.completed = completed;
-        this.completedBy = "";
+        this.assignedTo = -1;
     }
 
     public abstract void  makeRequest() ;
@@ -54,12 +54,12 @@ public abstract class Request {
         this.completed = completed;
     }
 
-    public String getCompletedBy() {
-        return completedBy;
+    public int getAssignedTo() {
+        return assignedTo;
     }
 
-    public void setCompletedBy(String completedBy) {
-        this.completedBy = completedBy;
+    public void setAssignedTo(int assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
     @Override
@@ -86,7 +86,7 @@ public abstract class Request {
                 ", location=" + location +
                 ", completed=" + completed +
                // ", requestType=" + requestType +
-                ", completedBy='" + completedBy + '\'' +
+                ", assignedTo='" + assignedTo + '\'' +
                 '}';
     }
 }

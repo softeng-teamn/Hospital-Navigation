@@ -3,6 +3,7 @@ package model;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import testclassifications.ElevatorTest;
 import testclassifications.FastTest;
 
 import java.io.IOException;
@@ -14,24 +15,17 @@ import static org.junit.Assert.assertEquals;
 public class ElevatorConTest {
 
     @Test
-    @Category(FastTest.class)
-    @Ignore
-    public void postTest(){
+    @Category(ElevatorTest.class)
+    public void getTest(){
+        String floor = "";
         ElevatorCon e = new ElevatorCon();
+
         GregorianCalendar cal = new GregorianCalendar();
         try {
             e.postFloor("S", 3, cal);
         }catch (IOException ioe){
             System.out.println("IO Exception");
         }
-    }
-
-    @Test
-    @Category(FastTest.class)
-    @Ignore
-    public void getTest(){
-        String floor = "";
-        ElevatorCon e = new ElevatorCon();
         try {
             floor = e.getFloor("S");
         }catch (IOException ioe){
