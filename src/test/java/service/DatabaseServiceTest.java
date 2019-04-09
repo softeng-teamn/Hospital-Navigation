@@ -436,6 +436,28 @@ public class DatabaseServiceTest {
 
     @Test
     @Category(FastTest.class)
+    public void getAllEdgesWithNode() {
+        Node n1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node n2 = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node n3 = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge e1 = new Edge("ACONF00102-ACONF00103", n1, n2);
+        Edge e2 = new Edge("ACONF00102-ACONF00104", n1, n3);
+        Edge e3 = new Edge("ACONF00103-ACONF00104", n2, n3);
+        assertTrue(myDBS.insertNode(n1));
+        assertTrue(myDBS.insertNode(n2));
+        assertTrue(myDBS.insertNode(n3));
+
+        assertTrue(myDBS.insertEdge(e1));
+        assertTrue(myDBS.insertEdge(e2));
+        assertTrue(myDBS.insertEdge(e3));
+
+        assertThat(myDBS.getAllEdgesWithNode("ACONF00102"), containsInAnyOrder(e1, e2));
+        assertThat(myDBS.getAllEdgesWithNode("ACONF00103"), containsInAnyOrder(e1, e3));
+        assertThat(myDBS.getAllEdgesWithNode("ACONF00104"), containsInAnyOrder(e2, e3));
+    }
+
+    @Test
+    @Category(FastTest.class)
     // Test both inserting and getting a reservation
     public void insertAndGetReservation() {
         // Assume an empty DB (ensured by setUp())
