@@ -296,8 +296,6 @@ public class MapView {
         timeline.play();
     }
 
-    // todo: watch out for multiple floors? are those separate nodes -> problem w directions?
-
     /**
      * Create textual instructions for the given path.
      * @param path the list of nodes in the path
@@ -324,11 +322,62 @@ public class MapView {
                 afterFloorChange = false;
             }
             else if (!path.get(i).getFloor().equals(path.get(i+1).getFloor())) {    // Otherwise if we're changing floors, give a floor change direction
+                String oldFloorstr = path.get(i).getFloor();
+                String newFloorStr = path.get(i+1).getFloor();
+                int newFloor, oldFloor;
+                switch (oldFloorstr) {
+                    case "L2":
+                        oldFloor = -2;
+                        break;
+                    case "L1":
+                        oldFloor = -1;
+                        break;
+                    case "G":
+                        oldFloor = 0;
+                        break;
+                    case "1":
+                        oldFloor = 1;
+                        break;
+                    case "2":
+                        oldFloor = 2;
+                        break;
+                    default:
+                        oldFloor = 3;
+                        break;
+                }
+                switch (newFloorStr) {
+                    case "L2":
+                        newFloor = -2;
+                        break;
+                    case "L1":
+                        newFloor = -1;
+                        break;
+                    case "G":
+                        newFloor = 0;
+                        break;
+                    case "1":
+                        newFloor = 1;
+                        break;
+                    case "2":
+                        newFloor = 2;
+                        break;
+                    default:
+                        newFloor = 3;
+                        break;
+                }
+
+                String transport;
                 if (path.get(i).getNodeType().equals("ELEV")) {
-                    directions.add("Take the elevator from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
+                    transport = "elevator";
                 }
                 else {
-                    directions.add("Take the stairs from floor " + path.get(i).getFloor() + " to floor " + path.get(i+1).getFloor() + "\n");
+                    transport = "stairs";
+                }
+                if (oldFloor < newFloor) {
+                    directions.add("Take the " + transport + " up from floor " + oldFloor + " to floor " + newFloor + "\n");
+                }
+                else {
+                    directions.add("Take the " + transport + " down from floor " + oldFloor + " to floor " + newFloor + "\n");
                 }
                 afterFloorChange = true;
             }
@@ -562,5 +611,89 @@ public class MapView {
         else {
             showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
         }
+    }
+
+    /**
+     * Compress a given set of directions into a series of characters
+     * to be used in a QR code
+     * Format: <Instruction> <Distance/Floor> <Hint>
+     * @return the String to use in the QR code
+     */
+    private String convertToQRCode(ArrayList<String> directions) {
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < directions.size(); i++) {
+            String dir = directions.get(i);
+            if (dir.contains("straight")) {
+                buf.append("A");
+            }
+            else if (dir.contains("slight left")) {
+                buf.append("C");
+            }
+            else if (dir.contains("sharp left")) {
+                buf.append("D");
+            }
+            else if (dir.contains("left")) {
+                buf.append("B");
+            }
+            else if (dir.contains("sharp right")) {
+                buf.append("G");
+            }
+            else if (dir.contains("slight right")) {
+                buf.append("F");
+            }
+            else if (dir.contains("right")) {
+                buf.append("E");
+            }
+            else if (dir.contains("elevator") && dir.contains("down")) {
+                buf.append("O");
+            }
+            else if (dir.contains("elevator") && dir.contains("up")) {
+                buf.append("N");
+            }
+            else if (dir.contains("stairs") && dir.contains("up")) {
+                buf.append("P");
+            }
+            else if (dir.contains("stairs") && dir.contains("down")) {
+                buf.append("Q");
+            }
+            else if (dir.contains("north west")) {
+                buf.append("T");
+            }
+            else if (dir.contains("north east")) {
+                buf.append("Z");
+            }
+            else if (dir.contains("north")) {
+                buf.append("S");
+            }
+            else if (dir.contains("south west")) {
+                buf.append("V");
+            }
+            else if (dir.contains("south east")) {
+                buf.append("X");
+            }
+            else if (dir.contains("south")) {
+                buf.append("W");
+            }
+            else if (dir.contains("east")) {
+                buf.append("Y");
+            }
+            else if (dir.contains("west")) {
+                buf.append("U");
+            }
+
+            if (buf.indexOf("O") > 0 || buf.indexOf("N") > 0 || buf.indexOf("P") > 0 || buf.indexOf("Q") > 0) {
+                buf.append(dir.substring(dir.length() - 2));
+            }
+            else {
+                if (dir.contains("for")) {
+                    buf.append(dir.substring(dir.indexOf("for") + 4));
+                }
+                else {
+                    buf.append(dir.substring(dir.indexOf("walk") + 5));
+                }
+            }
+
+        }
+        return "";
     }
 }

@@ -54,8 +54,8 @@ public class AdminServiceController extends Controller{
     @FXML
     private void showMapEditor() throws Exception {
         Stage stage = (Stage) editEmployeeBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.mapEdit);
-        StageManager.changeExistingWindow(stage, root, "Edit Map");
+        Parent root = FXMLLoader.load(ResourceLoader.home);
+        StageManager.changeExistingWindow(stage, root, "Home");
         // TODO: verify/change that this is how you edit the map; vs going to home controller?
     }
 
