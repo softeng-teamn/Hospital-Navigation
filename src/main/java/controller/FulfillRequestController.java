@@ -48,6 +48,30 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     private JFXRadioButton ITRadio;
     @FXML
+    private JFXRadioButton avReqRadio;
+    @FXML
+    private JFXRadioButton religiousRadio;
+    @FXML
+    private JFXRadioButton interpretRadio;
+    @FXML
+    private JFXRadioButton maintenanceRadio;
+    @FXML
+    private JFXRadioButton toyRadio;
+    @FXML
+    private JFXRadioButton securityRadio;
+    @FXML
+    private JFXRadioButton sanitationRadio;
+    @FXML
+    private JFXRadioButton patientInfoRadio;
+    @FXML
+    private JFXRadioButton floristRadio;
+    @FXML
+    private JFXRadioButton giftRadio;
+    @FXML
+    private JFXRadioButton internalTransRadio;
+    @FXML
+    private JFXRadioButton externalTransRadio;
+    @FXML
     private JFXRadioButton allRadio;
     @FXML
     private JFXRadioButton uncRadio;
@@ -76,25 +100,30 @@ public class FulfillRequestController extends Controller implements Initializabl
      */
     @FXML
     public void fulfillRequest() {
+
+
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
-        MedicineRequest medupdate;
-        ITRequest ITupdate;
 
-        selected.setCompleted(true);
+        if (selected != null) {
+            MedicineRequest medupdate;
+            ITRequest ITupdate;
 
-        RequestType rType = selected.getRequestType();
+            selected.setCompleted(true);
 
-        switch (rType.getrType()) {
-            case ITS:
-                ITupdate = (ITRequest) selected;
-                myDBS.updateITRequest(ITupdate);
-                break;
-            case MED:
-                medupdate = (MedicineRequest) selected;
-                myDBS.updateMedicineRequest(medupdate);
-                break;
-            case ABS:
-                //do nothing
+            RequestType rType = selected.getRequestType();
+
+            switch (rType.getrType()) {
+                case ITS:
+                    ITupdate = (ITRequest) selected;
+                    myDBS.updateITRequest(ITupdate);
+                    break;
+                case MED:
+                    medupdate = (MedicineRequest) selected;
+                    myDBS.updateMedicineRequest(medupdate);
+                    break;
+                case ABS:
+                    //do nothing
+            }
         }
 
         reloadList();
@@ -118,6 +147,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         reloadList();
         reloadEmployees() ;
     }
+
 
     /**
      * reloads the list of requests
