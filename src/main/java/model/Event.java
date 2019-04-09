@@ -21,7 +21,7 @@ public class Event {
     String floor = "1";      // floor
 
 
-    boolean endNode = true; //true for endNode node, false for start node
+    boolean endNode = true; //true for end node, false for start node
 
 
     public boolean isEndNode() { return endNode; }

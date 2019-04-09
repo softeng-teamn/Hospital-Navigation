@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -184,7 +185,6 @@ public class TopNav {
      */
     @FXML
     public void startNodeEnter(ActionEvent e) {
-        System.out.println("start searchbar called");
         String search = search_bar.getText();
 
         event.setSearchBarQuery(search);
@@ -234,11 +234,24 @@ public class TopNav {
         eventBus.post(event);
     }
 
+
+    public void setEventEndNode(MouseEvent mouseEvent){
+        System.out.println("set to false");
+        event.setEndNode(false);
+    }
+
+
+    public void setEventStartNode(MouseEvent mouseEvent) {
+        System.out.println("set to true");
+        event.setEndNode(true);
+    }
+
     @FXML
     public void showStartSearch(ActionEvent actionEvent) {
         if (startNode_btn.getText().equals("Start Node")){
             startSearch.setPromptText("Start Node");
             startSearch.setOnAction(this::startNodeEnter);
+            startSearch.setOnMouseClicked(this::setEventEndNode);
             top_nav.getChildren().add(0, startSearch);
             startNode_btn.setText("Use default");
         } else {
