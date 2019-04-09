@@ -152,7 +152,7 @@ public class MapViewTest {
     @Test
     @Category( FastTest.class)
     public void csDirPrint() {
-        // Up right diagonal TODO
+        // Up right diagonal
         assertTrue(mp.csDirPrint(new Node(0, 0), new Node(3, 3), new Node(4, 4)).contains("A"));
         assertTrue(mp.csDirPrint(new Node(0, 0), new Node(3, 3), new Node(4, 8)).contains("F"));
         assertTrue(mp.csDirPrint(new Node(0,0), new Node(3,3), new Node(4, 0)).contains("B"));
@@ -180,7 +180,7 @@ public class MapViewTest {
         assertTrue(mp.csDirPrint(new Node(5,0), new Node(3, 2), new Node(5, -7)).contains("G"));
         assertTrue(mp.csDirPrint(new Node(5,0), new Node(3, 2), new Node(1, 4)).contains("A"));
         // Horiz and vert
-        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(3, 9)).contains("C")); // TODO
+        assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(3, 9)).contains("C"));
         assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(3, -8)).contains("G"));
         assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(5, 3)).contains("B"));
         assertTrue(mp.csDirPrint(new Node(5,0), new Node(3,3), new Node(0, 3)).contains("E"));

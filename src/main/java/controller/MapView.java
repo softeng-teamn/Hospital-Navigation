@@ -507,7 +507,7 @@ public class MapView {
             }
             else {    // Otherwise provide a normal direction
                 directions.add(csDirPrint(path.get(i), path.get(i+1), path.get(i+2)));
-                afterFloorChange = false;    // TODO cut?
+                afterFloorChange = false;
             }
         }
 
@@ -585,7 +585,7 @@ public class MapView {
      * @param ds the list of directions as strings
      * @return a String that is the sum of all the directions
      */
-    public String printDirections(ArrayList<String> ds) {    // TODO
+    public String printDirections(ArrayList<String> ds) {
         HashMap<String, String> backToFloors = new HashMap<>();
         backToFloors.put("A", "L2");
         backToFloors.put("B", "L1");
@@ -693,7 +693,7 @@ public class MapView {
         dirs.addAll(labels);
         directionsView.setItems(dirs);
 
-        // Print out the directions TODO cut
+        // Return the directions
         directions.add(ds.get(ds.size() -1));
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < directions.size(); ++i) {
@@ -858,7 +858,6 @@ public class MapView {
      */
     @FXML
     public void showDirections() {
-        // TODO
         directionsView.setVisible(!directionsView.isVisible());
         if (showDirectionsBtn.getText().contains("Show")) {
             showDirectionsBtn.setText("Close Textual Directions");
