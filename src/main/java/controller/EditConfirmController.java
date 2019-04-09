@@ -11,6 +11,10 @@ public class EditConfirmController extends Controller {
 
     @FXML
     void deleteConfirmAction(ActionEvent e) {
+        // Delete the edges
+        for (Edge edge : edgesToEdit) {
+            DatabaseService.getDatabaseService().deleteEdge(edge);
+        }
         // DELETE THE NODE
         DatabaseService.getDatabaseService().deleteNode(nodeToEdit);
         // Close the window

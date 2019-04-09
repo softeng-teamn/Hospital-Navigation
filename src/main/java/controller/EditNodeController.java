@@ -40,6 +40,7 @@ import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -118,8 +119,8 @@ public class EditNodeController extends Control {
         for (Node n : edgeNodeCollection) {
             edges_list.getItems().add(n.getNodeID());
         }
-//        oldEdgesFromEditNode = DatabaseService.getDatabaseService().ged
-        // I CANT DELETE MY OLD EDGE because I need a query to get them
+        // these are for deleting later
+        oldEdgesFromEditNode = DatabaseService.getDatabaseService().getAllEdgesWithNode(node.getNodeID());
     }
 
     @FXML
@@ -248,6 +249,7 @@ public class EditNodeController extends Control {
 
     @FXML
     void deleteAction(ActionEvent e) throws IOException {
+        edgesToEdit = oldEdgesFromEditNode;
         Parent root = FXMLLoader.load(ResourceLoader.deleteNodeConfirm);
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
@@ -261,12 +263,21 @@ public class EditNodeController extends Control {
     @FXML
     void saveAction(ActionEvent e) throws IOException {
         nodeToEdit = tempEditNode;
+        // remove old edges
+        for (Edge edge : oldEdgesFromEditNode) {
+            DatabaseService.getDatabaseService().deleteEdge(edge);
+        }
         // ADD EDGES TO THE DB
+        ArrayList<Edge> newEdges = new ArrayList<>();
         for (Node node : edgeNodeCollection) {
-            DatabaseService.getDatabaseService().insertEdge(new Edge(tempEditNode, node));
+            Edge edge = new Edge(tempEditNode, node);
+            newEdges.add(edge);
+            DatabaseService.getDatabaseService().insertEdge(edge);
         }
         // updating node
         DatabaseService.getDatabaseService().updateNode(nodeToEdit);
+        // set edges globally
+        edgesToEdit = newEdges;
         // fire confirmation
         Parent root = FXMLLoader.load(ResourceLoader.saveNodeConfirm);
         Stage stage = new Stage();
