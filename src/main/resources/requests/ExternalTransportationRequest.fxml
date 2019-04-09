@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.*?>
-<?import javafx.scene.text.*?>
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.requests.ExternalTransportationController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.requests.ExternalTransportationController">
    <children>
-      <Label styleClass="big-label" text="External Transport" textFill="WHITE" />
-      <JFXTextArea fx:id="description" focusColor="WHITE" labelFloat="true" prefHeight="114.0" prefWidth="510.0" promptText="Please Enter Specific Description (ex. company)" unFocusColor="WHITE">
+      <Label styleClass="big-label" text="Enter External Transport Details:" textFill="WHITE" />
+      <JFXTextArea fx:id="description" focusColor="WHITE" labelFloat="true" minHeight="-Infinity" prefHeight="256.0" prefWidth="512.0" unFocusColor="WHITE">
          <VBox.margin>
-            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+            <Insets left="12.0" right="12.0" />
          </VBox.margin>
          <padding>
-            <Insets left="12.0" right="12.0" />
+            <Insets left="12.0" right="12.0" top="12.0" />
          </padding>
+         <rotationAxis>
+            <Point3D />
+         </rotationAxis>
       </JFXTextArea>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
             <JFXComboBox fx:id="day" focusColor="WHITE" promptText="Day" unFocusColor="WHITE" />
-            <JFXComboBox fx:id="month" focusColor="WHITE" promptText="Month" unFocusColor="WHITE" />
+            <JFXComboBox fx:id="month" focusColor="WHITE" promptText="Month" stylesheets="@../theme.css" unFocusColor="WHITE" />
             <JFXComboBox fx:id="year" focusColor="WHITE" promptText="Year" unFocusColor="WHITE" />
          </children>
       </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
             <JFXComboBox fx:id="hour" focusColor="WHITE" promptText="Hour" unFocusColor="WHITE" />
             <JFXComboBox fx:id="minute" promptText="Minute" />
          </children>
       </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
             <JFXComboBox fx:id="transport" focusColor="WHITE" promptText="Type Of Transport" unFocusColor="WHITE" />
          </children>
       </HBox>
-      <JFXButton fx:id="submit" text="Confirm" textFill="WHITE" onAction="#submitRequest"/>
+      <Region prefHeight="200.0" prefWidth="200.0" />
+      <JFXButton fx:id="submit" onAction="#submitRequest" text="Confirm" textFill="WHITE" />
    </children>
    <padding>
       <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
