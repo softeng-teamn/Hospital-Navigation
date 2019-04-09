@@ -296,14 +296,13 @@ public class MapView {
         timeline.play();
     }
 
-    // todo: watch out for multiple floors? are those separate nodes -> problem w directions?
-
     /**
      * Create textual instructions for the given path.
      * @param path the list of nodes in the path
      * @return a String of the directions
      */
-    private String makeDirections(ArrayList<Node> path) {
+    public String makeDirections(ArrayList<Node> path) {
+        System.out.println(path);
         final int NORTH_I = 1122 - 1886;    // Measurements from maps
         final int NORTH_J = 642 - 1501;    // Measurements from maps
 
@@ -332,14 +331,17 @@ public class MapView {
                 }
                 afterFloorChange = true;
             }
-            else if(path.get(i+1).getNodeType().equals("ELEV")) {    // If next node is elevator, say so
-                directions.add("Walk to the elevator.\n");
-            }
-            else if (path.get(i+1).getNodeType().equals("STAI")) {    // If next node is stairs, say so
-                directions.add("Walk to the stairs.\n");
-            }
             else {    // Otherwise provide a normal direction
                 directions.add(csDirPrint(path.get(i).getXcoord(), path.get(i).getYcoord(), path.get(i + 1).getXcoord(), path.get(i + 1).getYcoord(), path.get(i + 2).getXcoord(), path.get(i + 2).getYcoord()) + "\n");
+            }
+
+            if(path.get(i+1).getNodeType().equals("ELEV") && !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is elevator, say so
+                directions.remove(directions.size()-1);
+                directions.add("Walk to the elevator.\n");
+            }
+            else if (path.get(i+1).getNodeType().equals("STAI")&& !directions.get(directions.size() -1).contains("straight") && !directions.get(directions.size() -1).contains("Take")) {    // If next node is stairs, say so
+                directions.remove(directions.size()-1);
+                directions.add("Walk to the stairs.\n");
             }
         }
 
@@ -352,12 +354,13 @@ public class MapView {
             String oldDir = directions.get(i-1);
             if (currDir.contains("straight")) {    // If the current direction contains straight, get the distance substring
                 int feetIndex = oldDir.indexOf("for");
-                if (feetIndex < 0) {    // If it's not cardinal, get the correct distance substring index
+                if (feetIndex <= 0) {    // If it's not cardinal, get the correct distance substring index
                     feetIndex = oldDir.indexOf("walk") + 5;
                 }
                 else {
                     feetIndex += 4;
                 }
+                System.out.println(oldDir + currDir + "feet index "+ feetIndex);
                 int oldDist = Integer.parseInt(oldDir.substring(feetIndex, oldDir.indexOf("feet")-1));
                 int currDist = Integer.parseInt(currDir.substring(currDir.indexOf("walk") + 5, currDir.indexOf("feet")-1));
                 int totalDist = oldDist + currDist;    // Combine the distance of this direction with the previous one
@@ -400,10 +403,11 @@ public class MapView {
 
     /**
      * Convert this direction to a cardinal direction
-     * @param cardinal the normal direction
+     * ONLY WHEN MADE WITH SOUTH AS THE FIRST VECTOR
+     * @param cardinal the direction with the first vector going south
      * @return the direction as a cardinal direction
      */
-    private String convertToCardinal(String cardinal) {
+    public String convertToCardinal(String cardinal) {
         String feet = cardinal.substring(cardinal.indexOf("walk")+5)+ "\n";
         if (cardinal.contains("slightly left")) {
             cardinal = "Walk south east for " + feet;
@@ -443,7 +447,7 @@ public class MapView {
      * @return the direction for someone walking from points 1 to 3 with the turn direction and distance
      *          between the middle and last point
      */
-    private String csDirPrint(double pX, double pY, double cX, double cY, double nX, double nY) {
+    public String csDirPrint(double pX, double pY, double cX, double cY, double nX, double nY) {
         final double THRESHOLD = .0001;   // Double comparison standard
 
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
@@ -546,7 +550,7 @@ public class MapView {
      * On click, show the directions. On second click, hide them again.
      */
     @FXML
-    private void showDirections() {
+    public void showDirections() {
         directionsView.setVisible(!directionsView.isVisible());
         if (showDirectionsBtn.getText().contains("Show")) {
             showDirectionsBtn.setText("Close Textual Directions");
