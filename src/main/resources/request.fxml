@@ -39,15 +39,15 @@
             <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
          </padding>
       </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <HBox prefHeight="100.0" prefWidth="200.0" styleClass="interaction-area" VBox.vgrow="ALWAYS">
          <children>
             <JFXListView fx:id="list_view" onMouseClicked="#locationSelected" prefWidth="384.0">
                <HBox.margin>
                   <Insets right="24.0" />
                </HBox.margin></JFXListView>
-            <ScrollPane prefHeight="952.0" prefWidth="904.0" styleClass="edge-to-edge">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="952.0" prefWidth="879.0" styleClass="edge-to-edge" vbarPolicy="NEVER">
                <content>
-                  <HBox>
+                  <HBox styleClass="interaction-area">
                      <children>
                         <VBox prefWidth="256.0">
                            <children>
@@ -156,6 +156,9 @@
                            </children>
                         </VBox>
                      </children>
+                     <padding>
+                        <Insets top="24.0" />
+                     </padding>
                   </HBox>
                </content>
                <HBox.margin>
