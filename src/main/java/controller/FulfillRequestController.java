@@ -412,7 +412,6 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
 
-/*
     //Show Requests based on Job
     private ObservableList<Request> showProperRequest(ObservableList<Request> newRequestList, ArrayList<MedicineRequest> allMedReqList,ArrayList<ITRequest> allITReqList){
 
@@ -453,7 +452,6 @@ public class FulfillRequestController extends Controller implements Initializabl
         return newRequestList;
     }
 
-**/
 
     /**
      * initialize the list of requests
