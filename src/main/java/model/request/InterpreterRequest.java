@@ -86,4 +86,9 @@ public class InterpreterRequest extends Request{
     public ObservableList<Request> showProperRequest() {
         return (ObservableList) myDBS.getAllInterpreterRequests() ;
     }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateInterpreterRequest((InterpreterRequest) selectedTask) ;
+    }
 }

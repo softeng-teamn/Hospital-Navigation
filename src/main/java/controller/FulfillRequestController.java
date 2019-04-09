@@ -124,20 +124,41 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
     @FXML
-    public void assignEmployee (ActionEvent event) {
+    public void assignEmployee2 (ActionEvent event) {
+        // assign the selected task
         Request selectedTask = (Request) requestListView.getSelectionModel().getSelectedItem();
+        // assign the selected employee
         Employee selectedEmp = (Employee) employeeListView.getSelectionModel().getSelectedItem();
+        // set employee ID to assigned to field
         selectedTask.setAssignedTo(selectedEmp.getID());
 
-        requestListView.getItems().set(requestListView.getSelectionModel().getSelectedIndex(), selectedTask) ;
+
+        // requestListView.getItems().set(requestListView.getSelectionModel().getSelectedIndex(), selectedTask) ;
+        System.out.println();
+        // observable list to be printed by print list
         ObservableList<Request> x = FXCollections.observableArrayList();
+        // for every request in list, add to Observable
         for (int i = 0 ; i < requestListView.getItems().size() ; i ++) {
             x.add((Request)requestListView.getItems().get(i));
         }
+        // print observable
         printList(x);
+
+
     }
 
+    @FXML
+    public void assignEmployee (ActionEvent event) {
+        System.out.println("ENTERING ASSIGN EMPLOYYEE");
+        Request selectedTask = (Request) requestListView.getSelectionModel().getSelectedItem();
+        Employee selectedEmp = (Employee) employeeListView.getSelectionModel().getSelectedItem();
+        selectedTask.setAssignedTo(selectedEmp.getID());
+        System.out.println("NEW ASSIGNMENT (local) = " + selectedTask.getAssignedTo());
+        System.out.println("CURRENT ID OF THIS TASK (database) = " + ((Request) requestListView.getSelectionModel().getSelectedItem()).getAssignedTo());
 
+        selectedTask.updateEmployee(selectedTask, selectedEmp) ;
+        reloadList();
+    }
 
 
 
@@ -326,9 +347,6 @@ public class FulfillRequestController extends Controller implements Initializabl
     public void reloadEmployees() {
 
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
-
-        // fetch all the employees from databse
-        ArrayList<Employee> allEmployees = (ArrayList) myDBS.getAllEmployees();
         // final list of "correct" employees
         ObservableList<Employee> returnList = FXCollections.observableArrayList();
 
@@ -337,14 +355,7 @@ public class FulfillRequestController extends Controller implements Initializabl
             if (allRadio.isSelected() || uncRadio.isSelected()) {
                 // if all types of request radio is selected
                 if (allTypeRadio.isSelected()) {
-                    // if no filters selected, but unfulfilled request is selected in list
-                    if (selected.isCompleted() == false) {
                         returnList = employeeForSelectedJob();
-                        // if no filters selected, but FULFILLED request is selected in list
-                    } else if (selected.isCompleted() == true) {
-                        // give back all employees
-                        returnList.addAll(allEmployees);
-                    }
                 } else if (medicineRadio.isSelected()) {
                     // show medical staff
                     returnList = employeeForSelectedJob();
@@ -369,10 +380,6 @@ public class FulfillRequestController extends Controller implements Initializabl
 
         Request selected = (Request) requestListView.getSelectionModel().getSelectedItem();
         if (selected != null) {
-
-            // get all Employees from database
-            // ArrayList<Employee> newEmployeeList = (ArrayList) myDBS.getAllEmployees();
-
             returnEmployeeList = selected.returnCorrectEmployee();
         }
         return returnEmployeeList;

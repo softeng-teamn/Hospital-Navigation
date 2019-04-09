@@ -96,4 +96,9 @@ public class InternalTransportRequest extends Request {
         return (ObservableList) myDBS.getAllInternalTransportRequest() ;
     }
 
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateInternalTransportRequest((InternalTransportRequest)selectedTask) ;
+    }
+
 }
