@@ -11,7 +11,7 @@
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.requests.ITRequestController">
    <children>
       <Label styleClass="big-label" text="Enter IT Request Details:" />
-      <JFXTextArea fx:id="description">
+      <JFXTextArea fx:id="description" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0">
          <VBox.margin>
             <Insets left="12.0" right="12.0" />
          </VBox.margin>

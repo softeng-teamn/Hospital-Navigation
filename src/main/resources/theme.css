@@ -20,7 +20,6 @@
 
 .header {
     -fx-background-color: -fx-complementary;
-    -fx
 }
 
 .interaction-area {
@@ -71,6 +70,8 @@
     -fx-border-color: -fx-unfocusedtext;
     -fx-text-fill: -fx-primaryText;
     -fx-font-size: 14pt;
+    -fx-focus-color: #C6C9CC;
+    -fx-unfocus-color: #C6C9CC;
 }
 
 /*******************************************************************************

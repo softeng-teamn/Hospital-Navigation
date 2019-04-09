@@ -14,12 +14,12 @@
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.requests.GiftStoreRequestController">
    <children>
       <Label styleClass="big-label" stylesheets="@../theme.css" text="Enter Gift Request Details:" />
-      <JFXTextArea fx:id="description" prefHeight="256.0" prefWidth="512.0">
+      <JFXTextArea fx:id="description" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0">
          <VBox.margin>
             <Insets left="12.0" right="12.0" />
          </VBox.margin>
          <padding>
-            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+            <Insets left="12.0" right="12.0" top="12.0" />
          </padding>
          <rotationAxis>
             <Point3D />
