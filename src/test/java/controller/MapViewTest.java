@@ -115,13 +115,13 @@ public class MapViewTest {
         Node str4 = new Node(0,15,"ID 9", "L2", "Tower", "HALL", "Hallway F3", "HF3");
         path.clear();
         path.addAll(Arrays.asList(str1, str2, str3, str4));
-        System.out.println(mp.makeDirections(path).get(1).contains("7"));
+        assertTrue(mp.makeDirections(path).get(1).contains("7"));
         Node nE4 = new Node(0,0,"ID E", "1", "Tower", "ELEV", "Elevator B5", "EB5");
         Node nE5 = new Node(0,0,"ID E", "2", "Tower", "ELEV", "Elevator C5", "EC5");
         Node nE6 = new Node(0,0,"ID E", "3", "Tower", "ELEV", "Elevator C5", "EC5");
         path.clear();
         path.addAll(Arrays.asList(nE, nE2, nE3, nE4, nE5, nE6));
-        System.out.println(mp.makeDirections(path).get(1).contains("3"));
+        assertTrue(mp.makeDirections(path).get(1).contains("F"));
         Node ns1 = new Node(0,0,"ID E", "L2", "Tower", "STAI", "Stairs B5", "SB5");
         Node ns2 = new Node(0,0,"ID E", "L1", "Tower", "STAI", "Stairs C5", "SC5");
         Node ns3 = new Node(0,0,"ID E", "G", "Tower", "STAI", "Stairs C5", "SC5");
@@ -129,8 +129,8 @@ public class MapViewTest {
         Node ns5 = new Node(0,0,"ID E", "2", "Tower", "STAI", "Stairs C5", "SC5");
         Node ns6 = new Node(0,0,"ID E", "3", "Tower", "STAI", "Stairs C5", "SF5");
         path.clear();
-        path.addAll(Arrays.asList(ns1, ns2, ns3, ns4, ns5, ns6));
-        System.out.println(mp.makeDirections(path).get(1).contains("3"));
+        path.addAll(Arrays.asList(ns6, ns5, ns4, ns3, ns2, ns1));
+        assertTrue(mp.makeDirections(path).get(1).contains("QFA"));
 
         // TODO - finish
         // test afterFloorchange ->, write

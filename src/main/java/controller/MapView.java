@@ -357,32 +357,35 @@ public class MapView {
             }
         }
 
-        // Add the final direction
-        directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
-
         // Simplify directions that continue approximately straight from each other
-        for (int i = 1; i < directions.size() - 1; i++) {
+        for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
             String currOne = currDir.substring(0,1);
-            String nextDir = directions.get(i+1);
-            String oldOne = nextDir.substring(0,1);
-            if ("ANOPQ".contains(currOne) && currOne.equals(oldOne)) {    // If the current direction contains straight, get the distance substring
-                String newDir = "";
-                if (currOne.equals("A")) {
-                    int oldDist = Integer.parseInt(nextDir.substring(1));
-                    int currDist = Integer.parseInt(currDir.substring(1));
-                    int totalDist = oldDist + currDist;    // Combine the distance of this direction with the previous one
-                    newDir = currOne + totalDist;
-                }
-                else {
-                    newDir = currOne + currDir.substring(1,2) + nextDir.substring(2,3);
-                }
-                directions.remove(i+1);
+            String prevDir = directions.get(i-1);
+            String prevOne = prevDir.substring(0,1);
+            String newDir = "";
+            boolean changed = false;
+            if (currOne.equals("A")) {
+                int prevDist = Integer.parseInt(prevDir.substring(1));
+                int currDist = Integer.parseInt(currDir.substring(1));
+                int totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
+                newDir = prevOne + totalDist;
+                changed = true;
+            }
+            else if ("NOPQ".contains(currOne) && currOne.equals(prevOne)) {    // If the current direction contains straight, get the distance substring
+                newDir = currOne + prevDir.substring(1, 2) + currDir.substring(2, 3);
+                changed = true;
+            }
+            if (changed) {
                 directions.remove(i);
-                directions.add(i, newDir);
+                directions.remove(i-1);
+                directions.add(i-1, newDir);
                 i--;
             }
         }
+
+        // Add the final direction
+        directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
 
         System.out.println(directions);
         printDirections(directions);
