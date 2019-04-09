@@ -469,11 +469,11 @@ public class MapView {
                 line.setEndY(last.getYcoord());
 
                 if (current.getFloor().equals(event.getFloor())){
-                    line.setStroke(Color.BLACK);
+                    line.setStroke(Color.rgb(30,136,229));
                 } else {
-                    line.setStroke(Color.GREY);
+                    line.setStroke(Color.rgb(100,181,246, 0.8));
                 }
-                line.setStrokeWidth(10.0);
+                line.setStrokeWidth(20.0);
                 zoomGroup.getChildren().add(line);
                 lineCollection.add(line);
                 last = current;
