@@ -9,7 +9,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -47,36 +47,24 @@
                   <JFXTimePicker fx:id="endTimePicker" promptText="Choose an end time" />
                   <JFXButton fx:id="availRoomsBtn" onAction="#availRooms" text="Show Available Rooms" />
                   <JFXButton fx:id="bookedRoomsBtn" onAction="#bookedRooms" text="Show Booked Rooms" />
-                  <Label fx:id="timeErrorLbl" text="Error" wrapText="true" />
+                  <Label fx:id="timeErrorLbl" styleClass="small-label" text="Error" wrapText="true" />
                   <Region prefHeight="707.0" prefWidth="316.0" />
                </children>
             </VBox>
             <VBox minWidth="10.0" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label styleClass="big-label" text="Schedule" />
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                     <content>
-                        <HBox prefHeight="100.0">
-                           <children>
-                              <VBox fx:id="schedule" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="NEVER" />
-                              <VBox fx:id="checks" prefHeight="200.0" HBox.hgrow="ALWAYS" />
-                           </children>
-                        </HBox>
-                     </content>
-                     <VBox.margin>
-                        <Insets bottom="24.0" right="12.0" top="12.0" />
-                     </VBox.margin>
-                  </ScrollPane>
+                  <TableView fx:id="scheduleTable" prefHeight="200.0" prefWidth="200.0" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="resInfoLbl" styleClass="big-label" text="Times" />
+                  <Label fx:id="resInfoLbl" styleClass="small-label" text="Times" />
                   <JFXTextField fx:id="eventName" prefWidth="235.0" promptText="event name" />
                   <JFXTextField fx:id="employeeID" promptText="employee id number" />
-                  <JFXComboBox fx:id="privacyLvlBox" />
-                  <JFXButton fx:id="makeReservationBtn" onAction="#makeReservation" text="Make Reservation" />
-                  <Label fx:id="inputErrorLbl" text="confError" wrapText="true" />
+                  <JFXComboBox fx:id="privacyLvlBox" promptText="Event Privacy" />
+                  <JFXButton fx:id="makeReservationBtn" onAction="#makeReservation" styleClass="confirm-button" text="Make Reservation" />
+                  <Label fx:id="inputErrorLbl" styleClass="small-label" text="confError" wrapText="true" />
                </children>
             </VBox>
             <Region prefHeight="970.0" prefWidth="107.0" />

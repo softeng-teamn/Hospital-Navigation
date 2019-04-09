@@ -19,10 +19,7 @@ import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import model.*;
 import service.DatabaseService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,8 +40,6 @@ public class SearchResults {
     ObservableList<Node> allNodesObservable;
     ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
-
-
 
     @FXML
     void initialize() {
@@ -84,12 +79,7 @@ public class SearchResults {
             default:
                 break;
         }
-
-
     }
-
-
-
 
     /**
      * Runs when user clicks a location
@@ -104,13 +94,15 @@ public class SearchResults {
         // set destination node
         destNode = selectedNode;
 
-        event.setNodeSelected(destNode);
+        if (event.isEndNode()){
+            event.setNodeSelected(destNode);
+        } else {
+            event.setNodeStart(destNode);
+        }
         event.setEventName("node-select");
         eventBus.post(event);
 
     }
-
-
 
     void repopulateList(boolean isAdmin) {
 
@@ -125,14 +117,19 @@ public class SearchResults {
             allNodesObservable.addAll(filteredNodes);
         }
 
-
-        // repopulate
+        Collections.sort(allNodesObservable, new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return o1.getLongName().compareTo(o2.getLongName());
+            }
+        });
 
         // clear listVIEW
         if (list_view == null) {
             System.out.println("LIST VIEW IS NULL");
             return;
         }
+
         list_view.getItems().clear();
         // add to listView
         list_view.getItems().addAll(allNodesObservable);

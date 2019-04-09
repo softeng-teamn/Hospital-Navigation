@@ -23,7 +23,7 @@ public class CSVService extends Controller {
     private static final String EMPLOYEE_HEADER ="ID,username,job,isAdmin,password\n";
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
-    
+
     /**
      * Export the Nodes table
      * @throws IOException
@@ -330,7 +330,7 @@ public class CSVService extends Controller {
     }
 
     /**
-     * Import the Edges table
+     * Import the Employees table
      */
     public static void importEmployees() {
 
@@ -343,37 +343,13 @@ public class CSVService extends Controller {
             //read first line
             reader.readLine();
 
-            String line = null;
+            String line;
 
             //loop until there is nothing to read
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
-                JobType job;
-
-                switch (data[2]) {
-                    case "ADMINISTRATOR":
-                        job = JobType.ADMINISTRATOR;
-                        break;
-                    case "DOCTOR":
-                        job = JobType.DOCTOR;
-                        break;
-                    case "JANITOR":
-                        job = JobType.JANITOR;
-                        break;
-                    case "NURSE":
-                        job = JobType.NURSE;
-                        break;
-                    case "MAINTENANCE_WORKER":
-                        job = JobType.MAINTENANCE_WORKER;
-                        break;
-                    case "SECURITY_PERSONNEL":
-                        job = JobType.SECURITY_PERSONNEL;
-                        break;
-                    default:
-                        System.out.println("Invalid employee entry: " + line);
-                        continue; // the loop
-                }
+                JobType job = JobType.valueOf(data[2]);
 
                 Employee emp = new Employee(Integer.parseInt(data[0]), data[1], job, Boolean.parseBoolean(data[3]),data[4]);
 

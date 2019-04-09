@@ -24,6 +24,7 @@ public class Employee {
         this.job = job;
         this.isAdmin = isAdmin;
         this.password = password;
+        System.out.println(job);
     }
 
     public int getID() {
@@ -35,6 +36,11 @@ public class Employee {
     }
 
     public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    // Required in for JavaFx PropertyValueFactory
+    public boolean getIsAdmin() {
         return isAdmin;
     }
 

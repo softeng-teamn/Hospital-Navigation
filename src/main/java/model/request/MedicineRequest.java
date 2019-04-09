@@ -1,13 +1,19 @@
 package model.request;
 
 import com.jfoenix.controls.JFXToggleNode;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.Employee;
 import model.Node;
 import service.DatabaseService;
 
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import java.util.Objects;
+
+import static model.JobType.*;
 
 public class MedicineRequest extends Request {
 
@@ -16,14 +22,12 @@ public class MedicineRequest extends Request {
 
     public MedicineRequest(int id, String notes, Node location, boolean completed) {
         super(id, notes, location, completed);
-        //this.requestType = new RequestType(MED);
         this.medicineType = "";
         this.quantity = 0;
     }
 
     public MedicineRequest(int id, String notes, Node location, boolean completed, String medicineType, double quantity) {
         super(id, notes, location, completed);
-        //this.requestType = new RequestType(MED);
         this.quantity = quantity;
     }
 
@@ -44,6 +48,14 @@ public class MedicineRequest extends Request {
     }
 
     @Override
+    public String toString() {
+        return "MedicineRequest{" +
+                "medicineType='" + medicineType + '\'' +
+                ", quantity=" + quantity +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -58,19 +70,37 @@ public class MedicineRequest extends Request {
         return Objects.hash(super.hashCode(), medicineType, quantity);
     }
 
-
+    // overides abstract Request method - called in Request Facade
     @Override
     public void makeRequest () {
-        ITRequest newITRequest = new ITRequest(-1, this.getNotes(), this.getLocation(), false);
-        DatabaseService.getDatabaseService().insertITRequest(newITRequest);
+        DatabaseService.getDatabaseService().insertMedicineRequest(this);
     }
 
+    // overides abstract Request method - called in Request Facade
     @Override
     public void fillRequest () {
         this.setCompleted(true);
-        this.setCompletedBy(this.getCompletedBy());
-        DatabaseService.getDatabaseService().updateMedicineRequest((MedicineRequest) this);
+        DatabaseService.getDatabaseService().updateMedicineRequest(this);
     }
 
 
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    @Override
+    public ObservableList<Employee> returnCorrectEmployee () {
+        ObservableList<Employee> rightEmployee = FXCollections.observableArrayList();
+        ObservableList<Employee> allEmployee = FXCollections.observableArrayList();
+        allEmployee.addAll(myDBS.getAllEmployees()) ;
+
+        for (int i = 0; i < allEmployee.size(); i++) {
+            if (allEmployee.get(i).getJob() == NURSE || allEmployee.get(i).getJob() == DOCTOR || allEmployee.get(i).getJob() == ADMINISTRATOR)  {
+                rightEmployee.add(allEmployee.get(i)) ;
+            }
+        }
+        return rightEmployee ;
+    }
+    @Override
+    public ObservableList<Request> showProperRequest() {
+        return (ObservableList) myDBS.getAllMaintenanceRequests() ;
+    }
 }
