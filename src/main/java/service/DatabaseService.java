@@ -1,7 +1,6 @@
 package service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import me.xdrop.fuzzywuzzy.Extractor;
 import model.*;
 import model.request.*;
 
@@ -14,8 +13,7 @@ import java.util.function.Function;
 public class DatabaseService {
 
     public static final String DATABASE_NAME = "hospital-db";
-    public static final Integer DATABASE_VERSION = 7;
-    private static DatabaseService _dbs;
+    public static final Integer DATABASE_VERSION = 8;
 
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
@@ -130,9 +128,6 @@ public class DatabaseService {
     }
 
     public static void wipeOutFiles() {
-        if (_dbs != null) {
-            _dbs.close();
-        }
         wipeOutFiles(new File(DATABASE_NAME));
     }
 
@@ -197,20 +192,20 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
             statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
 
-            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, type varchar(30))");
-            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double)");
-            statement.addBatch("CREATE TABLE FLORISTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, bouquetType varchar(255), quantity int)");
-            statement.addBatch("CREATE TABLE SECURITYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(30))");
-            statement.addBatch("CREATE TABLE SANITATIONREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(255), materialState varchar(255))");
-            statement.addBatch("CREATE TABLE RELIGIOUSREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1),notes varchar(225), locationNodeID varchar (255), completed boolean, religion varchar (30))");
-            statement.addBatch("CREATE TABLE GIFTSTOREREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean,  gType varchar(30), patientName varchar(255))");
-            statement.addBatch("CREATE TABLE INTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar (255), completed boolean, transportType varchar(40))");
-            statement.addBatch("CREATE TABLE PATIENTINFOREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, firstName varchar(255), lastName varchar(255), birthDay varchar(255), description varchar(255))");
-            statement.addBatch("CREATE TABLE AVSERVICEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, avServiceType varchar(30))");
-            statement.addBatch("CREATE TABLE EXTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, time TIMESTAMP, transportType varchar(30), description varchar(255))");
-            statement.addBatch("CREATE TABLE MAINTENANCEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, maintenanceType varchar(30))");
-            statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255))");
-            statement.addBatch("CREATE TABLE INTERPRETERREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, language varchar(30))");
+            statement.addBatch("CREATE TABLE ITREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, type varchar(30), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE MEDICINEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, medicineType varchar(50), quantity double, assignedEmployee int)");
+            statement.addBatch("CREATE TABLE FLORISTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, bouquetType varchar(255), quantity int, assignedEmployee int)");
+            statement.addBatch("CREATE TABLE SECURITYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(30), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE SANITATIONREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, urgency varchar(255), materialState varchar(255), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE RELIGIOUSREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1),notes varchar(225), locationNodeID varchar (255), completed boolean, religion varchar (30), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE GIFTSTOREREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean,  gType varchar(30), patientName varchar(255), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE INTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar (255), completed boolean, transportType varchar(40), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE PATIENTINFOREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, firstName varchar(255), lastName varchar(255), birthDay varchar(255), description varchar(255), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE AVSERVICEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, avServiceType varchar(30), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE EXTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, time TIMESTAMP, transportType varchar(30), description varchar(255), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE MAINTENANCEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, maintenanceType varchar(30), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE INTERPRETERREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, language varchar(30), assignedEmployee int)");
 
             // DATABASE CONSTRAINTS
             statement.addBatch("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
@@ -234,7 +229,22 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE AVSERVICEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID)");
             statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID)");
-          
+
+            statement.addBatch("ALTER TABLE ITREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE MEDICINEREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE SECURITYREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE FLORISTREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE GIFTSTOREREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE SANITATIONREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE RELIGIOUSREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE INTERNALTRANSPORTREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE PATIENTINFOREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE INTERPRETERREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE EXTERNALTRANSPORTREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE AVSERVICEREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
             statement.executeBatch();
@@ -684,8 +694,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertITRequest(ITRequest req) {
-        String insertQuery = ("INSERT INTO ITREQUEST(notes, locationNodeID, completed, type) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getItRequestType().name());
+        String insertQuery = ("INSERT INTO ITREQUEST(notes, locationNodeID, completed, type, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getItRequestType().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -712,8 +722,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateITRequest(ITRequest req) {
-        String query = "UPDATE ITREQUEST SET notes=?, locationNodeID=?, completed=?, type=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getItRequestType().name(), req.getId());
+        String query = "UPDATE ITREQUEST SET notes=?, locationNodeID=?, completed=?, type=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getItRequestType().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -740,8 +750,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertMedicineRequest(MedicineRequest req) {
-        String insertQuery = ("INSERT INTO MEDICINEREQUEST(notes, locationNodeID, completed, medicineType, quantity) VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity());
+        String insertQuery = ("INSERT INTO MEDICINEREQUEST(notes, locationNodeID, completed, medicineType, quantity, assignedEmployee) VALUES(?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -766,8 +776,8 @@ public class DatabaseService {
      * @return true if the update succeeded and false if otherwise.
      */
     public boolean updateMedicineRequest(MedicineRequest req) {
-        String query = "UPDATE MEDICINEREQUEST SET notes=?, locationNodeID=?, completed=?, medicineType=?, quantity=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity(), req.getId());
+        String query = "UPDATE MEDICINEREQUEST SET notes=?, locationNodeID=?, completed=?, medicineType=?, quantity=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMedicineType(), req.getQuantity(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -801,13 +811,13 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertFloristRequest(FloristRequest req) {
-        String insertQuery = ("INSERT INTO FLORISTREQUEST(notes, locationNodeID, completed, bouquetType, quantity) VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getBouquetType(), req.getQuantity());
+        String insertQuery = ("INSERT INTO FLORISTREQUEST(notes, locationNodeID, completed, bouquetType, quantity, assignedEmployee) VALUES(?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getBouquetType(), req.getQuantity(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     public boolean updateFloristRequest(FloristRequest req) {
-        String query = "UPDATE FLORISTREQUEST SET notes=?, locationNodeID=?, completed=?, bouquetType=?, quantity=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getBouquetType(), req.getQuantity(), req.getId());
+        String query = "UPDATE FLORISTREQUEST SET notes=?, locationNodeID=?, completed=?, bouquetType=?, quantity=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getBouquetType(), req.getQuantity(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -838,8 +848,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertSecurityRequest(SecurityRequest req) {
-        String insertQuery = ("INSERT INTO SECURITYREQUEST(notes, locationNodeID, completed, urgency) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency().name());
+        String insertQuery = ("INSERT INTO SECURITYREQUEST(notes, locationNodeID, completed, urgency, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -849,8 +859,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateSecurityRequest(SecurityRequest req) {
-        String query = "UPDATE SECURITYREQUEST SET notes=?, locationNodeID=?, completed=?, urgency=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency().name(), req.getId());
+        String query = "UPDATE SECURITYREQUEST SET notes=?, locationNodeID=?, completed=?, urgency=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -902,8 +912,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertSanitationRequest(SanitationRequest req) {
-        String insertQuery = ("INSERT INTO SANITATIONREQUEST(notes, locationNodeID, completed, urgency, materialState) VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency(), req.getMaterialState());
+        String insertQuery = ("INSERT INTO SANITATIONREQUEST(notes, locationNodeID, completed, urgency, materialState, assignedEmployee) VALUES(?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency(), req.getMaterialState(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -913,8 +923,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateSanitationRequest(SanitationRequest req) {
-        String query = "UPDATE SANITATIONREQUEST SET notes=?, locationNodeID=?, completed=?, urgency=?, materialState=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency(), req.getMaterialState(), req.getId());
+        String query = "UPDATE SANITATIONREQUEST SET notes=?, locationNodeID=?, completed=?, urgency=?, materialState=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getUrgency(), req.getMaterialState(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -966,8 +976,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertGiftStoreRequest(GiftStoreRequest req) {
-        String insertQuery = ("INSERT INTO GIFTSTOREREQUEST(notes, locationNodeID, completed, gType, patientName) VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getgType().name(), req.getPatientName());
+        String insertQuery = ("INSERT INTO GIFTSTOREREQUEST(notes, locationNodeID, completed, gType, patientName, assignedEmployee) VALUES(?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getgType().name(), req.getPatientName(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
 
@@ -978,8 +988,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateGiftStoreRequest(GiftStoreRequest req) {
-        String query = "UPDATE GIFTSTOREREQUEST SET notes=?, locationNodeID=?, completed=?, gType=?, patientName=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getgType().name(), req.getPatientName(), req.getId());
+        String query = "UPDATE GIFTSTOREREQUEST SET notes=?, locationNodeID=?, completed=?, gType=?, patientName=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getgType().name(), req.getPatientName(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -1016,13 +1026,13 @@ public class DatabaseService {
 
 
     public boolean insertReligiousRequest(ReligiousRequest req) {
-        String insertQuery = ("INSERT INTO RELIGIOUSREQUEST(notes, locationNodeID, completed, religion) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name());
+        String insertQuery = ("INSERT INTO RELIGIOUSREQUEST(notes, locationNodeID, completed, religion, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     public boolean updateReligiousRequest(ReligiousRequest req) {
-        String query = "UPDATE RELIGIOUSREQUEST SET notes=?, locationNodeID=?, completed=?, religion=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name(), req.getId());
+        String query = "UPDATE RELIGIOUSREQUEST SET notes=?, locationNodeID=?, completed=?, religion=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     public boolean deleteReligiousRequest(ReligiousRequest req) {
@@ -1046,13 +1056,13 @@ public class DatabaseService {
 
 
     public boolean insertInterpreterRequest(InterpreterRequest req) {
-        String insertQuery = ("INSERT INTO INTERPRETERREQUEST(notes, locationNodeID, completed, language) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name());
+        String insertQuery = ("INSERT INTO INTERPRETERREQUEST(notes, locationNodeID, completed, language, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     public boolean updateInterpreterRequest(InterpreterRequest req) {
-        String query = "UPDATE INTERPRETERREQUEST SET notes=?, locationNodeID=?, completed=?, language=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name(), req.getId());
+        String query = "UPDATE INTERPRETERREQUEST SET notes=?, locationNodeID=?, completed=?, language=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     public boolean deleteInterpreterRequest(InterpreterRequest req) {
@@ -1084,8 +1094,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertPatientInfoRequest(PatientInfoRequest req) {
-        String insertQuery = ("INSERT INTO PATIENTINFOREQUEST(notes, locationNodeID, completed, firstName, lastName, birthDay, description) VALUES(?, ?, ?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription());
+        String insertQuery = ("INSERT INTO PATIENTINFOREQUEST(notes, locationNodeID, completed, firstName, lastName, birthDay, description, assignedEmployee) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -1095,8 +1105,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updatePatientInfoRequest(PatientInfoRequest req) {
-        String query = "UPDATE PATIENTINFOREQUEST SET notes=?, locationNodeID=?, completed=?, firstName=?, lastName=?, birthDay=?, description=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription(), req.getId());
+        String query = "UPDATE PATIENTINFOREQUEST SET notes=?, locationNodeID=?, completed=?, firstName=?, lastName=?, birthDay=?, description=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -1139,8 +1149,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertInternalTransportRequest(InternalTransportRequest req) {
-        String insertQuery = ("INSERT INTO INTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, transportType) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name());
+        String insertQuery = ("INSERT INTO INTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, transportType, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -1167,8 +1177,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateInternalTransportRequest(InternalTransportRequest req) {
-        String query = "UPDATE INTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, completed=?, transportType=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name(), req.getId());
+        String query = "UPDATE INTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, completed=?, transportType=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -1208,8 +1218,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertExtTransRequest(ExternalTransportRequest req) {
-        String insertQuery = ("INSERT INTO EXTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, time, transportType, description) VALUES(?, ?, ?, ?, ?,?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType().name(), req.getDescription());
+        String insertQuery = ("INSERT INTO EXTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, time, transportType, description, assignedEmployee) VALUES(?, ?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType().name(), req.getDescription(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -1238,8 +1248,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateExtTransRequest(ExternalTransportRequest req) {
-        String query = "UPDATE EXTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, completed=?, time=?, transportType=?, description=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType().name(), req.getDescription(), req.getId());
+        String query = "UPDATE EXTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, completed=?, time=?, transportType=?, description=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType().name(), req.getDescription(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -1263,8 +1273,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertAVServiceRequest(AVServiceRequest req) {
-        String insertQuery = ("INSERT INTO AVSERVICEREQUEST(notes, locationNodeID, completed, avServiceType) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getAVServiceType().name());
+        String insertQuery = ("INSERT INTO AVSERVICEREQUEST(notes, locationNodeID, completed, avServiceType, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getAVServiceType().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -1289,8 +1299,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateAVServiceRequest(AVServiceRequest req) {
-        String query = "UPDATE AVSERVICEREQUEST SET notes=?, locationNodeID=?, completed=?, avServiceType=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getAVServiceType().name(), req.getId());
+        String query = "UPDATE AVSERVICEREQUEST SET notes=?, locationNodeID=?, completed=?, avServiceType=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getAVServiceType().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /** deletes a given IT request from the database
@@ -1323,8 +1333,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertMaintenanceRequest(MaintenanceRequest req) {
-        String insertQuery = ("INSERT INTO MAINTENANCEREQUEST(notes, locationNodeID, completed, maintenanceType) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMaintenanceType().name());
+        String insertQuery = ("INSERT INTO MAINTENANCEREQUEST(notes, locationNodeID, completed, maintenanceType, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMaintenanceType().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -1351,8 +1361,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateMaintenanceRequest(MaintenanceRequest req) {
-        String query = "UPDATE MAINTENANCEREQUEST SET notes=?, locationNodeID=?, completed=?, maintenanceType=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMaintenanceType().name(), req.getId());
+        String query = "UPDATE MAINTENANCEREQUEST SET notes=?, locationNodeID=?, completed=?, maintenanceType=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMaintenanceType().name(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -1387,8 +1397,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertToyRequest(ToyRequest req) {
-        String insertQuery = ("INSERT INTO TOYREQUEST(notes, locationNodeID, completed, toyName) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getToyName());
+        String insertQuery = ("INSERT INTO TOYREQUEST(notes, locationNodeID, completed, toyName, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getToyName(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null));
     }
 
     /**
@@ -1415,8 +1425,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateToyRequest(ToyRequest req) {
-        String query = "UPDATE TOYREQUEST SET notes=?, locationNodeID=?, completed=?, toyName=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getToyName(), req.getId());
+        String query = "UPDATE TOYREQUEST SET notes=?, locationNodeID=?, completed=?, toyName=?, assignedEmployee=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getToyName(), (req.getAssignedTo() != -1 ? req.getAssignedTo() : null), req.getId());
     }
 
     /**
@@ -1722,20 +1732,18 @@ public class DatabaseService {
         else return null;
     }
 
-    private FloristRequest extractFloristRequest(ResultSet rs, String name) throws SQLException {
+    private FloristRequest extractFloristRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String bouquetType = rs.getString("bouquetType");
         int quantity = rs.getInt("quantity");
+        int assignedEmployee = rs.getInt("assignedEmployee");
         // construct the new node and return it
-        return new FloristRequest(serviceID, notes, locationNode, completed, bouquetType, quantity);
-    }
-
-
-    private FloristRequest extractFloristRequest(ResultSet rs) throws SQLException {
-        return extractFloristRequest(rs, "");
+        FloristRequest req = new FloristRequest(serviceID, notes, locationNode, completed, bouquetType, quantity);
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private SecurityRequest extractSecurityRequest(ResultSet rs) throws SQLException {
@@ -1744,8 +1752,11 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String typeString = rs.getString("urgency");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new SecurityRequest(serviceID, notes, locationNode, completed, SecurityRequest.Urgency.valueOf(typeString));
+        SecurityRequest req = new SecurityRequest(serviceID, notes, locationNode, completed, SecurityRequest.Urgency.valueOf(typeString));
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private SanitationRequest extractSanitationRequest(ResultSet rs) throws SQLException {
@@ -1755,8 +1766,11 @@ public class DatabaseService {
         boolean completed = rs.getBoolean("completed");
         String urgency = rs.getString("urgency");
         String materialState = rs.getString("materialState");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new SanitationRequest(serviceID, notes, locationNode, completed, urgency, materialState);
+        SanitationRequest req = new SanitationRequest(serviceID, notes, locationNode, completed, urgency, materialState);
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private GiftStoreRequest extractGiftStoreRequest(ResultSet rs) throws SQLException {
@@ -1767,8 +1781,11 @@ public class DatabaseService {
         boolean completed = rs.getBoolean("completed");
         String typeString = rs.getString("gType");
         String patientName = rs.getString("patientName");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new GiftStoreRequest(serviceID, notes, locationNode, completed, GiftStoreRequest.GiftType.valueOf(typeString), patientName);
+        GiftStoreRequest req = new GiftStoreRequest(serviceID, notes, locationNode, completed, GiftStoreRequest.GiftType.valueOf(typeString), patientName);
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private ReligiousRequest extractReligiousRequest(ResultSet rs) throws SQLException {
@@ -1777,7 +1794,11 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String religion = rs.getString("religion");
-        return new ReligiousRequest(serviceID, notes, locationNode, completed, ReligiousRequest.Religion.valueOf(religion));
+        int assignedEmployee = rs.getInt("assignedEmployee");
+
+        ReligiousRequest req = new ReligiousRequest(serviceID, notes, locationNode, completed, ReligiousRequest.Religion.valueOf(religion));
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private InterpreterRequest extractInterpreterRequest(ResultSet rs) throws SQLException {
@@ -1786,8 +1807,11 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String language = rs.getString("language");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new InterpreterRequest(serviceID, notes, locationNode, completed, InterpreterRequest.Language.valueOf(language));
+        InterpreterRequest req = new InterpreterRequest(serviceID, notes, locationNode, completed, InterpreterRequest.Language.valueOf(language));
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private PatientInfoRequest extractPatientInfoRequest(ResultSet rs) throws SQLException {
@@ -1799,8 +1823,11 @@ public class DatabaseService {
         String lastName = rs.getString("lastName");
         String birthDay = rs.getString("birthDay");
         String description = rs.getString("description");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new PatientInfoRequest(serviceID, notes, locationNode, completed, firstName, lastName, birthDay, description);
+        PatientInfoRequest req = new PatientInfoRequest(serviceID, notes, locationNode, completed, firstName, lastName, birthDay, description);
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private InternalTransportRequest extractInternalTransportRequest(ResultSet rs) throws SQLException {
@@ -1810,8 +1837,11 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String enumVal = rs.getString("transportType");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new InternalTransportRequest(serviceID, notes, locationNode, completed, InternalTransportRequest.TransportType.valueOf(enumVal));
+        InternalTransportRequest req = new InternalTransportRequest(serviceID, notes, locationNode, completed, InternalTransportRequest.TransportType.valueOf(enumVal));
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private ExternalTransportRequest extractExtTransRequest(ResultSet rs) throws SQLException {
@@ -1822,8 +1852,11 @@ public class DatabaseService {
         String transType = rs.getString("transportType");
         String descript = rs.getString("description");
         Date t = new Date(rs.getTimestamp("time").getTime());
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new ExternalTransportRequest(serviceID, notes, locationNode, completed, t, ExternalTransportRequest.TransportationType.valueOf(transType), descript);
+        ExternalTransportRequest req = new ExternalTransportRequest(serviceID, notes, locationNode, completed, t, ExternalTransportRequest.TransportationType.valueOf(transType), descript);
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private AVServiceRequest extractAVServiceRequest(ResultSet rs) throws SQLException {
@@ -1832,8 +1865,11 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String typeString = rs.getString("avServiceType");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new AVServiceRequest(serviceID, notes, locationNode, completed, AVServiceRequest.AVServiceType.valueOf(typeString));
+        AVServiceRequest req = new AVServiceRequest(serviceID, notes, locationNode, completed, AVServiceRequest.AVServiceType.valueOf(typeString));
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private MaintenanceRequest extractMaintenanceRequest(ResultSet rs) throws SQLException {
@@ -1842,8 +1878,11 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String typeString = rs.getString("maintenanceType");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new MaintenanceRequest(serviceID, notes, locationNode, completed, MaintenanceRequest.MaintenanceType.valueOf(typeString));
+        MaintenanceRequest req = new MaintenanceRequest(serviceID, notes, locationNode, completed, MaintenanceRequest.MaintenanceType.valueOf(typeString));
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private ToyRequest extractToyRequest(ResultSet rs) throws SQLException {
@@ -1852,8 +1891,11 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String toyName = rs.getString("toyName");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new ToyRequest(serviceID, notes, locationNode, completed, toyName);
+        ToyRequest req = new ToyRequest(serviceID, notes, locationNode, completed, toyName);
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private Node extractNode(ResultSet rs, String name) throws SQLException {
@@ -1865,6 +1907,7 @@ public class DatabaseService {
         String newNodeType = rs.getString(name + "nodeType");
         String newLongName = rs.getString(name + "longName");
         String newShortName = rs.getString(name + "shortName");
+
         // construct the new node and return it
         return new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
     }
@@ -1932,8 +1975,11 @@ public class DatabaseService {
         Node locationNode = getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String type = rs.getString("type");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new ITRequest(serviceID, notes, locationNode, completed, ITRequest.ITRequestType.valueOf(type));
+        ITRequest req = new ITRequest(serviceID, notes, locationNode, completed, ITRequest.ITRequestType.valueOf(type));
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
 
     private MedicineRequest extractMedicineRequest(ResultSet rs) throws SQLException {
@@ -1943,8 +1989,11 @@ public class DatabaseService {
         boolean completed = rs.getBoolean("completed");
         String medicineType = rs.getString("medicineType");
         double qty = rs.getDouble("quantity");
+        int assignedEmployee = rs.getInt("assignedEmployee");
 
-        return new MedicineRequest(serviceID, notes, locationNode, completed, medicineType, qty);
+        MedicineRequest req = new MedicineRequest(serviceID, notes, locationNode, completed, medicineType, qty);
+        req.setAssignedTo(assignedEmployee);
+        return req;
     }
     ////////////////END EXTRACTION METHODS /////////////////////////////////////////////////////////////////////////////
     //</editor-fold>
