@@ -19,7 +19,7 @@
             <Insets bottom="24.0" />
          </VBox.margin>
       </FontAwesomeIconView>
-      <JFXTextArea fx:id="description" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="Enter Gift Request Details">
+      <JFXTextArea fx:id="description" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="%GiftTitle">
          <VBox.margin>
             <Insets bottom="24.0" left="12.0" right="12.0" />
          </VBox.margin>
@@ -30,16 +30,16 @@
             <Point3D />
          </rotationAxis>
       </JFXTextArea>
-      <Label styleClass="big-label" text="Gift Type" />
+      <Label styleClass="big-label" text="%GiftType" />
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" stylesheets="@../theme.css">
          <children>
-            <JFXTextField fx:id="patientName" minHeight="-Infinity" promptText="Patient Name" HBox.hgrow="ALWAYS" />
+            <JFXTextField fx:id="patientName" minHeight="-Infinity" promptText="%PatientName" HBox.hgrow="ALWAYS" />
             <Region prefHeight="38.0" prefWidth="70.0" />
-            <JFXComboBox fx:id="type" prefHeight="34.0" prefWidth="184.0" promptText="Gift Type" unFocusColor="BLACK" />
+            <JFXComboBox fx:id="type" prefHeight="34.0" prefWidth="184.0" promptText="%GiftType" unFocusColor="BLACK" />
          </children>
       </HBox>
       <Region prefHeight="195.0" prefWidth="534.0" stylesheets="@../theme.css" />
-      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="Make Request">
+      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="%Submit">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXButton>

@@ -15,7 +15,7 @@
             <Insets bottom="24.0" />
          </VBox.margin>
       </FontAwesomeIconView>
-      <JFXTextArea fx:id="description" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="Enter IT Request Details">
+      <JFXTextArea fx:id="description" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="%ITRequestTitle">
          <VBox.margin>
             <Insets bottom="24.0" left="12.0" right="12.0" />
          </VBox.margin>
@@ -23,9 +23,9 @@
             <Insets left="12.0" right="12.0" top="12.0" />
          </padding>
       </JFXTextArea>
-      <JFXComboBox fx:id="type" prefHeight="31.0" prefWidth="358.0" promptText="Choose Request Type" />
+      <JFXComboBox fx:id="type" prefHeight="31.0" prefWidth="358.0" promptText="%SelectType" />
       <Region prefHeight="391.0" prefWidth="522.0" />
-      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="Submit Request">
+      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="%Submit">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXButton>

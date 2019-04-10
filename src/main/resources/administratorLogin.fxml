@@ -13,12 +13,12 @@
 
 <VBox alignment="CENTER" fillWidth="false" prefHeight="406.0" prefWidth="490.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminLoginController">
    <children>
-      <ImageView fitHeight="99.0" fitWidth="380.0">
+      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" scaleX="2.0" scaleY="2.0" scaleZ="2.0">
          <image>
             <Image url="@Images/cfLLaKI.png" />
          </image>
          <VBox.margin>
-            <Insets left="24.0" />
+            <Insets bottom="48.0" left="32.0" />
          </VBox.margin>
       </ImageView>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
@@ -46,9 +46,9 @@
       </HBox>
       <HBox>
          <children>
-              <JFXButton fx:id="loginBtn" onAction="#login" prefHeight="34.0" prefWidth="100.0" ripplerFill="BLACK" styleClass="confirm-button" text="Log In" />
+              <JFXButton fx:id="loginBtn" onAction="#login" prefHeight="34.0" prefWidth="120.0" ripplerFill="BLACK" styleClass="confirm-button" text="Log In" />
             <Region prefHeight="34.0" prefWidth="48.0" />
-              <JFXButton fx:id="cancelBtn" onAction="#showHome" prefHeight="34.0" prefWidth="100.0" ripplerFill="BLACK" styleClass="confirm-button" text="Cancel" />
+              <JFXButton fx:id="cancelBtn" onAction="#showHome" prefHeight="34.0" prefWidth="120.0" ripplerFill="BLACK" styleClass="confirm-button" text="Cancel" />
          </children>
          <VBox.margin>
             <Insets top="20.0" />

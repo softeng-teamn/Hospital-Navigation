@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="32.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="32.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PathSettingController">
    <children>
       <HBox alignment="TOP_RIGHT">
          <children>
@@ -37,12 +37,12 @@
       </Label>
       <HBox alignment="CENTER" prefHeight="150.0" spacing="32.0">
          <children>
-            <JFXButton prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Meeting Room">
+            <JFXButton onAction="#showCONF" prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Meeting Room">
                <graphic>
                   <FontAwesomeIconView glyphName="GROUP" size="60" />
                </graphic>
             </JFXButton>
-            <JFXButton prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Bathroom">
+            <JFXButton onAction="#showREST" prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Bathroom">
                <graphic>
                   <EmojiOneView glyphName="TOILET" size="60" />
                </graphic>
@@ -51,12 +51,12 @@
       </HBox>
       <HBox alignment="CENTER" prefHeight="150.0" spacing="32.0">
          <children>
-            <JFXButton prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Staircase">
+            <JFXButton onAction="#showSTAI" prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Staircase">
                <graphic>
                   <MaterialDesignIconView glyphName="STAIRS" size="60" />
                </graphic>
             </JFXButton>
-            <JFXButton prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Elevator">
+            <JFXButton onAction="#showELEV" prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Elevator">
                <graphic>
                   <MaterialDesignIconView glyphName="ELEVATOR" size="60" />
                </graphic>
@@ -65,12 +65,12 @@
       </HBox>
       <HBox alignment="CENTER" prefHeight="150.0" spacing="32.0">
          <children>
-            <JFXButton prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Info Station">
+            <JFXButton onAction="#showINFO" prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Info Station">
                <graphic>
                   <MaterialIconView glyphName="INFO" size="60" />
                </graphic>
             </JFXButton>
-            <JFXButton prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Egress">
+            <JFXButton onAction="#showEXIT" prefHeight="150.0" prefWidth="150.0" styleClass="glyph-button" text="Exit">
                <graphic>
                   <MaterialIconView glyphName="EXIT_TO_APP" size="60" />
                </graphic>
@@ -84,7 +84,7 @@
       </Label>
       <HBox alignment="CENTER">
          <children>
-            <JFXToggleNode prefHeight="150.0" prefWidth="150.0" styleClass="request-toggle-node" text="Avoid&#10;Elevators" textAlignment="CENTER">
+            <JFXToggleNode onAction="#switchAccessibility" fx:id="accessibilityButton" prefHeight="150.0" prefWidth="150.0" styleClass="request-toggle-node" text="Avoid&#10;Stairs" textAlignment="CENTER">
                <graphic>
                   <FontAwesomeIconView glyphName="WHEELCHAIR" size="50" />
                </graphic>

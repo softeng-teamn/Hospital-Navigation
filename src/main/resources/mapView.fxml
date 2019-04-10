@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXSlider?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane prefWidth="1280.0" stylesheets="@theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MapView">
+<StackPane prefWidth="1280.0" stylesheets="@theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MapView">
         <children>
             <ScrollPane fx:id="map_scrollpane" prefHeight="749.0" prefWidth="998.0">
                 <content>
@@ -32,24 +32,17 @@
          <children>
             <VBox alignment="TOP_CENTER" prefHeight="350.0" prefWidth="124.0">
                <children>
-                  <Slider fx:id="zoom_slider" orientation="VERTICAL">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Slider>
-                  <VBox prefHeight="159.0" prefWidth="124.0">
-                     <children>
-                        <JFXButton fx:id="f3_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="Floor 3" />
-                        <JFXButton fx:id="f2_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="Floor 2" />
-                        <JFXButton fx:id="f1_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="Floor 1" />
-                        <JFXButton fx:id="l1_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="L1" />
-                        <JFXButton fx:id="l2_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="L2" />
-                        <JFXButton fx:id="ground_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" prefHeight="61.0" prefWidth="124.0" style="-fx-background-color: #456AAC;" text="Ground" />
-                     </children>
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </VBox>
+                  <JFXSlider fx:id="zoom_slider" orientation="VERTICAL" />
+                   <VBox fx:id="floor_change_vbox">
+                       <children>
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" prefWidth="98.0" text="Floor 3" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="Floor 2" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="Floor 1" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="L1" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="L2" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="Ground" />
+                       </children>
+                   </VBox>
                </children>
             </VBox>
          </children>

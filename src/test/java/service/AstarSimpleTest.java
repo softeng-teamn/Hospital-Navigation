@@ -1,10 +1,8 @@
 package service;
 
-import service.CSVService;
 import controller.MapController;
 import model.MapNode;
 import model.Node;
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,10 +16,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;

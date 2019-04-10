@@ -9,15 +9,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import model.Event;
 import model.EventBusFactory;
 import model.Node;
+import service.ResourceLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static controller.Controller.initConnections;
 
 public class DirectionsController {
     private Event event = EventBusFactory.getEvent();
@@ -27,13 +32,18 @@ public class DirectionsController {
     private JFXButton home_btn, unitSwitch_btn;
 
     @FXML
-    private JFXListView directionsView;
+    private JFXListView<Label> directionsView;
 
     //text message global variable
-    private String units = "feet";    // Feet or meters conversion
+    private String units = "Ft";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
     private ArrayList<Node> path;
 
+
+    @FXML
+    void initialize() {
+        eventBus.register(this);
+    }
 
     @FXML
     void showSearchList(ActionEvent e) {
@@ -43,7 +53,7 @@ public class DirectionsController {
 
 
     @Subscribe
-    void eventListener(Event event) {
+    void eventListener(Event newevent) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -395,7 +405,7 @@ public class DirectionsController {
 
         // Distance in feet based on measurements from the map: 260 pixels per 85 feet
         double distance;
-        if (units.equals("feet")) {
+        if (units.equals("Ft")) {
             distance = lengthNew /260 * 85;    // Pixels to feet
         }
         else {
@@ -484,15 +494,15 @@ public class DirectionsController {
      * Set the current units as feet or meters
      */
     public void setUnits() {
-        if (units.equals("feet")) {
-            units = "meters";
+        if (unitSwitch_btn.getText().equals("M")) {
+            units = "M";
+            unitSwitch_btn.setText("Ft");
         }
         else {
-            units = "feet";
+            units = "Ft";
+            unitSwitch_btn.setText("M");
         }
-
-        unitSwitch_btn.setText(units);
-
+        printDirections(makeDirections(path));
     }
 
     /**
