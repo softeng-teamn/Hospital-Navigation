@@ -196,17 +196,17 @@ public class MapView {
             case "Floor 3":
                 imageView = new ImageView(new Image(
                         ResourceLoader.thirdFloor.openStream()));
-                floorName = "3";
+                floorName = "03";
                 break;
             case "Floor 2":
                 imageView = new ImageView(new Image(
                         ResourceLoader.secondFloor.openStream()));
-                floorName = "2";
+                floorName = "02";
                 break;
             case "Floor 1":
                 imageView = new ImageView(new Image(
                         ResourceLoader.firstFloor.openStream()));
-                floorName = "1";
+                floorName = "01";
                 break;
             case "L1":
                 imageView = new ImageView(new Image(
@@ -221,7 +221,7 @@ public class MapView {
             case "Ground":
                 imageView = new ImageView(new Image(
                         ResourceLoader.groundFloor.openStream()));
-                floorName = "G";
+                floorName = "00";
                 break;
             default:
                 System.out.println("We should not have default here!!!");
@@ -401,11 +401,11 @@ public class MapView {
             ElevatorCon e = new ElevatorCon();
             for (String key: pathFinder.getElevTimes().keySet()
                  ) {
-                System.out.println("Calling Elevator " + key + "to floor" + pathFinder.getElevTimes().get(key).getFloor());
+                System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
                 GregorianCalendar gc = new GregorianCalendar();
                 gc.add(Calendar.MINUTE, pathFinder.getElevTimes().get(key).getEta());
                 try {
-                    e.postFloor(key.substring(key.length() - 2), pathFinder.getElevTimes().get(key).getFloor(), gc);
+                    e.postFloor(key.substring(key.length() - 1), pathFinder.getElevTimes().get(key).getFloor(), gc);
                 }
                 catch (Exception ex){
                     System.out.println("WifiConnectionError, post didn't happen");
