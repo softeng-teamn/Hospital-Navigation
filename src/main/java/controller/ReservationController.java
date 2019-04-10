@@ -1,59 +1,78 @@
 package controller;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Node;
+import model.ReservableSpace;
+import service.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 
 public class ReservationController {
 
+    static final Color AVAILIBLE_COLOR = Color.rgb(87,255,132,0.5);
+    static final Color UNAVAILABLE_COLOR = Color.rgb(255,82,59, 0.5);
+    static final Color AVAILIBLE_COLOR_SELECT = Color.rgb(87,255,132,1);
+    static final Color UNAVAILABLE_COLOR_SELECT = Color.rgb(255,82,59, 1);
     Group zoomGroup;
+    ArrayList<ReservableSpace> resCollection;
+    ArrayList<Node> nodeCollection;
+    ArrayList<Circle> circleCollection = new ArrayList<Circle>();;
+    ArrayList<Node> availibleNodeCollection = new ArrayList<Node>();
+    Circle lastSelectedCircle;
 
     // State
-    String searchQuery = "";
     Node selectedRoom;
-    LocalDate startDate;
+
 
     @FXML
     private ScrollPane map_scrollpane;
     @FXML
-    private Slider zoom_slider;
+    private JFXSlider zoom_slider;
     @FXML
-    private Pane image_pane;
+    private JFXTextField employee_id, event_name;
     @FXML
-    private JFXTextField search_bar, employee_id, event_name;
+    private JFXDatePicker date_picker;
     @FXML
-    private JFXDatePicker start_date_picker;
+    private JFXTimePicker start_time, end_time;
     @FXML
     private JFXButton save_btn;
 
     @FXML
     void initialize() {
 
-        // validate & disabale save button
-        validateInfo();
+        // setup onChange handlers to elements
+        setOnChangeHandlers();
 
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
         Group contentGroup = new Group();
@@ -69,6 +88,11 @@ public class ReservationController {
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.3);
 
+        // populate reservableSpaces
+        initReservables();
+
+        // validate & disabale save button
+        validateInfo();
     }
 
     // Click on Home Button
@@ -79,71 +103,44 @@ public class ReservationController {
         StageManager.changeExistingWindow(stage, root, "Home");
     }
 
-    // clicking on a list item
-    @FXML
-    void listViewClicked(MouseEvent e) {
 
+    @FXML
+    void mapClickedHandler(MouseEvent e) {
+        System.out.println("x: " + e.getX() + ", y: " + e.getY());
     }
 
-    // pressing enter on the search bar
-    @FXML
-    void searchBarEnter(ActionEvent e) {
-        searchQuery = search_bar.getText();
+    // Atatch event listeners to every field
+    void setOnChangeHandlers() {
+        start_time.setValue(LocalTime.now());
+        start_time.setDefaultColor(Color.valueOf("#065185"));
+        // event name
+        event_name.textProperty().addListener((o, oldVal, newVal) -> handleChange());
+        // employee id
+        employee_id.textProperty().addListener((o, oldVal, newVal) -> handleChange());
+        // date
+        date_picker.setValue(LocalDate.now());
+        date_picker.valueProperty().addListener((o, oldVal, newVal) -> handleChange());
+        // start time
+        start_time.valueProperty().addListener((o, oldVal, newVal) -> handleChange());
+        // end time
+        end_time.valueProperty().addListener((o, oldVal, newVal) -> handleChange());
     }
 
-    // clicking to switch floors
-    @FXML
-    void changeFloor(ActionEvent e) throws IOException {
-        JFXButton btn = (JFXButton)e.getSource();
-        ImageView imageView;
-        String floorName = "";
-        switch (btn.getText()) {
-            case "Floor 3":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.thirdFloor.openStream()));
-                floorName = "3";
-                break;
-            case "Floor 2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondFloor.openStream()));
-                floorName = "2";
-                break;
-            case "Floor 1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstFloor.openStream()));
-                floorName = "1";
-                break;
-            case "L1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstLowerFloor.openStream()));
-                floorName = "L1";
-                break;
-            case "L2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondLowerFloor.openStream()));
-                floorName = "L2";
-                break;
-            case "Ground":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
-                floorName = "G";
-                break;
-            default:
-                System.out.println("We should not have default here!!!");
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
-                break;
-        }
-        image_pane.getChildren().clear();
-        image_pane.getChildren().add(imageView);
+    void handleChange() {
+        validateInfo();
     }
 
+    // make sure every field is CORRECT
     void validateInfo() {
-        if (event_name.getText() == "" || employee_id.getText() == "" || selectedRoom == null) {
-            // can't save event
-            save_btn.setDisable(true);
+        System.out.println("validating");
+        createCircles();
+        if (!event_name.getText().equals("") && !employee_id.getText().equals("") &&
+                date_picker.getValue().compareTo(LocalDate.now()) >= 0 && start_time.getValue().compareTo(end_time.getValue()) < 0 &&
+                selectedRoom != null) {
+            // Validated
+            save_btn.setDisable(false);
         } else {
-            // allow click
+            // CANT SAVE
             save_btn.setDisable(true);
         }
     }
@@ -157,17 +154,156 @@ public class ReservationController {
         map_scrollpane.setVvalue(scrollV);
     }
 
-    private void scrollTo(Node node) {
-        // animation scroll to new position
-        double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
-        double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
-        double scrollH = (Double) (node.getXcoord() / mapWidth);
-        double scrollV = (Double) (node.getYcoord() / mapHeight);
-        final Timeline timeline = new Timeline();
-        final KeyValue kv1 = new KeyValue(map_scrollpane.hvalueProperty(), scrollH);
-        final KeyValue kv2 = new KeyValue(map_scrollpane.vvalueProperty(), scrollV);
-        final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
-        timeline.getKeyFrames().add(kf);
-        timeline.play();
+
+    void initReservables() {
+        // Retrieves all the reservable spaces in the DB
+        resCollection = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAllReservableSpaces();
+        // Finds all nodes that represent the location of that space
+        nodeCollection = new ArrayList<Node>();
+        for(ReservableSpace rs : resCollection) {
+            nodeCollection.add(DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID()));
+        }
+        createCircles();
+    }
+
+    void createCircles() {
+        // find availible spaced
+        ArrayList<ReservableSpace> availableSpaces = new ArrayList<>();
+        if (start_time.getValue() != null && end_time.getValue() != null && date_picker.getValue() != null)  {
+            LocalDate localDate = date_picker.getValue();
+            LocalTime localStartTime = start_time.getValue();
+            GregorianCalendar calStart = new GregorianCalendar(
+                    localDate.getYear(),
+                    localDate.getMonthValue(),
+                    localDate.getDayOfMonth(),
+                    localStartTime.getHour(),
+                    localStartTime.getMinute()
+            );
+            LocalTime localEndTime = end_time.getValue();
+            GregorianCalendar calEnd = new GregorianCalendar(
+                    localDate.getYear(),
+                    localDate.getMonthValue(),
+                    localDate.getDayOfMonth(),
+                    localEndTime.getHour(),
+                    localEndTime.getMinute()
+            );
+            if (localStartTime.compareTo(localEndTime) < 0) {
+                System.out.println("WE ARE IN THE LOOP!!!");
+                System.out.println("FILTERING AVAILIBLE SPACES");
+
+                availableSpaces = (ArrayList<ReservableSpace>) DatabaseService.getDatabaseService().getAvailableReservableSpacesBetween(calStart, calEnd);
+                if (availableSpaces != null) {
+                    for(ReservableSpace rs : availableSpaces) {
+                        availibleNodeCollection.add(DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID()));
+                    }
+                } else {
+                    availibleNodeCollection = new ArrayList<Node>();
+                }
+            } else {
+                availibleNodeCollection = new ArrayList<Node>();
+            }
+        }
+
+        System.out.println(availibleNodeCollection);
+        // remove last circle collection
+        zoomGroup.getChildren().removeAll(circleCollection);
+        circleCollection = new ArrayList<Circle>();
+        for(Node node : nodeCollection) {
+            Circle circle = new Circle();
+            circle.setRadius(80);
+            if (availibleNodeCollection.contains(node)) {
+                circle.setFill(AVAILIBLE_COLOR);
+            } else {
+                circle.setFill(UNAVAILABLE_COLOR);
+            }
+            circle.setCenterX(node.getXcoord());
+            circle.setCenterY(node.getYcoord());
+            circle.setOnMouseClicked(e -> handleCircleClicked(e, node));
+            circleCollection.add(circle);
+        }
+        // show circles
+        renderCircles();
+    }
+
+    void handleCircleClicked(MouseEvent e, Node node) {
+        Circle circle = (Circle)e.getSource();
+        if (circle.getFill().equals(AVAILIBLE_COLOR)) {
+            // select this room
+            selectedRoom = node;
+            // set last selected circle to be new color
+            unselectLastCircleSelect();
+            // change color to selected
+            circle.setFill(AVAILIBLE_COLOR_SELECT);
+            // this is now the new lastSelectedCircle
+            lastSelectedCircle = circle;
+        } else if (circle.getFill().equals(AVAILIBLE_COLOR_SELECT)){
+            // remove room selection
+            selectedRoom = null;
+            lastSelectedCircle = null;
+            // set circle back to default
+            circle.setFill(AVAILIBLE_COLOR);
+        } else if (circle.getFill().equals(UNAVAILABLE_COLOR)) {
+            // room can't be selected
+            selectedRoom = null;
+            // set last selected circle to be new color
+            unselectLastCircleSelect();
+            // change color to selected
+            circle.setFill(UNAVAILABLE_COLOR_SELECT);
+            // this is now the new lastSelectedCircle
+            lastSelectedCircle = circle;
+        } else if (circle.getFill().equals(UNAVAILABLE_COLOR_SELECT)) {
+            // remove room selection
+            selectedRoom = null;
+            lastSelectedCircle = null;
+            // set circle back to default
+            circle.setFill(UNAVAILABLE_COLOR);
+        }
+        updateTimeView();
+    }
+
+    void unselectLastCircleSelect() {
+        int lastIndx = circleCollection.indexOf(lastSelectedCircle);
+        // found the selected circle (it could be null, which means there is no other selected circle)
+        if (lastIndx >= 0) {
+            Circle selCirc = circleCollection.get(lastIndx);
+            if (selCirc.getFill().equals(AVAILIBLE_COLOR_SELECT)) {
+                selCirc.setFill(AVAILIBLE_COLOR);
+            } else if (selCirc.getFill().equals(UNAVAILABLE_COLOR_SELECT)) {
+                selCirc.setFill(UNAVAILABLE_COLOR);
+            }
+            circleCollection.remove(lastIndx);
+            circleCollection.add(lastIndx, selCirc);
+        }
+    }
+
+    void renderCircles() {
+        zoomGroup.getChildren().removeAll(circleCollection);
+        zoomGroup.getChildren().addAll(circleCollection);
+    }
+
+    void updateTimeView() {
+        if (selectedRoom == null) {
+            // remove all times
+        } else {
+            // show times
+//            LocalTime sTime = start_time.getValue();
+//            LocalTime eTime = end_time.getValue();
+            LocalDate date = date_picker.getValue();
+
+            if (date == null) {
+                // I don't know when to actually look for the reservations
+                return;
+            }
+//            DatabaseService.getDatabaseService().getReservableSpaceWithNodeId()
+//            ReservableSpace selectedSpace;
+//            GregorianCalendar calStart = GregorianCalendar.from(date.atStartOfDay(ZoneId.systemDefault()));
+//            LocalDate nextDay = date.plus(1, ChronoUnit.DAYS);
+//            GregorianCalendar calEnd = GregorianCalendar.from(nextDay.atStartOfDay(ZoneId.systemDefault()));
+//            ArrayList<ReservableSpace> bookedTimes = DatabaseService.getDatabaseService().getReservationsBySpaceIdBetween(
+//                    selectedSpace.getSpaceID(),
+//                    calStart,
+//                    calEnd
+//            );
+        }
     }
 }

@@ -1,6 +1,7 @@
 package controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,6 +43,8 @@ public class CreateNodeController extends Controller {
     VBox node_info_vbox, narnar_vbox;
     @FXML
     JFXTextField floor_field, type_field, short_field, long_field, building_field;
+    @FXML
+    JFXListView<String> time_view;
 
     private final Color DEFAULT_NODE_COLOR = Color.BLACK;
     private final Color SELECTED_NODE_COLOR = Color.RED;
