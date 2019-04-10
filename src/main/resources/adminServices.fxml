@@ -12,7 +12,7 @@
    <children>
       <HBox alignment="TOP_RIGHT" spacing="40.0">
          <children>
-            <JFXButton fx:id="showHomeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showHome" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button" stylesheets="@theme.css">
+            <JFXButton fx:id="showHomeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showSearch" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button" stylesheets="@theme.css">
                <HBox.margin>
                   <Insets right="5.0" top="5.0" />
                </HBox.margin>

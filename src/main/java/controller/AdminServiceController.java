@@ -91,4 +91,10 @@ public class AdminServiceController extends Controller{
         Stage stage = (Stage) newNode_btn.getScene().getWindow();
         StageManager.changeExistingWindow(stage, root, "Add Node");
     }
+
+    @FXML
+    public void showSearch(ActionEvent actionEvent) {
+        event.setEventName("showSearch");
+        eventBus.post(event);
+    }
 }

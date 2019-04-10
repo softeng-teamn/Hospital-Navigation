@@ -69,4 +69,10 @@ public class PathSettingController {
             event.setAccessiblePath(true);
         }
     }
+
+    @FXML
+    public void showSearch(ActionEvent actionEvent) {
+        event.setEventName("showSearch");
+        eventBus.post(event);
+    }
 }

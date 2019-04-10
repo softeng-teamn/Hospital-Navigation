@@ -17,7 +17,7 @@
    <children>
       <HBox alignment="TOP_RIGHT">
          <children>
-            <JFXButton contentDisplay="GRAPHIC_ONLY" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button">
+            <JFXButton onAction="#showSearch" contentDisplay="GRAPHIC_ONLY" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button">
                <graphic>
                   <FontAwesomeIconView glyphName="CLOSE" size="24" styleClass="request-glyph" />
                </graphic>
