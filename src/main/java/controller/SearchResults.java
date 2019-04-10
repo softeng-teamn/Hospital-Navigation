@@ -56,7 +56,7 @@ public class SearchResults {
         event = newEvent;
         switch (event.getEventName()) {
             case "node-select":
-                list_view.scrollTo(event.getNodeSelected());
+                //list_view.scrollTo(event.getNodeSelected());
                 list_view.getSelectionModel().select(event.getNodeSelected());
                 break;
             case "login":
