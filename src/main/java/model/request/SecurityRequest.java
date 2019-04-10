@@ -32,7 +32,8 @@ public class SecurityRequest extends Request {
 
     @Override
     public void makeRequest() {
-        DatabaseService.getDatabaseService().insertSecurityRequest(this);
+        SecurityRequest newSecurityRequest = new SecurityRequest(-1, this.getNotes(), this.getLocation(), false);
+        DatabaseService.getDatabaseService().insertSecurityRequest(newSecurityRequest);
     }
 
     @Override
