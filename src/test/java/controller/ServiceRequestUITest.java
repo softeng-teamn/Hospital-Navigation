@@ -1,11 +1,8 @@
 package controller;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXTextArea;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.jfoenix.controls.*;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.VerticalDirection;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,6 +11,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.request.ITRequest;
+import model.request.SanitationRequest;
+import model.request.SecurityRequest;
+import model.request.ToyRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -54,29 +54,156 @@ public class ServiceRequestUITest extends ApplicationTest {
     @Test
     @Category(FastTest.class)
     public void itTest() {
+        // Verify no requests of this type exist
         assertThat(myDBS.getAllITRequests().size(), is(0));
 
+        // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
+        // Verify no subscene is present
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
         verifyThat(subSceneHolder.getChildren().size(), is(0));
 
-        Node tgNode = GuiTest.find("#itNode");
+        // Click on the request type
+        Node tgNode = GuiTest.find("#itSelectNode");
         clickOn(tgNode);
 
+        // Verify subscene appears
         verifyThat(subSceneHolder.getChildren().size(), is(1));
 
+        // Get and Populate fields
         JFXTextArea description = GuiTest.find("#description");
         JFXComboBox type = GuiTest.find("#type");
         JFXButton submit = GuiTest.find("#submit");
-
         clickOn(description).write("A description here...");
         clickOn(type).type(KeyCode.DOWN).type(KeyCode.ENTER);
+
+        // Submit
         clickOn(submit);
 
+        // Verify submission in database
         ITRequest req = myDBS.getITRequest(0);
         verifyThat(req.getItRequestType(), is(ITRequest.ITRequestType.Accessories));
         verifyThat(req.getNotes(), is("A description here..."));
     }
+
+    @Test
+    @Category(FastTest.class)
+    public void toyTest() {
+        // Verify no requests of this type exist
+        assertThat(myDBS.getAllToyRequests().size(), is(0));
+
+        // Get and click on a location
+        JFXListView<Node> listView = GuiTest.find("#list_view");
+        clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
+
+        // Verify no subscene is present
+        Pane subSceneHolder = GuiTest.find("#subSceneHolder");
+        verifyThat(subSceneHolder.getChildren().size(), is(0));
+
+        // Click on the request type
+        Node tgNode = GuiTest.find("#toySelectNode");
+        clickOn(tgNode);
+
+        // Verify subscene appears
+        verifyThat(subSceneHolder.getChildren().size(), is(1));
+
+        // Get and Populate fields
+        JFXTextArea description = GuiTest.find("#description");
+        JFXTextField toy = GuiTest.find("#toy");
+        JFXButton submit = GuiTest.find("#submit");
+        clickOn(description).write("A description here...");
+        clickOn(toy).write("Monopoly");
+
+        // Submit
+        clickOn(submit);
+
+        // Verify submission in database
+        ToyRequest req = myDBS.getToyRequest(0);
+        verifyThat(req.getToyName(), is("Monopoly"));
+        verifyThat(req.getNotes(), is("A description here..."));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void securityTest() {
+        // Verify no requests of this type exist
+        assertThat(myDBS.getAllSecurityRequests().size(), is(0));
+
+        // Get and click on a location
+        JFXListView<Node> listView = GuiTest.find("#list_view");
+        clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
+
+        // Verify no subscene is present
+        Pane subSceneHolder = GuiTest.find("#subSceneHolder");
+        verifyThat(subSceneHolder.getChildren().size(), is(0));
+
+        // Click on the request type
+        Node tgNode = GuiTest.find("#securitySelectNode");
+        clickOn(tgNode);
+
+        // Verify subscene appears
+        verifyThat(subSceneHolder.getChildren().size(), is(1));
+
+        // Get and Populate fields
+        JFXTextArea description = GuiTest.find("#description");
+        JFXToggleNode med = GuiTest.find("#urgency_high");
+        JFXButton submit = GuiTest.find("#submit");
+        clickOn(description).write("A description here...");
+        clickOn(med);
+
+        // Submit
+        clickOn(submit);
+
+        // Verify submission in database
+        SecurityRequest req = myDBS.getSecurityRequest(0);
+        verifyThat(req.getUrgency(), is(SecurityRequest.Urgency.VERY));
+        verifyThat(req.getNotes(), is("A description here..."));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void sanitationTest() {
+        // Verify no requests of this type exist
+        assertThat(myDBS.getAllSanitationRequests().size(), is(0));
+
+        // Get and click on a location
+        JFXListView<Node> listView = GuiTest.find("#list_view");
+        clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
+
+        // Verify no subscene is present
+        Pane subSceneHolder = GuiTest.find("#subSceneHolder");
+        verifyThat(subSceneHolder.getChildren().size(), is(0));
+
+        // Click on the request type
+        Node tgNode = GuiTest.find("#sanitationSelectNode");
+        clickOn(tgNode);
+
+        // Verify subscene appears
+        verifyThat(subSceneHolder.getChildren().size(), is(1));
+
+        // Get and Populate fields
+        JFXTextArea description = GuiTest.find("#notes");
+        JFXComboBox urgency = GuiTest.find("#urgencyBox");
+        JFXComboBox material = GuiTest.find("#materialBox");
+        JFXButton submit = GuiTest.find("#submitBtn");
+        clickOn(description).write("A description here...");
+        clickOn(urgency).type(KeyCode.DOWN).type(KeyCode.ENTER);
+        clickOn(material).type(KeyCode.DOWN).type(KeyCode.DOWN).type(KeyCode.ENTER);
+
+        // Submit
+        clickOn(submit);
+
+        // Verify submission in database
+        SanitationRequest req = myDBS.getSanitationRequest(0);
+        verifyThat(req.getUrgency(), is("Low"));
+        verifyThat(req.getMaterialState(), is("Solid"));
+        verifyThat(req.getNotes(), is("A description here..."));
+    }
+
+
+
+//    moveBy(500, 20);
+//    scroll(40, VerticalDirection.DOWN);
 }
