@@ -166,48 +166,48 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Test
-    @Category(FastTest.class)
-    public void sanitationTest() throws InterruptedException {
-        // Verify no requests of this type exist
-        assertThat(myDBS.getAllSanitationRequests().size(), is(0));
-
-        Thread.sleep(1000);
-
-        // Get and click on a location
-        JFXListView<Node> listView = GuiTest.find("#list_view");
-        verifyThat(from(listView).lookup(".list-cell").queryAll().size(), is(24), informedErrorMessage(this));
-        clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
-
-        // Verify no subscene is present
-        Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
-
-        // Click on the request type
-        Node tgNode = GuiTest.find("#sanitationSelectNode");
-        clickOn(tgNode);
-
-        // Verify subscene appears
-        verifyThat(subSceneHolder.getChildren().size(), is(1));
-
-        // Get and Populate fields
-        JFXTextArea description = GuiTest.find("#notes");
-        JFXComboBox urgency = GuiTest.find("#urgencyBox");
-        JFXComboBox material = GuiTest.find("#materialBox");
-        JFXButton submit = GuiTest.find("#submitBtn");
-        clickOn(description).write("A description here...");
-        clickOn(urgency).type(KeyCode.DOWN).type(KeyCode.ENTER);
-        clickOn(material).type(KeyCode.DOWN).type(KeyCode.DOWN).type(KeyCode.ENTER);
-
-        // Submit
-        clickOn(submit);
-
-        // Verify submission in database
-        SanitationRequest req = myDBS.getSanitationRequest(0);
-        verifyThat(req.getUrgency(), is("Low"));
-        verifyThat(req.getMaterialState(), is("Solid"));
-        verifyThat(req.getNotes(), is("A description here..."));
-    }
+//    @Test
+//    @Category(FastTest.class)
+//    public void sanitationTest() throws InterruptedException {
+//        // Verify no requests of this type exist
+//        assertThat(myDBS.getAllSanitationRequests().size(), is(0));
+//
+//        Thread.sleep(1000);
+//
+//        // Get and click on a location
+//        JFXListView<Node> listView = GuiTest.find("#list_view");
+//        verifyThat(from(listView).lookup(".list-cell").queryAll().size(), is(24), informedErrorMessage(this));
+//        clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
+//
+//        // Verify no subscene is present
+//        Pane subSceneHolder = GuiTest.find("#subSceneHolder");
+//        verifyThat(subSceneHolder.getChildren().size(), is(0));
+//
+//        // Click on the request type
+//        Node tgNode = GuiTest.find("#sanitationSelectNode");
+//        clickOn(tgNode);
+//
+//        // Verify subscene appears
+//        verifyThat(subSceneHolder.getChildren().size(), is(1));
+//
+//        // Get and Populate fields
+//        JFXTextArea description = GuiTest.find("#notes");
+//        JFXComboBox urgency = GuiTest.find("#urgencyBox");
+//        JFXComboBox material = GuiTest.find("#materialBox");
+//        JFXButton submit = GuiTest.find("#submitBtn");
+//        clickOn(description).write("A description here...");
+//        clickOn(urgency).type(KeyCode.DOWN).type(KeyCode.ENTER);
+//        clickOn(material).type(KeyCode.DOWN).type(KeyCode.DOWN).type(KeyCode.ENTER);
+//
+//        // Submit
+//        clickOn(submit);
+//
+//        // Verify submission in database
+//        SanitationRequest req = myDBS.getSanitationRequest(0);
+//        verifyThat(req.getUrgency(), is("Low"));
+//        verifyThat(req.getMaterialState(), is("Solid"));
+//        verifyThat(req.getNotes(), is("A description here..."));
+//    }
 
 
 
