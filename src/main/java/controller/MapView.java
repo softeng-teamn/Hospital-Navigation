@@ -415,7 +415,7 @@ public class MapView {
             // not accessible
             newpath = pathFinder.genPath(start, dest, false, currentMethod);
         }
-        if(event.isCallElev()){
+        if(event.isCallElev()){//if we are supposed to call elevator
             ElevatorCon e = new ElevatorCon();
             for (String key: pathFinder.getElevTimes().keySet()
             ) {
