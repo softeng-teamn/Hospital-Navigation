@@ -14,6 +14,7 @@ public class InternalTransportController extends RequestController{
 
     @FXML
     private JFXComboBox<InternalTransportRequest.TransportType> dropdown;
+
     @FXML
     private JFXTextArea text_area;
 
