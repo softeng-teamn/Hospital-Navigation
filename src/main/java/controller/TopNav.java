@@ -21,14 +21,21 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.*;
 import service.ResourceLoader;
 import service.StageManager;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
 
 public class TopNav {
 
@@ -90,8 +97,8 @@ public class TopNav {
     @FXML
     void showRequest(ActionEvent e) throws Exception {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.request);
-        StageManager.changeExistingWindow(stage, root, "Service Request");
+        Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"Service Request");
     }
 
     @FXML
@@ -128,10 +135,17 @@ public class TopNav {
                 while (true) {
                     Thread.sleep(100);
                     GregorianCalendar calendar = new GregorianCalendar();
+                    DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
                     TimeUnit.SECONDS.sleep(1);
                     Platform.runLater(new Runnable() {
                         @Override public void run() {
-                            time_label.setText(calendar.getTime().toString());
+                            String formattedDate = dateFormat.format(new Date());
+                            String day = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+                            int date = calendar.get(Calendar.DAY_OF_MONTH);
+                            String month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+                            String curTime = String.format(formattedDate + "\n" + day + ", the %02dth of " + month, date);
+                            time_label.setText(curTime);
+                            time_label.setTextAlignment(TextAlignment.CENTER);
                         }
                     });
                 }

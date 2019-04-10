@@ -26,19 +26,15 @@ public class SecurityRequestController extends RequestController {
         if (selected != null) {
             switch (selected.getText()) {
                 case "Low":
-                    System.out.println("I went to the low");
                     urgencyLevel = SecurityRequest.Urgency.NOT;
                     break;
                 case "Medium":
-                    System.out.println("I went to the medium");
                     urgencyLevel = SecurityRequest.Urgency.SOMEWHAT;
                     break;
                 case "High":
-                    System.out.println("I went to the high");
                     urgencyLevel = SecurityRequest.Urgency.VERY;
                     break;
                 default:
-                    System.out.println("I went to the default");
                     urgencyLevel = SecurityRequest.Urgency.NOT;
             }
         }
