@@ -112,7 +112,7 @@ public class ScheduleController extends Controller {
     public ReservableSpace currentSelection;
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<Integer> currentSchedule;
-    // LIst of spaces to display
+    // LIst of spaces to display in the list view
     private ObservableList<ReservableSpace> resSpaces;
     // Error messages
     private String timeErrorText, availRoomsText, bookedRoomsText, clearFilterText, conflictErrorText, pastDateErrorText;
@@ -339,7 +339,6 @@ public class ScheduleController extends Controller {
       */
     @FXML
     public void showRoomSchedule() {
-        System.out.println("showing schedule");
         // Clear the previous schedule
         currentSchedule.clear();
 
@@ -418,9 +417,6 @@ public class ScheduleController extends Controller {
         ObservableList<ScheduleWrapper> wrap = FXCollections.observableArrayList();
         wrap.addAll(schedToAdd);
         scheduleTable.setItems(wrap);
-        for (int i = 0; i < schedToAdd.size(); i++) {
-            System.out.println(scheduleTable.getItems().get(i));
-        }
     }
 
     /**
