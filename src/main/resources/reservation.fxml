@@ -3,31 +3,28 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXSlider?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.control.Label?>
 <VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ReservationController">
     <children>
        <HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="128.0" prefWidth="1920.0" spacing="5.0" styleClass="header">
-          <padding><Insets bottom="6.0" left="24.0" right="24.0" top="6.0"/></padding>
+          <padding><Insets bottom="6.0" left="24.0" right="24.0" top="6.0" /></padding>
           <children>
-             <JFXTextField fx:id="search_bar" onAction="#searchBarEnter" labelFloat="true" prefHeight="27.0" prefWidth="217.0" promptText="Search" unFocusColor="#b2b2b2">
-                <HBox.margin>
-                   <Insets right="8.0" />
-                </HBox.margin></JFXTextField>
              <Region HBox.hgrow="ALWAYS" />
-             <Label fx:id="time_label" text="Book Reservation"/>
+             <Label fx:id="time_label" text="Book Reservation" />
              <Region HBox.hgrow="ALWAYS" />
              <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
                 <graphic>
@@ -41,7 +38,6 @@
        </HBox>
         <HBox fx:id="hbox_container" VBox.vgrow="ALWAYS">
             <children>
-                <JFXListView fx:id="list_view" onMouseClicked="#listViewClicked" prefHeight="952.0" prefWidth="384.0" />
                 <HBox prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
@@ -53,11 +49,11 @@
                            <children>
                               <ScrollPane fx:id="map_scrollpane" prefHeight="200.0" prefWidth="200.0">
                                  <content>
-                                    <Pane fx:id="image_pane">
+                                    <Pane fx:id="image_pane" onMouseClicked="#mapClickedHandler">
                                        <children>
                                           <ImageView pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@Images/F1.png" />
+                                                <Image url="@Images/flex.jpg" />
                                              </image>
                                           </ImageView>
                                        </children>
@@ -70,19 +66,9 @@
                                        <children>
                                           <Pane nodeOrientation="RIGHT_TO_LEFT" prefHeight="165.0" prefWidth="100.0">
                                              <children>
-                                                <Slider fx:id="zoom_slider" layoutX="3.0" orientation="VERTICAL" prefWidth="16.0" />
+                                                <JFXSlider fx:id="zoom_slider" orientation="VERTICAL" />
                                              </children>
                                           </Pane>
-                                          <VBox prefHeight="200.0" prefWidth="100.0">
-                                             <children>
-                                                <JFXButton onAction="#changeFloor" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #456AAC;" text="Floor 3" />
-                                                <JFXButton onAction="#changeFloor" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #456AAC;" text="Floor 2" />
-                                                <JFXButton onAction="#changeFloor" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #456AAC;" text="Floor 1" />
-                                                <JFXButton onAction="#changeFloor" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #456AAC;" text="L1" />
-                                                <JFXButton onAction="#changeFloor" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #456AAC;" text="L2" />
-                                                <JFXButton onAction="#changeFloor" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #456AAC;" text="Ground" />
-                                             </children>
-                                          </VBox>
                                        </children>
                                     </VBox>
                                  </children>
@@ -98,8 +84,19 @@
                      <children>
                         <JFXTextField fx:id="event_name" promptText="Event Name" />
                         <JFXTextField fx:id="employee_id" promptText="Employee ID" />
-                        <JFXDatePicker fx:id="start_date_picker" promptText="Date" />
-                        <JFXListView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                        <JFXDatePicker fx:id="date_picker" maxWidth="1.7976931348623157E308" promptText="Date" />
+                        <HBox>
+                           <children>
+                              <JFXTimePicker fx:id="start_time" prefHeight="40.0" prefWidth="151.0" promptText="Start" HBox.hgrow="ALWAYS" />
+                              <Label maxWidth="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="36.0" text="to" textFill="WHITE">
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" top="15.0" />
+                                 </padding>
+                              </Label>
+                              <JFXTimePicker fx:id="end_time" prefHeight="40.0" prefWidth="141.0" promptText="End" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <JFXListView fx:id="time_view" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                         <HBox alignment="TOP_RIGHT">
                            <children>
                               <JFXButton fx:id="save_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="40.0" prefWidth="320.0" text="Save" HBox.hgrow="ALWAYS" />

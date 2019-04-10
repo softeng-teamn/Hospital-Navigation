@@ -604,3 +604,6 @@ WHALL00702,1740,1500,2,Tower,HALL,Hallway Connector 7 Floor 2,Hallway W0702
 WHALL00802,1720,1745,2,Shapiro,HALL,Hallway Connector 8 Floor 2,Hallway W0802
 WHALL00902,1690,2240,2,Shapiro,HALL,Hallway Connector 9 Floor 2,Hallway W0902
 WHALL01002,1690,2455,2,BTM,HALL,Hallway Connector 10 Floor 2,Hallway W1002
+BBBBB00105,1983,750,RES,RES,RES,Reservable 1 ClassRoom,Reserve 1
+BBBBB00106,2316,760,RES,RES,RES,Reservable 2 ClassRoom,Reserve 2
+BBBBB00107,2603,763,RES,RES,RES,Reservable 3 ClassRoom,Reserve 3
