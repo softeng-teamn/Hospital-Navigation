@@ -134,7 +134,8 @@ public class PatientInfoRequest extends Request{
 
     @Override
     public String toDisplayString() {
-        return String.format("Patient Info Request %d", this.getId());
+        return String.format("Patient Info Request %d, Assigned To: %s, Fulfilled: %s, First Name: %s, Last Name: %s, Birthday: %s",
+                this.getId(), this.getNotes(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getFirstName(), this.getLastName(), this.getBirthDay());
     }
 
     @Override

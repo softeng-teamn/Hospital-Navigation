@@ -105,7 +105,8 @@ public class ITRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("IT Request %d", this.getId());
+        return String.format("IT Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getItRequestType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }
 
     @Override

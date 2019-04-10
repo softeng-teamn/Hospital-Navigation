@@ -105,7 +105,8 @@ public class SecurityRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Security Request %d", this.getId());
+        return String.format("Security Request %d, Urgency: %s, Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getUrgency(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }
 
     @Override

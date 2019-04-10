@@ -107,7 +107,8 @@ public class InternalTransportRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Internal Transport Request %d", this.getId());
+        return String.format("Internal Transport Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getTransport().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }
 
     @Override

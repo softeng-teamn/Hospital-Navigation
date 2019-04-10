@@ -112,7 +112,8 @@ public class FloristRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Florist Request %d", this.getId());
+        return String.format("Florist Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s, Quantity: %d",
+                this.getId(), this.getNotes(), this.getBouquetType(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getQuantity());
     }
 
     @Override

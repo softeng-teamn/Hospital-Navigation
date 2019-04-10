@@ -100,7 +100,8 @@ public class ToyRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Toy Request %d", this.getId());
+        return String.format("Toy Request %d, Toy Name: %s, Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getToyName(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }
 
     @Override

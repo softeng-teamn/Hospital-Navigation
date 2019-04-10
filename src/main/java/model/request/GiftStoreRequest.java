@@ -117,7 +117,8 @@ public class GiftStoreRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Gift Store Request %d", this.getId());
+        return String.format("Gift Store Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s, Patient Name: %s",
+                this.getId(), this.getNotes(), this.getgType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getPatientName());
     }
 
     @Override

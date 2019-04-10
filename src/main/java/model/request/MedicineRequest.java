@@ -118,7 +118,8 @@ public class MedicineRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Medicines Request %d", this.getId());
+        return String.format("Medicines Request %d, Type: %s, Assigned To: %s, Fulfilled: %s, Quantity: %d",
+                this.getId(), this.getNotes(), this.getMedicineType(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getQuantity());
     }
 
     @Override
