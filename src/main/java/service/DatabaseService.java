@@ -188,6 +188,7 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
 
             statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER', 'IT', 'GUEST', 'RELIGIOUS_OFFICIAL', 'GIFT_SERVICES', 'MISCELLANEOUS', 'AV', 'INTERPRETER', 'TOY', 'PATIENT_INFO', 'FLORIST', 'INTERNAL_TRANSPORT', 'EXTERNAL_TRANSPORT')))");
+            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), phone varchar(255), email varchar(255), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER', 'IT', 'GUEST')))");
 
             statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
             statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
@@ -588,8 +589,8 @@ public class DatabaseService {
      * @return true if the insert succeeded or false if otherwise.
      */
     public boolean insertEmployee(Employee employee) {
-        String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertStatement, employee.getID(), employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getPassword());
+        String insertStatement = ("INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?, ?, ?, ?)");
+        return executeInsert(insertStatement, employee.getID(), employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getPassword(), employee.getPhone(), employee.getEmail());
     }
 
     /**
@@ -616,8 +617,8 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateEmployee(Employee employee) {
-        String query = "UPDATE EMPLOYEE SET username=?, job=?, isAdmin=? WHERE (employeeID = ?)";
-        return executeUpdate(query, employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getID());
+        String query = "UPDATE EMPLOYEE SET username=?, job=?, isAdmin=?, phone=?, email=? WHERE (employeeID = ?)";
+        return executeUpdate(query, employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getPhone(), employee.getEmail(), employee.getID());
     }
 
     /**
@@ -1960,8 +1961,13 @@ public class DatabaseService {
         boolean isAdmin = rs.getBoolean("isAdmin");
         String password = rs.getString("password");
         String username = rs.getString("username");
+        String email = rs.getString("email");
+        String phone = rs.getString("phone");
 
-        return new Employee(empID, username, JobType.valueOf(jobString), isAdmin, password);
+        Employee emp = new Employee(empID, username, JobType.valueOf(jobString), isAdmin, password);
+        emp.setEmail(email);
+        emp.setPhone(phone);
+        return emp;
     }
 
     private ReservableSpace extractReservableSpace(ResultSet rs) throws SQLException {

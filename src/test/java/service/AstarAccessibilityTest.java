@@ -44,14 +44,19 @@ public class AstarAccessibilityTest {
 
     public void createMap() {
         n1 = new Node("node1",0,0, "CONF");
+        n1.setFloor("1");
         mn1 = new MapNode(0,0,n1);
         n2 = new Node("node2",1, 0, "STAI");
+        n2.setFloor("1");
         mn2 = new MapNode(1,0,n2);
         n3 = new Node("node3",1, 1, "CONF");
+        n3.setFloor("1");
         mn3 = new MapNode(1,1,n3);
         n4 = new Node("node4",0, 1, "ELEV");
+        n4.setFloor("1");
         mn4 = new MapNode(0,1,n4);
         n5 = new Node("node5",1, 2, "CONF");
+        n5.setFloor("1");
         mn5 = new MapNode(1,2,n5);
     }
 

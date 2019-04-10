@@ -85,4 +85,9 @@ public class ToyRequest extends Request {
     public ObservableList<Request> showProperRequest() {
         return (ObservableList) myDBS.getAllToyRequests() ;
     }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateToyRequest((ToyRequest) selectedTask) ;
+    }
 }
