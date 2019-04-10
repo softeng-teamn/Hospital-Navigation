@@ -38,14 +38,6 @@
                      </VBox.margin>
                   </Slider>
                   <VBox prefHeight="159.0" prefWidth="124.0">
-                     <children>
-                        <JFXButton fx:id="f3_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="Floor 3" />
-                        <JFXButton fx:id="f2_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="Floor 2" />
-                        <JFXButton fx:id="f1_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="Floor 1" />
-                        <JFXButton fx:id="l1_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="L1" />
-                        <JFXButton fx:id="l2_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="L2" />
-                        <JFXButton fx:id="ground_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" prefHeight="61.0" prefWidth="124.0" style="-fx-background-color: #456AAC;" text="Ground" />
-                     </children>
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>

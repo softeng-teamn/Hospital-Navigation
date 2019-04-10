@@ -12,10 +12,14 @@ public class  ResourceLoader {
     public static final URL deleteNodeConfirm = service.ResourceLoader.class.getResource("/deleteNodeConfirm.fxml");
     public static final URL saveNodeConfirm = service.ResourceLoader.class.getResource("/saveNodeConfirm.fxml");
 
+
     public static final URL directionMessage = service.ResourceLoader.class.getResource("/directionMessage.fxml");
     public static final URL pathFindingSettings = service.ResourceLoader.class.getResource("/pathfindingSettings.fxml");
     public static final URL searchResults = service.ResourceLoader.class.getResource("/searchResults.fxml");
     public static final URL adminServices = service.ResourceLoader.class.getResource("/adminServices.fxml");
+
+    public static final URL superSecretPasswords = service.ResourceLoader.class.getResource("SuperSecretPasswords.txt");
+
 
     public static final URL maintenanceRequest = service.ResourceLoader.class.getResource("/requests/maintenance_requests.fxml");
     public static final URL avServiceRequest = service.ResourceLoader.class.getResource("/requests/avservice_requests.fxml");

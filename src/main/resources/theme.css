@@ -127,12 +127,12 @@
 .jfx-text-area .scroll-pane,
 .jfx-text-area:focused,
 .jfx-text-area:focused .scroll-pane{
-    -fx-background-color: #999999;
+    -fx-background-color: #D9D9D9;
 }
 
 .jfx-text-area .content,
 .jfx-text-area:focused .content{
-    -fx-background-color: #999999;
+    -fx-background-color: #D9D9D9;
     -fx-padding: 0 0 0 0;
 }
 
@@ -143,7 +143,7 @@
  ******************************************************************************/
 
 .button{
-    -fx-background-color: black;
+    -fx-background-color: -fx-complementary;
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primary;
     -fx-border-color: -fx-secondary;
@@ -299,8 +299,7 @@
 }
 
 .list-view .list-cell:hover {
-    -fx-background-color: -fx-complementary;
-    -fx-text-fill: -fx-primarytext;
+    -fx-background-color: #7683ac;
 }
 
 .list-view .list-cell:selected {
@@ -314,7 +313,7 @@
  ******************************************************************************/
 
 .scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: #D9D9D9;
     -fx-background-insets: 0.0;
 }
 
@@ -398,15 +397,13 @@
 
 /*******************************************************************************
  *                                                                             *
- * List View                                                                   *
+ * Scroll Pane                                                                 *
  *                                                                             *
  ******************************************************************************/
 
 .scroll-pane > .viewport {
     -fx-background-color: -fx-primary;
 }
-
-
 
 /*******************************************************************************
  *                                                                             *
