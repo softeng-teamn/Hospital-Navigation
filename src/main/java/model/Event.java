@@ -25,6 +25,8 @@ public class Event {
     String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
+    boolean callElev = false;
+   // floor
     ArrayList<Node> path = null;
 
     ResourceBundle currentBundle = dfBundle;
@@ -37,6 +39,12 @@ public class Event {
         this.currentBundle = currentBundle;
     }
 
+
+    public boolean isCallElev() {
+        return callElev;
+    }
+
+    public void setCallElev(boolean callElev) {this.callElev = callElev;}
 
     boolean endNode = true; //true for end node, false for start node
 

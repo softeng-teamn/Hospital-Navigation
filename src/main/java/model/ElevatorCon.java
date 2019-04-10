@@ -14,31 +14,59 @@ import java.util.GregorianCalendar;
 
 public class ElevatorCon {
     private static HttpURLConnection con;
+
     //default constructor
-    public ElevatorCon(){}
+    public ElevatorCon() {
+    }
 
     /**
-     *
      * @param elevator name of elevator to tell
      * @param floorNum the floor the specified elevator should go to
-     * @param time what time is should get to the elevator at
+     * @param time     what time is should get to the elevator at
      * @throws MalformedURLException
      * @throws ProtocolException
      * @throws IOException
      */
     //tell the elevator to go to this floor at this time, will hold for 30s
-    public void postFloor(String elevator, int floorNum, GregorianCalendar time) throws MalformedURLException,
+    public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws MalformedURLException,
             ProtocolException, IOException {
+        switch (floorNum) {
+            case "L1":
+                floorNum = "-1";
+                break;
+            case "L2":
+                floorNum = "-2";
+                break;
+            case "00":
+                floorNum = "0";
+                break;
+            case "01":
+                floorNum = "1";
+                break;
+            case "02":
+                floorNum = "2";
+                break;
+            case "03":
+                floorNum = "3";
+                break;
+            case"04":
+                floorNum = "4";
+                break;
+            default:
+                floorNum = "-4";
+                break;
+        }
+
         String URL = "https://aldenhallpianos.com/softEngPost.php";
         //change into time since 12
-        String t = "" + time.getTimeInMillis()/1000;
+        String t = "" + time.getTimeInMillis() / 1000;
 
         String urlParameters = "elevator=" + elevator + "&floor=" + floorNum + "&time=" + t + "&isESP=false";
+        System.out.println("Posting " + urlParameters);
         post(URL, urlParameters);
     }
 
     /**
-     *
      * @param elevator the name of the elevator to get the position of
      * @return returns a  string containing the floor the elevator is on
      * @throws MalformedURLException
@@ -54,15 +82,14 @@ public class ElevatorCon {
 
 
     /**
-     *
-     * @param URL the url to post to
+     * @param URL           the url to post to
      * @param urlParameters the parameters of the post request
      * @return returns a string containing the current floor is on
      * @throws MalformedURLException
      * @throws ProtocolException
      * @throws IOException
      */
-    private String post(String URL, String urlParameters)  throws MalformedURLException,
+    private String post(String URL, String urlParameters) throws MalformedURLException,
             ProtocolException, IOException {
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
         String floor = "-";
@@ -83,7 +110,7 @@ public class ElevatorCon {
             StringBuilder content;
 
             try (BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream(),StandardCharsets.UTF_8))) {
+                    new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
 
                 String line;
                 content = new StringBuilder();
