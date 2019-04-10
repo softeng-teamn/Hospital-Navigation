@@ -47,6 +47,10 @@ public class ExternalTransportationController  extends RequestController {
             Date d = new Date((g.getTimeInMillis()/1000));
             ExternalTransportRequest extTrans = new ExternalTransportRequest(-1, description.getText(), selectedNode, false, d, transport.getSelectionModel().getSelectedItem(), "");
             extTrans.makeRequest();
+            description.setText("");
+            transport.getSelectionModel().clearSelection();
+            datePicker.setValue(null);
+            timePicker.setValue(null);
         }
     }
 }
