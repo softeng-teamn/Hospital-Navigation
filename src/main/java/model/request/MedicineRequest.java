@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXToggleNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -30,6 +31,7 @@ public class MedicineRequest extends Request {
         super(id, notes, location, completed);
         this.medicineType = medicineType;
         this.quantity = quantity;
+        this.medicineType = medicineType;
     }
 
     public String getMedicineType() {
@@ -103,5 +105,28 @@ public class MedicineRequest extends Request {
     @Override
     public ObservableList<Request> showProperRequest() {
         return (ObservableList) myDBS.getAllMaintenanceRequests() ;
+    }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateMedicineRequest((MedicineRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == DOCTOR || jobType == NURSE || jobType == ADMINISTRATOR) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Medicine Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s, Quantity: %f",
+                this.getId(), this.getNotes(), this.getMedicineType(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getQuantity());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Medicine");
     }
 }

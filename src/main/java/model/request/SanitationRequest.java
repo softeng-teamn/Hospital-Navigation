@@ -3,6 +3,7 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -90,5 +91,28 @@ public class SanitationRequest extends Request {
     @Override
     public ObservableList<Request> showProperRequest() {
         return (ObservableList) myDBS.getAllSanitationRequests() ;
+    }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateSanitationRequest((SanitationRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == JANITOR || jobType == ADMINISTRATOR) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Sanitation Request %d, Description: %s, Urgency: %s, Assigned To: %s, Fulfilled: %s, Material State: %s",
+                this.getId(), this.getNotes(), this.getUrgency(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getMaterialState());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Sanitation");
     }
 }

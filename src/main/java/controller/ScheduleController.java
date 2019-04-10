@@ -18,16 +18,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import model.Employee;
+import model.Node;
 import model.ReservableSpace;
 import model.Reservation;
 import service.CSVService;
@@ -82,10 +86,22 @@ public class ScheduleController extends Controller {
     public JFXTimePicker startTimePicker, endTimePicker;
 
     @FXML
-    public Label timeErrorLbl, resInfoLbl, inputErrorLbl;
+    public Label resInfoLbl, inputErrorLbl;
 
     @FXML
     public JFXComboBox<String> privacyLvlBox;
+
+    // Map Stuff
+    static final Color AVAILIBLE_COLOR = Color.rgb(87,255,132,0.8);
+    static final Color UNAVAILABLE_COLOR = Color.rgb(255,82,59, 0.8);
+    Group zoomGroup;
+    ArrayList<Node> nodeCollection = new ArrayList<Node>();
+    ArrayList<Circle> circleCollection = new ArrayList<Circle>();
+    @FXML
+    private ScrollPane map_scrollpane;
+    @FXML
+    private JFXSlider zoom_slider;
+
 
     private int openTime = 9;   // hour to start schedule dislay
     private int closeTime = 22;    // 24-hours hour to end schedule display
@@ -132,6 +148,26 @@ public class ScheduleController extends Controller {
      */
     @FXML
     public void initialize() {
+
+        // Map Initialization
+
+        // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
+        Group contentGroup = new Group();
+        zoomGroup = new Group();
+        contentGroup.getChildren().add(zoomGroup);
+        zoomGroup.getChildren().add(map_scrollpane.getContent());
+        map_scrollpane.setContent(contentGroup);
+
+        // Setting View Scrolling
+        zoom_slider.setMin(0.2);
+        zoom_slider.setMax(0.9);
+        zoom_slider.setValue(0.2);
+        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
+        zoom(0.2);
+
+
+
+
         resInfoLbl.setText("");
         timeErrorText = "Please enter valid start and end times.";
         availRoomsText = "Show Available Spaces";
@@ -144,7 +180,7 @@ public class ScheduleController extends Controller {
         CSVService.importReservableSpaces();
 
         // Don't show errors yet
-        timeErrorLbl.setVisible(false);
+//        timeErrorLbl.setVisible(false);
         inputErrorLbl.setVisible(false);
 
         // Set event privacy options
@@ -181,6 +217,11 @@ public class ScheduleController extends Controller {
 
         //  Pull spaces from database, sort, add to list and listview
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
+        for (ReservableSpace rs : dbResSpaces) {
+            nodeCollection.add(DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID()));
+        }
+        // SHOW MAP NODES *****************
+        populateMap();
         Collections.sort(dbResSpaces);
         resSpaces.addAll(dbResSpaces);
         reservableList.setItems(resSpaces);
@@ -223,7 +264,7 @@ public class ScheduleController extends Controller {
             }
         });
         scheduleTable.getColumns().addAll(timeCol, bookingCol);
-        scheduleTable.setPrefHeight(900);
+//        scheduleTable.setPrefHeight(900);
         showRoomSchedule();
 
         // Set listeners to update listview and label
@@ -258,16 +299,17 @@ public class ScheduleController extends Controller {
             // Display the current information
             changeResInfo();
         }
+        populateMap();
     }
 
     /**
      * Display the current reservation information for the user
      */
     private void changeResInfo() {
-        resInfoLbl.setText("Location:      " + currentSelection.getSpaceName()
-            + "\n\nDate:            " + datePicker.getValue()
-            + "\n\nStart Time:   " + startTimePicker.getValue()
-            + "\n\nEnd Time:    " + endTimePicker.getValue());
+//        resInfoLbl.setText("Location:      " + currentSelection.getSpaceName()
+//            + "\n\nDate:            " + datePicker.getValue()
+//            + "\n\nStart Time:   " + startTimePicker.getValue()
+//            + "\n\nEnd Time:    " + endTimePicker.getValue());
     }
 
     /**
@@ -279,6 +321,7 @@ public class ScheduleController extends Controller {
             // Display the current information
             changeResInfo();
         }
+        populateMap();
     }
 
     /**
@@ -415,7 +458,7 @@ public class ScheduleController extends Controller {
         }
 
         // If the ID number is bad, display an error message.
-        if (badId || myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null) {
+        if (myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null) {
             inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
             inputErrorLbl.setVisible(true);
             valid = false;
@@ -447,6 +490,7 @@ public class ScheduleController extends Controller {
 
         // Reset the screen
         resetView();
+        populateMap();
     }
 
     /**
@@ -471,7 +515,7 @@ public class ScheduleController extends Controller {
     private void resetView() {
         showRoomSchedule();
         inputErrorLbl.setVisible(false);
-        timeErrorLbl.setVisible(false);
+//        timeErrorLbl.setVisible(false);
         eventName.setText("");
         employeeID.setText("");
         privacyLvlBox.setValue(null);
@@ -487,7 +531,7 @@ public class ScheduleController extends Controller {
      * @return true if the selected times are valid, false otherwise
      */
     private boolean validTimes(boolean forRes) {
-        timeErrorLbl.setVisible(false);
+//        timeErrorLbl.setVisible(false);
         makeMinutesValid();
         // Get the selected times
         int start = startTimePicker.getValue().getHour();
@@ -499,16 +543,16 @@ public class ScheduleController extends Controller {
 
         // If the chosen date is in the past, show an error
         if (forRes && datePicker.getValue().atStartOfDay().isBefore(LocalDate.now().atStartOfDay())) {
-            timeErrorLbl.setText(pastDateErrorText);
-            timeErrorLbl.setVisible(true);
+//            timeErrorLbl.setText(pastDateErrorText);
+//            timeErrorLbl.setVisible(true);
             return false;
         }
 
         // If the times are outside the location's open times
         // or end is greater than start, the times are invalid
         if (endIndex <= index || start < openTime || closeTime < end) {
-            timeErrorLbl.setText(timeErrorText);
-            timeErrorLbl.setVisible(true);
+//            timeErrorLbl.setText(timeErrorText);
+//            timeErrorLbl.setVisible(true);
             return false;
         }
 
@@ -516,8 +560,8 @@ public class ScheduleController extends Controller {
             // For each time in the reservation, check whether it is already booked
             for (int i = index; i < endIndex; i++) {
                 if (currentSchedule.get(i) == 1) {    // If so, show an error
-                    timeErrorLbl.setText(conflictErrorText);
-                    timeErrorLbl.setVisible(true);
+//                    timeErrorLbl.setText(conflictErrorText);
+//                    timeErrorLbl.setVisible(true);
                     return false;
                 }
             }
@@ -634,10 +678,11 @@ public class ScheduleController extends Controller {
     public void bookedRooms() {
         boolean valid = validTimes(false);
         if (valid) {
+            populateMap();
             // Get selected times
-            ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
+            ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes(); // ******* GETS TWO GREG CALENDERS
 
-            // Get reservations between selected times
+            // Get reservations between selected times                          ****** shows all rooms that are booked based on selected times
             ArrayList<ReservableSpace> bookedBetween = (ArrayList<ReservableSpace>) myDBS.getBookedReservableSpacesBetween(cals.get(0), cals.get(1));
 
             Collections.sort(bookedBetween);
@@ -665,7 +710,7 @@ public class ScheduleController extends Controller {
      * Reset display to show all spaces
      */
     public void clearFilter() {
-        timeErrorLbl.setVisible(false);
+//        timeErrorLbl.setVisible(false);
         // Set list to all spaces
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
         Collections.sort(dbResSpaces);
@@ -696,4 +741,62 @@ public class ScheduleController extends Controller {
         ArrayList<String> a = new ArrayList<>();
         return a;
     }
+
+
+
+    // MAP STUFF DOWN HERE ****************
+
+
+    private void zoom(double scaleValue) {
+        double scrollH = map_scrollpane.getHvalue();
+        double scrollV = map_scrollpane.getVvalue();
+        zoomGroup.setScaleX(scaleValue);
+        zoomGroup.setScaleY(scaleValue);
+        map_scrollpane.setHvalue(scrollH);
+        map_scrollpane.setVvalue(scrollV);
+    }
+
+    ArrayList<ReservableSpace> getBookedNodes() {
+        // Get selected times
+        ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes(); // ******* GETS TWO GREG CALENDERS
+
+        // Get reservations between selected times                          ****** shows all rooms that are booked based on selected times
+        return (ArrayList<ReservableSpace>) myDBS.getBookedReservableSpacesBetween(cals.get(0), cals.get(1));
+    }
+
+    boolean isNodeInReservableSpace(ArrayList<ReservableSpace> rs, Node n) {
+        for (int i = 0; i < rs.size(); i++) {
+            if (rs.get(i).getLocationNodeID().equals(n.getNodeID())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void populateMap() {
+        System.out.println("**************** REPOPULAT MAP");
+        zoomGroup.getChildren().removeAll(circleCollection);
+        ArrayList<ReservableSpace> bookedRS = getBookedNodes();
+        circleCollection = new ArrayList<Circle>();
+        for(Node node : nodeCollection) {
+            Circle circle = new Circle();
+            circle.setRadius(80);
+            if (isNodeInReservableSpace(bookedRS, node)) {
+                circle.setFill(UNAVAILABLE_COLOR);
+            } else {
+                circle.setFill(AVAILIBLE_COLOR);
+            }
+            circle.setCenterX(node.getXcoord());
+            circle.setCenterY(node.getYcoord());
+            circleCollection.add(circle);
+        }
+        zoomGroup.getChildren().addAll(circleCollection);
+    }
+
+    @FXML
+    void mapClickedHandler(MouseEvent e) {
+        System.out.println("x: " + e.getX() + ", y: " + e.getY());
+    }
+
+
 }

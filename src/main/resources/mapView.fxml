@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXSlider?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.text.Font?>
 
 <StackPane prefWidth="1280.0" stylesheets="@theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MapView">
@@ -34,24 +32,17 @@
          <children>
             <VBox alignment="TOP_CENTER" prefHeight="350.0" prefWidth="124.0">
                <children>
-                  <Slider fx:id="zoom_slider" orientation="VERTICAL">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Slider>
-                  <VBox prefHeight="159.0" prefWidth="124.0">
-                     <children>
-                        <JFXButton fx:id="f3_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="Floor 3" />
-                        <JFXButton fx:id="f2_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="Floor 2" />
-                        <JFXButton fx:id="f1_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="Floor 1" />
-                        <JFXButton fx:id="l1_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="L1" />
-                        <JFXButton fx:id="l2_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" style="-fx-background-color: #456AAC;" text="L2" />
-                        <JFXButton fx:id="ground_btn" maxWidth="1.7976931348623157E308" onAction="#changeFloor" prefHeight="61.0" prefWidth="124.0" style="-fx-background-color: #456AAC;" text="Ground" />
-                     </children>
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </VBox>
+                  <JFXSlider fx:id="zoom_slider" orientation="VERTICAL" />
+                   <VBox fx:id="floor_change_vbox">
+                       <children>
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" prefWidth="98.0" text="Floor 3" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="Floor 2" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="Floor 1" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="L1" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="L2" />
+                           <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="35.0" text="Ground" />
+                       </children>
+                   </VBox>
                </children>
             </VBox>
          </children>
@@ -103,35 +94,5 @@
                     </VBox>
                 </children>
             </Pane>
-      <JFXListView fx:id="directionsView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" StackPane.alignment="BOTTOM_RIGHT">
-         <StackPane.margin>
-            <Insets bottom="20.0" right="300.0" />
-         </StackPane.margin>
-      </JFXListView>
-      <VBox fx:id="showDirVbox" alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="360.0" prefWidth="300.0" StackPane.alignment="BOTTOM_RIGHT">
-         <StackPane.margin>
-            <Insets right="300.0" />
-         </StackPane.margin>
-         <children>
-            <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="200.0">
-               <children>
-                  <Pane prefHeight="40.0" prefWidth="58.0">
-                     <children>
-                        <Polygon fill="RED" layoutX="56.0" layoutY="29.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
-                        <Polygon fill="WHITE" layoutX="66.0" layoutY="39.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="WHITE" strokeType="INSIDE" />
-                     </children>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </Pane>
-                  <JFXButton fx:id="showDirectionsBtn" onAction="#showDirections" style="-fx-background-color: #456AAC;" text="Show Textual Directions">
-                     <HBox.margin>
-                        <Insets left="5.0" />
-                     </HBox.margin>
-                  </JFXButton>
-               </children>
-            </HBox>
-         </children>
-      </VBox>
         </children>
 </StackPane>
