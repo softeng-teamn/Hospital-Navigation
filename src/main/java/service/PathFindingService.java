@@ -38,8 +38,8 @@ public class PathFindingService {
             case "breadth":
                 ctx.setStrategy(new BreadthFS());
                 target = ctx.findPathCTX(start, dest, accessibility, null);
-                estimatedTimeOfArrival = ctx.getEstimatedTime();
-                elevTimes = ctx.getElevTimes();
+                //estimatedTimeOfArrival = ctx.getEstimatedTime();
+                //elevTimes = ctx.getElevTimes();
                 break;
             case "depth":
                 ctx.setStrategy(new DepthFS());
