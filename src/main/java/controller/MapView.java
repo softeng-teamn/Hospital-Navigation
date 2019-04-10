@@ -99,8 +99,9 @@ public class MapView {
     @FXML
     private VBox showDirVbox;
 
-    private
-    HashMap<String, Integer> floors = new HashMap<String, Integer>();
+    private HashMap<String, Integer> floors = new HashMap<String, Integer>();
+
+    private String units = "feet";    // Feet or meters conversion
 
     private static HashMap<String, ImageView> imageCache = new HashMap<>();
     private static boolean imagesCached = false;
@@ -124,7 +125,6 @@ public class MapView {
 
     @FXML
     void initialize() {
-
         pingTiming();
 
         // listen to changes
@@ -163,6 +163,7 @@ public class MapView {
         zoom(0.3);
 
         directionsView.setVisible(false);
+        units = "feet";
 
         // Cache imageViews so they can be reused, but only if they haven't already been cached
         if(!imagesCached) {
@@ -704,28 +705,28 @@ public class MapView {
             String direct = ds.get(i);
             switch(direct.substring(0,1)) {
                 case "A":
-                    direct = "Walk straight for " + direct.substring(1) + " feet.\n";
+                    direct = "Walk straight for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "B":
-                    direct = "Turn left and walk for " + direct.substring(1) + " feet.\n";
+                    direct = "Turn left and walk for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "C":
-                    direct = "Turn slightly left and walk for " + direct.substring(1) + " feet.\n";
+                    direct = "Turn slightly left and walk for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "D":
-                    direct = "Turn sharply left and walk for " + direct.substring(1) + " feet.\n";
+                    direct = "Turn sharply left and walk for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "E":
-                    direct = "Turn right and walk for " + direct.substring(1) + " feet.\n";
+                    direct = "Turn right and walk for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "F":
-                    direct = "Turn slightly right and walk for " + direct.substring(1) + " feet.\n";
+                    direct = "Turn slightly right and walk for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "G":
-                    direct = "Turn sharply right and walk for " + direct.substring(1) + " feet.\n";
+                    direct = "Turn sharply right and walk for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "H":
-                    direct = "Turn around and walk for " + direct.substring(1) + " feet.\n";
+                    direct = "Turn around and walk for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "I":
                     direct = "Walk to the elevator.\n";
@@ -746,28 +747,28 @@ public class MapView {
                     direct = "Take the stairs down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
                     break;
                 case "S":
-                    direct = "Walk north for " + direct.substring(1) + " feet.\n";
+                    direct = "Walk north for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "T":
-                    direct = "Walk north west for " + direct.substring(1) + " feet.\n";
+                    direct = "Walk north west for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "U":
-                    direct = "Walk west for " + direct.substring(1) + " feet.\n";
+                    direct = "Walk west for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "V":
-                    direct = "Walk south west for " + direct.substring(1) + " feet.\n";
+                    direct = "Walk south west for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "W":
-                    direct = "Walk south for " + direct.substring(1) + " feet.\n";
+                    direct = "Walk south for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "X":
-                    direct = "Walk south east for " + direct.substring(1) + " feet.\n";
+                    direct = "Walk south east for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "Y":
-                    direct = "Walk east for " + direct.substring(1) + " feet.\n";
+                    direct = "Walk east for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 case "Z":
-                    direct = "Walk north east for " + direct.substring(1) + " feet.\n";
+                    direct = "Walk north east for " + direct.substring(1) + " " + units + ".\n";
                     break;
                 default:
                     direct = "Houston we have a problem";
@@ -878,7 +879,13 @@ public class MapView {
         lengthNew = Math.sqrt(newI*newI + newJ * newJ);
 
         // Distance in feet based on measurements from the map: 260 pixels per 85 feet
-        double distance = lengthNew /260 * 85;
+        double distance;
+        if (units.equals("feet")) {
+            distance = lengthNew /260 * 85;    // Pixels to feet
+        }
+        else {
+            distance = lengthNew / 260 * 25.908;    // Pixels to meters
+        }
 
         // Compute the angle, theta, between the old and new vector
         double uDotV = oldI * newI + oldJ * newJ;
@@ -978,7 +985,28 @@ public class MapView {
         showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
         directionsView.setVisible(false);
     }
-  
+
+    /**
+     * Get the current units
+     * @return current units: feet or meters
+     */
+    public String getUnits() {
+        return units;
+    }
+
+    /**
+     * Set the current units as feet or meters
+     */
+    public void setUnits() {
+        if (units.equals("feet")) {
+            units = "meters";
+            // TODO: also change button text
+        }
+        else {
+            units = "feet";
+        }
+    }
+
     /**
      * Compress a given set of directions into a series of characters
      * to be used in a QR code
