@@ -25,11 +25,13 @@ public class TextingService {
             reader = new BufferedReader(new InputStreamReader(ResourceLoader.edges.openStream(), "UTF-8"));
             secrets[0] = reader.readLine();
             secrets[1] = reader.readLine();
+            reader.close();
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+
     }
 
     public final String ACCOUNT_SID =
