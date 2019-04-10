@@ -477,9 +477,9 @@ public class MapView {
                 last = current;
             }
 
-            event.setPath(path);
-            event.setEventName("showText");
-            eventBus.post(event);
+//            event.setPath(path);
+//            event.setEventName("showText");
+//            eventBus.post(event);
 
         }
 
