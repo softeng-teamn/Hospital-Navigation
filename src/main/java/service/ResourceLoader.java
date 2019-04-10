@@ -38,6 +38,7 @@ public class  ResourceLoader {
 
     public static final URL adminServices = service.ResourceLoader.class.getResource("/adminServices.fxml");
 
+    public static final URL textingService = service.ResourceLoader.class.getResource("/SuperSecretPasswords.txt");
 
     // Images
     public static final URL firstFloor = service.ResourceLoader.class.getResource("/Images/F1.png");
