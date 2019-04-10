@@ -51,6 +51,7 @@ public class ElevatorCon {
                 break;
             case"04":
                 floorNum = "4";
+                break;
             default:
                 floorNum = "-4";
                 break;
