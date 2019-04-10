@@ -90,4 +90,9 @@ public class SecurityRequest extends Request {
     public ObservableList<Request> showProperRequest() {
         return (ObservableList) myDBS.getAllSecurityRequests() ;
     }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateSecurityRequest((SecurityRequest) selectedTask) ;
+    }
 }
