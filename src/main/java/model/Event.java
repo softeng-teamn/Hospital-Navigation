@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Event {
 
     Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
@@ -20,6 +22,9 @@ public class Event {
     boolean isEditing = false;      // editing
     String floor = "01";      // floor
     boolean callElev = false;
+   // floor
+    ArrayList<Node> path = null;
+
 
     public boolean isCallElev() {
         return callElev;
@@ -30,19 +35,19 @@ public class Event {
     boolean endNode = true; //true for end node, false for start node
 
 
+    public ArrayList<Node> getPath() { return path; }
+
+    public void setPath(ArrayList<Node> path) { this.path = path; }
+
     public boolean isEndNode() { return endNode; }
 
     public void setEndNode(boolean startEnd) { this.endNode = startEnd; }
 
     public void setDefaultStartNode (){this.nodeStart = DEFAULT_NODE;}
 
-    public String getFloor() {
-        return floor;
-    }
+    public String getFloor() { return floor; }
 
-    public void setFloor(String floor) {
-        this.floor = floor;
-    }
+    public void setFloor(String floor) { this.floor = floor; }
 
     public boolean isEditing() {
         return isEditing;
@@ -68,9 +73,7 @@ public class Event {
         return nodeStart;
     }
 
-    public void setNodeStart(Node nodeStart) {
-        this.nodeStart = nodeStart;
-    }
+    public void setNodeStart(Node nodeStart) { this.nodeStart = nodeStart; }
 
     public String getEventName() {
         return eventName;
@@ -100,9 +103,7 @@ public class Event {
         return nodeSelected;
     }
 
-    public void setNodeSelected(Node nodeSelected) {
-        this.nodeSelected = nodeSelected;
-    }
+    public void setNodeSelected(Node nodeSelected) { this.nodeSelected = nodeSelected; }
 
     public boolean isLoggedIn() {
         return isLoggedIn;

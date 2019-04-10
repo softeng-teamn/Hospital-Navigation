@@ -38,11 +38,9 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn, startNode_btn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
-    @FXML
-    private JFXToggleNode accessibilityButton;
     @FXML
     private FontAwesomeIconView lock_icon;
     @FXML
@@ -53,10 +51,10 @@ public class TopNav {
     private JFXToggleNode edit_btn;
     @FXML
     private JFXHamburger hamburger;
-
     @FXML
     private JFXCheckBox callElev;
 
+    private boolean barOpened = false;
 
     JFXTextField startSearch = new JFXTextField();
 
@@ -76,18 +74,10 @@ public class TopNav {
     }
 
     @FXML
-    void showNewNode(ActionEvent e) throws  Exception{
-        Parent root = FXMLLoader.load(ResourceLoader.createNode);
-        Stage stage = (Stage) newNode_btn.getScene().getWindow();
-        StageManager.changeExistingWindow(stage, root, "Add Node");
-    }
-
-    @FXML
     // switches window to map editor screen.
     public void showAdminScene() throws Exception {
-        Stage stage = (Stage) fulfillBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.adminServices);
-        StageManager.changeExistingWindow(stage, root, "Administrator Services");
+        event.setEventName("showAdmin");
+        eventBus.post(event);
     }
 
     @FXML
@@ -117,7 +107,6 @@ public class TopNav {
 
         // SHOULD THIS GO HERE? (was in intialize of old map controller)
         navigate_btn.setVisible(false);
-        accessibilityButton.setVisible(false);
 
         resetBtn();
 
@@ -184,12 +173,10 @@ public class TopNav {
         if(event.isAdmin()){
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
-            newNode_btn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
         } else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
-            newNode_btn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
         }
     }
@@ -237,7 +224,6 @@ public class TopNav {
     void nodeSelectedHandler(Node selected) {
         // make change
         navigate_btn.setVisible(true);
-        accessibilityButton.setVisible(true);
 
 
         // show node-selected in search
@@ -251,6 +237,7 @@ public class TopNav {
     }
 
     public void startNavigation(ActionEvent actionEvent) {
+
         Boolean accessibility = accessibilityButton.isSelected();
         //if(callElev.isSelected()){
             event.setCallElev(true);
@@ -293,52 +280,7 @@ public class TopNav {
         }
     }
 
-    public void showREST(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("REST");
-        eventBus.post(event);
-    }
 
-
-    public void showELEV(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("ELEV");
-        eventBus.post(event);
-    }
-
-    public void showSTAI(ActionEvent actionEvent) {
-        event.setEventName("filter");
-        event.setFilterSearch("STAI");
-        eventBus.post(event);
-    }
-
-    public void showINFO(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("INFO");
-        eventBus.post(event);
-    }
-
-    public void showCONF(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("CONF");
-        eventBus.post(event);
-    }
-
-    public void showEXIT(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("EXIT");
-        eventBus.post(event);
-    }
 
     public void showEditEmployee(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) auth_btn.getScene().getWindow();
@@ -348,4 +290,15 @@ public class TopNav {
 
     }
 
+    public void showPathSetting(MouseEvent mouseEvent) {
+        if (barOpened){
+            barOpened = false;
+            event.setEventName("showSearch");
+            eventBus.post(event);
+        } else {
+            barOpened = true;
+            event.setEventName("showPathSetting");
+            eventBus.post(event);
+        }
+    }
 }
