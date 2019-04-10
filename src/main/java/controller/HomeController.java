@@ -29,6 +29,10 @@ public class HomeController {
 
     pane switching
 
+    //TODO show search list view when receive "showSearch"
+
+    //TODO show text list view when receive "showText"
+
     */
 
 }
