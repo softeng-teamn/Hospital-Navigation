@@ -3,14 +3,14 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static model.JobType.ADMINISTRATOR;
-import static model.JobType.IT;
+import static model.JobType.*;
 
 public class AVServiceRequest extends Request {
 
@@ -83,5 +83,21 @@ public class AVServiceRequest extends Request {
         System.out.println("NEW DATABASE ID : " + (selectedTask.getAssignedTo())) ;
     }
 
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == AV || jobType == ADMINISTRATOR) return true;
+        return false;
+    }
 
+    @Override
+    public String toDisplayString() {
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("AV Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getAVServiceType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("AV Service");
+    }
 }

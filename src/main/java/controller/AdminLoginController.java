@@ -57,6 +57,7 @@ public class AdminLoginController extends Controller implements Initializable {
             } else {
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
+                Controller.setCurrentJob(user.getJob());
                 event.setEventName("login");
                 eventBus.post(event);
                 showHome();
