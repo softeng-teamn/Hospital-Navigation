@@ -479,11 +479,13 @@ public class MapView {
             }
 
             event.setPath(path);
-            event.setEventName("printText");
+            event.setEventName("showText");
             eventBus.post(event);
+
         }
 
         hasPath = true;
+
     }
 
     /**

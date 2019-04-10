@@ -53,6 +53,8 @@ public class TopNav {
     @FXML
     private JFXHamburger hamburger;
 
+    private boolean barOpened = false;
+
     JFXTextField startSearch = new JFXTextField();
 
     // events I send out/control
@@ -340,4 +342,13 @@ public class TopNav {
 
     }
 
+    public void showPathSetting(MouseEvent mouseEvent) {
+        if (barOpened){
+            event.setEventName("showSearch");
+            eventBus.post(event);
+        } else {
+            event.setEventName("showAdmin");
+            eventBus.post(event);
+        }
+    }
 }

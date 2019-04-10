@@ -33,15 +33,20 @@ public class HomeController {
     private Pane leftPane;
 
     @FXML
-    void initialize() {
+    void initialize() throws IOException {
+        eventBus.register(this);
+
         initConnections();
+
+        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults));
+
 
     }
 
 
 
     @Subscribe
-    void eventListener(Event event) {
+    private void eventListener(Event newevent) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -55,6 +60,9 @@ public class HomeController {
                             break;
                         case "showAdmin":
                             showAdmin();
+                            break;
+                        case "showPathSetting":
+                            showPathSetting();
                             break;
                         default:
                             break;
@@ -73,12 +81,19 @@ public class HomeController {
 
     private void showSearch() throws IOException {
         leftPane.getChildren().clear();
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.itRequest));
+        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults));
     }
 
     private void showText() throws IOException {
         leftPane.getChildren().clear();
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.itRequest));
+        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.directionMessage));
+        event.setEventName("printText");
+        eventBus.post(event);
+    }
+
+    private void showPathSetting() throws IOException {
+        leftPane.getChildren().clear();
+        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.pathFindingSettings));
     }
 
     /*
@@ -86,9 +101,6 @@ public class HomeController {
     pane switching
 
 
-    //TODO show search list view when receive "showSearch"
-
-    //TODO show text list view when receive "showText"
 
     */
 

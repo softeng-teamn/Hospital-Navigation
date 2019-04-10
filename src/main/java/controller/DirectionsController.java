@@ -9,15 +9,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import model.Event;
 import model.EventBusFactory;
 import model.Node;
+import service.ResourceLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static controller.Controller.initConnections;
 
 public class DirectionsController {
     private Event event = EventBusFactory.getEvent();
@@ -36,6 +41,11 @@ public class DirectionsController {
 
 
     @FXML
+    void initialize() {
+        eventBus.register(this);
+    }
+
+    @FXML
     void showSearchList(ActionEvent e) {
         event.setEventName("showSearch");
         eventBus.post(event);
@@ -43,12 +53,13 @@ public class DirectionsController {
 
 
     @Subscribe
-    void eventListener(Event event) {
+    void eventListener(Event newevent) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 switch (event.getEventName()) {
                     case "printText":
+                        System.out.println("should print out message");
                         path = event.getPath();
                         printDirections(makeDirections(path));
                         break;
@@ -485,7 +496,7 @@ public class DirectionsController {
      */
     public void setUnits() {
         if (units.equals("feet")) {
-            units = "meters";
+            units = "Meter";
         }
         else {
             units = "feet";
