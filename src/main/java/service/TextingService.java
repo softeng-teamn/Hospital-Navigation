@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 public class TextingService {
     // Find your Account Sid and Auth Token at twilio.com/console
-    String[] secrets;
+    String[] secrets= new String[2];
     private void readLineByLineJava(URL filePath)
     {
         BufferedReader reader = null;
