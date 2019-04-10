@@ -19,7 +19,7 @@ import model.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class textMessage {
+public class DirectionsController {
     private Event event = EventBusFactory.getEvent();
     private EventBus eventBus = EventBusFactory.getEventBus();
 

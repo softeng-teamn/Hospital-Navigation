@@ -11,8 +11,8 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
-public class TextMessageTest {
-    private textMessage mp = new textMessage();
+public class DirectionsControllerTest {
+    private DirectionsController mp = new DirectionsController();
     Node n0 = new Node(0,0,"ID 1", "L2", "Tower", "HALL", "Hallway A1", "HA1");
     Node n2 = new Node(5,5,"ID 2", "L2", "Tower", "HALL", "Hallway D2", "HD2");
     Node n3 = new Node(5,0,"ID 3", "L2", "Tower", "HALL", "Hallway B1", "HB1");
