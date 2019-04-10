@@ -171,7 +171,7 @@ dependencies {
             [group: 'de.jensd', name:'fontawesomefx-fontawesome', version: '4.7.0-5'],
             [group: 'de.jensd', name:'fontawesomefx-materialicons', version: '2.2.0-5'],
             [group: 'de.jensd', name:'fontawesomefx-emojione', version: '2.2.7-2'],
-            [group: 'com.textmagic.sdk', name: 'textmagic-java-sdk', version: '1.2.0']
+            [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4']
     )
     compile(
             [group: 'com.google.guava', name: 'guava', version: '23.0'],
@@ -187,7 +187,7 @@ dependencies {
             [group: 'de.jensd', name:'fontawesomefx-fontawesome', version: '4.7.0-5'],
             [group: 'de.jensd', name:'fontawesomefx-materialicons', version: '2.2.0-5'],
             [group: 'de.jensd', name:'fontawesomefx-emojione', version: '2.2.7-2'],
-            [group: 'com.textmagic.sdk', name: 'textmagic-java-sdk', version: '1.2.0']
+            [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4']
     )
 }
 
