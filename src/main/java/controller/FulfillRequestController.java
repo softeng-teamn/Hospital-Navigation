@@ -156,6 +156,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         List<MedicineRequest> mr =  myDBS.getAllMedicineRequests();
         List<ITRequest> it = myDBS.getAllITRequests();*/
         // total requests
+        System.out.println("The current job of this controller is: " + Controller.getCurrentJob().name());
         ObservableList<Request> allRequestlist = FXCollections.observableArrayList();
         allRequestlist.addAll((ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests());
         allRequestlist.addAll((ArrayList<ExternalTransportRequest>) myDBS.getAllExtTransRequests());
