@@ -90,9 +90,6 @@ public class MapView {
     @FXML
     private Label cur_el_floor;
 
-
-
-
     private static HashMap<String, ImageView> imageCache = new HashMap<>();
     private static boolean imagesCached = false;
 
@@ -153,12 +150,12 @@ public class MapView {
         // Cache imageViews so they can be reused, but only if they haven't already been cached
         if(!imagesCached) {
             try {
-                imageCache.put("Floor 3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
-                imageCache.put("Floor 2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
-                imageCache.put("Floor 1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
+                imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
+                imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
+                imageCache.put("1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
                 imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
                 imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
-                imageCache.put("Ground", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
+                imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
                 imagesCached = true;
             } catch(IOException e) {
                 e.printStackTrace();
@@ -201,16 +198,16 @@ public class MapView {
         String floorName = "";
         event.setFloor(btn.getText());
         switch (btn.getText()) {
-            case "Floor 3":
-                imageView = imageCache.get("Floor 3");
+            case "3":
+                imageView = imageCache.get("3");
                 floorName = "3";
                 break;
-            case "Floor 2":
-                imageView = imageCache.get("Floor 2");
+            case "2":
+                imageView = imageCache.get("2");
                 floorName = "2";
                 break;
-            case "Floor 1":
-                imageView = imageCache.get("Floor 1");
+            case "1":
+                imageView = imageCache.get("1");
                 floorName = "1";
                 break;
             case "L1":
@@ -221,8 +218,8 @@ public class MapView {
                 imageView = imageCache.get("L2");
                 floorName = "L2";
                 break;
-            case "Ground":
-                imageView = imageCache.get("Ground");
+            case "G":
+                imageView = imageCache.get("G");
                 floorName = "G";
                 break;
             default:

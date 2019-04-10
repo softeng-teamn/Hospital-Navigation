@@ -44,7 +44,7 @@ public class CreateNodeController extends Controller {
     @FXML
     Label instruction_label;
     @FXML
-    VBox node_info_vbox, narnar_vbox, floor_change_vbox;
+    VBox node_info_vbox, floor_change_vbox;
     @FXML
     JFXTextField floor_field, type_field, short_field, long_field, building_field;
     @FXML
@@ -87,8 +87,6 @@ public class CreateNodeController extends Controller {
 
         // remove texfields to SHOW MAP
         hideTextFields();
-        // remove the narwall stuff
-        anchor_pane.getChildren().remove(narnar_vbox);
 
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
         Group contentGroup = new Group();
@@ -98,11 +96,11 @@ public class CreateNodeController extends Controller {
         map_scrollpane.setContent(contentGroup);
 
         // Setting View Scrolling
-        zoom_slider.setMin(0.3);
+        zoom_slider.setMin(0.5);
         zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.3);
+        zoom_slider.setValue(0.5);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
-        zoom(0.3);
+        zoom(0.5);
 
         // render the state
         renderState();
@@ -155,17 +153,17 @@ public class CreateNodeController extends Controller {
     void floorChangeAction(ActionEvent e) throws IOException {
         JFXButton clickedBtn = (JFXButton) e.getSource();
         switch (clickedBtn.getText()) {
-            case "Floor 3":
+            case "3":
                 setMapFloor("3");
                 if(stateIterator == 0) {node_floor = "3";}
                 else if(stateIterator == 2) {showAllNodes("3");}
                 break;
-            case "Floor 2":
+            case "2":
                 setMapFloor("2");
                 if(stateIterator == 0) {node_floor = "2";}
                 else if(stateIterator == 2) {showAllNodes("2");}
                 break;
-            case "Floor 1":
+            case "1":
                 setMapFloor("1");
                 if(stateIterator == 0) {node_floor = "1";}
                 else if(stateIterator == 2) {showAllNodes("1");}
@@ -180,7 +178,7 @@ public class CreateNodeController extends Controller {
                 if(stateIterator == 0) {node_floor = "L2";}
                 else if(stateIterator == 2) {showAllNodes("L2");}
                 break;
-            case "Ground":
+            case "G":
                 setMapFloor("G");
                 if(stateIterator == 0) {node_floor = "G";}
                 else if(stateIterator == 2) {showAllNodes("G");}
@@ -345,11 +343,6 @@ public class CreateNodeController extends Controller {
         anchor_pane.getChildren().remove(map_scrollpane);
         anchor_pane.getChildren().remove(zoom_slider);
         anchor_pane.getChildren().remove(floor_change_vbox);
-        // add the narwhal
-        if (!anchor_pane.getChildren().contains(narnar_vbox)) {
-            anchor_pane.getChildren().add(narnar_vbox);
-        }
-
     }
 
     // remove textfields from screen

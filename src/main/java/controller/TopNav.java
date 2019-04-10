@@ -176,9 +176,13 @@ public class TopNav {
                     nodeSelectedHandler(newEvent.getNodeStart());
                 }
                 break;
-
             case "login":     // receives from AdminLoginContoller?
                 event.setAdmin(newEvent.isAdmin());
+                break;
+            case "showSearch":
+                backArro.setRate(-1);
+                backArro.play();
+                barOpened = false;
                 break;
             default:
                 break;

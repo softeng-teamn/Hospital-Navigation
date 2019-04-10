@@ -45,10 +45,9 @@ public class AdminServiceController extends Controller{
     }
 
     @FXML
-    private void showHome() throws Exception {
-        Stage stage = (Stage) fulfillRequestBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
-        StageManager.changeExistingWindow(stage, root, "Home");
+    void showSearchResults(ActionEvent e) {
+        event.setEventName("showSearch");
+        eventBus.post(event);
     }
 
     @FXML

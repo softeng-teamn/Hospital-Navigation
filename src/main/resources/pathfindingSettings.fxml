@@ -12,12 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="32.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PathSettingController">
    <children>
       <HBox alignment="TOP_RIGHT">
          <children>
-            <JFXButton contentDisplay="GRAPHIC_ONLY" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button">
+            <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#showSearchResults" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button">
                <graphic>
                   <FontAwesomeIconView glyphName="CLOSE" size="24" styleClass="request-glyph" />
                </graphic>
@@ -84,7 +83,7 @@
       </Label>
       <HBox alignment="CENTER">
          <children>
-            <JFXToggleNode onAction="#switchAccessibility" fx:id="accessibilityButton" prefHeight="150.0" prefWidth="150.0" styleClass="request-toggle-node" text="Avoid&#10;Stairs" textAlignment="CENTER">
+            <JFXToggleNode fx:id="accessibilityButton" onAction="#switchAccessibility" prefHeight="150.0" prefWidth="150.0" styleClass="request-toggle-node" text="Avoid&#10;Stairs" textAlignment="CENTER">
                <graphic>
                   <FontAwesomeIconView glyphName="WHEELCHAIR" size="50" />
                </graphic>
