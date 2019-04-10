@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -18,32 +19,40 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox prefHeight="580.0" prefWidth="949.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditNodeController">
+<HBox prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditNodeController">
    <children>
-      <VBox prefHeight="335.0" prefWidth="148.0" spacing="5.0">
+      <VBox prefWidth="384.0" spacing="32.0">
          <children>
-            <Label fx:id="node_id_label" text="Node: ">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Label text="Building" />
-            <JFXTextField fx:id="building_field" promptText="building" />
-            <Label text="node type" />
-            <JFXTextField fx:id="type_field" promptText="type" />
-            <Label text="floor" />
-            <JFXComboBox fx:id="floor_combo" maxWidth="1.7976931348623157E308" onAction="#comboAction" promptText="floor" />
-            <Label text="Short Name" />
-            <JFXTextField fx:id="short_field" promptText="short name" />
-            <Label text="Long Name" />
-            <JFXTextField fx:id="long_field" promptText="long name" />
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Label fx:id="node_id_label" styleClass="unfocused-header-label" text="Node: ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#cancelAction" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button" text="Fulfill Request">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <graphic>
+                        <FontAwesomeIconView glyphName="CLOSE" size="24" styleClass="request-glyph" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <JFXTextField fx:id="building_field" labelFloat="true" promptText="Enter Building" />
+            <JFXTextField fx:id="type_field" labelFloat="true" promptText="Enter Node Type" />
+            <JFXComboBox fx:id="floor_combo" maxWidth="1.7976931348623157E308" onAction="#comboAction" promptText="Select Floor" />
+            <JFXTextField fx:id="short_field" labelFloat="true" promptText="Enter Short Name" />
+            <JFXTextField fx:id="long_field" labelFloat="true" promptText="Enter Long Name" />
             <VBox fx:id="edges_container" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <HBox prefHeight="30.0" prefWidth="258.0">
                      <children>
-                        <Label text="Edges" />
+                        <Label styleClass="unfocused-header-label" text="Select Edges" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <JFXButton fx:id="edit_show_btn" contentDisplay="GRAPHIC_ONLY" onAction="#editToggle" prefHeight="30.0" prefWidth="34.0">
+                        <JFXButton fx:id="edit_show_btn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" onAction="#editToggle" prefHeight="30.0" prefWidth="30.0" styleClass="confirm-button">
                            <graphic>
                               <MaterialIconView fx:id="edit_icon_down" glyphName="KEYBOARD_ARROW_DOWN" size="20" />
                               <MaterialIconView fx:id="edit_icon_up" glyphName="KEYBOARD_ARROW_UP" size="20" />
@@ -55,27 +64,20 @@
                </children>
             </VBox>
             <Region VBox.vgrow="ALWAYS" />
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="CENTER" prefHeight="150.0">
                <children>
-                  <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#cancelAction" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
+                  <JFXButton fx:id="edit_save_btn" contentDisplay="GRAPHIC_ONLY" onAction="#saveAction" prefHeight="150.0" prefWidth="150.0" styleClass="confirm-button" text="Fulfill Request">
                      <graphic>
-                        <MaterialIconView glyphName="ARROW_BACK" size="60" />
+                        <MaterialIconView glyphName="SAVE" size="100" />
                      </graphic>
                      <HBox.margin>
                         <Insets right="8.0" />
                      </HBox.margin>
                   </JFXButton>
-                  <JFXButton fx:id="edit_save_btn" contentDisplay="GRAPHIC_ONLY" onAction="#saveAction" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
+                  <Region prefHeight="150.0" prefWidth="47.0" />
+                  <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#deleteAction" prefHeight="150.0" prefWidth="150.0" styleClass="confirm-button" text="Fulfill Request">
                      <graphic>
-                        <MaterialIconView glyphName="SAVE" size="60" />
-                     </graphic>
-                     <HBox.margin>
-                        <Insets right="8.0" />
-                     </HBox.margin>
-                  </JFXButton>
-                  <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#deleteAction" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
-                     <graphic>
-                        <MaterialIconView glyphName="DELETE" size="60" />
+                        <MaterialIconView glyphName="DELETE" size="100" />
                      </graphic>
                      <HBox.margin>
                         <Insets right="8.0" />
