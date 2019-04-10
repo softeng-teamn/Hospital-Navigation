@@ -33,6 +33,9 @@ public class FloristController extends RequestController {
         if(selectedNode != null) {
             FloristRequest floristRequest = new FloristRequest(-1, description.getText(), selectedNode, false, bouquetType.getText(), quantity.getSelectionModel().getSelectedItem());
             floristRequest.makeRequest();
+            description.setText("");
+            bouquetType.setText("");
+            quantity.getSelectionModel().clearSelection();
         }
     }
 
