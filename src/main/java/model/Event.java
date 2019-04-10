@@ -1,5 +1,9 @@
 package model;
 
+import java.util.ResourceBundle;
+
+import static service.ResourceLoader.dfBundle;
+
 import java.util.ArrayList;
 
 public class Event {
@@ -22,6 +26,16 @@ public class Event {
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
     ArrayList<Node> path = null;
+
+    ResourceBundle currentBundle = dfBundle;
+
+    public ResourceBundle getCurrentBundle() {
+        return currentBundle;
+    }
+
+    public void setCurrentBundle(ResourceBundle currentBundle) {
+        this.currentBundle = currentBundle;
+    }
 
 
     boolean endNode = true; //true for end node, false for start node
