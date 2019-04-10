@@ -293,6 +293,29 @@ public class DatabaseServiceTest {
         assertTrue(connectedNodes.get(3).equals(testNode5));
     }
 
+    @Test
+    @Category(FastTest.class)
+    public void deleteNodeCascade() {
+        Node testNode = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node otherNode = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge newEdge = new Edge("ACONF00102-ACONF00103", testNode, otherNode);
+
+        AVServiceRequest req1 = new AVServiceRequest(-1, "", testNode, false, AVServiceRequest.AVServiceType.Audio);
+        ExternalTransportRequest req2 = new ExternalTransportRequest(-1, "", otherNode, false, new Date(), ExternalTransportRequest.TransportationType.BUS, "");
+
+        assertTrue(myDBS.insertNode(testNode));
+        assertTrue(myDBS.insertNode(otherNode));
+        assertTrue(myDBS.insertEdge(newEdge));
+        assertTrue(myDBS.insertAVServiceRequest(req1));
+        assertTrue(myDBS.insertExtTransRequest(req2));
+
+        assertTrue(myDBS.deleteNode(testNode));
+
+        assertThat(myDBS.getEdge("ACONF00102-ACONF00103"), is(nullValue()));
+        assertThat(myDBS.getAVServiceRequest(0), is(nullValue()));
+        assertThat(myDBS.getAllExtTransRequests(), hasSize(1));
+    }
+
 
     @Test
     @Category(FastTest.class)
@@ -409,6 +432,28 @@ public class DatabaseServiceTest {
         assertTrue(myDBS.insertEdge(e3));
 
         assertThat(myDBS.getAllEdges(), Matchers.contains(e1, e2, e3));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllEdgesWithNode() {
+        Node n1 = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        Node n2 = new Node("ACONF00103", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Node n3 = new Node("ACONF00104", 1648, 2968, "3", "BTM", "CONF", "BTM Conference Center", "BTM Conference");
+        Edge e1 = new Edge("ACONF00102-ACONF00103", n1, n2);
+        Edge e2 = new Edge("ACONF00102-ACONF00104", n1, n3);
+        Edge e3 = new Edge("ACONF00103-ACONF00104", n2, n3);
+        assertTrue(myDBS.insertNode(n1));
+        assertTrue(myDBS.insertNode(n2));
+        assertTrue(myDBS.insertNode(n3));
+
+        assertTrue(myDBS.insertEdge(e1));
+        assertTrue(myDBS.insertEdge(e2));
+        assertTrue(myDBS.insertEdge(e3));
+
+        assertThat(myDBS.getAllEdgesWithNode("ACONF00102"), containsInAnyOrder(e1, e2));
+        assertThat(myDBS.getAllEdgesWithNode("ACONF00103"), containsInAnyOrder(e1, e3));
+        assertThat(myDBS.getAllEdgesWithNode("ACONF00104"), containsInAnyOrder(e2, e3));
     }
 
     @Test
@@ -666,6 +711,8 @@ public class DatabaseServiceTest {
 
         // Create an employee
         Employee employee = new Employee(0, "mrdoctor", JobType.DOCTOR, false, "douglas");
+        employee.setPhone("1234567890");
+        employee.setEmail("test@example.com");
 
         // Verify successful insertion
         boolean insertRes = myDBS.insertEmployee(employee);
@@ -723,11 +770,14 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void updateEmployee() {
         Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "123456");
+        employee.setPhone("1234567890");
+        employee.setEmail("test@example.com");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
 
         employee.setAdmin(true);
+        employee.setPhone("0987654321");
         employee.setJob(JobType.ADMINISTRATOR);
 
         assertTrue(myDBS.updateEmployee(employee));
@@ -744,6 +794,21 @@ public class DatabaseServiceTest {
 
         assertTrue(myDBS.deleteEmployee(employee));
         assertNull(myDBS.getEmployee(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getEmployeeByUsername() {
+        assertThat(myDBS.getEmployeeByUsername("doc"), is(nullValue()));
+        assertThat(myDBS.getEmployeeByUsername("brown"), is(nullValue()));
+
+        Employee employee1 = new Employee(0, "doc", JobType.DOCTOR, false, "password");
+        Employee employee2 = new Employee(1, "brown", JobType.DOCTOR, false, "password");
+        assertTrue(myDBS.insertEmployee(employee1));
+        assertTrue(myDBS.insertEmployee(employee2));
+
+        assertThat(myDBS.getEmployeeByUsername("doc"), is(employee1));
+        assertThat(myDBS.getEmployeeByUsername("brown"), is(employee2));
     }
 
     @Test
