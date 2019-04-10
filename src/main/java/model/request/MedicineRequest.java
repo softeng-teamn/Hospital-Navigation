@@ -30,6 +30,7 @@ public class MedicineRequest extends Request {
     public MedicineRequest(int id, String notes, Node location, boolean completed, String medicineType, double quantity) {
         super(id, notes, location, completed);
         this.quantity = quantity;
+        this.medicineType = medicineType;
     }
 
     public String getMedicineType() {
@@ -118,7 +119,8 @@ public class MedicineRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Medicines Request %d, Type: %s, Assigned To: %s, Fulfilled: %s, Quantity: %d",
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Medicine Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s, Quantity: %f",
                 this.getId(), this.getNotes(), this.getMedicineType(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getQuantity());
     }
 

@@ -106,7 +106,8 @@ public class SanitationRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Sanitation Request %d, Urgency: %s, Assigned To: %s, Fulfilled: %s, Material State: %s",
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Sanitation Request %d, Description: %s, Urgency: %s, Assigned To: %s, Fulfilled: %s, Material State: %s",
                 this.getId(), this.getNotes(), this.getUrgency(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getMaterialState());
     }
 

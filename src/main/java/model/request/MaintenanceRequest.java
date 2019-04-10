@@ -101,7 +101,8 @@ public class MaintenanceRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Maintenance Request %d, Type: %s, Assigned To: %s, Fulfilled: %s",
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Maintenance Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
                 this.getId(), this.getNotes(), this.getMaintenanceType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }
 

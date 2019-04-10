@@ -34,7 +34,6 @@ public class ToyRequest extends Request {
     @Override
     public void fillRequest() {
         this.setCompleted(true);
-        this.setAssignedTo(this.getAssignedTo());
         DatabaseService.getDatabaseService().updateToyRequest((ToyRequest)this);
     }
 
@@ -100,7 +99,8 @@ public class ToyRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        return String.format("Toy Request %d, Toy Name: %s, Assigned To: %s, Fulfilled: %s",
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Toy Request %d, Description: %s, Toy Name: %s, Assigned To: %s, Fulfilled: %s",
                 this.getId(), this.getNotes(), this.getToyName(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }
 

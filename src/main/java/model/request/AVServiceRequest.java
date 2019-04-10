@@ -91,6 +91,7 @@ public class AVServiceRequest extends Request {
 
     @Override
     public String toDisplayString() {
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
         return String.format("AV Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
                 this.getId(), this.getNotes(), this.getAVServiceType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }

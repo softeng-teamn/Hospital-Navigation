@@ -65,6 +65,9 @@ public abstract class Request {
 
     public void setAssignedTo(int assignedTo) {
         this.assignedTo = assignedTo;
+        if(this.assignedTo == 0) {
+            this.assignedTo = -1;
+        }
     }
 
     @Override

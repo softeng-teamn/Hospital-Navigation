@@ -175,7 +175,7 @@ public class FulfillRequestController extends Controller implements Initializabl
         requestListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Request> observable, Request oldValue, Request newValue) -> {
             employeeListView.getItems().clear();
             for(Employee employee : employees) {
-                if (newValue.fulfillableByType(employee.getJob())) {
+                if (newValue == null || newValue.fulfillableByType(employee.getJob())) {
                     employeeListView.getItems().add(employee);
                 }
             }
@@ -183,6 +183,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
     private void setRequestsAll() {
+        requests.clear();
         requests.addAll(myDBS.getAllAVServiceRequests());
         requests.addAll(myDBS.getAllExtTransRequests());
         requests.addAll(myDBS.getAllFloristRequests());
@@ -200,6 +201,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
     private void setRequestsIncomplete() {
+        requests.clear();
         requests.addAll(myDBS.getAllIncompleteAVServiceRequests());
         requests.addAll(myDBS.getAllIncompleteExtTransRequests());
         requests.addAll(myDBS.getAllIncompleteFloristRequests());
@@ -217,6 +219,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
     private void setRequestsComplete() {
+        requests.clear();
         requests.addAll(myDBS.getAllCompleteAVServiceRequests());
         requests.addAll(myDBS.getAllCompleteExtTransRequests());
         requests.addAll(myDBS.getAllCompleteFloristRequests());
@@ -234,13 +237,43 @@ public class FulfillRequestController extends Controller implements Initializabl
     }
 
     public void reqStateChange(ActionEvent actionEvent) {
-        allRadio.isSelected();
+        if (allRadio.isSelected()) {
+            setRequestsAll();
+        } else if(uncRadio.isSelected()) {
+            setRequestsIncomplete();
+        } else if(completedRadio.isSelected()) {
+            setRequestsComplete();
+        }
+
+        requestListView.getItems().clear();
+        String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
+        for (Request request : requests) {
+            if (requestTypeSelected.equals("All") || request.isOfType(requestTypeSelected)) {
+                requestListView.getItems().add(request);
+            }
+        }
     }
 
     public void fulfillRequest(ActionEvent actionEvent) {
+        Request selectedRequest = requestListView.getSelectionModel().getSelectedItem();
+
+        if (selectedRequest != null) {
+            if (selectedRequest.getAssignedTo() == 0) {
+                selectedRequest.setAssignedTo(-1);
+            }
+            selectedRequest.fillRequest();
+            reqStateChange(null);
+        }
     }
 
     public void assignRequest(ActionEvent actionEvent) {
+        Request selectedRequest = requestListView.getSelectionModel().getSelectedItem();
+        Employee selectedEmployee = employeeListView.getSelectionModel().getSelectedItem();
 
+        if (selectedEmployee != null && selectedRequest != null) {
+            selectedRequest.setAssignedTo(selectedEmployee.getID());
+            selectedRequest.updateEmployee(selectedRequest, selectedEmployee);
+            reqStateChange(null);
+        }
     }
 }

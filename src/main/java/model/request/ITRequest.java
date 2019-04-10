@@ -65,9 +65,7 @@ public class ITRequest extends Request {
     @Override
     public void fillRequest () {
         this.setCompleted(true);
-        this.setAssignedTo(this.getAssignedTo());
         DatabaseService.getDatabaseService().updateITRequest((ITRequest)this);
-
     }
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
@@ -105,6 +103,7 @@ public class ITRequest extends Request {
 
     @Override
     public String toDisplayString() {
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
         return String.format("IT Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
                 this.getId(), this.getNotes(), this.getItRequestType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }
