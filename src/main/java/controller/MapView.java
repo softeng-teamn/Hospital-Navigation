@@ -97,13 +97,11 @@ public class MapView {
     @FXML
     void callElevatorAction(ActionEvent e) {
         JFXButton myBtn = (JFXButton) e.getSource();
-        char elevNum = myBtn.getText().charAt(myBtn.getText().length()-1);
-
-        int floor = Integer.parseInt("" + elevNum);
+        String elevNum = "" + myBtn.getText().substring(myBtn.getText().length() - 2);
 
         GregorianCalendar cal = new GregorianCalendar();
         try {
-            elevatorCon.postFloor("S", floor, cal);
+            elevatorCon.postFloor("S", elevNum, cal);
         }catch (IOException ioe){
             System.out.println("IO Exception");
         }
@@ -248,7 +246,12 @@ public class MapView {
             public void run() {
                 switch (event.getEventName()) {
                     case "navigation":
-                        navigationHandler();
+                        try {
+                            navigationHandler();
+                        }
+                        catch(Exception ex){
+                            System.out.println("error posting floor");
+                        }
                         break;
                     case "node-select":
                         if(event.isEndNode()){
@@ -381,7 +384,7 @@ public class MapView {
     }
 
     // generate path on the screen
-    private void navigationHandler() {
+    private void navigationHandler() throws Exception{
         currentMethod = event.getSearchMethod();
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> newpath;
@@ -395,10 +398,27 @@ public class MapView {
             // not accessible
             newpath = pathFinder.genPath(start, dest, false, currentMethod);
         }
-
+        if(event.isCallElev()){//if we are supposed to call elevator
+            ElevatorCon e = new ElevatorCon();
+            for (String key: pathFinder.getElevTimes().keySet()
+            ) {
+                System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
+                GregorianCalendar gc = new GregorianCalendar();
+                gc.add(Calendar.MINUTE, pathFinder.getElevTimes().get(key).getEta());
+                try {
+                    e.postFloor(key.substring(key.length() - 1), pathFinder.getElevTimes().get(key).getFloor(), gc);
+                }
+                catch (Exception ex){
+                    System.out.println("WifiConnectionError, post didn't happen");
+                    throw new Exception(ex);
+                }
+            }
+        }
 
         path = newpath;
         drawPath();
+
+
 
     }
 
