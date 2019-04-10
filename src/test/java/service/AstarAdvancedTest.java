@@ -96,6 +96,16 @@ public class AstarAdvancedTest {
         mn9 = new MapNode(2,1,n9);
         n10 = new Node("node10",2, 0, "REST");
         mn10 = new MapNode(2,0,n10);
+        n1.setFloor("1");
+        n2.setFloor("1");
+        n3.setFloor("1");
+        n4.setFloor("1");
+        n5.setFloor("1");
+        n6.setFloor("1");
+        n7.setFloor("1");
+        n8.setFloor("1");
+        n9.setFloor("1");
+        n10.setFloor("1");
     }
 
     final Astar mockPF = spy(new Astar());

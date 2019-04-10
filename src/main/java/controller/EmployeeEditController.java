@@ -51,7 +51,7 @@ public class EmployeeEditController {
     private TableColumn<Employee, JobType> col_job;
 
     @FXML
-    private TableColumn<Employee, String> col_admin;
+    private TableColumn<Employee, String> col_admin, col_email, col_phone;
 
     @FXML
     private JFXTextField new_username;
@@ -83,6 +83,8 @@ public class EmployeeEditController {
        col_username.setCellValueFactory(new PropertyValueFactory<>("username"));
        col_job.setCellValueFactory(new PropertyValueFactory<>("job"));
        col_admin.setCellValueFactory(new PropertyValueFactory<>("isAdmin"));
+       col_phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+       col_email.setCellValueFactory(new PropertyValueFactory<>("email"));
 
        editableCols();
     }
@@ -96,6 +98,22 @@ public class EmployeeEditController {
         col_username.setOnEditCommit(e -> {
             Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
             employee.setUsername(e.getNewValue());
+            myDBS.updateEmployee(employee);
+            loadData();
+        });
+
+        col_phone.setCellFactory(TextFieldTableCell.forTableColumn());
+        col_phone.setOnEditCommit(e -> {
+            Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
+            employee.setPhone(e.getNewValue());
+            myDBS.updateEmployee(employee);
+            loadData();
+        });
+
+        col_email.setCellFactory(TextFieldTableCell.forTableColumn());
+        col_email.setOnEditCommit(e -> {
+            Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
+            employee.setEmail(e.getNewValue());
             myDBS.updateEmployee(employee);
             loadData();
         });

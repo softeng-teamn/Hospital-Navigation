@@ -103,4 +103,9 @@ public class GiftStoreRequest extends Request {
         return x ;
     }
 
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateGiftStoreRequest((GiftStoreRequest)selectedTask) ;
+    }
+
 }
