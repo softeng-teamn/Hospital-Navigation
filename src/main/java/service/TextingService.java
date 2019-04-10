@@ -1,3 +1,4 @@
+/*
 package service;
 // Install the Java helper library from twilio.com/docs/libraries/java
 import com.sun.xml.internal.bind.api.impl.NameConverter;
@@ -51,3 +52,5 @@ public class TextingService {
         System.out.println(message.getSid());
     }
 }
+
+*/
