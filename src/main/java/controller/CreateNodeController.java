@@ -1,6 +1,7 @@
 package controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -45,7 +46,9 @@ public class CreateNodeController extends Controller {
     @FXML
     VBox node_info_vbox, narnar_vbox;
     @FXML
-    JFXTextField type_field, short_field, long_field, building_field;
+    JFXTextField floor_field, type_field, short_field, long_field, building_field;
+    @FXML
+    JFXListView<String> time_view;
     @FXML
     Pane image_pane;
     @FXML

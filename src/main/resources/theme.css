@@ -306,6 +306,10 @@
     -fx-background-color: #7683ac;
 }
 
+.list-view .label{
+    -fx-text-fill: -fx-primarytext;
+}
+
 /*******************************************************************************
  *                                                                             *
  * Scroll Bar			                                                       *

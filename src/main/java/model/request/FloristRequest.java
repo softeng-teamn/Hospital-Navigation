@@ -3,14 +3,14 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static model.JobType.ADMINISTRATOR;
-import static model.JobType.GIFT_SERVICES;
+import static model.JobType.*;
 
 
 public class FloristRequest extends Request {
@@ -103,4 +103,22 @@ public class FloristRequest extends Request {
         myDBS.updateFloristRequest((FloristRequest) selectedTask) ;
     }
 
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == FLORIST || jobType == ADMINISTRATOR) return true;
+        return false;
+    }
+
+
+    @Override
+    public String toDisplayString() {
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Florist Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s, Quantity: %d",
+                this.getId(), this.getNotes(), this.getBouquetType(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getQuantity());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Florist");
+    }
 }

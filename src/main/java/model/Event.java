@@ -119,13 +119,9 @@ public class Event {
         isLoggedIn = loggedIn;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
-    }
+    public boolean isAdmin() { return isAdmin; }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
+    public void setAdmin(boolean admin) { isAdmin = admin; }
 
     public String getFilterSearch() { return filterSearch; }
 
