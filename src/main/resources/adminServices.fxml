@@ -2,44 +2,55 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXToggleNode?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminServiceController">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminServiceController">
    <children>
-      <HBox prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+      <HBox alignment="TOP_RIGHT" spacing="40.0">
          <children>
-            <JFXButton fx:id="showHomeBtn" onAction="#showHome" prefHeight="100.0" prefWidth="100.0" text="Home">
+            <JFXButton fx:id="showHomeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showHome" prefHeight="22.0" prefWidth="0.0" styleClass="exit-button" stylesheets="@theme.css">
                <HBox.margin>
-                  <Insets left="5.0" top="5.0" />
+                  <Insets right="5.0" top="5.0" />
                </HBox.margin>
+               <graphic>
+                  <FontAwesomeIconView glyphName="CLOSE" size="24" styleClass="request-glyph" />
+               </graphic>
             </JFXButton>
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
-         <children>
-            <Label fx:id="adminServicesTitle" styleClass="big-label" stylesheets="@theme.css" text="Administrator Services">
-               <padding>
-                  <Insets top="20.0" />
-               </padding>
-            </Label>
-         </children>
-      </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="80.0" stylesheets="@theme.css">
-         <children>
-            <JFXButton fx:id="fulfillRequestBtn" onAction="#showFulfillRequest" scaleX="1.5" scaleY="1.5" text="Fulfill Requests" />
-            <JFXButton fx:id="editEmployeeBtn" onAction="#showEditEmployees" scaleX="1.5" scaleY="1.5" text="Edit Employees" />
-         </children>
-      </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0" stylesheets="@theme.css">
-         <children>
-            <JFXButton fx:id="mapEditorBtn" onAction="#showMapEditor" scaleX="1.5" scaleY="1.5" text="Map Editor" />
-            <JFXButton fx:id="exportCSVBtn" onAction="#exportCSV" scaleX="1.5" scaleY="1.5" stylesheets="@theme.css" text="Export CSV" />
-         </children>
-      </HBox>
+      <Label fx:id="adminServicesTitle" styleClass="big-label" stylesheets="@theme.css" text="Administrator Services">
+         <VBox.margin>
+            <Insets top="24.0" />
+         </VBox.margin>
+      </Label>
+      <FontAwesomeIconView glyphName="COG" size="200" styleClass="request-glyph" text="">
+         <VBox.margin>
+            <Insets bottom="24.0" />
+         </VBox.margin></FontAwesomeIconView>
+      <JFXButton fx:id="fulfillRequestBtn" onAction="#showFulfillRequest" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Fulfill Requests">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton fx:id="mapEditorBtn" onAction="#showMapEditor" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Map Editor">
+         <VBox.margin>
+            <Insets top="50.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton fx:id="exportCSVBtn" onAction="#exportCSV" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" stylesheets="@theme.css" text="Export CSV">
+         <VBox.margin>
+            <Insets top="50.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton fx:id="editEmployeeBtn" onAction="#showEditEmployees" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Edit Employees">
+         <VBox.margin>
+            <Insets top="50.0" />
+         </VBox.margin>
+      </JFXButton>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
          <children>
             <Label fx:id="selectPathfindingTitle" styleClass="big-label" text="Select Pathfinding Algorithm" />
@@ -63,6 +74,9 @@
                </children>
             </HBox>
          </children>
+         <VBox.margin>
+            <Insets top="50.0" />
+         </VBox.margin>
       </VBox>
    </children>
 </VBox>

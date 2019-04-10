@@ -146,6 +146,11 @@
     -fx-border-radius: 5px;
 }
 
+.exit-button{
+    -fx-background-color: transparent;
+    -fx-border-width: 0px;
+}
+
 .button:hover{
     -fx-text-fill: -fx-primary;
     -fx-border-color: -fx-secondary;
