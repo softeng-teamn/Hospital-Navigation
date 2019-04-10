@@ -15,6 +15,7 @@ public class  ResourceLoader {
     public static final URL directionMessage = service.ResourceLoader.class.getResource("/directionMessage.fxml");
     public static final URL pathFindingSettings = service.ResourceLoader.class.getResource("/pathfindingSettings.fxml");
     public static final URL searchResults = service.ResourceLoader.class.getResource("/searchResults.fxml");
+    public static final URL adminServices = service.ResourceLoader.class.getResource("/adminServices.fxml");
 
     public static final URL maintenanceRequest = service.ResourceLoader.class.getResource("/requests/maintenance_requests.fxml");
     public static final URL avServiceRequest = service.ResourceLoader.class.getResource("/requests/avservice_requests.fxml");
@@ -38,7 +39,6 @@ public class  ResourceLoader {
     public static final URL employees = service.ResourceLoader.class.getResource("/employees.csv");
     public static final URL employeeEdit = service.ResourceLoader.class.getResource("/employeeEdit.fxml");
 
-    public static final URL adminServices = service.ResourceLoader.class.getResource("/adminServices.fxml");
 
     public static final URL textingService = service.ResourceLoader.class.getResource("/SuperSecretPasswords.txt");
 

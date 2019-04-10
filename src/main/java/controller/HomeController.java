@@ -76,7 +76,7 @@ public class HomeController {
 
     private void showAdmin() throws IOException {
         leftPane.getChildren().clear();
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.itRequest));
+        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
     }
 
     private void showSearch() throws IOException {

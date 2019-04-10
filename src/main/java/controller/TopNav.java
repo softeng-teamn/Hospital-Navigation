@@ -344,10 +344,12 @@ public class TopNav {
 
     public void showPathSetting(MouseEvent mouseEvent) {
         if (barOpened){
+            barOpened = false;
             event.setEventName("showSearch");
             eventBus.post(event);
         } else {
-            event.setEventName("showAdmin");
+            barOpened = true;
+            event.setEventName("showPathSetting");
             eventBus.post(event);
         }
     }
