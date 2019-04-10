@@ -12,6 +12,8 @@ import org.junit.experimental.categories.Category;
 
 //import org.loadui.testfx.GuiTest;
 //import org.testfx.framework.junit.ApplicationTest;
+import org.loadui.testfx.GuiTest;
+import org.testfx.framework.junit.ApplicationTest;
 import testclassifications.UiTest;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class AdminControllerTest{
+public class AdminControllerTest extends ApplicationTest {
     final static String loginbtn = "#logInBtn";
     final static String cancelbtn = "#cancelBtn";
     final static String editmapbtn = "#editMapBtn";

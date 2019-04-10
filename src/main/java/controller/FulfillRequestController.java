@@ -3,6 +3,7 @@ package controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
+import controller.requests.InternalTransportController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -49,27 +50,27 @@ public class FulfillRequestController extends Controller implements Initializabl
     @FXML
     private JFXRadioButton ITRadio;
     @FXML
-    private JFXRadioButton avReqRadio;
+    private JFXRadioButton avReqRadio; //done
     @FXML
-    private JFXRadioButton religiousRadio;
+    private JFXRadioButton religiousRadio; //done
     @FXML
-    private JFXRadioButton interpretRadio;
+    private JFXRadioButton interpretRadio; //done
     @FXML
-    private JFXRadioButton maintenanceRadio;
+    private JFXRadioButton maintenanceRadio; //done
     @FXML
-    private JFXRadioButton toyRadio;
+    private JFXRadioButton toyRadio; //done
     @FXML
-    private JFXRadioButton securityRadio;
+    private JFXRadioButton securityRadio; //done
     @FXML
-    private JFXRadioButton sanitationRadio;
+    private JFXRadioButton sanitationRadio; //done
     @FXML
-    private JFXRadioButton patientInfoRadio;
+    private JFXRadioButton patientInfoRadio; //done
     @FXML
-    private JFXRadioButton floristRadio;
+    private JFXRadioButton floristRadio; //done
     @FXML
-    private JFXRadioButton giftRadio;
+    private JFXRadioButton giftRadio; //done
     @FXML
-    private JFXRadioButton internalTransRadio;
+    private JFXRadioButton internalTransRadio; //done
     @FXML
     private JFXRadioButton externalTransRadio;
     @FXML
@@ -206,7 +207,24 @@ public class FulfillRequestController extends Controller implements Initializabl
 
         if (allRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
-                finalRequestList = allRequestlist;
+                //finalRequestList = allRequestlist;
+                ObservableList<Request> obsRequestList = FXCollections.observableArrayList();
+                List<GiftStoreRequest> gift = myDBS.getAllCompleteGiftStoreRequests();
+                gift.addAll(myDBS.getAllIncompleteGiftStoreRequests());
+                List<AVServiceRequest> av = myDBS.getAllAVServiceRequests();
+                List<MedicineRequest> mr =  myDBS.getAllMedicineRequests();
+                List<ITRequest> it = myDBS.getAllITRequests();
+                List<ExternalTransportRequest> ex = myDBS.getAllExtTransRequests();
+                List<FloristRequest> fl = myDBS.getAllFloristRequests();
+                List<SecurityRequest> seq = myDBS.getAllSecurityRequests();
+                List<SanitationRequest> jan = myDBS.getAllSanitationRequests();
+                List<MaintenanceRequest> man = myDBS.getAllMaintenanceRequests();
+                List<ReligiousRequest> rel = myDBS.getAllReligiousRequests();
+                List<InterpreterRequest> interp = myDBS.getAllInterpreterRequests();
+                List<ToyRequest> toy = myDBS.getAllToyRequests();
+                List<PatientInfoRequest> pinfo = myDBS.getAllPatientInfoRequests();
+                List<InternalTransportRequest> intTrans = myDBS.getAllInternalTransportRequest();
+                finalRequestList = showProperRequest(obsRequestList, mr, it, seq, jan, man, rel, gift, av, interp, toy, pinfo, fl, intTrans, ex);
             } else if (medicineRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests());
             } else if (ITRadio.isSelected()) {
@@ -239,7 +257,24 @@ public class FulfillRequestController extends Controller implements Initializabl
             }
         } else if (uncRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
-                finalRequestList = allIncompleteRequestlist;
+                ObservableList<Request> obsRequestList = FXCollections.observableArrayList();
+                List<GiftStoreRequest> gift = myDBS.getAllCompleteGiftStoreRequests();
+                gift.addAll(myDBS.getAllIncompleteGiftStoreRequests());
+                List<AVServiceRequest> av = myDBS.getAllAVServiceRequests();
+                List<MedicineRequest> mr =  myDBS.getAllMedicineRequests();
+                List<ITRequest> it = myDBS.getAllITRequests();
+                List<ExternalTransportRequest> ex = myDBS.getAllExtTransRequests();
+                List<FloristRequest> fl = myDBS.getAllFloristRequests();
+                List<SecurityRequest> seq = myDBS.getAllSecurityRequests();
+                List<SanitationRequest> jan = myDBS.getAllSanitationRequests();
+                List<MaintenanceRequest> man = myDBS.getAllMaintenanceRequests();
+                List<ReligiousRequest> rel = myDBS.getAllReligiousRequests();
+                List<InterpreterRequest> interp = myDBS.getAllInterpreterRequests();
+                List<ToyRequest> toy = myDBS.getAllToyRequests();
+                List<PatientInfoRequest> pinfo = myDBS.getAllPatientInfoRequests();
+                List<InternalTransportRequest> intTrans = myDBS.getAllInternalTransportRequest();
+                finalRequestList = showProperRequest(obsRequestList, mr, it, seq, jan, man, rel, gift, av, interp, toy, pinfo, fl, intTrans, ex);
+               //finalRequestList = allIncompleteRequestlist;
             } else if (medicineRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests());
             } else if (ITRadio.isSelected()) {
@@ -431,7 +466,14 @@ public class FulfillRequestController extends Controller implements Initializabl
 
 
     //Show Requests based on Job
-    private ObservableList<Request> showProperRequest(ObservableList<Request> newRequestList, List<MedicineRequest> allMedReqList,List<ITRequest> allITReqList){
+    private ObservableList<Request> showProperRequest(ObservableList<Request> newRequestList, List<MedicineRequest> allMedReqList,
+                                                      List<ITRequest> allITReqList, List<SecurityRequest> allSeqReqList,
+                                                      List<SanitationRequest> allJanReqList, List<MaintenanceRequest> allMainReqList,
+                                                      List<ReligiousRequest> allRelReqList, List<GiftStoreRequest> allGiftReqList,
+                                                      List<AVServiceRequest> allAVReqList, List<InterpreterRequest> allIntReqList,
+                                                      List<ToyRequest> allToyReqList, List<PatientInfoRequest> allPInfReqList,
+                                                      List<FloristRequest> allFloReqList, List<InternalTransportRequest> allIntTransReqList,
+                                                      List<ExternalTransportRequest> allExtTransReqList){
 
         //Add request radio button
         typeVBox.getChildren().removeAll(medicineRadio,ITRadio);
@@ -442,7 +484,32 @@ public class FulfillRequestController extends Controller implements Initializabl
             case ADMINISTRATOR:
                 newRequestList.addAll(allMedReqList);
                 newRequestList.addAll(allITReqList);
-                typeVBox.getChildren().addAll(medicineRadio,ITRadio);
+                newRequestList.addAll(allGiftReqList);
+                newRequestList.addAll(allJanReqList);
+                newRequestList.addAll(allMainReqList);
+                newRequestList.addAll(allRelReqList);
+                newRequestList.addAll(allSeqReqList);
+                newRequestList.addAll(allAVReqList);
+                newRequestList.addAll(allExtTransReqList);
+                newRequestList.addAll(allFloReqList);
+                newRequestList.addAll(allIntReqList);
+                newRequestList.addAll(allIntTransReqList);
+                newRequestList.addAll(allPInfReqList);
+                newRequestList.addAll(allToyReqList);
+                typeVBox.getChildren().add(medicineRadio);
+                typeVBox.getChildren().add(ITRadio);
+                /*typeVBox.getChildren().add(securityRadio);
+                typeVBox.getChildren().add(sanitationRadio);
+                typeVBox.getChildren().addAll(maintenanceRadio);
+                typeVBox.getChildren().addAll(religiousRadio);
+                typeVBox.getChildren().addAll(giftRadio);
+                typeVBox.getChildren().addAll(avReqRadio);
+                typeVBox.getChildren().addAll(internalTransRadio);
+                typeVBox.getChildren().addAll(interpretRadio);
+                typeVBox.getChildren().addAll(toyRadio);
+                typeVBox.getChildren().addAll(patientInfoRadio);
+                typeVBox.getChildren().addAll(floristRadio);
+                typeVBox.getChildren().addAll(externalTransRadio);*/
                 break;
             case DOCTOR:
                 newRequestList.addAll(allMedReqList);
@@ -457,10 +524,52 @@ public class FulfillRequestController extends Controller implements Initializabl
                 typeVBox.getChildren().addAll(ITRadio);
                 break;
             case SECURITY_PERSONNEL:
+                newRequestList.addAll(allSeqReqList);
+                typeVBox.getChildren().addAll(securityRadio);
                 break;
             case JANITOR:
+                newRequestList.addAll(allJanReqList);
+                typeVBox.getChildren().addAll(sanitationRadio);
                 break;
             case MAINTENANCE_WORKER:
+                newRequestList.addAll(allMainReqList);
+                typeVBox.getChildren().addAll(maintenanceRadio);
+                break;
+            case RELIGIOUS_OFFICIAL:
+                newRequestList.addAll(allRelReqList);
+                typeVBox.getChildren().addAll(religiousRadio);
+                break;
+            case GIFT_SERVICES:
+                newRequestList.addAll(allGiftReqList);
+                typeVBox.getChildren().addAll(giftRadio);
+                break;
+            case AV:
+                newRequestList.addAll(allAVReqList);
+                typeVBox.getChildren().addAll(avReqRadio);
+                break;
+            case INTERPRETER:
+                newRequestList.addAll(allIntReqList);
+                typeVBox.getChildren().addAll(interpretRadio);
+                break;
+            case TOY:
+                newRequestList.addAll(allToyReqList);
+                typeVBox.getChildren().addAll(toyRadio);
+                break;
+            case PATIENT_INFO:
+                newRequestList.addAll(allPInfReqList);
+                typeVBox.getChildren().addAll(patientInfoRadio);
+                break;
+            case FLORIST:
+                newRequestList.addAll(allFloReqList);
+                typeVBox.getChildren().addAll(floristRadio);
+                break;
+            case INTERNAL_TRANSPORT:
+                newRequestList.addAll(allIntTransReqList);
+                typeVBox.getChildren().addAll(internalTransRadio);
+                break;
+            case EXTERNAL_TRANSPORT:
+                newRequestList.addAll(allExtTransReqList);
+                typeVBox.getChildren().addAll(externalTransRadio);
                 break;
             default:
                 break;
@@ -480,14 +589,23 @@ public class FulfillRequestController extends Controller implements Initializabl
     @Override
     public void initialize(URL location, ResourceBundle resources) {
        ObservableList<Request> obsRequestList = FXCollections.observableArrayList();
-        //List<AVServiceRequest> av = myDBS.getAllAVServiceRequests();
+        List<GiftStoreRequest> gift = myDBS.getAllCompleteGiftStoreRequests();
+        gift.addAll(myDBS.getAllIncompleteGiftStoreRequests());
+        List<AVServiceRequest> av = myDBS.getAllAVServiceRequests();
         List<MedicineRequest> mr =  myDBS.getAllMedicineRequests();
         List<ITRequest> it = myDBS.getAllITRequests();
-        //List<ExternalTransportRequest> ex = myDBS.getAllExtTransRequests();
-        //List<FloristRequest> fl = myDBS.getAllFloristRequests();
-        //List<GiftStoreRequest>
+        List<ExternalTransportRequest> ex = myDBS.getAllExtTransRequests();
+        List<FloristRequest> fl = myDBS.getAllFloristRequests();
+        List<SecurityRequest> seq = myDBS.getAllSecurityRequests();
+        List<SanitationRequest> jan = myDBS.getAllSanitationRequests();
+        List<MaintenanceRequest> man = myDBS.getAllMaintenanceRequests();
+        List<ReligiousRequest> rel = myDBS.getAllReligiousRequests();
+        List<InterpreterRequest> interp = myDBS.getAllInterpreterRequests();
+        List<ToyRequest> toy = myDBS.getAllToyRequests();
+        List<PatientInfoRequest> pinfo = myDBS.getAllPatientInfoRequests();
+        List<InternalTransportRequest> intTrans = myDBS.getAllInternalTransportRequest();
 
-        ObservableList<Request> requestList = showProperRequest(obsRequestList, mr, it);
+        ObservableList<Request> requestList = showProperRequest(obsRequestList, mr, it, seq, jan, man, rel, gift, av, interp, toy, pinfo, fl, intTrans, ex);
         ObservableList<Employee> EmployeeList = FXCollections.observableArrayList();
 
         ArrayList<Employee> allEs = (ArrayList) myDBS.getAllEmployees();

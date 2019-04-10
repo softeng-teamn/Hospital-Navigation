@@ -33,8 +33,68 @@
                         </JFXRadioButton>
                         <VBox fx:id="typeVBox">
                             <children>
+                            <JFXRadioButton fx:id="avReqRadio" onAction="#radioChanged" text="AV Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
                             <!--<JFXRadioButton layoutX="43.0" layoutY="231.0" text="Completed" toggleGroup="$statesToggle" />-->
+                            <JFXRadioButton fx:id="religiousRadio" onAction="#radioChanged" text="Religious Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
                             <JFXRadioButton fx:id="medicineRadio" onAction="#radioChanged" text="Medicine Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="interpretRadio" onAction="#radioChanged" text="Interpreter Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="maintenanceRadio" onAction="#radioChanged" text="Maintenance Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="toyRadio" onAction="#radioChanged" text="Toy Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                 </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="securityRadio" onAction="#radioChanged" text="Security Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="sanitationRadio" onAction="#radioChanged" text="Sanitation Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                     <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="patientInfoRadio" onAction="#radioChanged" text="Patient Information Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="floristRadio" onAction="#radioChanged" text="Florist Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="giftRadio" onAction="#radioChanged" text="Gift Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="internalTransRadio" onAction="#radioChanged" text="Internal Transport Request" toggleGroup="$typeToggle">
+                                <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                </VBox.margin>
+                            </JFXRadioButton>
+                            <JFXRadioButton fx:id="externalTransRadio" onAction="#radioChanged" text="External Transport Request" toggleGroup="$typeToggle">
                                 <VBox.margin>
                                     <Insets bottom="7.0" />
                                 </VBox.margin>
