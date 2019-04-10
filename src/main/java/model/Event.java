@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Event {
 
     Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
@@ -15,16 +17,29 @@ public class Event {
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
+    String filterSearch = ""; // filtered search
+    String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
+    ArrayList<Node> path = null;
 
-    public String getFloor() {
-        return floor;
-    }
 
-    public void setFloor(String floor) {
-        this.floor = floor;
-    }
+    boolean endNode = true; //true for end node, false for start node
+
+
+    public ArrayList<Node> getPath() { return path; }
+
+    public void setPath(ArrayList<Node> path) { this.path = path; }
+
+    public boolean isEndNode() { return endNode; }
+
+    public void setEndNode(boolean startEnd) { this.endNode = startEnd; }
+
+    public void setDefaultStartNode (){this.nodeStart = DEFAULT_NODE;}
+
+    public String getFloor() { return floor; }
+
+    public void setFloor(String floor) { this.floor = floor; }
 
     public boolean isEditing() {
         return isEditing;
@@ -50,9 +65,7 @@ public class Event {
         return nodeStart;
     }
 
-    public void setNodeStart(Node nodeStart) {
-        this.nodeStart = nodeStart;
-    }
+    public void setNodeStart(Node nodeStart) { this.nodeStart = nodeStart; }
 
     public String getEventName() {
         return eventName;
@@ -82,9 +95,7 @@ public class Event {
         return nodeSelected;
     }
 
-    public void setNodeSelected(Node nodeSelected) {
-        this.nodeSelected = nodeSelected;
-    }
+    public void setNodeSelected(Node nodeSelected) { this.nodeSelected = nodeSelected; }
 
     public boolean isLoggedIn() {
         return isLoggedIn;
@@ -102,5 +113,11 @@ public class Event {
         isAdmin = admin;
     }
 
+    public String getFilterSearch() { return filterSearch; }
 
+    public void setFilterSearch(String filterSearch) { this.filterSearch = filterSearch; }
+
+    public String getSearchMethod() { return searchMethod; }
+
+    public void setSearchMethod(String searchMethod) { this.searchMethod = searchMethod; }
 }

@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -11,8 +12,11 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -45,10 +49,13 @@ public class CreateNodeController extends Controller {
     JFXTextField floor_field, type_field, short_field, long_field, building_field;
     @FXML
     JFXListView<String> time_view;
+    @FXML
+    Pane image_pane;
+    @FXML
+    VBox floor_change_vbox;
 
     private final Color DEFAULT_NODE_COLOR = Color.BLACK;
     private final Color SELECTED_NODE_COLOR = Color.RED;
-    private final Color EDGE_COLOR = Color.RED;
 
     // global group for all map entities (to be scaled on zoom)
     Group zoomGroup;
@@ -68,10 +75,10 @@ public class CreateNodeController extends Controller {
     String node_short = "";
     String node_long = "";
     String node_building = "";
-    // Collection of edges
-    ArrayList<Edge> edges;
-    // Collection of lines
-    ArrayList<Line> lineCollection;
+    // Collection of Node Circles
+    ArrayList<Circle> circleCollection = new ArrayList<>();
+    // Collection of Edge Nodes to connect to
+    ArrayList<Node> chosenEdgeNodes;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -146,6 +153,46 @@ public class CreateNodeController extends Controller {
         }
     }
 
+    @FXML
+    void floorChangeAction(ActionEvent e) throws IOException {
+        JFXButton clickedBtn = (JFXButton) e.getSource();
+        switch (clickedBtn.getText()) {
+            case "Floor 3":
+                setMapFloor("3");
+                if(stateIterator == 0) {node_floor = "3";}
+                else if(stateIterator == 2) {showAllNodes("3");}
+                break;
+            case "Floor 2":
+                setMapFloor("2");
+                if(stateIterator == 0) {node_floor = "2";}
+                else if(stateIterator == 2) {showAllNodes("2");}
+                break;
+            case "Floor 1":
+                setMapFloor("1");
+                if(stateIterator == 0) {node_floor = "1";}
+                else if(stateIterator == 2) {showAllNodes("1");}
+                break;
+            case "L1":
+                setMapFloor("L1");
+                if(stateIterator == 0) {node_floor = "L1";}
+                else if(stateIterator == 2) {showAllNodes("L1");}
+                break;
+            case "L2":
+                setMapFloor("L2");
+                if(stateIterator == 0) {node_floor = "L2";}
+                else if(stateIterator == 2) {showAllNodes("L2");}
+                break;
+            case "Ground":
+                setMapFloor("G");
+                if(stateIterator == 0) {node_floor = "G";}
+                else if(stateIterator == 2) {showAllNodes("G");}
+                break;
+            default:
+                System.out.println("WHAT BUTTON WAS PRESSED?????");
+                break;
+        }
+    }
+
     // This function is bound to the generated node circles
     // It will run every time you click a node to add as edge
     @FXML
@@ -153,77 +200,65 @@ public class CreateNodeController extends Controller {
         Circle nodeCircle = (Circle) e.getSource();
         // find if the node was already clicked
         if (nodeCircle.getFill().equals(DEFAULT_NODE_COLOR)) {
-            // add node to edge list
-            edges.add(new Edge(myCreatedNode, selectedNode));
+            // add to selected node list
+            chosenEdgeNodes.add(selectedNode);
             // change color
             nodeCircle.setFill(SELECTED_NODE_COLOR);
-            // draw line path
-            appendLine(selectedNode);
         } else {
             // already selected
             // change color
             nodeCircle.setFill(DEFAULT_NODE_COLOR);
-            // remove this as an edge
-            ArrayList<Edge> updatedEdges = new ArrayList<Edge>();
-            // filter through edges
-            for (Edge edge : edges) {
-                if (!edge.getNode2().getNodeID().equals(selectedNode.getNodeID())) {
-                    updatedEdges.add(edge);
-                }
-            }
-            edges = updatedEdges;
-            // remove the line
-            filterLine(selectedNode);
+            // remove from selected node list
+            chosenEdgeNodes.remove(selectedNode);
         }
         checkEnoughEdges();
     }
 
+    private void setMapFloor(String floor) throws IOException {
+        ImageView imageView;
+        switch (floor) {
+            case "3":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.thirdFloor.openStream()));
+                break;
+            case "2":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.secondFloor.openStream()));
+                break;
+            case "1":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.firstFloor.openStream()));
+                break;
+            case "L1":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.firstLowerFloor.openStream()));
+                break;
+            case "L2":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.secondLowerFloor.openStream()));
+                break;
+            case "G":
+                imageView = new ImageView(new Image(
+                        ResourceLoader.groundFloor.openStream()));
+                break;
+            default:
+                System.out.println("We should not have default here!!!");
+                imageView = new ImageView(new Image(
+                        ResourceLoader.groundFloor.openStream()));
+                break;
+        }
+        image_pane.getChildren().clear();
+        image_pane.getChildren().add(imageView);
+    }
+
     void checkEnoughEdges() {
-        if (edges.size() > 0) {
+        if (chosenEdgeNodes.size() > 0) {
             next_btn.setDisable(false);
         } else {
             next_btn.setDisable(true);
         }
     }
 
-    // removes line from collection
-    void filterLine(Node destNode) {
-        ArrayList<Line> newLineCollection = new ArrayList<Line>();
-        for (Line line : lineCollection) {
-            if (!((int)line.getEndX() == destNode.getXcoord() && (int)line.getEndY() == destNode.getYcoord())) {
-                newLineCollection.add(line);
-            } else {
-                System.out.println("The line");
-                System.out.println(line.getEndX() + " " + line.getEndY());
-                System.out.println("Our dest");
-                System.out.println(destNode.getXcoord() + " " + destNode.getYcoord());
-            }
-        }
-        // remove last collection
-        zoomGroup.getChildren().removeAll(lineCollection);
-        // re-draw to screen
-        lineCollection = newLineCollection;
-        // re-add all
-        zoomGroup.getChildren().addAll(lineCollection);
-    }
-
-    // adds new line to collection
-    void appendLine(Node destNode) {
-        Line line = new Line();
-
-        line.setStartX(myCreatedNode.getXcoord());
-        line.setStartY(myCreatedNode.getYcoord());
-
-        line.setEndX(destNode.getXcoord());
-        line.setEndY(destNode.getYcoord());
-
-        line.setFill(EDGE_COLOR);
-        line.setStrokeWidth(10.0);
-        // add the line
-        lineCollection.add(line);
-        // draw the line
-        zoomGroup.getChildren().add(line);
-    }
 
     // iterate to next state
     void nextState() throws Exception {
@@ -287,12 +322,10 @@ public class CreateNodeController extends Controller {
         buildNode();
         // re-show map
         hideTextFields();
-        // create edges list
-        edges = new ArrayList<Edge>();
-        // create lines list
-        lineCollection = new ArrayList<Line>();
-        // display the nodes on the map
-        showAllNodes();
+        // create empty edge node collection
+        chosenEdgeNodes = new ArrayList<Node>();
+        // display the nodes on the chosen floor of the MAP
+        showAllNodes(myCreatedNode.getFloor());
         // show instructions
         instruction_label.setText("Select all nodes that are reachable");
         next_btn.setDisable(true);
@@ -303,8 +336,8 @@ public class CreateNodeController extends Controller {
     void submitNewNode() {
         // send info to dbs
         myDBS.insertNode(myCreatedNode);
-        for (Edge e : edges) {
-            myDBS.insertEdge(e);
+        for (Node n : chosenEdgeNodes) {
+            myDBS.insertEdge(new Edge(myCreatedNode, n));
         }
         // show instructions
         instruction_label.setText("Node Successfully Created!");
@@ -326,6 +359,7 @@ public class CreateNodeController extends Controller {
         if (!anchor_pane.getChildren().contains(map_scrollpane)) {
             anchor_pane.getChildren().add(map_scrollpane);
             anchor_pane.getChildren().add(zoom_slider);
+            anchor_pane.getChildren().add(floor_change_vbox);
         }
     }
 
@@ -333,6 +367,7 @@ public class CreateNodeController extends Controller {
     void showTextFields() {
         anchor_pane.getChildren().remove(map_scrollpane);
         anchor_pane.getChildren().remove(zoom_slider);
+        anchor_pane.getChildren().remove(floor_change_vbox);
         if (!anchor_pane.getChildren().contains(node_info_vbox)) {
             anchor_pane.getChildren().add(node_info_vbox);
         }
@@ -341,10 +376,6 @@ public class CreateNodeController extends Controller {
     // takes new text changes and adds them to info variables
     void addTextFieldHooks() {
 
-        floor_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            node_floor = newValue;
-            checkAllFields();
-        });
         type_field.textProperty().addListener((observable, oldValue, newValue) -> {
             node_type = newValue;
             checkAllFields();
@@ -404,18 +435,25 @@ public class CreateNodeController extends Controller {
         return (!node_floor.isEmpty() && !node_type.isEmpty() && !node_short.isEmpty() && !node_long.isEmpty() && !node_building.isEmpty());
     }
 
-    void showAllNodes() {
-        ArrayList<Node> allNodes = myDBS.getAllNodes();
+    void showAllNodes(String floor) {
+        ArrayList<Node> allNodes = myDBS.getNodesByFloor(floor);
+        zoomGroup.getChildren().removeAll(circleCollection);
+        circleCollection.clear();
         for (Node node : allNodes) {
             // create circle
             Circle nodeCircle = new Circle();
             nodeCircle.setCenterX(node.getXcoord());
             nodeCircle.setCenterY(node.getYcoord());
             nodeCircle.setRadius(20);
-            nodeCircle.setFill(DEFAULT_NODE_COLOR);
+            if (chosenEdgeNodes.contains(node)) {
+                nodeCircle.setFill(SELECTED_NODE_COLOR);
+            } else {
+                nodeCircle.setFill(DEFAULT_NODE_COLOR);
+            }
             // draw circle on the screen
             nodeCircle.setOnMouseClicked(e -> handleNodeClicked(e, node));
             zoomGroup.getChildren().add(nodeCircle);
+            circleCollection.add(nodeCircle);
         }
     }
 

@@ -1,9 +1,15 @@
 package model.request;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.Employee;
 import model.Node;
 import service.DatabaseService;
 
+import java.util.ArrayList;
 import java.util.Objects;
+
+import static model.JobType.*;
 
 public class ToyRequest extends Request {
 
@@ -58,5 +64,30 @@ public class ToyRequest extends Request {
         return "ToyRequest{" +
                 "toyName='" + toyName + '\'' +
                 '}';
+    }
+
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    @Override
+    public ObservableList<Employee> returnCorrectEmployee () {
+        ObservableList<Employee> rightEmployee = FXCollections.observableArrayList();
+        ObservableList<Employee> allEmployee = FXCollections.observableArrayList();
+        allEmployee.addAll(myDBS.getAllEmployees()) ;
+
+        for (int i = 0; i < allEmployee.size(); i++) {
+            if (allEmployee.get(i).getJob() == GIFT_SERVICES || allEmployee.get(i).getJob() == ADMINISTRATOR ) {
+                rightEmployee.add(allEmployee.get(i)) ;
+            }
+        }
+        return rightEmployee ;
+    }
+    @Override
+    public ObservableList<Request> showProperRequest() {
+        return (ObservableList) myDBS.getAllToyRequests() ;
+    }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateToyRequest((ToyRequest) selectedTask) ;
     }
 }

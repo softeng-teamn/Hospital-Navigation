@@ -27,9 +27,9 @@
          <children>
             <JFXTextField fx:id="searchBar" labelFloat="true" onAction="#searchBarEnter" promptText="Search Room" />
             <Region prefHeight="100.0" prefWidth="724.0" />
-            <Label styleClass="big-label" text="Reserve a Room">
+            <Label text="Reserve a Room" textFill="WHITE">
                <font>
-                  <Font size="18.0" />
+                  <Font size="36.0" />
                </font></Label>
             <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
             <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
@@ -38,8 +38,11 @@
                </graphic></JFXButton>
          </children>
          <VBox.margin>
-            <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
+            <Insets />
          </VBox.margin>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" VBox.vgrow="ALWAYS">
          <children>

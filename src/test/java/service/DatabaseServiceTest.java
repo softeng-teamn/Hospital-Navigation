@@ -711,6 +711,8 @@ public class DatabaseServiceTest {
 
         // Create an employee
         Employee employee = new Employee(0, "mrdoctor", JobType.DOCTOR, false, "douglas");
+        employee.setPhone("1234567890");
+        employee.setEmail("test@example.com");
 
         // Verify successful insertion
         boolean insertRes = myDBS.insertEmployee(employee);
@@ -768,11 +770,14 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void updateEmployee() {
         Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "123456");
+        employee.setPhone("1234567890");
+        employee.setEmail("test@example.com");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
 
         employee.setAdmin(true);
+        employee.setPhone("0987654321");
         employee.setJob(JobType.ADMINISTRATOR);
 
         assertTrue(myDBS.updateEmployee(employee));

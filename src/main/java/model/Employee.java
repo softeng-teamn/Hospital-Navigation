@@ -7,6 +7,7 @@ public class Employee {
     JobType job;
     boolean isAdmin;
     String password;
+    String email, phone;
 
     String username;
 
@@ -24,6 +25,9 @@ public class Employee {
         this.job = job;
         this.isAdmin = isAdmin;
         this.password = password;
+        this.email = "";
+        this.phone = "";
+        System.out.println(job);
     }
 
     public int getID() {
@@ -63,13 +67,31 @@ public class Employee {
         this.username = username;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
                 "ID=" + ID +
-                ", job='" + job + '\'' +
+                ", job=" + job +
                 ", isAdmin=" + isAdmin +
                 ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
                 ", username='" + username + '\'' +
                 '}';
     }
@@ -81,13 +103,15 @@ public class Employee {
         Employee employee = (Employee) o;
         return ID == employee.ID &&
                 isAdmin == employee.isAdmin &&
-                Objects.equals(job, employee.job) &&
+                job == employee.job &&
                 Objects.equals(password, employee.password) &&
+                Objects.equals(email, employee.email) &&
+                Objects.equals(phone, employee.phone) &&
                 Objects.equals(username, employee.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, job, isAdmin, password, username);
+        return Objects.hash(ID, job, isAdmin, password, email, phone, username);
     }
 }

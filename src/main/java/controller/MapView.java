@@ -67,11 +67,15 @@ public class MapView {
     private EventBus eventBus = EventBusFactory.getEventBus();
     private Event event = EventBusFactory.getEvent();
 
+    private String currentMethod;
+
     private Group zoomGroup;
     private Circle startCircle;
     private Circle selectCircle;
     private ArrayList<Line> lineCollection;
     private ArrayList<Circle> circleCollection;
+    private boolean hasPath = false;
+    private ArrayList<Node> path;
 
     @FXML
     private ScrollPane map_scrollpane;
@@ -86,21 +90,15 @@ public class MapView {
     @FXML
     private Label cur_el_floor;
 
-    @FXML
-    private JFXListView directionsView;
 
-    @FXML
-    private JFXButton showDirectionsBtn;
 
-    @FXML
-    private VBox showDirVbox;
+
+    private static HashMap<String, ImageView> imageCache = new HashMap<>();
+    private static boolean imagesCached = false;
 
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
-
-
-
         JFXButton myBtn = (JFXButton) e.getSource();
         char elevNum = myBtn.getText().charAt(myBtn.getText().length()-1);
 
@@ -117,7 +115,6 @@ public class MapView {
 
     @FXML
     void initialize() {
-
         pingTiming();
 
         // listen to changes
@@ -154,7 +151,21 @@ public class MapView {
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.4);
 
-        directionsView.setVisible(false);
+
+        // Cache imageViews so they can be reused, but only if they haven't already been cached
+        if(!imagesCached) {
+            try {
+                imageCache.put("Floor 3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
+                imageCache.put("Floor 2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
+                imageCache.put("Floor 1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
+                imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
+                imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
+                imageCache.put("Ground", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
+                imagesCached = true;
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     void pingTiming() {
@@ -163,13 +174,13 @@ public class MapView {
             @Override public Void call() throws Exception {
                 while (true) {
                     Thread.sleep(1000);
-                    System.out.println("shit was fired");
+//                    System.out.println("shit was fired");
                     TimeUnit.SECONDS.sleep(1);
-                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
+//                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
                     Platform.runLater(new Runnable() {
                         @Override public void run() {
                             try {
-                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
+//                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
                                 cur_el_floor.setText(elevatorCon.getFloor("S"));
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -185,7 +196,7 @@ public class MapView {
     }
 
     @FXML
-    void changeFloor(ActionEvent e) throws IOException {
+    void floorChangeAction(ActionEvent e) throws IOException {
         JFXButton btn = (JFXButton)e.getSource();
         ImageView imageView;
         event.setEventName("floor");
@@ -193,33 +204,27 @@ public class MapView {
         event.setFloor(btn.getText());
         switch (btn.getText()) {
             case "Floor 3":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.thirdFloor.openStream()));
+                imageView = imageCache.get("Floor 3");
                 floorName = "3";
                 break;
             case "Floor 2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondFloor.openStream()));
+                imageView = imageCache.get("Floor 2");
                 floorName = "2";
                 break;
             case "Floor 1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstFloor.openStream()));
+                imageView = imageCache.get("Floor 1");
                 floorName = "1";
                 break;
             case "L1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstLowerFloor.openStream()));
+                imageView = imageCache.get("L1");
                 floorName = "L1";
                 break;
             case "L2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondLowerFloor.openStream()));
+                imageView = imageCache.get("L2");
                 floorName = "L2";
                 break;
             case "Ground":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
+                imageView = imageCache.get("Ground");
                 floorName = "G";
                 break;
             default:
@@ -232,6 +237,9 @@ public class MapView {
         image_pane.getChildren().add(imageView);
         event.setFloor(floorName);
         eventBus.post(event);
+        if (hasPath){
+            drawPath();
+        }
         // Handle Floor changes
         editNodeHandler(event.isEditing());
     }
@@ -246,9 +254,21 @@ public class MapView {
                         navigationHandler();
                         break;
                     case "node-select":
-                        drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125));
-                        directionsView.getItems().clear();
-                        hideDirections();
+                        if(event.isEndNode()){
+                            drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125), false);
+                        } else {
+                            drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
+                        }
+                        break;
+                    case "refresh":
+                        drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
+                        drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125), false);
+                        break;
+                    case "filter":
+                        filteredHandler();
+                        break;
+                    case "methodSwitch":
+                        currentMethod = event.getSearchMethod();
                         break;
                     case "editing":
                         editNodeHandler(event.isEditing());
@@ -259,8 +279,8 @@ public class MapView {
                 }
             }
         });
-        this.event = event;
     }
+
 
     void editNodeHandler(boolean isEditing) {
         if (isEditing) {
@@ -321,17 +341,28 @@ public class MapView {
     }
 
 
-    private void drawPoint(Node node, Circle circle, Color color) {
+    private void clearBothPoint(){
+        if (zoomGroup.getChildren().contains(selectCircle)){
+            zoomGroup.getChildren().remove((selectCircle));
+        }
+        if (zoomGroup.getChildren().contains(startCircle)){
+            zoomGroup.getChildren().remove(startCircle);
+        }
+    }
+
+
+    private void drawPoint(Node node, Circle circle, Color color, boolean start) {
         // remove points
         for (Line line : lineCollection) {
             if (zoomGroup.getChildren().contains(line)) {
                 zoomGroup.getChildren().remove(line);
+                hasPath = false;
             }
         }
         // remove old selected Circle
-        if (zoomGroup.getChildren().contains(selectCircle)) {
+        if (zoomGroup.getChildren().contains(circle)) {
             System.out.println("we found new Selected Circles");
-            zoomGroup.getChildren().remove(selectCircle);
+            zoomGroup.getChildren().remove(circle);
         }
         // create new Circle
         circle = new Circle();
@@ -341,31 +372,81 @@ public class MapView {
         circle.setFill(color);
         zoomGroup.getChildren().add(circle);
         // set circle to selected
-        selectCircle = circle;
+        if (start){
+            startCircle = circle;
+        } else {
+            selectCircle = circle;
+        }
         // Scroll to new point
-        scrollTo(event.getNodeSelected());
+        scrollTo(node);
+
+
     }
 
     // generate path on the screen
     private void navigationHandler() {
+        currentMethod = event.getSearchMethod();
         PathFindingService pathFinder = new PathFindingService();
-        ArrayList<Node> path;
+        ArrayList<Node> newpath;
         MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
         MapNode dest = new MapNode(event.getNodeSelected().getXcoord(), event.getNodeSelected().getYcoord(), event.getNodeSelected());
         // check if the path need to be 'accessible'
         if (event.isAccessiblePath()) {
             // do something special
-            path = pathFinder.genPath(start, dest, true);
+            newpath = pathFinder.genPath(start, dest, true, currentMethod);
         } else {
             // not accessible
-            path = pathFinder.genPath(start, dest, false);
+            newpath = pathFinder.genPath(start, dest, false, currentMethod);
         }
 
-        drawPath(path);
+
+        path = newpath;
+        drawPath();
+
+    }
+
+    private void filteredHandler() {
+        PathFindingService pathFinder = new PathFindingService();
+        ArrayList<Node> newpath;
+        MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
+        Boolean accessibility = event.isAccessiblePath();
+
+        switch (event.getFilterSearch()){
+            case "REST":
+                newpath = pathFinder.genPath(start, null, accessibility, "REST");
+                break;
+            case "ELEV":
+                newpath = pathFinder.genPath(start, null, accessibility, "ELEV");
+                break;
+            case "STAI":
+                newpath = pathFinder.genPath(start, null, false, "STAI");
+                break;
+            case "CONF":
+                newpath = pathFinder.genPath(start, null, accessibility, "CONF");
+                break;
+            case "INFO":
+                newpath = pathFinder.genPath(start, null, accessibility, "INFO");
+                break;
+            case "EXIT":
+                newpath = pathFinder.genPath(start, null, accessibility, "EXIT");
+                break;
+            default:
+                newpath = null;
+                break;
+        }
+
+        if (newpath == null){
+            System.out.println("DIDNT FIND A PATH");
+        } else {
+            drawPoint(newpath.get(newpath.size()-1), selectCircle, Color.rgb(72,87,125), false);
+        }
+
+        path = newpath;
+        drawPath();
     }
 
     // draw path on the screen
-    private void drawPath(ArrayList<Node> path) {
+    private void drawPath() {
         // remove points
         for (Line line : lineCollection) {
             if (zoomGroup.getChildren().contains(line)) {
@@ -385,14 +466,25 @@ public class MapView {
                 line.setEndX(last.getXcoord());
                 line.setEndY(last.getYcoord());
 
-                line.setFill(Color.BLACK);
-                line.setStrokeWidth(10.0);
+                if (current.getFloor().equals(event.getFloor())){
+                    line.setStroke(Color.valueOf("183284"));
+                } else {
+                    line.setStroke(Color.rgb(139,155,177));
+                }
+                line.setStrokeWidth(20.0);
                 zoomGroup.getChildren().add(line);
                 lineCollection.add(line);
                 last = current;
             }
-            System.out.println(makeDirections(path));
+
+            event.setPath(path);
+            event.setEventName("showText");
+            eventBus.post(event);
+
         }
+
+        hasPath = true;
+
     }
 
     /**
@@ -442,412 +534,6 @@ public class MapView {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
-  
-    /**
-     * Create textual instructions for the given path.
-     * @param path the list of nodes in the path
-     * @return a String of the directions
-     */
-    private String makeDirections(ArrayList<Node> path) {
-        final int NORTH_I = 1122 - 1886;    // Measurements from maps
-        final int NORTH_J = 642 - 1501;    // Measurements from maps
 
-        double oldX, oldY;
-        ArrayList<String> directions = new ArrayList<>();    // Collection of instructions
-        directions.add("\nStart at " + path.get(0).getLongName() + ".\n");    // First instruction
 
-        // Make the first instruction cardinal
-        String cardinal = csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0).getXcoord(), path.get(0).getYcoord(), path.get(1).getXcoord(), path.get(1).getYcoord());
-        cardinal = convertToCardinal(cardinal);
-        directions.add(cardinal);
-
-        boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
-        for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
-            if (afterFloorChange) {    // If we just changed floors, give a cardinal direction
-                String afterEl = csDirPrint(path.get(i+1).getXcoord() + NORTH_I, path.get(i+1).getYcoord() + NORTH_J, path.get(i+1).getXcoord(), path.get(i+1).getYcoord(), path.get(i+2).getXcoord(), path.get(i+2).getYcoord());
-                directions.add(convertToCardinal(afterEl));
-                afterFloorChange = false;
-            }
-            else if (!path.get(i).getFloor().equals(path.get(i+1).getFloor())) {    // Otherwise if we're changing floors, give a floor change direction
-                String oldFloorstr = path.get(i).getFloor();
-                String newFloorStr = path.get(i+1).getFloor();
-                int newFloor, oldFloor;
-                switch (oldFloorstr) {
-                    case "L2":
-                        oldFloor = -2;
-                        break;
-                    case "L1":
-                        oldFloor = -1;
-                        break;
-                    case "G":
-                        oldFloor = 0;
-                        break;
-                    case "1":
-                        oldFloor = 1;
-                        break;
-                    case "2":
-                        oldFloor = 2;
-                        break;
-                    default:
-                        oldFloor = 3;
-                        break;
-                }
-                switch (newFloorStr) {
-                    case "L2":
-                        newFloor = -2;
-                        break;
-                    case "L1":
-                        newFloor = -1;
-                        break;
-                    case "G":
-                        newFloor = 0;
-                        break;
-                    case "1":
-                        newFloor = 1;
-                        break;
-                    case "2":
-                        newFloor = 2;
-                        break;
-                    default:
-                        newFloor = 3;
-                        break;
-                }
-
-                String transport;
-                if (path.get(i).getNodeType().equals("ELEV")) {
-                    transport = "elevator";
-                }
-                else {
-                    transport = "stairs";
-                }
-                if (oldFloor < newFloor) {
-                    directions.add("Take the " + transport + " up from floor " + oldFloor + " to floor " + newFloor + "\n");
-                }
-                else {
-                    directions.add("Take the " + transport + " down from floor " + oldFloor + " to floor " + newFloor + "\n");
-                }
-                afterFloorChange = true;
-            }
-            else if(path.get(i+1).getNodeType().equals("ELEV")) {    // If next node is elevator, say so
-                directions.add("Walk to the elevator.\n");
-            }
-            else if (path.get(i+1).getNodeType().equals("STAI")) {    // If next node is stairs, say so
-                directions.add("Walk to the stairs.\n");
-            }
-            else {    // Otherwise provide a normal direction
-                directions.add(csDirPrint(path.get(i).getXcoord(), path.get(i).getYcoord(), path.get(i + 1).getXcoord(), path.get(i + 1).getYcoord(), path.get(i + 2).getXcoord(), path.get(i + 2).getYcoord()) + "\n");
-            }
-        }
-
-        // Add the final direction
-        directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
-
-        // Simplify directions that continue approximately straight from each other
-        for (int i = 1; i < directions.size(); i++) {
-            String currDir = directions.get(i);
-            String oldDir = directions.get(i-1);
-            if (currDir.contains("straight")) {    // If the current direction contains straight, get the distance substring
-                int feetIndex = oldDir.indexOf("for");
-                if (feetIndex < 0) {    // If it's not cardinal, get the correct distance substring index
-                    feetIndex = oldDir.indexOf("walk") + 5;
-                }
-                else {
-                    feetIndex += 4;
-                }
-                int oldDist = Integer.parseInt(oldDir.substring(feetIndex, oldDir.indexOf("feet")-1));
-                int currDist = Integer.parseInt(currDir.substring(currDir.indexOf("walk") + 5, currDir.indexOf("feet")-1));
-                int totalDist = oldDist + currDist;    // Combine the distance of this direction with the previous one
-
-                String newDir = "";
-                if (oldDir.contains("for")) {    // Create the new direction as cardinal or not based on the old direction
-                    newDir = oldDir.substring(0, oldDir.indexOf("for") + 4) + totalDist + " feet\n";
-                }
-                else {
-                    newDir = oldDir.substring(0, oldDir.indexOf("walk") + 5) + totalDist + " feet\n";
-                }
-                directions.remove(i);    // Remove the two old directions and add the new one
-                directions.remove(i-1);
-                directions.add(i-1, newDir);
-                i--;
-            }
-        }
-
-        // Create labels for each direction and add them to the listview
-        ObservableList<Label> dirs = FXCollections.observableArrayList();
-        ArrayList<Label> labels = new ArrayList<>();
-        for (int i = 0; i < directions.size(); i++) {
-            Label l = new Label(directions.get(i));
-            l.setWrapText(true);
-            l.setTextFill(Color.WHITE);
-            labels.add(l);
-        }
-        dirs.addAll(labels);
-        directionsView.setItems(dirs);
-
-        // Print out the directions
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < directions.size(); ++i) {
-            buf.append(directions.get(i));
-        }
-        String total = buf.toString();
-
-        return total;
-    }
-
-    /**
-     * Convert this direction to a cardinal direction
-     * @param cardinal the normal direction
-     * @return the direction as a cardinal direction
-     */
-    private String convertToCardinal(String cardinal) {
-        String feet = cardinal.substring(cardinal.indexOf("walk")+5)+ "\n";
-        if (cardinal.contains("slightly left")) {
-            cardinal = "Walk south east for " + feet;
-        }
-        else if (cardinal.contains("slightly right")) {
-            cardinal = "Walk south west for " + feet;
-        }
-        else if (cardinal.contains("sharply left")) {
-            cardinal = "Walk north east for " + feet;
-        }
-        else if (cardinal.contains("sharply right")) {
-            cardinal = "Walk north west for " + feet;
-        }
-        else if (cardinal.contains("left")) {
-            cardinal = "Walk east for " + feet;
-        }
-        else if (cardinal.contains("right")) {
-            cardinal = "Walk west for " + feet;
-        }
-        else if (cardinal.contains("straight")) {
-            cardinal = "Walk south for " + feet;
-        }
-        else {
-            cardinal = "Walk north for " + feet;
-        }
-        return cardinal;
-    }
-
-    /**
-     * Compute the direction turned and distance between the middle and last point for the given 3 points.
-     * @param pX previous point's x
-     * @param pY previous point's y
-     * @param cX current point's x
-     * @param cY current point's y
-     * @param nX next point's x
-     * @param nY next point's y
-     * @return the direction for someone walking from points 1 to 3 with the turn direction and distance
-     *          between the middle and last point
-     */
-    private String csDirPrint(double pX, double pY, double cX, double cY, double nX, double nY) {
-        final double THRESHOLD = .0001;   // Double comparison standard
-
-        double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
-        prevXd = pX;
-        prevYd = pY;
-        currXd = cX;
-        currYd = cY;
-        nextXd = nX;
-        nextYd = nY;
-
-        // The slopes for the two vectors and y-intercept for the second vector as a line
-        double slope1, slope2, intercept;
-        slope1 = (currYd - prevYd) / (currXd - prevXd);
-        slope2 = (nextYd - currYd) / (nextXd - currXd);
-        intercept = nextYd - slope2 * nextXd;
-
-        // The vector components for both vectors and their lengths
-        double oldI, oldJ, newI, newJ, lengthOld, lengthNew;
-        oldI = currXd - prevXd;
-        oldJ = currYd - prevYd;
-        newI = nextXd - currXd;
-        newJ = nextYd - currYd;
-        lengthOld = Math.sqrt(oldI*oldI + oldJ*oldJ);
-        lengthNew = Math.sqrt(newI*newI + newJ * newJ);
-
-        // Distance in feet based on measurements from the map: 260 pixels per 85 feet
-        double distance = lengthNew /260 * 85;
-
-        // Compute the angle, theta, between the old and new vector
-        double uDotV = oldI * newI + oldJ * newJ;
-        double theta, alpha, plus, minus;
-        theta = Math.acos(uDotV/(lengthNew*lengthOld));
-        alpha = Math.atan(slope1);    // Compute the angle, alpha, between the old vector and horizontal
-        plus = theta + alpha;    // The sum of the two angles
-        minus = alpha - theta;    // The difference between the two angles
-
-        double computedY1 = currYd + Math.tan(plus);    // Guess which side of the old vector we turned to
-
-        double expectedVal = (currXd + 1) * slope2 + intercept;    // The actual side of the old vector we turned to
-
-        if (Math.abs(newI) < THRESHOLD) {    // If the next vector is vertical, make sure it does what it's supposed to
-            if ((nextYd > currYd && prevXd < currXd) || (nextYd < currYd && prevXd > currXd)) {
-                expectedVal = 1;
-                computedY1 = 1;
-            }
-            else {
-                expectedVal = 1;
-                computedY1 = 0;
-            }
-        }
-        // If the next vector is horizontal and this one was vertical, make it give the correct direction
-        if (Math.abs(oldI) < THRESHOLD && Math.abs(newJ) < THRESHOLD) {
-            if ((currYd > prevYd && nextXd > currXd) || (currYd < prevYd && currXd > nextXd)) {
-                expectedVal = 1;
-                computedY1 = 0;
-            }
-            else {
-                expectedVal = 1;
-                computedY1 = 1;
-            }
-        }
-
-        String turn = "";
-
-        if (Math.abs(plus - minus) < Math.PI/8) {    // Say straight within a small angle
-            turn = "straight";
-        }
-        else if (Math.abs(theta - Math.PI) < THRESHOLD) {    // Turn around if theta is to behind you
-            turn = "around";
-        }
-        else if (Math.abs(expectedVal - computedY1) < THRESHOLD) {    // Otherwise turn the correct direction
-            if (theta < Math.PI/4) {
-                turn = "slightly right";
-            }
-            else if (theta > Math.PI*3/4) {
-                turn = "sharply right";
-            }
-            else {
-                turn = "right";
-            }
-        }
-        else {
-            if (theta < Math.PI/4) {
-                turn = "slightly left";
-            }
-            else if (theta > Math.PI*3/4) {
-                turn = "sharply left";
-            }
-            else {
-                turn = "left";
-            }
-        }
-
-        // Create and return the direction
-        String direction = String.format("Turn " + turn + " and walk %.0f feet.", distance);
-        return direction;
-    }
-
-    /**
-     * On click, show the directions. On second click, hide them again.
-     */
-    @FXML
-    private void showDirections() {
-        directionsView.setVisible(!directionsView.isVisible());
-        if (showDirectionsBtn.getText().contains("Show")) {
-            showDirectionsBtn.setText("Close Textual Directions");
-            directionsView.toFront();
-        }
-        else {
-            showDirectionsBtn.setText("Show Textual Directions");
-            showDirVbox.toFront();
-        }
-        if (showDirVbox.getAlignment().equals(Pos.BOTTOM_RIGHT)) {
-            showDirVbox.setAlignment(Pos.TOP_RIGHT);
-        }
-        else {
-            showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
-        }
-    }
-
-    private void hideDirections() {
-        showDirectionsBtn.setText("Show Textual Directions");
-        showDirVbox.toFront();
-        showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
-        directionsView.setVisible(false);
-    }
-  
-    /**
-     * Compress a given set of directions into a series of characters
-     * to be used in a QR code
-     * Format: <Instruction> <Distance/Floor> <Hint>
-     * @return the String to use in the QR code
-     */
-    private String convertToQRCode(ArrayList<String> directions) {
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < directions.size(); i++) {
-            String dir = directions.get(i);
-            if (dir.contains("straight")) {
-                buf.append("A");
-            }
-            else if (dir.contains("slight left")) {
-                buf.append("C");
-            }
-            else if (dir.contains("sharp left")) {
-                buf.append("D");
-            }
-            else if (dir.contains("left")) {
-                buf.append("B");
-            }
-            else if (dir.contains("sharp right")) {
-                buf.append("G");
-            }
-            else if (dir.contains("slight right")) {
-                buf.append("F");
-            }
-            else if (dir.contains("right")) {
-                buf.append("E");
-            }
-            else if (dir.contains("elevator") && dir.contains("down")) {
-                buf.append("O");
-            }
-            else if (dir.contains("elevator") && dir.contains("up")) {
-                buf.append("N");
-            }
-            else if (dir.contains("stairs") && dir.contains("up")) {
-                buf.append("P");
-            }
-            else if (dir.contains("stairs") && dir.contains("down")) {
-                buf.append("Q");
-            }
-            else if (dir.contains("north west")) {
-                buf.append("T");
-            }
-            else if (dir.contains("north east")) {
-                buf.append("Z");
-            }
-            else if (dir.contains("north")) {
-                buf.append("S");
-            }
-            else if (dir.contains("south west")) {
-                buf.append("V");
-            }
-            else if (dir.contains("south east")) {
-                buf.append("X");
-            }
-            else if (dir.contains("south")) {
-                buf.append("W");
-            }
-            else if (dir.contains("east")) {
-                buf.append("Y");
-            }
-            else if (dir.contains("west")) {
-                buf.append("U");
-            }
-
-            if (buf.indexOf("O") > 0 || buf.indexOf("N") > 0 || buf.indexOf("P") > 0 || buf.indexOf("Q") > 0) {
-                buf.append(dir.substring(dir.length() - 2));
-            }
-            else {
-                if (dir.contains("for")) {
-                    buf.append(dir.substring(dir.indexOf("for") + 4));
-                }
-                else {
-                    buf.append(dir.substring(dir.indexOf("walk") + 5));
-                }
-            }
-
-        }
-        return "";
-    }
 }

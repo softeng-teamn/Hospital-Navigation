@@ -56,7 +56,7 @@ public class SearchResults {
         event = newEvent;
         switch (event.getEventName()) {
             case "node-select":
-                list_view.scrollTo(event.getNodeSelected());
+                //list_view.scrollTo(event.getNodeSelected());
                 list_view.getSelectionModel().select(event.getNodeSelected());
                 break;
             case "login":
@@ -94,7 +94,11 @@ public class SearchResults {
         // set destination node
         destNode = selectedNode;
 
-        event.setNodeSelected(destNode);
+        if (event.isEndNode()){
+            event.setNodeSelected(destNode);
+        } else {
+            event.setNodeStart(destNode);
+        }
         event.setEventName("node-select");
         eventBus.post(event);
 

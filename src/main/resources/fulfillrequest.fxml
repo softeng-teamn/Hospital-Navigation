@@ -7,16 +7,16 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 
 <VBox alignment="CENTER" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FulfillRequestController">
    <children>
-      <Label text="Fulfill Request" textAlignment="CENTER" />
-      <Region prefHeight="80.0" />
+      <Label styleClass="big-label" text="Fulfill Request" textAlignment="CENTER" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffba1f" height="14.0" stroke="BLACK" strokeType="INSIDE" width="927.0" />
       <HBox alignment="CENTER" stylesheets="@theme.css">
          <children>
-            <VBox prefHeight="360.0" prefWidth="202.0">
+            <VBox prefHeight="360.0" prefWidth="202.0" stylesheets="@theme.css">
                <children>
                   <Label styleClass="small-label" text="Request Type">
                      <VBox.margin>
