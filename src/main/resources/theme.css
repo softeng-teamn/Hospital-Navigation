@@ -75,6 +75,7 @@
     -jfx-focus-color: -fx-secondary;
     -jfx-unfocus-color: -fx-unfocusedtext;
     -fx-prompt-text-fill: -fx-unfocusedtext;
+    -jfx-label-float: true;
 }
 
 .wrong-credentials{

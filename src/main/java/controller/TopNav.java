@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.MaterialIconView;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -41,6 +42,8 @@ public class TopNav {
     private JFXToggleNode accessibilityButton;
     @FXML
     private FontAwesomeIconView lock_icon;
+    @FXML
+    private MaterialIconView home_icon;
     @FXML
     private Label time_label;
     @FXML
@@ -254,16 +257,20 @@ public class TopNav {
             startSearch.setPromptText("Start Node");
             startSearch.setOnAction(this::startNodeEnter);
             startSearch.setOnMouseClicked(this::setEventEndNode);
-            top_nav.getChildren().add(0, startSearch);
+            startSearch.getStyleClass().add("header-text-field");
+            top_nav.getChildren().add(1, startSearch);
             event.setEndNode(false);
             startNode_btn.setText("Use default");
-        } else {
+            home_icon.setIcon(MaterialIcon.ARROW_BACK);
+        }
+        else {
             top_nav.getChildren().remove(startSearch);
             event.setEndNode(true);
             event.setDefaultStartNode();
             event.setEventName("refresh");
             eventBus.post(event);
             startNode_btn.setText("Start Node");
+            home_icon.setIcon(MaterialIcon.LOCATION_ON);
         }
     }
 
