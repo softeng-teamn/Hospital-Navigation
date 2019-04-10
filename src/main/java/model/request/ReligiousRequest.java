@@ -88,4 +88,11 @@ public class ReligiousRequest extends Request{
     public ObservableList<Request> showProperRequest() {
         return (ObservableList) myDBS.getAllReligiousRequests() ;
     }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateReligiousRequest((ReligiousRequest) selectedTask) ;
+    }
+
+
 }
