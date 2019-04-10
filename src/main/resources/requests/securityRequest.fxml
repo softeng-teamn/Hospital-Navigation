@@ -26,7 +26,7 @@
       <Label styleClass="big-label" text="Select Urgency Level:" />
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="24.0">
          <children>
-            <JFXToggleNode graphicTextGap="0.0" prefHeight="41.0" prefWidth="75.0" styleClass="enum-toggle-node" text="Low">
+            <JFXToggleNode fx:id="urgency_low" graphicTextGap="0.0" prefHeight="41.0" prefWidth="75.0" styleClass="enum-toggle-node" text="Low">
                <toggleGroup>
                   <ToggleGroup fx:id="urgency" />
                </toggleGroup>
@@ -34,11 +34,11 @@
                   <FontAwesomeIconView size="1" />
                </graphic>
             </JFXToggleNode>
-            <JFXToggleNode prefHeight="41.0" prefWidth="110.0" styleClass="enum-toggle-node" text="Medium" toggleGroup="$urgency">
+            <JFXToggleNode fx:id="urgency_med" prefHeight="41.0" prefWidth="110.0" styleClass="enum-toggle-node" text="Medium" toggleGroup="$urgency">
                <graphic>
                   <FontAwesomeIconView size="1" />
                </graphic></JFXToggleNode>
-            <JFXToggleNode prefHeight="41.0" prefWidth="80.0" styleClass="enum-toggle-node" text="High" toggleGroup="$urgency">
+            <JFXToggleNode fx:id="urgency_high" prefHeight="41.0" prefWidth="80.0" styleClass="enum-toggle-node" text="High" toggleGroup="$urgency">
                <graphic>
                   <FontAwesomeIconView size="1" />
                </graphic></JFXToggleNode>
