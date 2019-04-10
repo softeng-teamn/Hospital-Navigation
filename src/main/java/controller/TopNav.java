@@ -86,7 +86,7 @@ public class TopNav {
 
     @FXML
     void showRequest(ActionEvent e) throws Exception {
-        event.setCurrentBundle(dfBundle);
+        event.setCurrentBundle(esBundle);
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage,root,"Service Request");

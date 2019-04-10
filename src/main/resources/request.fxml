@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleNode?>
+<?import de.jensd.fx.glyphs.emojione.EmojiOneView?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<?import javafx.geometry.Insets?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RequestController">
    <children>
       <HBox alignment="CENTER" prefHeight="128.0" styleClass="header">
@@ -72,7 +78,7 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#internalTransportSelect" prefHeight="256.0" prefWidth="256.0" text="Internal Transport&#10;Tyler" textAlignment="CENTER" toggleGroup="$requestType" wrapText="true">
+                              <JFXToggleNode onAction="#internalTransportSelect" prefHeight="256.0" prefWidth="256.0" text="%InternalTransport" textAlignment="CENTER" toggleGroup="$requestType" wrapText="true">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="WHEELCHAIR" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -83,31 +89,31 @@
                         <Region prefHeight="610.0" prefWidth="50.0" />
                         <VBox prefWidth="256.0">
                            <children>
-                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="Food Request" toggleGroup="$requestType">
+                              <JFXToggleNode prefHeight="256.0" prefWidth="256.0" text="%FoodRequest" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="BIRTHDAY_CAKE" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#maintenanceRequest" prefHeight="256.0" prefWidth="256.0" text="Maintenance Request&#10;Sam" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#maintenanceRequest" prefHeight="256.0" prefWidth="256.0" text="%MaintenanceRequest" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="WRENCH" styleClass="button-glyph-icon" text="" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#selectSanitation" prefHeight="256.0" prefWidth="256.0" text="Sanitation Services&#10;Maya" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#selectSanitation" prefHeight="256.0" prefWidth="256.0" text="%SanitationServices" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="TRASH" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#giftSelect" prefHeight="256.0" prefWidth="256.0" text="Gift Services&#10;Molly" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#giftSelect" prefHeight="256.0" prefWidth="256.0" text="%GiftServices" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="GIFT" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#externalTransportationRequest" prefHeight="256.0" prefWidth="256.0" text="External Transport&#10;Lauren" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#externalTransportationRequest" prefHeight="256.0" prefWidth="256.0" text="%ExternalTransport" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="TAXI" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -118,31 +124,31 @@
                         <Region prefHeight="610.0" prefWidth="50.0" />
                         <VBox prefWidth="256.0">
                            <children>
-                              <JFXToggleNode onAction="#medicineSelect" prefHeight="256.0" prefWidth="256.0" text="Medicine Request" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#medicineSelect" prefHeight="256.0" prefWidth="256.0" text="%MedicineRequest" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="AMBULANCE" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#toyRequestSelect" prefHeight="256.0" prefWidth="256.0" text="Toy Request&#10;Matt" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#toyRequestSelect" prefHeight="256.0" prefWidth="256.0" text="%ToyRequest" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="GAMEPAD" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#patientSelect" prefHeight="256.0" prefWidth="256.0" text="Patient Info&#10;Xinzhe" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#patientSelect" prefHeight="256.0" prefWidth="256.0" text="%PatientInfo" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="VCARD" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#avSelect" prefHeight="256.0" prefWidth="256.0" text="AV Request&#10;James" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#avSelect" prefHeight="256.0" prefWidth="256.0" text="%AVRequest" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="HARD_OF_HEARING" styleClass="button-glyph-icon" />
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#religiousRequestSelect" prefHeight="256.0" prefWidth="256.0" text="Religious Services&#10;Nicole" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode onAction="#religiousRequestSelect" prefHeight="256.0" prefWidth="256.0" text="%ReligiousServices" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <EmojiOneView glyphName="PRAY" styleClass="button-glyph-icon" />
                                  </graphic>
