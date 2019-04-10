@@ -170,6 +170,7 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
+        verifyThat(from(listView).lookup(".list-cell").queryAll().size(), is(24));
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
         // Verify no subscene is present
