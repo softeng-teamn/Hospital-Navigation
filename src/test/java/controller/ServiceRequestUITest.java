@@ -265,7 +265,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     @Category(FastTest.class)
     public void medicineRequestTest() {
         // Verify no requests of this type exist
-        assertThat(myDBS.getAllReligiousRequests().size(), is(0));
+        assertThat(myDBS.getAllMedicineRequests().size(), is(0));
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
