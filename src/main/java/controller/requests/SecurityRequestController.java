@@ -23,8 +23,6 @@ public class SecurityRequestController extends RequestController {
 
         JFXToggleNode selected = (JFXToggleNode) urgency.getSelectedToggle();
 
-        System.out.println(selected.getText());
-
         if (selected != null) {
             switch (selected.getText()) {
                 case "Low":
