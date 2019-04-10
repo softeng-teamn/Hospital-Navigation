@@ -66,6 +66,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         assertThat(true, is(true));
     }
 
+    @Ignore
     @Test
     @Category(FastTest.class)
     public void itTest() {
