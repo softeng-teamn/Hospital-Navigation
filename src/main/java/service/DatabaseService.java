@@ -700,6 +700,11 @@ public class DatabaseService {
         return executeUpdate(query, space.getSpaceID());
     }
 
+    public ReservableSpace getReservableSpaceByNodeID(String nodeID) {
+        String query = "SELECT * FROM RESERVABLESPACE WHERE (locationNode = ?)";
+        return (ReservableSpace) executeGetById(query, ReservableSpace.class, nodeID);
+    }
+
     /**
      * @param req the request to insert to the database
      * @return true if the insert succeeds and false if otherwise

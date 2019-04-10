@@ -150,7 +150,6 @@ public class MapView {
         zoom_slider.setValue(0.4);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.4);
-        zoom(0.3);
 
 
         // Cache imageViews so they can be reused, but only if they haven't already been cached
@@ -197,7 +196,7 @@ public class MapView {
     }
 
     @FXML
-    void changeFloor(ActionEvent e) throws IOException {
+    void floorChangeAction(ActionEvent e) throws IOException {
         JFXButton btn = (JFXButton)e.getSource();
         ImageView imageView;
         event.setEventName("floor");
@@ -442,7 +441,7 @@ public class MapView {
             drawPoint(newpath.get(newpath.size()-1), selectCircle, Color.rgb(72,87,125), false);
         }
 
-
+        path = newpath;
         drawPath();
     }
 
@@ -479,11 +478,13 @@ public class MapView {
             }
 
             event.setPath(path);
-            event.setEventName("printText");
+            event.setEventName("showText");
             eventBus.post(event);
+
         }
 
         hasPath = true;
+
     }
 
     /**

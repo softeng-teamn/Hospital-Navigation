@@ -11,7 +11,7 @@
          <children>
             <Pane fx:id="leftPane" prefHeight="200.0" prefWidth="480.0">
                <children>
-                  <fx:include fx:id="searchResults" source="searchResults.fxml" />
+                  <!--<fx:include fx:id="searchResults" source="searchResults.fxml" />-->
                </children>
             </Pane>
             <fx:include fx:id="mapView" source="mapView.fxml" />

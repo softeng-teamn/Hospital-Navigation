@@ -26,7 +26,7 @@ public class AdminServiceController extends Controller{
 
 
     @FXML
-    private JFXButton fulfillRequestBtn, editEmployeeBtn, mapEditorController, exportCSVBtn, showHomeBtn;
+    private JFXButton fulfillRequestBtn, editEmployeeBtn, mapEditorController, exportCSVBtn, showHomeBtn, newNode_btn;
 
     @FXML
     private JFXToggleNode aStarToggle;
@@ -59,19 +59,11 @@ public class AdminServiceController extends Controller{
     }
 
     @FXML
-    private void showMapEditor() throws Exception {
-        Stage stage = (Stage) editEmployeeBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
-        StageManager.changeExistingWindow(stage, root, "Home");
-        // TODO: verify/change that this is how you edit the map; vs going to home controller?
-    }
-
-    @FXML
     private void exportCSV() throws IOException {
         CSVService.exportEdges();
         CSVService.exportNodes();
         CSVService.exportEmployees();
-        CSVService.importEmployees();
+        CSVService.exportReservableSpaces();
     }
 
     public void astarSwitch(ActionEvent actionEvent) {
@@ -91,5 +83,12 @@ public class AdminServiceController extends Controller{
         event.setEventName("methodSwitch");
         event.setSearchMethod("breadth");
         eventBus.post(event);
+    }
+
+    @FXML
+    void showNewNode(ActionEvent e) throws  Exception{
+        Parent root = FXMLLoader.load(ResourceLoader.createNode);
+        Stage stage = (Stage) newNode_btn.getScene().getWindow();
+        StageManager.changeExistingWindow(stage, root, "Add Node");
     }
 }
