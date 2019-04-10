@@ -71,8 +71,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class MapViewTest extends ApplicationTest {
-    private MapView mp = new MapView();;
+public class MapViewTest {
+    private MapView mp = new MapView();
     Node n0 = new Node(0,0,"ID 1", "L2", "Tower", "HALL", "Hallway A1", "HA1");
     Node n2 = new Node(5,5,"ID 2", "L2", "Tower", "HALL", "Hallway D2", "HD2");
     Node n3 = new Node(5,0,"ID 3", "L2", "Tower", "HALL", "Hallway B1", "HB1");
@@ -87,13 +87,6 @@ public class MapViewTest extends ApplicationTest {
     Node nE3 = new Node(0,0,"ID E", "G", "Tower", "ELEV", "Elevator C5", "EC5");
     Node nS =new Node(0,0,"ID S", "L2", "Tower", "STAI", "Staircase F9", "SF9");
     Node topFloor = new Node(9,9,"top", "3", "Tower", "HALL", "top hall", "TH");
-
-    @Override
-    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="Must be able to write the mocked DBS to the static field")
-    public void start(Stage stage) throws Exception {
-        Parent mainNode = FXMLLoader.load(ResourceLoader.home);
-        stage.setScene(new Scene(mainNode));
-    }
 
     @Test
     @Category( FastTest.class)

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXToggleNode?>
+<?import de.jensd.fx.glyphs.emojione.EmojiOneView?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="8.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <JFXToggleNode prefWidth="380.0" styleClass="BFS-toggle-node" text="Restroom">
+         <graphic>
+            <EmojiOneView glyphName="TOILET" size="36" />
+         </graphic>
+      </JFXToggleNode>
+      <JFXToggleNode prefWidth="380.0" styleClass="BFS-toggle-node" text="Elevator">
+         <graphic>
+            <FontAwesomeIconView size="36" />
+         </graphic>
+      </JFXToggleNode>
+      <JFXToggleNode prefWidth="380.0" styleClass="BFS-toggle-node" text="Info Station">
+         <graphic>
+            <MaterialIconView glyphName="INFO" size="36" />
+         </graphic>
+      </JFXToggleNode>
+      <JFXToggleNode prefWidth="380.0" styleClass="BFS-toggle-node" text="Conference Room">
+         <graphic>
+            <FontAwesomeIconView glyphName="GROUP" size="36" />
+         </graphic>
+      </JFXToggleNode>
+      <JFXToggleNode prefWidth="380.0" styleClass="BFS-toggle-node" text="Staircase" />
+      <JFXToggleNode prefWidth="380.0" styleClass="BFS-toggle-node" text="Exit">
+         <graphic>
+            <MaterialIconView glyphName="EXIT_TO_APP" size="36" />
+         </graphic>
+      </JFXToggleNode>
+   </children>
+</VBox>

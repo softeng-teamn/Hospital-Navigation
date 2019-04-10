@@ -23,6 +23,10 @@
     -fx-border-color: transparent transparent -fx-unfocusedtext transparent;
 }
 
+.jfx-hamburger StackPane {
+    -fx-background-color: -fx-primary;
+}
+
 .interaction-area {
     -fx-background-color: #C6C9CC;
 }
@@ -75,6 +79,7 @@
     -jfx-focus-color: -fx-secondary;
     -jfx-unfocus-color: -fx-unfocusedtext;
     -fx-prompt-text-fill: -fx-unfocusedtext;
+    -jfx-label-float: true;
 }
 
 .wrong-credentials{
@@ -246,6 +251,39 @@
     -jfx-selected-color: -fx-secondary;
 }
 
+.BFS-toggle-node {
+    -fx-font-family: Roboto;
+    -fx-background-color: -fx-complementary;
+    -fx-text-fill: -fx-complementarytext;
+    -fx-background-radius: 7px;
+    -fx-font-size: 24pt;
+    -fx-content-display: left;
+    -fx-graphic-text-gap: 24px;
+}
+
+.BFS-toggle-node .glyph-icon{
+    -fx-fill: -fx-complementarytext;
+}
+
+.BFS-toggle-node:hover{
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
+}
+
+.BFS-toggle-node:hover .glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
+.BFS-toggle-node:selected{
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
+}
+
+.BFS-toggle-node:selected .glyph-icon{
+    -fx-fill: -fx-primary;
+}
 
 
 

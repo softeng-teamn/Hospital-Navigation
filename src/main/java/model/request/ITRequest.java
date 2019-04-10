@@ -89,6 +89,13 @@ public class ITRequest extends Request {
         return (ObservableList) myDBS.getAllITRequests() ;
     }
 
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateITRequest((ITRequest) selectedTask) ;
+    }
+
+
 }
 
 
