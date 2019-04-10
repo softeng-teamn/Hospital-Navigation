@@ -3,8 +3,10 @@ package controller;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
+import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
@@ -48,6 +50,8 @@ public class TopNav {
     private Label time_label;
     @FXML
     private JFXToggleNode edit_btn;
+    @FXML
+    private JFXHamburger hamburger;
 
     JFXTextField startSearch = new JFXTextField();
 
@@ -114,6 +118,13 @@ public class TopNav {
 
         // set Default time
         timeWatcher();
+
+        HamburgerBackArrowBasicTransition backArrow = new HamburgerBackArrowBasicTransition(hamburger);
+        backArrow.setRate(-1);
+        hamburger.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+            backArrow.setRate(backArrow.getRate()*-1);
+            backArrow.play();
+        });
     }
 
     private void timeWatcher() {
@@ -258,7 +269,7 @@ public class TopNav {
             startSearch.setOnAction(this::startNodeEnter);
             startSearch.setOnMouseClicked(this::setEventEndNode);
             startSearch.getStyleClass().add("header-text-field");
-            top_nav.getChildren().add(1, startSearch);
+            top_nav.getChildren().add(2, startSearch);
             event.setEndNode(false);
             startNode_btn.setText("Use default");
             home_icon.setIcon(MaterialIcon.ARROW_BACK);
