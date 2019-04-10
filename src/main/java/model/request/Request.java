@@ -102,4 +102,8 @@ public abstract class Request {
 
     public abstract void updateEmployee (Request selectedTask, Employee selectedEmp);
 
+    public abstract boolean fulfillableByType(JobType jobType);
+
+    public abstract String toDisplayString();
+
 }

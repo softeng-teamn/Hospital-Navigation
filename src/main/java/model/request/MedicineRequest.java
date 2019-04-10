@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXToggleNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -107,5 +108,16 @@ public class MedicineRequest extends Request {
     @Override
     public void updateEmployee (Request selectedTask, Employee selectedEmp) {
         myDBS.updateMedicineRequest((MedicineRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == DOCTOR || jobType == NURSE) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        return String.format("Medicines Request %d", this.getId());
     }
 }

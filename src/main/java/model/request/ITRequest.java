@@ -3,6 +3,7 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -95,6 +96,17 @@ public class ITRequest extends Request {
         myDBS.updateITRequest((ITRequest) selectedTask) ;
     }
 
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == IT) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        return String.format("IT Request %d", this.getId());
+    }
 
 }
 

@@ -187,8 +187,7 @@ public class DatabaseService {
 
             statement.addBatch("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
 
-            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER', 'IT', 'GUEST', 'RELIGIOUS_OFFICIAL', 'GIFT_SERVICES', 'MISCELLANEOUS', 'AV', 'INTERPRETER', 'TOY', 'PATIENT_INFO', 'FLORIST', 'INTERNAL_TRANSPORT', 'EXTERNAL_TRANSPORT')))");
-            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), phone varchar(255), email varchar(255), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER', 'IT', 'GUEST')))");
+            statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE, job varchar(25), isAdmin boolean, password varchar(50), phone varchar(255), email varchar(255), CONSTRAINT chk_job CHECK (job IN ('ADMINISTRATOR', 'DOCTOR', 'NURSE', 'JANITOR', 'SECURITY_PERSONNEL', 'MAINTENANCE_WORKER', 'IT', 'GUEST', 'RELIGIOUS_OFFICIAL', 'GIFT_SERVICES', 'MISCELLANEOUS', 'AV', 'INTERPRETER', 'TOY', 'PATIENT_INFO', 'FLORIST', 'INTERNAL_TRANSPORT', 'EXTERNAL_TRANSPORT')))");
 
             statement.addBatch("CREATE TABLE RESERVATION(eventID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), eventName varchar(50), spaceID varchar(30), startTime timestamp, endTime timestamp, privacyLevel int, employeeID int)");
             statement.addBatch("CREATE TABLE RESERVABLESPACE(spaceID varchar(30) PRIMARY KEY, spaceName varchar(50), spaceType varchar(4), locationNode varchar(10), timeOpen timestamp, timeClosed timestamp)");
@@ -1029,6 +1028,11 @@ public class DatabaseService {
     public List<GiftStoreRequest> getAllCompleteGiftStoreRequests() {
         String query = "Select * FROM GIFTSTOREREQUEST WHERE (completed = ?)";
         return (List<GiftStoreRequest>) (List<?>) executeGetMultiple(query, GiftStoreRequest.class, true);
+    }
+
+    public List<GiftStoreRequest> getAllGiftStoreRequests() {
+        String query = "Select * FROM GIFTSTOREREQUEST";
+        return (List<GiftStoreRequest>) (List<?>) executeGetMultiple(query, GiftStoreRequest.class);
     }
 
     public ReligiousRequest getReligiousRequest(int id) {

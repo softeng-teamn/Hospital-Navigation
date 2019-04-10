@@ -3,14 +3,14 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static model.JobType.ADMINISTRATOR;
-import static model.JobType.MISCELLANEOUS;
+import static model.JobType.*;
 
 
 public class InterpreterRequest extends Request{
@@ -90,5 +90,16 @@ public class InterpreterRequest extends Request{
     @Override
     public void updateEmployee (Request selectedTask, Employee selectedEmp) {
         myDBS.updateInterpreterRequest((InterpreterRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == INTERPRETER) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        return String.format("Interpreter Request %d", this.getId());
     }
 }

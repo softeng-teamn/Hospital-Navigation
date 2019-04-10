@@ -3,6 +3,7 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -95,5 +96,16 @@ public class SanitationRequest extends Request {
     @Override
     public void updateEmployee (Request selectedTask, Employee selectedEmp) {
         myDBS.updateSanitationRequest((SanitationRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == JANITOR) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        return String.format("Sanitation Request %d", this.getId());
     }
 }

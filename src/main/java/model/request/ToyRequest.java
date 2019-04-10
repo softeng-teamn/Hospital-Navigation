@@ -3,6 +3,7 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -89,5 +90,16 @@ public class ToyRequest extends Request {
     @Override
     public void updateEmployee (Request selectedTask, Employee selectedEmp) {
         myDBS.updateToyRequest((ToyRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == TOY) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        return String.format("Toy Request %d", this.getId());
     }
 }

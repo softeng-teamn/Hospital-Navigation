@@ -3,14 +3,14 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static model.JobType.ADMINISTRATOR;
-import static model.JobType.GIFT_SERVICES;
+import static model.JobType.*;
 
 public class GiftStoreRequest extends Request {
 
@@ -108,4 +108,15 @@ public class GiftStoreRequest extends Request {
         myDBS.updateGiftStoreRequest((GiftStoreRequest)selectedTask) ;
     }
 
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == GIFT_SERVICES) return true;
+        return false;
+    }
+
+
+    @Override
+    public String toDisplayString() {
+        return String.format("Gift Store Request %d", this.getId());
+    }
 }

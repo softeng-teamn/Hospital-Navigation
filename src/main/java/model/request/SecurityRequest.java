@@ -3,6 +3,7 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -94,5 +95,16 @@ public class SecurityRequest extends Request {
     @Override
     public void updateEmployee (Request selectedTask, Employee selectedEmp) {
         myDBS.updateSecurityRequest((SecurityRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == SECURITY_PERSONNEL) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        return String.format("Security Request %d", this.getId());
     }
 }

@@ -3,6 +3,7 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -123,6 +124,17 @@ public class PatientInfoRequest extends Request{
     @Override
     public void updateEmployee (Request selectedTask, Employee selectedEmp) {
         myDBS.updatePatientInfoRequest((PatientInfoRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == NURSE) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        return String.format("Patient Info Request %d", this.getId());
     }
 
 }
