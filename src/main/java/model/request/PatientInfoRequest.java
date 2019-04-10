@@ -3,6 +3,7 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -123,6 +124,24 @@ public class PatientInfoRequest extends Request{
     @Override
     public void updateEmployee (Request selectedTask, Employee selectedEmp) {
         myDBS.updatePatientInfoRequest((PatientInfoRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == NURSE || jobType == ADMINISTRATOR) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Patient Info Request %d, Description: %s, Assigned To: %s, Fulfilled: %s, First Name: %s, Last Name: %s, Birthday: %s",
+                this.getId(), this.getNotes(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getFirstName(), this.getLastName(), this.getBirthDay());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Patient Info");
     }
 
 }
