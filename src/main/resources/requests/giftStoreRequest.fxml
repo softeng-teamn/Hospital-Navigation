@@ -30,7 +30,7 @@
             <Point3D />
          </rotationAxis>
       </JFXTextArea>
-      <Label styleClass="big-label" text="Gift Type" />
+      <Label styleClass="big-label" text="%GiftType" />
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" stylesheets="@../theme.css">
          <children>
             <JFXTextField fx:id="patientName" minHeight="-Infinity" promptText="%PatientName" HBox.hgrow="ALWAYS" />

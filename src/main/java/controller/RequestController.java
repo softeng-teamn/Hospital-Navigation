@@ -31,10 +31,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static service.ResourceLoader.enBundle;
+import static service.ResourceLoader.esBundle;
+import static service.ResourceLoader.dfBundle;
+
 public class RequestController extends Controller implements Initializable {
 
     @FXML
     private JFXButton cancelBtn;
+    @FXML
+    private JFXButton englishBtn;
+    @FXML
+    private JFXButton spanishBtn;
     @FXML
     private JFXListView list_view;
     @FXML
@@ -77,6 +85,32 @@ public class RequestController extends Controller implements Initializable {
         Stage stage = (Stage) cancelBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
+    }
+
+    /**
+     * switches to English
+     *
+     * @throws Exception
+     */
+    @FXML
+    public void showEnglish() throws Exception{
+        event.setCurrentBundle(enBundle);
+        Stage stage = (Stage) englishBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"Service Request");
+    }
+
+    /**
+     * switches to Spanish
+     *
+     * @throws Exception
+     */
+    @FXML
+    public void showSpanish() throws Exception{
+        event.setCurrentBundle(esBundle);
+        Stage stage = (Stage) spanishBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"Service Request");
     }
 
 

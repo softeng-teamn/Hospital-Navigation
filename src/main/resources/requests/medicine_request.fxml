@@ -28,7 +28,7 @@
          <children>
             <JFXTextField fx:id="medicineType" labelFloat="true" promptText="%MedicineType" HBox.hgrow="ALWAYS" />
             <Region prefHeight="38.0" prefWidth="70.0" />
-            <JFXTextField fx:id="quantity" labelFloat="true" promptText="Quantity" />
+            <JFXTextField fx:id="quantity" labelFloat="true" promptText="%Quantity" />
          </children>
       </HBox>
       <Region prefHeight="391.0" prefWidth="522.0" />

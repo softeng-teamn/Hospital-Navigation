@@ -23,7 +23,7 @@
             <Insets left="24.0" right="24.0" />
          </VBox.margin>
       </JFXTextArea>
-      <Label styleClass="big-label" text="Select Request Type:" />
+      <Label styleClass="big-label" text="%SelectType" />
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="24.0">
          <children>
             <JFXToggleNode graphicTextGap="0.0" prefHeight="41.0" prefWidth="120.0" styleClass="enum-toggle-node" text="%Audio">

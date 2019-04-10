@@ -2,6 +2,8 @@ package model;
 
 import java.util.ResourceBundle;
 
+import static service.ResourceLoader.dfBundle;
+
 public class Event {
 
     Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
@@ -22,7 +24,7 @@ public class Event {
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
 
-    ResourceBundle currentBundle = null;
+    ResourceBundle currentBundle = dfBundle;
 
     public ResourceBundle getCurrentBundle() {
         return currentBundle;
