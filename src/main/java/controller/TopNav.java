@@ -36,6 +36,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+
 public class TopNav {
 
     public HBox top_nav;
@@ -96,8 +97,8 @@ public class TopNav {
     @FXML
     void showRequest(ActionEvent e) throws Exception {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.request);
-        StageManager.changeExistingWindow(stage, root, "Service Request");
+        Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"Service Request");
     }
 
     @FXML

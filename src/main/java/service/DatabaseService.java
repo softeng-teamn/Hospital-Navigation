@@ -18,7 +18,7 @@ public class DatabaseService {
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
     private ArrayList<Function<Void, Void>> edgeCallbacks;
-    public boolean createFlag;
+    private boolean createFlag;
 
     private static class SingletonHelper {
         private static final DatabaseService dbs = new DatabaseService();
