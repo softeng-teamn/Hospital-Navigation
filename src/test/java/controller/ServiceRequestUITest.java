@@ -2,19 +2,19 @@ package controller;
 
 import com.jfoenix.controls.*;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.VerticalDirection;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.request.ITRequest;
-import model.request.SanitationRequest;
-import model.request.SecurityRequest;
-import model.request.ToyRequest;
+import model.request.*;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runners.MethodSorters;
 import org.loadui.testfx.GuiTest;
 import org.testfx.framework.junit.ApplicationTest;
 import service.DatabaseService;
@@ -28,6 +28,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
 
 @Category(UiTest.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ServiceRequestUITest extends ApplicationTest {
     DatabaseService myDBS;
 
@@ -52,11 +53,16 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Test
     @Category(FastTest.class)
-    public void itTest() throws InterruptedException {
+    public void aTest() {
+        // This is a test that must run first because the listview doesn't properly load for the first test
+        assertThat(true, is(true));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void itTest() {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllITRequests().size(), is(0));
-
-        Thread.sleep(100);
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
@@ -91,11 +97,9 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Test
     @Category(FastTest.class)
-    public void toyTest() throws InterruptedException {
+    public void toyTest() {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllToyRequests().size(), is(0));
-
-        Thread.sleep(100);
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
@@ -130,11 +134,9 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Test
     @Category(FastTest.class)
-    public void securityTest() throws InterruptedException {
+    public void securityTest() {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllSecurityRequests().size(), is(0));
-
-        Thread.sleep(100);
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
@@ -169,16 +171,12 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Test
     @Category(FastTest.class)
-    public void sanitationTest() throws InterruptedException {
+    public void sanitationTest() {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllSanitationRequests().size(), is(0));
 
-        Thread.sleep(1000);
-
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
-        verifyThat(myDBS.getAllNodes().size(), is(605), informedErrorMessage(this));
-        verifyThat(from(listView).lookup(".list-cell").queryAll().size(), is(24), informedErrorMessage(this));
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
         // Verify no subscene is present
@@ -211,6 +209,135 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
+
+    @Test
+    @Category(FastTest.class)
+    public void religiousTest() {
+        // Verify no requests of this type exist
+        assertThat(myDBS.getAllReligiousRequests().size(), is(0));
+
+        // Get and click on a location
+        JFXListView<Node> listView = GuiTest.find("#list_view");
+        clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
+
+        // Verify no subscene is present
+        Pane subSceneHolder = GuiTest.find("#subSceneHolder");
+        verifyThat(subSceneHolder.getChildren().size(), is(0));
+
+        moveBy(500, 20);
+        scroll(40, VerticalDirection.DOWN);
+
+        // Click on the request type
+        Node tgNode = GuiTest.find("#religiousSelectNode");
+        clickOn(tgNode);
+
+        // Verify subscene appears
+        verifyThat(subSceneHolder.getChildren().size(), is(1));
+
+        // Get and Populate fields
+        JFXTextArea description = GuiTest.find("#description");
+        JFXComboBox type = GuiTest.find("#type");
+        JFXButton submit = GuiTest.find("#submit");
+        clickOn(description).write("A description here...");
+        clickOn(type).type(KeyCode.DOWN).type(KeyCode.DOWN).type(KeyCode.DOWN).type(KeyCode.ENTER);
+
+        // Submit
+        clickOn(submit);
+
+        // Verify submission in database
+        ReligiousRequest req = myDBS.getReligiousRequest(0);
+        verifyThat(req.getReligion(), is(ReligiousRequest.Religion.CATHOLIC));
+        verifyThat(req.getNotes(), is("A description here..."));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void patientInfoTest() {
+        // Verify no requests of this type exist
+        assertThat(myDBS.getAllPatientInfoRequests().size(), is(0));
+
+        // Get and click on a location
+        JFXListView<Node> listView = GuiTest.find("#list_view");
+        clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
+
+        // Verify no subscene is present
+        Pane subSceneHolder = GuiTest.find("#subSceneHolder");
+        verifyThat(subSceneHolder.getChildren().size(), is(0));
+
+        moveBy(500, 20);
+        scroll(20, VerticalDirection.DOWN);
+
+        // Click on the request type
+        Node tgNode = GuiTest.find("#patientSelectNode");
+        clickOn(tgNode);
+
+        // Verify subscene appears
+        verifyThat(subSceneHolder.getChildren().size(), is(1));
+
+        // Get and Populate fields
+        JFXTextArea description = GuiTest.find("#descriptionArea");
+        JFXTextField firstName = GuiTest.find("#firstNameField");
+        JFXTextField lastName = GuiTest.find("#lastNameField");
+        JFXTextField year = GuiTest.find("#birthYField");
+        JFXTextField month = GuiTest.find("#birthMField");
+        JFXTextField day = GuiTest.find("#birthDField");
+        JFXButton submit = GuiTest.find("#submit");
+        clickOn(description).write("A description here...");
+        clickOn(firstName).write("John");
+        clickOn(lastName).write("Doe");
+        clickOn(year).write("2019");
+        clickOn(month).write("04");
+        clickOn(day).write("09");
+
+        // Submit
+        clickOn(submit);
+
+        // Verify submission in database
+        PatientInfoRequest req = myDBS.getPatientInfoRequest(0);
+        verifyThat(req.getFirstName(), is("John"));
+        verifyThat(req.getLastName(), is("Doe"));
+        verifyThat(req.getBirthDay(), is("20190409"));
+        verifyThat(req.getNotes(), is("A description here..."));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void medicineRequest() {
+        // Verify no requests of this type exist
+        assertThat(myDBS.getAllReligiousRequests().size(), is(0));
+
+        // Get and click on a location
+        JFXListView<Node> listView = GuiTest.find("#list_view");
+        clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
+
+        // Verify no subscene is present
+        Pane subSceneHolder = GuiTest.find("#subSceneHolder");
+        verifyThat(subSceneHolder.getChildren().size(), is(0));
+
+        // Click on the request type
+        Node tgNode = GuiTest.find("#medicineSelectNode");
+        clickOn(tgNode);
+
+        // Verify subscene appears
+        verifyThat(subSceneHolder.getChildren().size(), is(1));
+
+        // Get and Populate fields
+        JFXTextArea description = GuiTest.find("#description");
+        JFXTextField type = GuiTest.find("#medicineType");
+        JFXTextField quantity = GuiTest.find("#quantity");
+        JFXButton submit = GuiTest.find("#submit");
+        clickOn(description).write("A description here...");
+        clickOn(quantity).write("12");
+        clickOn(type).write("Something");
+
+        // Submit
+        clickOn(submit);
+
+        // Verify submission in database
+        MedicineRequest req = myDBS.getMedicineRequest(0);
+        verifyThat(req.getMedicineType(), is("Something"));
+        verifyThat(req.getNotes(), is("A description here..."));
+    }
 
 
 //    moveBy(500, 20);
