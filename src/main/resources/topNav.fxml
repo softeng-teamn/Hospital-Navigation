@@ -44,14 +44,6 @@
                 <Insets right="8.0" />
             </HBox.margin>
         </JFXButton>
-        <JFXButton fx:id="newNode_btn" contentDisplay="GRAPHIC_ONLY" onAction="#showNewNode" prefHeight="80.0" prefWidth="80.0" text="New Node">
-            <graphic>
-                <FontAwesomeIconView glyphName="PLUS" size="60" />
-            </graphic>
-            <HBox.margin>
-                <Insets right="8.0" />
-            </HBox.margin>
-        </JFXButton>
         <JFXToggleNode fx:id="edit_btn" maxHeight="80.0" maxWidth="80.0" onAction="#editButtonAction" prefHeight="0.0" prefWidth="80.0" styleClass="accessiblity-toggle-node">
             <graphic>
                 <FontAwesomeIconView glyphName="PENCIL" size="50" styleClass="jfx-toggle-node" />

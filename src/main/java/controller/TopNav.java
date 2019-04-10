@@ -37,7 +37,7 @@ public class TopNav {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, newNode_btn, startNode_btn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -68,13 +68,6 @@ public class TopNav {
             Stage stage = (Stage) navigate_btn.getScene().getWindow();
             StageManager.changeExistingWindow(stage, root, "Admin Login");
         }
-    }
-
-    @FXML
-    void showNewNode(ActionEvent e) throws  Exception{
-        Parent root = FXMLLoader.load(ResourceLoader.createNode);
-        Stage stage = (Stage) newNode_btn.getScene().getWindow();
-        StageManager.changeExistingWindow(stage, root, "Add Node");
     }
 
     @FXML
@@ -177,12 +170,10 @@ public class TopNav {
         if(event.isAdmin()){
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
-            newNode_btn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
         } else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
-            newNode_btn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
         }
     }
