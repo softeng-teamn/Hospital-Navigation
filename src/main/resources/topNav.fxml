@@ -25,7 +25,7 @@
             <Insets right="8.0" />
          </HBox.margin>
       </Label>
-        <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" prefHeight="27.0" prefWidth="217.0" promptText="End Node" styleClass="header-text-field" unFocusColor="#b2b2b2">
+        <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" onMouseClicked="#setEventStartNode" prefHeight="27.0" prefWidth="217.0" promptText="End Node" styleClass="header-text-field" unFocusColor="#b2b2b2">
             <HBox.margin>
                 <Insets right="8.0" />
             </HBox.margin>
