@@ -16,7 +16,7 @@
             <Insets bottom="24.0" />
          </VBox.margin>
       </FontAwesomeIconView>
-      <JFXTextArea fx:id="description" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="Enter Medicine Request Details">
+      <JFXTextArea fx:id="description" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="%MedicineTitle">
          <VBox.margin>
             <Insets bottom="24.0" left="12.0" right="12.0" />
          </VBox.margin>
@@ -26,13 +26,13 @@
       </JFXTextArea>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <JFXTextField fx:id="medicineType" labelFloat="true" promptText="Medicine Type" HBox.hgrow="ALWAYS" />
+            <JFXTextField fx:id="medicineType" labelFloat="true" promptText="%MedicineType" HBox.hgrow="ALWAYS" />
             <Region prefHeight="38.0" prefWidth="70.0" />
             <JFXTextField fx:id="quantity" labelFloat="true" promptText="Quantity" />
          </children>
       </HBox>
       <Region prefHeight="391.0" prefWidth="522.0" />
-      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="Submit Request">
+      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="%Submit">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXButton>

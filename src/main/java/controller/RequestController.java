@@ -93,7 +93,7 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     public void securitySelect(ActionEvent e) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.securityRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.securityRequest,event.getCurrentBundle()));
     }
 
     /**
@@ -241,7 +241,7 @@ public class RequestController extends Controller implements Initializable {
   
     public void avSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.avServiceRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.avServiceRequest,event.getCurrentBundle()));
    }
   
     public void externalTransportationRequest(ActionEvent actionEvent) throws IOException{

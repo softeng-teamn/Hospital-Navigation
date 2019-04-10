@@ -45,7 +45,7 @@
          </children>
       </HBox>
       <Region prefHeight="266.0" prefWidth="534.0" />
-      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="%MakeRequest">
+      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="%Submit">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXButton>
