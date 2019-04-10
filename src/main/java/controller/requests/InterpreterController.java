@@ -30,6 +30,8 @@ public class InterpreterController extends RequestController {
         if(selectedNode != null) {
             InterpreterRequest interpRequest = new InterpreterRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
             interpRequest.makeRequest();
+            description.setText("");
+            type.getSelectionModel().clearSelection();
         }
     }
 

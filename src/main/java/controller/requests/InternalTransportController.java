@@ -27,6 +27,8 @@ public class InternalTransportController extends RequestController{
         if (selectedNode != null) {
             InternalTransportRequest request = new InternalTransportRequest(-1, text_area.getText(), RequestController.selectedNode, false, dropdown.getSelectionModel().getSelectedItem());
             request.makeRequest();
+            text_area.setText("");
+            dropdown.getSelectionModel().clearSelection();
         }
     }
 }
