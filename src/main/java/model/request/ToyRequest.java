@@ -3,6 +3,7 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
@@ -33,7 +34,6 @@ public class ToyRequest extends Request {
     @Override
     public void fillRequest() {
         this.setCompleted(true);
-        this.setAssignedTo(this.getAssignedTo());
         DatabaseService.getDatabaseService().updateToyRequest((ToyRequest)this);
     }
 
@@ -84,5 +84,28 @@ public class ToyRequest extends Request {
     @Override
     public ObservableList<Request> showProperRequest() {
         return (ObservableList) myDBS.getAllToyRequests() ;
+    }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateToyRequest((ToyRequest) selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == TOY || jobType == ADMINISTRATOR) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Toy Request %d, Description: %s, Toy Name: %s, Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getToyName(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Toy");
     }
 }

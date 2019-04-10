@@ -4,15 +4,13 @@ package model.request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Employee;
+import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
-import javax.xml.crypto.Data;
-import java.util.ArrayList;
 import java.util.Objects;
 
-import static model.JobType.ADMINISTRATOR;
-import static model.JobType.MISCELLANEOUS;
+import static model.JobType.*;
 
 public class InternalTransportRequest extends Request {
 
@@ -93,7 +91,29 @@ public class InternalTransportRequest extends Request {
 
     @Override
     public ObservableList<Request> showProperRequest() {
-        return (ObservableList) myDBS.getAllInternalTransportRequest() ;
+        return (ObservableList) myDBS.getAllInternalTransportRequests() ;
     }
 
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateInternalTransportRequest((InternalTransportRequest)selectedTask) ;
+    }
+
+    @Override
+    public boolean fulfillableByType(JobType jobType) {
+        if (jobType == INTERNAL_TRANSPORT || jobType == ADMINISTRATOR) return true;
+        return false;
+    }
+
+    @Override
+    public String toDisplayString() {
+        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
+        return String.format("Internal Transport Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getTransport().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Internal Transport");
+    }
 }

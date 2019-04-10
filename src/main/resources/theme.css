@@ -23,6 +23,10 @@
     -fx-border-color: transparent transparent -fx-unfocusedtext transparent;
 }
 
+.jfx-hamburger StackPane {
+    -fx-background-color: -fx-primary;
+}
+
 .interaction-area {
     -fx-background-color: #C6C9CC;
 }
@@ -75,6 +79,7 @@
     -jfx-focus-color: -fx-secondary;
     -jfx-unfocus-color: -fx-unfocusedtext;
     -fx-prompt-text-fill: -fx-unfocusedtext;
+    -jfx-label-float: true;
 }
 
 .wrong-credentials{
@@ -122,12 +127,12 @@
 .jfx-text-area .scroll-pane,
 .jfx-text-area:focused,
 .jfx-text-area:focused .scroll-pane{
-    -fx-background-color: #999999;
+    -fx-background-color: #D9D9D9;
 }
 
 .jfx-text-area .content,
 .jfx-text-area:focused .content{
-    -fx-background-color: #999999;
+    -fx-background-color: #D9D9D9;
     -fx-padding: 0 0 0 0;
 }
 
@@ -138,11 +143,17 @@
  ******************************************************************************/
 
 .button{
+    -fx-background-color: -fx-complementary;
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primary;
     -fx-border-color: -fx-secondary;
     -fx-border-width: 3px;
     -fx-border-radius: 5px;
+}
+
+.exit-button{
+    -fx-background-color: transparent;
+    -fx-border-width: 0px;
 }
 
 .button:hover{
@@ -154,6 +165,19 @@
 
 .button:hover .glyph-icon{
     -fx-fill: -fx-complementary;
+}
+
+.glyph-button{
+    -fx-background-color: -fx-complementary;
+    -fx-font-size: 12pt;
+    -fx-background-radius: 7px;
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 12pt;
+    -fx-border-width: 0px;
+}
+
+.glyph-button:hover .glyph-icon{
+    -fx-fill: -fx-primary;
 }
 
 .confirm-button {
@@ -257,7 +281,6 @@
 
 
 
-
 /*******************************************************************************
  *                                                                             *
  * List View                                                                   *
@@ -276,12 +299,15 @@
 }
 
 .list-view .list-cell:hover {
-    -fx-background-color: -fx-complementary;
-    -fx-text-fill: -fx-primarytext;
+    -fx-background-color: #7683ac;
 }
 
 .list-view .list-cell:selected {
     -fx-background-color: #7683ac;
+}
+
+.list-view .label{
+    -fx-text-fill: -fx-primarytext;
 }
 
 /*******************************************************************************
@@ -291,7 +317,7 @@
  ******************************************************************************/
 
 .scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: #D9D9D9;
     -fx-background-insets: 0.0;
 }
 
@@ -375,15 +401,13 @@
 
 /*******************************************************************************
  *                                                                             *
- * List View                                                                   *
+ * Scroll Pane                                                                 *
  *                                                                             *
  ******************************************************************************/
 
 .scroll-pane > .viewport {
     -fx-background-color: -fx-primary;
 }
-
-
 
 /*******************************************************************************
  *                                                                             *

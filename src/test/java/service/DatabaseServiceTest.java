@@ -711,6 +711,8 @@ public class DatabaseServiceTest {
 
         // Create an employee
         Employee employee = new Employee(0, "mrdoctor", JobType.DOCTOR, false, "douglas");
+        employee.setPhone("1234567890");
+        employee.setEmail("test@example.com");
 
         // Verify successful insertion
         boolean insertRes = myDBS.insertEmployee(employee);
@@ -768,11 +770,14 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void updateEmployee() {
         Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "123456");
+        employee.setPhone("1234567890");
+        employee.setEmail("test@example.com");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
 
         employee.setAdmin(true);
+        employee.setPhone("0987654321");
         employee.setJob(JobType.ADMINISTRATOR);
 
         assertTrue(myDBS.updateEmployee(employee));
@@ -835,6 +840,26 @@ public class DatabaseServiceTest {
         expected = space;
         value = myDBS.getReservableSpace(space.getSpaceID());
         assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getReservableSpaceByNodeID() {
+        // Create a ReservableSpace
+        GregorianCalendar openTime = new GregorianCalendar();
+        openTime.set(Calendar.HOUR, 7);
+        openTime.set(Calendar.MINUTE, 0);
+        GregorianCalendar closeTime = new GregorianCalendar();
+        closeTime.set(Calendar.HOUR, 17);
+        closeTime.set(Calendar.MINUTE, 30);
+        ReservableSpace space1 = new ReservableSpace("ABCD", "Space 1", "CONF", "LMNO10011", openTime, closeTime);
+        ReservableSpace space2 = new ReservableSpace("LMNO", "Space 1", "CONF", "ABCD10011", openTime, closeTime);
+
+        assertTrue(myDBS.insertReservableSpace(space1));
+        assertTrue(myDBS.insertReservableSpace(space2));
+
+        assertThat(myDBS.getReservableSpaceByNodeID("LMNO10011"), is(space1));
+        assertThat(myDBS.getReservableSpaceByNodeID("ABCD10011"), is(space2));
     }
 
     @Test
@@ -2446,7 +2471,7 @@ public class DatabaseServiceTest {
         req2.setId(1);
 
         // Check that there are two and only two, and that they are the right two
-        List<InternalTransportRequest> allInternalTransportRequests = myDBS.getAllInternalTransportRequest();
+        List<InternalTransportRequest> allInternalTransportRequests = myDBS.getAllInternalTransportRequests();
         assertThat(allInternalTransportRequests.size(), is(2));
         assertEquals(req1, allInternalTransportRequests.get(0));
         assertEquals(req2, allInternalTransportRequests.get(1));
@@ -2456,7 +2481,7 @@ public class DatabaseServiceTest {
 
         req3.setId(2);
 
-        allInternalTransportRequests = myDBS.getAllInternalTransportRequest();
+        allInternalTransportRequests = myDBS.getAllInternalTransportRequests();
         assertThat(allInternalTransportRequests.size(), is(3));
         assertEquals(req1, allInternalTransportRequests.get(0));
         assertEquals(req2, allInternalTransportRequests.get(1));

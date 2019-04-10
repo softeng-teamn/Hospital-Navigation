@@ -65,6 +65,9 @@ public abstract class Request {
 
     public void setAssignedTo(int assignedTo) {
         this.assignedTo = assignedTo;
+        if(this.assignedTo == 0) {
+            this.assignedTo = -1;
+        }
     }
 
     @Override
@@ -100,4 +103,11 @@ public abstract class Request {
 
     public abstract ObservableList<Employee> returnCorrectEmployee();
 
+    public abstract void updateEmployee (Request selectedTask, Employee selectedEmp);
+
+    public abstract boolean fulfillableByType(JobType jobType);
+
+    public abstract String toDisplayString();
+
+    public abstract boolean isOfType(String typeString);
 }
