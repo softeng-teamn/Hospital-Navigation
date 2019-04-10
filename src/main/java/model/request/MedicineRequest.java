@@ -29,7 +29,6 @@ public class MedicineRequest extends Request {
 
     public MedicineRequest(int id, String notes, Node location, boolean completed, String medicineType, double quantity) {
         super(id, notes, location, completed);
-        this.medicineType = medicineType;
         this.quantity = quantity;
         this.medicineType = medicineType;
     }
