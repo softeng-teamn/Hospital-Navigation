@@ -7,6 +7,7 @@ import javafx.collections.ObservableArray;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import model.request.ExternalTransportRequest;
+import model.request.InternalTransportRequest;
 import service.DatabaseService;
 
 import java.net.URL;
@@ -30,6 +31,12 @@ public class ExternalTransportationController  extends RequestController {
     private JFXButton submit;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        transport.setItems(FXCollections.observableArrayList(ExternalTransportRequest.TransportationType.values()));
+    }
 
     @FXML
     void submitRequest(ActionEvent event) {
