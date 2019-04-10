@@ -33,7 +33,6 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-
         Parent mainNode = FXMLLoader.load(ResourceLoader.request);
         stage.setScene(new Scene(mainNode));
         stage.show();
@@ -173,7 +172,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllSanitationRequests().size(), is(0));
 
-        Thread.sleep(100);
+        Thread.sleep(1000);
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
