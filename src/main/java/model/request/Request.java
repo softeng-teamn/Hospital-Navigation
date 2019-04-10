@@ -100,4 +100,6 @@ public abstract class Request {
 
     public abstract ObservableList<Employee> returnCorrectEmployee();
 
+    public abstract void updateEmployee (Request selectedTask, Employee selectedEmp);
+
 }

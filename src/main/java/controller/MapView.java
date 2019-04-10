@@ -74,6 +74,8 @@ public class MapView {
     private Circle selectCircle;
     private ArrayList<Line> lineCollection;
     private ArrayList<Circle> circleCollection;
+    private boolean hasPath = false;
+    private ArrayList<Node> path;
 
     @FXML
     private ScrollPane map_scrollpane;
@@ -99,6 +101,9 @@ public class MapView {
 
     private
     HashMap<String, Integer> floors = new HashMap<String, Integer>();
+
+    private static HashMap<String, ImageView> imageCache = new HashMap<>();
+    private static boolean imagesCached = false;
 
     // ELEVATOR CALL BUTTONS
     @FXML
@@ -156,6 +161,21 @@ public class MapView {
         zoom(0.3);
 
         directionsView.setVisible(false);
+
+        // Cache imageViews so they can be reused, but only if they haven't already been cached
+        if(!imagesCached) {
+            try {
+                imageCache.put("Floor 3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
+                imageCache.put("Floor 2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
+                imageCache.put("Floor 1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
+                imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
+                imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
+                imageCache.put("Ground", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
+                imagesCached = true;
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     void pingTiming() {
@@ -194,33 +214,27 @@ public class MapView {
         event.setFloor(btn.getText());
         switch (btn.getText()) {
             case "Floor 3":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.thirdFloor.openStream()));
+                imageView = imageCache.get("Floor 3");
                 floorName = "03";
                 break;
             case "Floor 2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondFloor.openStream()));
+                imageView = imageCache.get("Floor 2");
                 floorName = "02";
                 break;
             case "Floor 1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstFloor.openStream()));
+                imageView = imageCache.get("Floor 1");
                 floorName = "01";
                 break;
             case "L1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstLowerFloor.openStream()));
+                imageView = imageCache.get("L1");
                 floorName = "L1";
                 break;
             case "L2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondLowerFloor.openStream()));
+                imageView = imageCache.get("L2");
                 floorName = "L2";
                 break;
             case "Ground":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
+                imageView = imageCache.get("Ground");
                 floorName = "00";
                 break;
             default:
@@ -233,6 +247,9 @@ public class MapView {
         image_pane.getChildren().add(imageView);
         event.setFloor(floorName);
         eventBus.post(event);
+        if (hasPath){
+            drawPath();
+        }
         // Handle Floor changes
         editNodeHandler(event.isEditing());
     }
@@ -356,6 +373,7 @@ public class MapView {
         for (Line line : lineCollection) {
             if (zoomGroup.getChildren().contains(line)) {
                 zoomGroup.getChildren().remove(line);
+                hasPath = false;
             }
         }
         // remove old selected Circle
@@ -386,21 +404,21 @@ public class MapView {
     private void navigationHandler() throws Exception{
         currentMethod = event.getSearchMethod();
         PathFindingService pathFinder = new PathFindingService();
-        ArrayList<Node> path;
+        ArrayList<Node> newpath;
         MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
         MapNode dest = new MapNode(event.getNodeSelected().getXcoord(), event.getNodeSelected().getYcoord(), event.getNodeSelected());
         // check if the path need to be 'accessible'
         if (event.isAccessiblePath()) {
             // do something special
-            path = pathFinder.genPath(start, dest, true, currentMethod);
+            newpath = pathFinder.genPath(start, dest, true, currentMethod);
         } else {
             // not accessible
-            path = pathFinder.genPath(start, dest, false, currentMethod);
+            newpath = pathFinder.genPath(start, dest, false, currentMethod);
         }
         if(event.isCallElev()){
             ElevatorCon e = new ElevatorCon();
             for (String key: pathFinder.getElevTimes().keySet()
-                 ) {
+            ) {
                 System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
                 GregorianCalendar gc = new GregorianCalendar();
                 gc.add(Calendar.MINUTE, pathFinder.getElevTimes().get(key).getEta());
@@ -413,53 +431,56 @@ public class MapView {
                 }
             }
         }
-        drawPath(path);
+
+        path = newpath;
+        drawPath();
+
+
 
     }
 
     private void filteredHandler() {
         PathFindingService pathFinder = new PathFindingService();
-        ArrayList<Node> path;
+        ArrayList<Node> newpath;
         MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
         Boolean accessibility = event.isAccessiblePath();
 
         switch (event.getFilterSearch()){
             case "REST":
-                path = pathFinder.genPath(start, null, accessibility, "REST");
+                newpath = pathFinder.genPath(start, null, accessibility, "REST");
                 break;
             case "ELEV":
-                path = pathFinder.genPath(start, null, accessibility, "ELEV");
+                newpath = pathFinder.genPath(start, null, accessibility, "ELEV");
                 break;
             case "STAI":
-                path = pathFinder.genPath(start, null, false, "STAI");
+                newpath = pathFinder.genPath(start, null, false, "STAI");
                 break;
             case "CONF":
-                path = pathFinder.genPath(start, null, accessibility, "CONF");
+                newpath = pathFinder.genPath(start, null, accessibility, "CONF");
                 break;
             case "INFO":
-                path = pathFinder.genPath(start, null, accessibility, "INFO");
+                newpath = pathFinder.genPath(start, null, accessibility, "INFO");
                 break;
             case "EXIT":
-                path = pathFinder.genPath(start, null, accessibility, "EXIT");
+                newpath = pathFinder.genPath(start, null, accessibility, "EXIT");
                 break;
             default:
-                path = null;
+                newpath = null;
                 break;
         }
 
-        if (path == null){
+        if (newpath == null){
             System.out.println("DIDNT FIND A PATH");
         } else {
-            drawPoint(path.get(path.size()-1), selectCircle, Color.rgb(72,87,125), false);
+            drawPoint(newpath.get(newpath.size()-1), selectCircle, Color.rgb(72,87,125), false);
         }
 
 
-
-        drawPath(path);
+        drawPath();
     }
 
     // draw path on the screen
-    private void drawPath(ArrayList<Node> path) {
+    private void drawPath() {
         // remove points
         for (Line line : lineCollection) {
             if (zoomGroup.getChildren().contains(line)) {
@@ -479,8 +500,12 @@ public class MapView {
                 line.setEndX(last.getXcoord());
                 line.setEndY(last.getYcoord());
 
-                line.setFill(Color.BLACK);
-                line.setStrokeWidth(10.0);
+                if (current.getFloor().equals(event.getFloor())){
+                    line.setStroke(Color.valueOf("183284"));
+                } else {
+                    line.setStroke(Color.rgb(139,155,177));
+                }
+                line.setStrokeWidth(20.0);
                 zoomGroup.getChildren().add(line);
                 lineCollection.add(line);
                 last = current;
@@ -488,6 +513,8 @@ public class MapView {
 
             printDirections(makeDirections(path));
         }
+
+        hasPath = true;
     }
 
     /**

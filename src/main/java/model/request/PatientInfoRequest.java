@@ -120,4 +120,9 @@ public class PatientInfoRequest extends Request{
         return (ObservableList) myDBS.getAllPatientInfoRequests() ;
     }
 
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updatePatientInfoRequest((PatientInfoRequest) selectedTask) ;
+    }
+
 }

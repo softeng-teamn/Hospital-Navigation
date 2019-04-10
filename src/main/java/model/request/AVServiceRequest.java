@@ -77,4 +77,11 @@ public class AVServiceRequest extends Request {
         return (ObservableList) myDBS.getAllAVServiceRequests() ;
     }
 
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateAVServiceRequest((AVServiceRequest)selectedTask) ;
+        System.out.println("NEW DATABASE ID : " + (selectedTask.getAssignedTo())) ;
+    }
+
+
 }
