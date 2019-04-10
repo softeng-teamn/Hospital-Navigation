@@ -1,5 +1,6 @@
 package service;
 // Install the Java helper library from twilio.com/docs/libraries/java
+import com.sun.xml.internal.bind.api.impl.NameConverter;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -15,14 +16,13 @@ import java.util.stream.Stream;
 
 public class TextingService {
     // Find your Account Sid and Auth Token at twilio.com/console
-    String[] secrets= new String[2];
+    private String[] secrets= new String[2];
     private void readLineByLineJava(URL filePath)
     {
-        BufferedReader reader = null;
-        StringBuilder contentBuilder = new StringBuilder();
+        BufferedReader reader;
         try
         {
-            reader = new BufferedReader(new InputStreamReader(ResourceLoader.edges.openStream(), "UTF-8"));
+            reader = new BufferedReader(new InputStreamReader(ResourceLoader.edges.openStream(), StandardCharsets.UTF_8));
             secrets[0] = reader.readLine();
             secrets[1] = reader.readLine();
             reader.close();
@@ -34,9 +34,9 @@ public class TextingService {
 
     }
 
-    public final String ACCOUNT_SID =
+    private final String ACCOUNT_SID =
             secrets[0];
-    public final String AUTH_TOKEN =
+    private final String AUTH_TOKEN =
             secrets[1];
 
     public void textMap(String phone, String mapUrl){
