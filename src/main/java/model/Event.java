@@ -18,7 +18,7 @@ public class Event {
     String filterSearch = ""; // filtered search
     String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar
     boolean isEditing = false;      // editing
-    String floor = "1";      // floor
+    String floor = "01";      // floor
     boolean callElev = false;
 
     public boolean isCallElev() {

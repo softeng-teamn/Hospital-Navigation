@@ -109,7 +109,7 @@ public class MapView {
     @FXML
     void callElevatorAction(ActionEvent e) {
         JFXButton myBtn = (JFXButton) e.getSource();
-        String elevNum = "" + myBtn.getText().charAt(myBtn.getText().length()-1);
+        String elevNum = "" + myBtn.getText().substring(myBtn.getText().length() - 2);
 
         GregorianCalendar cal = new GregorianCalendar();
         try {
@@ -235,7 +235,7 @@ public class MapView {
                 break;
             case "Ground":
                 imageView = imageCache.get("Ground");
-                floorName = "00";
+                floorName = "G";
                 break;
             default:
                 System.out.println("We should not have default here!!!");
