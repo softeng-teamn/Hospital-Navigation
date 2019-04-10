@@ -13,7 +13,6 @@ public class Event {
     String eventName = "";      // one of the event names below
                                 // signifies field change
 
-
     String searchBarQuery = ""; // search-query
     Node nodeStart = DEFAULT_NODE; // node-start
     Node nodeSelected = null;   // node-select
@@ -26,6 +25,7 @@ public class Event {
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
     boolean callElev = false;
+
    // floor
     ArrayList<Node> path = null;
 

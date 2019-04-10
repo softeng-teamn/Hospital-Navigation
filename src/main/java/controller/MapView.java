@@ -350,7 +350,6 @@ public class MapView {
         }
     }
 
-
     private void drawPoint(Node node, Circle circle, Color color, boolean start) {
         // remove points
         for (Line line : lineCollection) {
@@ -379,8 +378,6 @@ public class MapView {
         }
         // Scroll to new point
         scrollTo(node);
-
-
     }
 
     // generate path on the screen
@@ -464,6 +461,22 @@ public class MapView {
 
     // draw path on the screen
     private void drawPath() {
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                event.setPath(path);
+                event.setEventName("showText");
+                eventBus.post(event);
+            }
+        });
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // remove points
         for (Line line : lineCollection) {
             if (zoomGroup.getChildren().contains(line)) {
@@ -493,15 +506,8 @@ public class MapView {
                 lineCollection.add(line);
                 last = current;
             }
-
-//            event.setPath(path);
-//            event.setEventName("showText");
-//            eventBus.post(event);
-
         }
-
         hasPath = true;
-
     }
 
     /**

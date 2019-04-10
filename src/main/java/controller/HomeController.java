@@ -15,6 +15,7 @@ import service.ResourceLoader;
 import service.StageManager;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import static controller.Controller.initConnections;
 
@@ -95,13 +96,4 @@ public class HomeController {
         leftPane.getChildren().clear();
         leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.pathFindingSettings));
     }
-
-    /*
-
-    pane switching
-
-
-
-    */
-
 }
