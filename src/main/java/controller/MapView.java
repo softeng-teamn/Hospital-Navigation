@@ -123,6 +123,7 @@ public class MapView {
 
     @FXML
     void initialize() {
+        System.out.println("Initialize...");
         pingTiming();
 
         // listen to changes
