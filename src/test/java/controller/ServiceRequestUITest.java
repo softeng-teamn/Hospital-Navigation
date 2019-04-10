@@ -2,11 +2,9 @@ package controller;
 
 import com.jfoenix.controls.*;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.VerticalDirection;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -54,9 +52,11 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Test
     @Category(FastTest.class)
-    public void itTest() {
+    public void itTest() throws InterruptedException {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllITRequests().size(), is(0));
+
+        Thread.sleep(100);
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
@@ -91,9 +91,11 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Test
     @Category(FastTest.class)
-    public void toyTest() {
+    public void toyTest() throws InterruptedException {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllToyRequests().size(), is(0));
+
+        Thread.sleep(100);
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
@@ -128,9 +130,11 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Test
     @Category(FastTest.class)
-    public void securityTest() {
+    public void securityTest() throws InterruptedException {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllSecurityRequests().size(), is(0));
+
+        Thread.sleep(100);
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
@@ -165,9 +169,11 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Test
     @Category(FastTest.class)
-    public void sanitationTest() {
+    public void sanitationTest() throws InterruptedException {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllSanitationRequests().size(), is(0));
+
+        Thread.sleep(100);
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
