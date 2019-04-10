@@ -187,6 +187,10 @@
     -fx-font-size: 16pt;
 }
 
+.confirm-button:hover .glyph-icon {
+    -fx-fill: -fx-primary;
+}
+
 .request-toggle-node {
     -fx-font-family: Roboto;
     -fx-background-color: -fx-complementary;
