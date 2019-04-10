@@ -116,4 +116,9 @@ public class ExternalTransportRequest extends Request {
     public ObservableList<Request> showProperRequest() {
         return (ObservableList) myDBS.getAllExtTransRequests() ;
     }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateExtTransRequest((ExternalTransportRequest)selectedTask) ;
+    }
 }
