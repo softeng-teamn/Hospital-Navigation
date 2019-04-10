@@ -60,6 +60,8 @@ public class ServiceRequestUITest extends ApplicationTest {
     @Category(FastTest.class)
     public void aTest() {
         // This is a test that must run first because the listview doesn't properly load for the first test
+
+        // I don't know why it doesn't work
         assertThat(true, is(true));
     }
 
