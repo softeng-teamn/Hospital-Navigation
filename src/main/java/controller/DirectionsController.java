@@ -59,6 +59,7 @@ public class DirectionsController {
             public void run() {
                 switch (event.getEventName()) {
                     case "printText":
+//                        Thread.sleep(100);
                         path = event.getPath();
                         printDirections(makeDirections(path));
                         break;
