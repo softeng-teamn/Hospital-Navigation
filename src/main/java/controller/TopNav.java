@@ -255,11 +255,11 @@ public class TopNav {
 
     public void startNavigation(ActionEvent actionEvent) {
 
-        Boolean accessibility = accessibilityButton.isSelected();
+        //Boolean accessibility = accessibilityButton.isSelected();
         //if(callElev.isSelected()){
             event.setCallElev(true);
         //}
-        event.setAccessiblePath(accessibility);
+        //event.setAccessiblePath(accessibility);
         event.setEventName("navigation");
         eventBus.post(event);
     }
