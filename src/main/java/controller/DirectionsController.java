@@ -9,15 +9,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import model.Event;
 import model.EventBusFactory;
 import model.Node;
+import service.ResourceLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static controller.Controller.initConnections;
 
 public class DirectionsController {
     private Event event = EventBusFactory.getEvent();
@@ -27,13 +32,18 @@ public class DirectionsController {
     private JFXButton home_btn, unitSwitch_btn;
 
     @FXML
-    private JFXListView directionsView;
+    private JFXListView<Label> directionsView;
 
     //text message global variable
     private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
     private ArrayList<Node> path;
 
+
+    @FXML
+    void initialize() {
+        eventBus.register(this);
+    }
 
     @FXML
     void showSearchList(ActionEvent e) {
@@ -43,7 +53,7 @@ public class DirectionsController {
 
 
     @Subscribe
-    void eventListener(Event event) {
+    void eventListener(Event newevent) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -485,13 +495,14 @@ public class DirectionsController {
      */
     public void setUnits() {
         if (units.equals("feet")) {
-            units = "meters";
+            units = "Meter";
         }
         else {
             units = "feet";
         }
 
         unitSwitch_btn.setText(units);
+        printDirections(makeDirections(path));
 
     }
 
