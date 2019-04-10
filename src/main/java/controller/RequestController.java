@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.collections.FXCollections;
@@ -15,6 +16,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
+import model.Event;
+import model.EventBusFactory;
 import model.Node;
 import model.request.Request;
 import service.DatabaseService;
@@ -28,10 +31,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static service.ResourceLoader.enBundle;
+import static service.ResourceLoader.esBundle;
+import static service.ResourceLoader.dfBundle;
+
 public class RequestController extends Controller implements Initializable {
 
     @FXML
     private JFXButton cancelBtn;
+    @FXML
+    private JFXButton englishBtn;
+    @FXML
+    private JFXButton spanishBtn;
     @FXML
     private JFXListView list_view;
     @FXML
@@ -49,6 +60,9 @@ public class RequestController extends Controller implements Initializable {
 
     @SuppressFBWarnings(value="MS_CANNOT_BE_FINAL", justification = "I need to")
     public static Node selectedNode = null;
+
+    private Event event = EventBusFactory.getEvent();
+    private EventBus eventBus = EventBusFactory.getEventBus();
 
     /**
      * initializes the request controller
@@ -73,6 +87,32 @@ public class RequestController extends Controller implements Initializable {
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
+    /**
+     * switches to English
+     *
+     * @throws Exception
+     */
+    @FXML
+    public void showEnglish() throws Exception{
+        event.setCurrentBundle(enBundle);
+        Stage stage = (Stage) englishBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"Service Request");
+    }
+
+    /**
+     * switches to Spanish
+     *
+     * @throws Exception
+     */
+    @FXML
+    public void showSpanish() throws Exception{
+        event.setCurrentBundle(esBundle);
+        Stage stage = (Stage) spanishBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"Service Request");
+    }
+
 
     /**
      * show every nodes on  JFXListView
@@ -87,7 +127,7 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     public void securitySelect(ActionEvent e) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.securityRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.securityRequest,event.getCurrentBundle()));
     }
 
     /**
@@ -177,49 +217,49 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     public void internalTransportSelect(ActionEvent e) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.internalTransportRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.internalTransportRequest,event.getCurrentBundle()));
     }
 
     @FXML
     public void interpreterRequestSelect(ActionEvent e) throws IOException{
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.interpreterRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.interpreterRequest,event.getCurrentBundle()));
     }
 
     @FXML
     public void religiousRequestSelect(ActionEvent e) throws IOException{
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.religiousRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.religiousRequest,event.getCurrentBundle()));
     }
 
     @FXML
     public void patientSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.patientInfoRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.patientInfoRequest,event.getCurrentBundle()));
     }
 
     @FXML
     public void maintenanceRequest(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.maintenanceRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.maintenanceRequest,event.getCurrentBundle()));
     }
 
     @FXML
     public void floristSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.floristRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.floristRequest,event.getCurrentBundle()));
     }
 
     @FXML
     public void giftSelect (ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.giftStoreRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.giftStoreRequest,event.getCurrentBundle()));
     }
 
     @FXML
     public void selectSanitation(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.sanitationRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.sanitationRequest,event.getCurrentBundle()));
     }
 
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "I need to")
@@ -230,26 +270,26 @@ public class RequestController extends Controller implements Initializable {
 
     public void toyRequestSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.ToyRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.ToyRequest,event.getCurrentBundle()));
     }
   
     public void avSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.avServiceRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.avServiceRequest,event.getCurrentBundle()));
    }
   
     public void externalTransportationRequest(ActionEvent actionEvent) throws IOException{
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.externalTransportRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.externalTransportRequest,event.getCurrentBundle()));
     }
   
     public void medicineSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.medicineRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.medicineRequest,event.getCurrentBundle()));
     }
 
     public void itSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.itRequest));
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.itRequest,event.getCurrentBundle()));
     }
 }

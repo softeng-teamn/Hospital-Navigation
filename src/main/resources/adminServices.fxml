@@ -5,6 +5,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -12,7 +13,7 @@
    <children>
       <HBox alignment="TOP_RIGHT" spacing="40.0">
          <children>
-            <JFXButton fx:id="showHomeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showHome" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button" stylesheets="@theme.css">
+            <JFXButton fx:id="showHomeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showSearchResults" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button" stylesheets="@theme.css">
                <HBox.margin>
                   <Insets right="5.0" top="5.0" />
                </HBox.margin>
@@ -27,11 +28,11 @@
             <Insets top="24.0" />
          </VBox.margin>
       </Label>
-      <FontAwesomeIconView glyphName="COG" size="200" styleClass="request-glyph" text="">
+      <FontAwesomeIconView glyphName="COG" size="160" styleClass="request-glyph" text="">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></FontAwesomeIconView>
-      <JFXButton fx:id="fulfillRequestBtn" onAction="#showFulfillRequest" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Fulfill Requests">
+      <JFXButton fx:id="fulfillRequestBtn" graphicTextGap="8.0" onAction="#showFulfillRequest" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Fulfill Requests">
          <VBox.margin>
             <Insets />
          </VBox.margin>
@@ -39,7 +40,7 @@
             <FontAwesomeIconView glyphName="PENCIL" />
          </graphic>
       </JFXButton>
-      <JFXButton fx:id="newNode_btn" onAction="#showNewNode" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Create New Node">
+      <JFXButton fx:id="newNode_btn" graphicTextGap="8.0" onAction="#showNewNode" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Create New Node">
          <VBox.margin>
             <Insets top="50.0" />
          </VBox.margin>
@@ -47,15 +48,7 @@
             <FontAwesomeIconView glyphName="MAP" />
          </graphic>
       </JFXButton>
-      <JFXButton fx:id="exportCSVBtn" onAction="#exportCSV" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" stylesheets="@theme.css" text="Export CSV">
-         <VBox.margin>
-            <Insets top="50.0" />
-         </VBox.margin>
-         <graphic>
-            <FontAwesomeIconView glyphName="DOWNLOAD" />
-         </graphic>
-      </JFXButton>
-      <JFXButton fx:id="editEmployeeBtn" onAction="#showEditEmployees" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Edit Employees">
+      <JFXButton fx:id="editEmployeeBtn" graphicTextGap="8.0" onAction="#showEditEmployees" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Edit Employees">
          <VBox.margin>
             <Insets top="50.0" />
          </VBox.margin>
@@ -63,31 +56,45 @@
             <FontAwesomeIconView glyphName="USER" />
          </graphic>
       </JFXButton>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+      <JFXButton fx:id="exportCSVBtn" graphicTextGap="8.0" onAction="#exportCSV" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" stylesheets="@theme.css" text="Export CSV">
+         <VBox.margin>
+            <Insets top="50.0" />
+         </VBox.margin>
+         <graphic>
+            <FontAwesomeIconView glyphName="DOWNLOAD" />
+         </graphic>
+      </JFXButton>
+      <VBox alignment="CENTER" prefWidth="100.0">
          <children>
-            <Label fx:id="selectPathfindingTitle" styleClass="big-label" text="Select Pathfinding Algorithm" />
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="52.0">
+            <Label fx:id="selectPathfindingTitle" styleClass="big-label" text="Select Pathfinding Algorithm">
+               <VBox.margin>
+                  <Insets bottom="36.0" />
+               </VBox.margin></Label>
+            <HBox alignment="CENTER" prefHeight="120.0" prefWidth="200.0" spacing="36.0">
                <children>
-                  <JFXToggleNode onAction="#astarSwitch" prefHeight="50.0" prefWidth="100.0" text="Astar" textAlignment="CENTER">
+                  <JFXToggleNode onAction="#astarSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Astar" textAlignment="CENTER">
                      <graphic>
-                        <FontAwesomeIconView glyphName="STAR" glyphStyle="FAR" size="24.0" styleClass="request-glyph" text="" />
+                        <FontAwesomeIconView glyphName="STAR" glyphStyle="FAR" size="48" styleClass="request-glyph" text="" />
+                     </graphic>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="algorithm" />
+                     </toggleGroup>
+                  </JFXToggleNode>
+                  <JFXToggleNode onAction="#depthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Depth" textAlignment="CENTER" toggleGroup="$algorithm">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="" size="48" styleClass="request-glyph" text="" />
                      </graphic>
                   </JFXToggleNode>
-                  <JFXToggleNode onAction="#depthSwitch" prefHeight="50.0" prefWidth="100.0" text="Depth" textAlignment="CENTER">
+                  <JFXToggleNode onAction="#breadthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Breadth" textAlignment="CENTER" toggleGroup="$algorithm">
                      <graphic>
-                        <FontAwesomeIconView glyphName="" size="24.0" styleClass="request-glyph" text="" />
-                     </graphic>
-                  </JFXToggleNode>
-                  <JFXToggleNode onAction="#breadthSwitch" prefHeight="50.0" prefWidth="100.0" text="Breadth" textAlignment="CENTER">
-                     <graphic>
-                        <FontAwesomeIconView glyphName="BOLD" size="24.0" styleClass="request-glyph" />
+                        <FontAwesomeIconView glyphName="BOLD" size="48" styleClass="request-glyph" />
                      </graphic>
                   </JFXToggleNode>
                </children>
             </HBox>
          </children>
          <VBox.margin>
-            <Insets top="50.0" />
+            <Insets top="48.0" />
          </VBox.margin>
       </VBox>
    </children>
