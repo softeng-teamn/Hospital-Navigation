@@ -25,7 +25,7 @@
                 <JFXButton fx:id="home_btn" onAction="#showSearchList" styleClass="confirm-button" text="Home" />
             </children>
         </HBox>
-        <JFXListView fx:id="directionsView" />
+        <JFXListView fx:id="directionsView" minHeight="500.0" />
         <JFXButton styleClass="confirm-button" text="Send Text Message" />
     </children>
 </VBox>

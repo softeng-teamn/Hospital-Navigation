@@ -32,7 +32,7 @@ public class DirectionsController {
     private JFXButton home_btn, unitSwitch_btn;
 
     @FXML
-    private JFXListView directionsView;
+    private JFXListView<Label> directionsView;
 
     //text message global variable
     private String units = "feet";    // Feet or meters conversion
@@ -59,7 +59,6 @@ public class DirectionsController {
             public void run() {
                 switch (event.getEventName()) {
                     case "printText":
-                        System.out.println("should print out message");
                         path = event.getPath();
                         printDirections(makeDirections(path));
                         break;
@@ -503,6 +502,7 @@ public class DirectionsController {
         }
 
         unitSwitch_btn.setText(units);
+        printDirections(makeDirections(path));
 
     }
 

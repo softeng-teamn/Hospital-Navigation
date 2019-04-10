@@ -442,7 +442,7 @@ public class MapView {
             drawPoint(newpath.get(newpath.size()-1), selectCircle, Color.rgb(72,87,125), false);
         }
 
-
+        path = newpath;
         drawPath();
     }
 

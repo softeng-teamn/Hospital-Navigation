@@ -44,14 +44,6 @@
                 <Insets right="8.0" />
             </HBox.margin>
         </JFXButton>
-        <JFXToggleNode fx:id="accessibilityButton" maxHeight="80.0" maxWidth="80.0" prefHeight="0.0" prefWidth="80.0" styleClass="accessiblity-toggle-node">
-            <graphic>
-                <FontAwesomeIconView glyphName="WHEELCHAIR" size="50" styleClass="jfx-toggle-node" />
-            </graphic>
-            <HBox.margin>
-                <Insets right="8.0" />
-            </HBox.margin>
-        </JFXToggleNode>
         <JFXButton fx:id="newNode_btn" contentDisplay="GRAPHIC_ONLY" onAction="#showNewNode" prefHeight="80.0" prefWidth="80.0" text="New Node">
             <graphic>
                 <FontAwesomeIconView glyphName="PLUS" size="60" />

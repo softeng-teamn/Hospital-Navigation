@@ -41,8 +41,6 @@ public class TopNav {
     @FXML
     private JFXTextField search_bar ;
     @FXML
-    private JFXToggleNode accessibilityButton;
-    @FXML
     private FontAwesomeIconView lock_icon;
     @FXML
     private MaterialIconView home_icon;
@@ -82,9 +80,8 @@ public class TopNav {
     @FXML
     // switches window to map editor screen.
     public void showAdminScene() throws Exception {
-        Stage stage = (Stage) fulfillBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.adminServices);
-        StageManager.changeExistingWindow(stage, root, "Administrator Services");
+        event.setEventName("showAdmin");
+        eventBus.post(event);
     }
 
     @FXML
@@ -114,7 +111,6 @@ public class TopNav {
 
         // SHOULD THIS GO HERE? (was in intialize of old map controller)
         navigate_btn.setVisible(false);
-        accessibilityButton.setVisible(false);
 
         resetBtn();
 
@@ -234,7 +230,6 @@ public class TopNav {
     void nodeSelectedHandler(Node selected) {
         // make change
         navigate_btn.setVisible(true);
-        accessibilityButton.setVisible(true);
 
 
         // show node-selected in search
@@ -248,8 +243,6 @@ public class TopNav {
     }
 
     public void startNavigation(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
         event.setEventName("navigation");
         eventBus.post(event);
     }
@@ -287,52 +280,7 @@ public class TopNav {
         }
     }
 
-    public void showREST(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("REST");
-        eventBus.post(event);
-    }
 
-
-    public void showELEV(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("ELEV");
-        eventBus.post(event);
-    }
-
-    public void showSTAI(ActionEvent actionEvent) {
-        event.setEventName("filter");
-        event.setFilterSearch("STAI");
-        eventBus.post(event);
-    }
-
-    public void showINFO(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("INFO");
-        eventBus.post(event);
-    }
-
-    public void showCONF(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("CONF");
-        eventBus.post(event);
-    }
-
-    public void showEXIT(ActionEvent actionEvent) {
-        Boolean accessibility = accessibilityButton.isSelected();
-        event.setAccessiblePath(accessibility);
-        event.setEventName("filter");
-        event.setFilterSearch("EXIT");
-        eventBus.post(event);
-    }
 
     public void showEditEmployee(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) auth_btn.getScene().getWindow();
