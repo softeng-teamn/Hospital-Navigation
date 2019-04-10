@@ -144,7 +144,7 @@ public class DirectionsController {
             String prevOne = prevDir.substring(0,1);
             String newDir = "";
             boolean changed = false;
-            if (currOne.equals("A")) {
+            if (currOne.equals("A") && !"IJ".contains(prevOne)) {
                 int prevDist = Integer.parseInt(prevDir.substring(1));
                 int currDist = Integer.parseInt(currDir.substring(1));
                 int totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
