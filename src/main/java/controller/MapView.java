@@ -63,7 +63,10 @@ import java.util.Observer;
 import static controller.Controller.nodeToEdit;
 
 public class MapView {
-
+    @FXML
+    public VBox showDirVbox;
+    @FXML
+    public JFXButton showDirectionsBtn;
     private EventBus eventBus = EventBusFactory.getEventBus();
     private Event event = EventBusFactory.getEvent();
 
@@ -76,6 +79,9 @@ public class MapView {
     private ArrayList<Circle> circleCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
+    private String units = "Ft";    // Feet or meters conversion
+    private HashMap<String, Integer> floors = new HashMap<String, Integer>();
+
 
     @FXML
     private ScrollPane map_scrollpane;
@@ -89,6 +95,8 @@ public class MapView {
     private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
     private Label cur_el_floor;
+    @FXML
+    public JFXListView directionsView;
 
 
 
@@ -151,6 +159,7 @@ public class MapView {
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.4);
 
+        directionsView.setVisible(false);
 
         // Cache imageViews so they can be reused, but only if they haven't already been cached
         if(!imagesCached) {
@@ -259,6 +268,8 @@ public class MapView {
                         } else {
                             drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
                         }
+                        directionsView.getItems().clear();
+                        hideDirections();
                         break;
                     case "refresh":
                         drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
@@ -480,6 +491,8 @@ public class MapView {
 //            event.setPath(path);
 //            event.setEventName("showText");
 //            eventBus.post(event);
+
+            printDirections(makeDirections(path));
 
         }
 
