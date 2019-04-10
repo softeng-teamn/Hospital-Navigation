@@ -204,15 +204,15 @@ public class MapView {
         switch (btn.getText()) {
             case "Floor 3":
                 imageView = imageCache.get("Floor 3");
-                floorName = "03";
+                floorName = "3";
                 break;
             case "Floor 2":
                 imageView = imageCache.get("Floor 2");
-                floorName = "02";
+                floorName = "2";
                 break;
             case "Floor 1":
                 imageView = imageCache.get("Floor 1");
-                floorName = "01";
+                floorName = "1";
                 break;
             case "L1":
                 imageView = imageCache.get("L1");

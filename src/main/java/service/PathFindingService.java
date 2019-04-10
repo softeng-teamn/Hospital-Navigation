@@ -45,7 +45,7 @@ public class PathFindingService {
                 ctx.setStrategy(new DepthFS());
                 target = ctx.findPathCTX(start, dest, accessibility, null);
                 estimatedTimeOfArrival = ctx.getEstimatedTime();
-                elevTimes = ctx.getElevTimes();
+                //elevTimes = ctx.getElevTimes();
                 break;
             default:
                 ctx.setStrategy(new BreadthFS());

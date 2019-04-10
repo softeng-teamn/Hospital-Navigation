@@ -57,22 +57,22 @@
                     <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;" stylesheets="@theme.css">
                         <children>
                             <Label text="Call Elevator" />
-                            <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" style="-fx-background-color: #48577D;" stylesheets="@theme.css" text="Level 1">
+                            <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" style="-fx-background-color: #48577D;" stylesheets="@theme.css" text="Level 01">
                                 <VBox.margin>
                                     <Insets top="10.0" />
                                 </VBox.margin>
                             </JFXButton>
-                            <JFXButton fx:id="call_el2_btn" onAction="#callElevatorAction" style="-fx-background-color: #48577D;" text="Level 2">
+                            <JFXButton fx:id="call_el2_btn" onAction="#callElevatorAction" style="-fx-background-color: #48577D;" text="Level 02">
                                 <VBox.margin>
                                     <Insets top="10.0" />
                                 </VBox.margin>
                             </JFXButton>
-                            <JFXButton fx:id="call_el3_btn" onAction="#callElevatorAction" style="-fx-background-color: #48577D;" text="Level 3">
+                            <JFXButton fx:id="call_el3_btn" onAction="#callElevatorAction" style="-fx-background-color: #48577D;" text="Level 03">
                                 <VBox.margin>
                                     <Insets top="10.0" />
                                 </VBox.margin>
                             </JFXButton>
-                            <JFXButton fx:id="call_el4_btn" onAction="#callElevatorAction" style="-fx-background-color: #48577D;" text="Level 4">
+                            <JFXButton fx:id="call_el4_btn" onAction="#callElevatorAction" style="-fx-background-color: #48577D;" text="Level 04">
                                 <VBox.margin>
                                     <Insets bottom="10.0" top="10.0" />
                                 </VBox.margin>

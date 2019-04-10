@@ -48,7 +48,7 @@ public class TopNav {
     @FXML
     private Label time_label;
     @FXML
-    private JFXToggleNode edit_btn;
+    private JFXToggleNode edit_btn, accessibilityButton;
     @FXML
     private JFXHamburger hamburger;
     @FXML
