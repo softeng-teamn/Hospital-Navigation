@@ -469,9 +469,9 @@ public class MapView {
                 line.setEndY(last.getYcoord());
 
                 if (current.getFloor().equals(event.getFloor())){
-                    line.setStroke(Color.rgb(30,136,229));
+                    line.setStroke(Color.valueOf("183284"));
                 } else {
-                    line.setStroke(Color.rgb(100,181,246, 0.8));
+                    line.setStroke(Color.rgb(139,155,177));
                 }
                 line.setStrokeWidth(20.0);
                 zoomGroup.getChildren().add(line);
