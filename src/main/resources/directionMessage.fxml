@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Polygon?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="8.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DirectionsController">
+    <children>
+        <HBox>
+            <children>
+                <JFXButton fx:id="unitSwitch_btn" onAction="#setUnits" styleClass="confirm-button" text="Meter" />
+                <Pane prefHeight="40.0" prefWidth="58.0">
+                    <children>
+                        <Polygon fill="RED" layoutX="56.0" layoutY="29.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
+                        <Polygon fill="Grey" layoutX="66.0" layoutY="39.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="Grey" strokeType="INSIDE" />
+                    </children>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </Pane>
+                <JFXButton fx:id="home_btn" onAction="#showSearchList" styleClass="confirm-button" text="Home" />
+            </children>
+        </HBox>
+        <JFXListView fx:id="directionsView" minHeight="500.0" />
+        <JFXButton styleClass="confirm-button" text="Send Text Message" />
+    </children>
+</VBox>
