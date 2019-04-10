@@ -1,5 +1,9 @@
 package model;
 
+import java.util.ResourceBundle;
+
+import static service.ResourceLoader.dfBundle;
+
 import java.util.ArrayList;
 
 public class Event {
@@ -24,6 +28,16 @@ public class Event {
     boolean callElev = false;
    // floor
     ArrayList<Node> path = null;
+
+    ResourceBundle currentBundle = dfBundle;
+
+    public ResourceBundle getCurrentBundle() {
+        return currentBundle;
+    }
+
+    public void setCurrentBundle(ResourceBundle currentBundle) {
+        this.currentBundle = currentBundle;
+    }
 
 
     public boolean isCallElev() {
