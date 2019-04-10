@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXSlider?>
@@ -96,10 +97,15 @@
                               <JFXTimePicker fx:id="end_time" prefHeight="40.0" prefWidth="141.0" promptText="End" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXCheckBox fx:id="private_checkbox" mnemonicParsing="false" text="Private" />
+                           </children>
+                        </HBox>
                         <JFXListView fx:id="time_view" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                         <HBox alignment="TOP_RIGHT">
                            <children>
-                              <JFXButton fx:id="save_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="40.0" prefWidth="320.0" text="Save" HBox.hgrow="ALWAYS" />
+                              <JFXButton fx:id="save_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSaveAction" prefHeight="40.0" prefWidth="320.0" text="Save" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                      </children>
