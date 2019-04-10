@@ -1,9 +1,16 @@
 package model.request;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.Employee;
 import model.Node;
 import service.DatabaseService;
 
+import java.util.ArrayList;
 import java.util.Objects;
+
+import static model.JobType.ADMINISTRATOR;
+import static model.JobType.RELIGIOUS_OFFICIAL;
 
 public class ReligiousRequest extends Request{
     public enum Religion {
@@ -61,4 +68,31 @@ public class ReligiousRequest extends Request{
         this.setCompleted(true);
         DatabaseService.getDatabaseService().updateReligiousRequest(this);
     }
+
+    static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    @Override
+    public ObservableList<Employee> returnCorrectEmployee () {
+        ObservableList<Employee> rightEmployee = FXCollections.observableArrayList();
+        ObservableList<Employee> allEmployee = FXCollections.observableArrayList();
+        allEmployee.addAll(myDBS.getAllEmployees()) ;
+
+        for (int i = 0; i < allEmployee.size(); i++) {
+            if (allEmployee.get(i).getJob() == RELIGIOUS_OFFICIAL || allEmployee.get(i).getJob() == ADMINISTRATOR ) {
+                rightEmployee.add(allEmployee.get(i)) ;
+            }
+        }
+        return rightEmployee ;
+    }
+    @Override
+    public ObservableList<Request> showProperRequest() {
+        return (ObservableList) myDBS.getAllReligiousRequests() ;
+    }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateReligiousRequest((ReligiousRequest) selectedTask) ;
+    }
+
+
 }

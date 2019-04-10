@@ -23,7 +23,7 @@ public class CSVService extends Controller {
     private static final String EMPLOYEE_HEADER ="ID,username,job,isAdmin,password\n";
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
-    
+
     /**
      * Export the Nodes table
      * @throws IOException
