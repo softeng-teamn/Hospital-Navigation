@@ -29,14 +29,14 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
          //Parent root = FXMLLoader.load(ResourceLoader.home);
-        Parent root = FXMLLoader.load(ResourceLoader.reservation);
+        Parent root = FXMLLoader.load(ResourceLoader.home);
         //
         // Closes all threads
         primaryStage.setOnCloseRequest((ae) -> {
             Platform.exit();
             System.exit(0);
         });
-//        primaryStage.setMaximized(true);
+        primaryStage.setMaximized(true);
         StageManager.changeWindow(primaryStage, root, "Home");
     }
 
