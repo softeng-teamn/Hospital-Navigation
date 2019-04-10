@@ -203,7 +203,7 @@ public class TopNav {
      */
     @FXML
     public void startNodeEnter(ActionEvent e) {
-        String search = search_bar.getText();
+        String search = startSearch.getText();
 
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
