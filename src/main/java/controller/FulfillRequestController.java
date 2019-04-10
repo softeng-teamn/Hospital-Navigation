@@ -164,9 +164,14 @@ public class FulfillRequestController extends Controller implements Initializabl
         allRequestlist.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllIncompleteGiftStoreRequests());
         allRequestlist.addAll((ArrayList<InternalTransportRequest>) myDBS.getAllInternalTransportRequest());
         allRequestlist.addAll((ArrayList<InterpreterRequest>) myDBS.getAllInterpreterRequests());
-        allRequestlist.addAll((ArrayList<ITRequest>) myDBS.getAllITRequests());
+        if(Controller.getCurrentJob().name().equals("ADMINISTRATOR") || Controller.getCurrentJob().name().equals("IT")){
+            allRequestlist.addAll((ArrayList<ITRequest>) myDBS.getAllITRequests());
+        }
         allRequestlist.addAll((ArrayList<MaintenanceRequest>) myDBS.getAllMaintenanceRequests());
-        allRequestlist.addAll((ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests());
+        if(Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
+        Controller.getCurrentJob().name().equals("DOCTOR")){
+            allRequestlist.addAll((ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests());
+        }
         allRequestlist.addAll((ArrayList<PatientInfoRequest>) myDBS.getAllPatientInfoRequests());
         allRequestlist.addAll((ArrayList<ReligiousRequest>) myDBS.getAllReligiousRequests());
         allRequestlist.addAll((ArrayList<SanitationRequest>) myDBS.getAllSanitationRequests());
@@ -181,9 +186,16 @@ public class FulfillRequestController extends Controller implements Initializabl
         allIncompleteRequestlist.addAll((ArrayList<GiftStoreRequest>) myDBS.getAllIncompleteGiftStoreRequests());
         allIncompleteRequestlist.addAll((ArrayList<InternalTransportRequest>) myDBS.getAllIncompleteInternalTransportRequests());
         allIncompleteRequestlist.addAll((ArrayList<InterpreterRequest>) myDBS.getAllIncompleteInterpreterRequests());
-        allIncompleteRequestlist.addAll((ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests());
+
+        if(Controller.getCurrentJob().name().equals("ADMINISTRATOR") || Controller.getCurrentJob().name().equals("IT")){
+            allIncompleteRequestlist.addAll((ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests());
+        }
         allIncompleteRequestlist.addAll((ArrayList<MaintenanceRequest>) myDBS.getAllIncompleteMaintenanceRequests());
-        allIncompleteRequestlist.addAll((ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests());
+        if(Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
+                Controller.getCurrentJob().name().equals("DOCTOR")){
+            allIncompleteRequestlist.addAll((ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests());
+        }
+
         allIncompleteRequestlist.addAll((ArrayList<PatientInfoRequest>) myDBS.getAllIncompletePatientInfoRequests());
         allIncompleteRequestlist.addAll((ArrayList<ReligiousRequest>) myDBS.getAllIncompleteReligiousRequests());
         allIncompleteRequestlist.addAll((ArrayList<SanitationRequest>) myDBS.getAllIncompleteSanitationRequests());
@@ -194,13 +206,9 @@ public class FulfillRequestController extends Controller implements Initializabl
         if (allRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
                 finalRequestList = allRequestlist;
-                if(Controller.getCurrentJob().name().equals("DOCTOR")) finalRequestList.removeAll(myDBS.getAllITRequests());
-                else if(Controller.getCurrentJob().name().equals("IT")) finalRequestList.removeAll(myDBS.getAllMedicineRequests());
-            } else if (medicineRadio.isSelected() && (Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
-                    Controller.getCurrentJob().name().equals("DOCTOR"))) {
+            } else if (medicineRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<MedicineRequest>) myDBS.getAllMedicineRequests());
-            } else if (ITRadio.isSelected() && (Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
-                    Controller.getCurrentJob().name().equals("IT"))) {
+            } else if (ITRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<ITRequest>) myDBS.getAllITRequests());
             } else if (avReqRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<AVServiceRequest>) myDBS.getAllAVServiceRequests());
@@ -231,13 +239,9 @@ public class FulfillRequestController extends Controller implements Initializabl
         } else if (uncRadio.isSelected()) {
             if (allTypeRadio.isSelected()) {
                 finalRequestList = allIncompleteRequestlist;
-                if(Controller.getCurrentJob().name().equals("DOCTOR")) finalRequestList.removeAll(myDBS.getAllIncompleteITRequests());
-                else if(Controller.getCurrentJob().name().equals("IT")) finalRequestList.removeAll(myDBS.getAllIncompleteMedicineRequests());
-            } else if (medicineRadio.isSelected() && (Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
-                    Controller.getCurrentJob().name().equals("DOCTOR"))) {
+            } else if (medicineRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<MedicineRequest>) myDBS.getAllIncompleteMedicineRequests());
-            } else if (ITRadio.isSelected() && (Controller.getCurrentJob().name().equals("ADMINISTRATOR") ||
-                    Controller.getCurrentJob().name().equals("IT"))) {
+            } else if (ITRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<ITRequest>) myDBS.getAllIncompleteITRequests());
             } else if (avReqRadio.isSelected()) {
                 finalRequestList.addAll((ArrayList<AVServiceRequest>) myDBS.getAllIncompleteAVServiceRequests());
