@@ -23,6 +23,10 @@
     -fx-border-color: transparent transparent -fx-unfocusedtext transparent;
 }
 
+.jfx-hamburger StackPane {
+    -fx-background-color: -fx-primary;
+}
+
 .interaction-area {
     -fx-background-color: #C6C9CC;
 }
@@ -75,6 +79,7 @@
     -jfx-focus-color: -fx-secondary;
     -jfx-unfocus-color: -fx-unfocusedtext;
     -fx-prompt-text-fill: -fx-unfocusedtext;
+    -jfx-label-float: true;
 }
 
 .wrong-credentials{
@@ -160,6 +165,19 @@
 
 .button:hover .glyph-icon{
     -fx-fill: -fx-complementary;
+}
+
+.glyph-button{
+    -fx-background-color: -fx-complementary;
+    -fx-font-size: 12pt;
+    -fx-background-radius: 7px;
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 12pt;
+    -fx-border-width: 0px;
+}
+
+.glyph-button:hover .glyph-icon{
+    -fx-fill: -fx-primary;
 }
 
 .confirm-button {
@@ -251,7 +269,6 @@
     -fx-font-size: 10pt;
     -jfx-selected-color: -fx-secondary;
 }
-
 
 
 

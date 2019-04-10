@@ -91,4 +91,9 @@ public class SanitationRequest extends Request {
     public ObservableList<Request> showProperRequest() {
         return (ObservableList) myDBS.getAllSanitationRequests() ;
     }
+
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateSanitationRequest((SanitationRequest) selectedTask) ;
+    }
 }
