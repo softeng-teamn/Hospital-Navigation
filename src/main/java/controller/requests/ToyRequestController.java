@@ -26,6 +26,8 @@ public class ToyRequestController extends RequestController {
         if(selectedNode != null) {
             ToyRequest toyRequest = new ToyRequest(-1, description.getText(), selectedNode, false, toy.getText());
             toyRequest.makeRequest();
+            toy.setText("");
+            description.setText("");
         }
     }
 }

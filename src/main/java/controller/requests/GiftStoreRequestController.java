@@ -40,6 +40,8 @@ public class GiftStoreRequestController extends RequestController {
         if(selectedNode != null) {
             GiftStoreRequest giftStoreRequest = new GiftStoreRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem(), patientName.getText());
             giftStoreRequest.makeRequest();
+            description.setText("");
+            type.getSelectionModel().clearSelection();
         }
     }
 }

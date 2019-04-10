@@ -30,6 +30,8 @@ public class ReligiousRequestController extends RequestController {
         if(selectedNode != null) {
             ReligiousRequest religiousRequest = new ReligiousRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
             religiousRequest.makeRequest();
+            description.setText("");
+            type.getSelectionModel().clearSelection();
         }
     }
 }

@@ -30,6 +30,8 @@ public class MaintenanceRequestController extends RequestController {
         if(selectedNode != null) {
             MaintenanceRequest maintenanceRequest = new MaintenanceRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
             maintenanceRequest.makeRequest();
+            description.setText("");
+            type.getSelectionModel().clearSelection();
         }
     }
 }
