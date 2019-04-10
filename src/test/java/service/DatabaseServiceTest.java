@@ -2451,7 +2451,7 @@ public class DatabaseServiceTest {
         req2.setId(1);
 
         // Check that there are two and only two, and that they are the right two
-        List<InternalTransportRequest> allInternalTransportRequests = myDBS.getAllInternalTransportRequest();
+        List<InternalTransportRequest> allInternalTransportRequests = myDBS.getAllInternalTransportRequests();
         assertThat(allInternalTransportRequests.size(), is(2));
         assertEquals(req1, allInternalTransportRequests.get(0));
         assertEquals(req2, allInternalTransportRequests.get(1));
@@ -2461,7 +2461,7 @@ public class DatabaseServiceTest {
 
         req3.setId(2);
 
-        allInternalTransportRequests = myDBS.getAllInternalTransportRequest();
+        allInternalTransportRequests = myDBS.getAllInternalTransportRequests();
         assertThat(allInternalTransportRequests.size(), is(3));
         assertEquals(req1, allInternalTransportRequests.get(0));
         assertEquals(req2, allInternalTransportRequests.get(1));

@@ -97,13 +97,18 @@ public class ReligiousRequest extends Request{
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == RELIGIOUS_OFFICIAL) return true;
+        if (jobType == RELIGIOUS_OFFICIAL || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
         return String.format("Religious Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Religious");
     }
 
 }

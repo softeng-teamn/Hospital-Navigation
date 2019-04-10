@@ -756,6 +756,14 @@ public class DatabaseService {
         return (List<ITRequest>) (List<?>) executeGetMultiple(query, ITRequest.class, false);
     }
 
+
+    /**
+     * @return a list of every IT request that has not been completed yet.
+     */
+    public List<ITRequest> getAllCompleteITRequests() {
+        String query = "Select * FROM ITREQUEST WHERE (completed = ?)";
+        return (List<ITRequest>) (List<?>) executeGetMultiple(query, ITRequest.class, true);
+    }
     /**
      * @param req the request to insert into the database
      * @return true if the insert succeeds and false if otherwise
@@ -809,6 +817,14 @@ public class DatabaseService {
     }
 
     /**
+     * @return a list of all medicine requests that haven't been completed yet
+     */
+    public List<MedicineRequest> getAllCompleteMedicineRequests() {
+        String query = "Select * FROM MEDICINEREQUEST where (completed = ?)";
+        return (List<MedicineRequest>) (List<?>) executeGetMultiple(query, MedicineRequest.class, true);
+    }
+
+    /**
      * @param id the ID of the request to retrieve
      * @return
      */
@@ -843,6 +859,22 @@ public class DatabaseService {
     public List<FloristRequest> getAllFloristRequests() {
         String query = "Select * FROM FLORISTREQUEST";
         return (List<FloristRequest>) (List<?>) executeGetMultiple(query, FloristRequest.class, new Object[]{});
+    }
+
+    /**
+     * @return a list of every Security request that has not been completed yet.
+     */
+    public List<FloristRequest> getAllIncompleteFloristRequests() {
+        String query = "Select * FROM FLORISTREQUEST WHERE (completed = ?)";
+        return (List<FloristRequest>) (List<?>) executeGetMultiple(query, FloristRequest.class, false);
+    }
+
+    /**
+     * @return a list of every Security request that has not been completed yet.
+     */
+    public List<FloristRequest> getAllCompleteFloristRequests() {
+        String query = "Select * FROM FLORISTREQUEST WHERE (completed = ?)";
+        return (List<FloristRequest>) (List<?>) executeGetMultiple(query, FloristRequest.class, true);
     }
 
     /**
@@ -1064,6 +1096,10 @@ public class DatabaseService {
         String query = "Select * FROM RELIGIOUSREQUEST WHERE (completed = ?)";
         return (List<ReligiousRequest>) (List<?>) executeGetMultiple(query, ReligiousRequest.class, false);
     }
+    public List<ReligiousRequest> getAllCompleteReligiousRequests() {
+        String query = "Select * FROM RELIGIOUSREQUEST WHERE (completed = ?)";
+        return (List<ReligiousRequest>) (List<?>) executeGetMultiple(query, ReligiousRequest.class, true);
+    }
 
     public InterpreterRequest getInterpreterRequest(int id) {
         String query = "SELECT * FROM INTERPRETERREQUEST WHERE (serviceID = ?)";
@@ -1094,6 +1130,11 @@ public class DatabaseService {
     public List<InterpreterRequest> getAllIncompleteInterpreterRequests() {
         String query = "Select * FROM INTERPRETERREQUEST WHERE (completed = ?)";
         return (List<InterpreterRequest>) (List<?>) executeGetMultiple(query, InterpreterRequest.class, false);
+    }
+
+    public List<InterpreterRequest> getAllCompleteInterpreterRequests() {
+        String query = "Select * FROM INTERPRETERREQUEST WHERE (completed = ?)";
+        return (List<InterpreterRequest>) (List<?>) executeGetMultiple(query, InterpreterRequest.class, true);
     }
 
     /**
@@ -1181,7 +1222,7 @@ public class DatabaseService {
     /**
      * @return all IT requests stored in the database in a List.
      */
-    public List<InternalTransportRequest> getAllInternalTransportRequest() {
+    public List<InternalTransportRequest> getAllInternalTransportRequests() {
         String query = "Select * FROM INTERNALTRANSPORTREQUEST";
         return (List<InternalTransportRequest>) (List<?>) executeGetMultiple(query, InternalTransportRequest.class, new Object[]{});
     }

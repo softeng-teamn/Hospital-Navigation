@@ -99,12 +99,17 @@ public class SecurityRequest extends Request {
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == SECURITY_PERSONNEL) return true;
+        if (jobType == SECURITY_PERSONNEL || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
         return String.format("Security Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Security");
     }
 }

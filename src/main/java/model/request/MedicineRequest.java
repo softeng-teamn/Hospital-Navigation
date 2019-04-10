@@ -112,12 +112,17 @@ public class MedicineRequest extends Request {
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == DOCTOR || jobType == NURSE) return true;
+        if (jobType == DOCTOR || jobType == NURSE || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
         return String.format("Medicines Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Medicine");
     }
 }

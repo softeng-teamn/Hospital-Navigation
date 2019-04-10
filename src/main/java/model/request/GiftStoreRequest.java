@@ -110,7 +110,7 @@ public class GiftStoreRequest extends Request {
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == GIFT_SERVICES) return true;
+        if (jobType == GIFT_SERVICES || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
@@ -118,5 +118,10 @@ public class GiftStoreRequest extends Request {
     @Override
     public String toDisplayString() {
         return String.format("Gift Store Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Gift Store");
     }
 }

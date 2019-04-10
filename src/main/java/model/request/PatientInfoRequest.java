@@ -128,13 +128,18 @@ public class PatientInfoRequest extends Request{
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == NURSE) return true;
+        if (jobType == NURSE || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
         return String.format("Patient Info Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Patient Info");
     }
 
 }

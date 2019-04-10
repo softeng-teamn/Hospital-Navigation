@@ -4,29 +4,19 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
-import controller.requests.InternalTransportController;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Employee;
-import model.JobType;
 import model.request.*;
 import service.DatabaseService;
 import service.ResourceLoader;
@@ -34,14 +24,14 @@ import service.StageManager;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import static model.JobType.*;
 
 public class FulfillRequestController extends Controller implements Initializable {
 
+    @FXML
+    public JFXRadioButton completedRadio;
     @FXML
     private JFXButton homeBtn;
     @FXML
@@ -114,6 +104,13 @@ public class FulfillRequestController extends Controller implements Initializabl
                 employeeListView.getItems().add(employee);
             }
         }
+
+        requestListView.getItems().clear();
+        for (Request request : requests) {
+            if (requestTypeSelected.equals("All") || request.isOfType(requestTypeSelected)) {
+                requestListView.getItems().add(request);
+            }
+        }
     }
 
 
@@ -152,22 +149,8 @@ public class FulfillRequestController extends Controller implements Initializabl
         });
 
         requests = new ArrayList<>();
-        requests.addAll(myDBS.getAllAVServiceRequests());
-        requests.addAll(myDBS.getAllExtTransRequests());
-        requests.addAll(myDBS.getAllFloristRequests());
-        requests.addAll(myDBS.getAllGiftStoreRequests());
-        requests.addAll(myDBS.getAllInternalTransportRequest());
-        requests.addAll(myDBS.getAllInterpreterRequests());
-        requests.addAll(myDBS.getAllITRequests());
-        requests.addAll(myDBS.getAllMaintenanceRequests());
-        requests.addAll(myDBS.getAllMedicineRequests());
-        requests.addAll(myDBS.getAllPatientInfoRequests());
-        requests.addAll(myDBS.getAllReligiousRequests());
-        requests.addAll(myDBS.getAllSanitationRequests());
-        requests.addAll(myDBS.getAllSecurityRequests());
-        requests.addAll(myDBS.getAllToyRequests());
 
-        System.out.println(myDBS.getAllITRequests());
+        setRequestsAll();
 
         requestListView.setItems(FXCollections.observableArrayList(requests));
         requestListView.setCellFactory(new Callback<ListView<Request>, ListCell<Request>>() {
@@ -188,5 +171,76 @@ public class FulfillRequestController extends Controller implements Initializabl
                 return cell;
             }
         });
+
+        requestListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Request> observable, Request oldValue, Request newValue) -> {
+            employeeListView.getItems().clear();
+            for(Employee employee : employees) {
+                if (newValue.fulfillableByType(employee.getJob())) {
+                    employeeListView.getItems().add(employee);
+                }
+            }
+        });
+    }
+
+    private void setRequestsAll() {
+        requests.addAll(myDBS.getAllAVServiceRequests());
+        requests.addAll(myDBS.getAllExtTransRequests());
+        requests.addAll(myDBS.getAllFloristRequests());
+        requests.addAll(myDBS.getAllGiftStoreRequests());
+        requests.addAll(myDBS.getAllInternalTransportRequests());
+        requests.addAll(myDBS.getAllInterpreterRequests());
+        requests.addAll(myDBS.getAllITRequests());
+        requests.addAll(myDBS.getAllMaintenanceRequests());
+        requests.addAll(myDBS.getAllMedicineRequests());
+        requests.addAll(myDBS.getAllPatientInfoRequests());
+        requests.addAll(myDBS.getAllReligiousRequests());
+        requests.addAll(myDBS.getAllSanitationRequests());
+        requests.addAll(myDBS.getAllSecurityRequests());
+        requests.addAll(myDBS.getAllToyRequests());
+    }
+
+    private void setRequestsIncomplete() {
+        requests.addAll(myDBS.getAllIncompleteAVServiceRequests());
+        requests.addAll(myDBS.getAllIncompleteExtTransRequests());
+        requests.addAll(myDBS.getAllIncompleteFloristRequests());
+        requests.addAll(myDBS.getAllIncompleteGiftStoreRequests());
+        requests.addAll(myDBS.getAllIncompleteInternalTransportRequests());
+        requests.addAll(myDBS.getAllIncompleteInterpreterRequests());
+        requests.addAll(myDBS.getAllIncompleteITRequests());
+        requests.addAll(myDBS.getAllIncompleteMaintenanceRequests());
+        requests.addAll(myDBS.getAllIncompleteMedicineRequests());
+        requests.addAll(myDBS.getAllIncompletePatientInfoRequests());
+        requests.addAll(myDBS.getAllIncompleteReligiousRequests());
+        requests.addAll(myDBS.getAllIncompleteSanitationRequests());
+        requests.addAll(myDBS.getAllIncompleteSecurityRequests());
+        requests.addAll(myDBS.getAllIncompleteToyRequests());
+    }
+
+    private void setRequestsComplete() {
+        requests.addAll(myDBS.getAllCompleteAVServiceRequests());
+        requests.addAll(myDBS.getAllCompleteExtTransRequests());
+        requests.addAll(myDBS.getAllCompleteFloristRequests());
+        requests.addAll(myDBS.getAllCompleteGiftStoreRequests());
+        requests.addAll(myDBS.getAllCompleteInternalTransportRequests());
+        requests.addAll(myDBS.getAllCompleteInterpreterRequests());
+        requests.addAll(myDBS.getAllCompleteITRequests());
+        requests.addAll(myDBS.getAllCompleteMaintenanceRequests());
+        requests.addAll(myDBS.getAllCompleteMedicineRequests());
+        requests.addAll(myDBS.getAllCompletePatientInfoRequests());
+        requests.addAll(myDBS.getAllCompleteReligiousRequests());
+        requests.addAll(myDBS.getAllCompleteSanitationRequests());
+        requests.addAll(myDBS.getAllCompleteSecurityRequests());
+        requests.addAll(myDBS.getAllCompleteToyRequests());
+    }
+
+    public void reqStateChange(ActionEvent actionEvent) {
+        allRadio.isSelected();
+    }
+
+    public void fulfillRequest(ActionEvent actionEvent) {
+    }
+
+    public void assignRequest(ActionEvent actionEvent) {
+
     }
 }

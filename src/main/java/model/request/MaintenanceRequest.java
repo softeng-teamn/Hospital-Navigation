@@ -95,12 +95,17 @@ public class MaintenanceRequest extends Request {
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == MAINTENANCE_WORKER) return true;
+        if (jobType == MAINTENANCE_WORKER || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
         return String.format("Maintenance Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Maintenance");
     }
 }

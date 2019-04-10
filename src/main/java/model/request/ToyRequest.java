@@ -94,12 +94,17 @@ public class ToyRequest extends Request {
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == TOY) return true;
+        if (jobType == TOY || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
         return String.format("Toy Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Toy");
     }
 }

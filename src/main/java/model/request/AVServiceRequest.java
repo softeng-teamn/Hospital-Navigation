@@ -85,12 +85,18 @@ public class AVServiceRequest extends Request {
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == AV) return true;
+        if (jobType == AV || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
-        return String.format("AV Request %d, Description: %s, Type: %s, assignedTo: %d", this.getId(), this.getNotes(), this.getAVServiceType().name(), this.getAVServiceType());
+        return String.format("AV Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getAVServiceType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("AV Service");
     }
 }

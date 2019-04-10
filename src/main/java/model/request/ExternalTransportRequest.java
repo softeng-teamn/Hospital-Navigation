@@ -124,12 +124,17 @@ public class ExternalTransportRequest extends Request {
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == EXTERNAL_TRANSPORT) return true;
+        if (jobType == EXTERNAL_TRANSPORT || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
         return String.format("External Transport Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("External Transport");
     }
 }

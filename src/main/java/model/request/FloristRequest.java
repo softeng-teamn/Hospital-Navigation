@@ -105,7 +105,7 @@ public class FloristRequest extends Request {
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == FLORIST) return true;
+        if (jobType == FLORIST || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
@@ -113,5 +113,10 @@ public class FloristRequest extends Request {
     @Override
     public String toDisplayString() {
         return String.format("Florist Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Florist");
     }
 }

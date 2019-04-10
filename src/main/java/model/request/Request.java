@@ -106,4 +106,5 @@ public abstract class Request {
 
     public abstract String toDisplayString();
 
+    public abstract boolean isOfType(String typeString);
 }

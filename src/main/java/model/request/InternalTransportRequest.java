@@ -8,8 +8,6 @@ import model.JobType;
 import model.Node;
 import service.DatabaseService;
 
-import javax.xml.crypto.Data;
-import java.util.ArrayList;
 import java.util.Objects;
 
 import static model.JobType.*;
@@ -93,7 +91,7 @@ public class InternalTransportRequest extends Request {
 
     @Override
     public ObservableList<Request> showProperRequest() {
-        return (ObservableList) myDBS.getAllInternalTransportRequest() ;
+        return (ObservableList) myDBS.getAllInternalTransportRequests() ;
     }
 
     @Override
@@ -103,12 +101,17 @@ public class InternalTransportRequest extends Request {
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == INTERNAL_TRANSPORT) return true;
+        if (jobType == INTERNAL_TRANSPORT || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
         return String.format("Internal Transport Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Internal Transport");
     }
 }

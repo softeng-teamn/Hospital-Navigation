@@ -94,12 +94,17 @@ public class InterpreterRequest extends Request{
 
     @Override
     public boolean fulfillableByType(JobType jobType) {
-        if (jobType == INTERPRETER) return true;
+        if (jobType == INTERPRETER || jobType == ADMINISTRATOR) return true;
         return false;
     }
 
     @Override
     public String toDisplayString() {
         return String.format("Interpreter Request %d", this.getId());
+    }
+
+    @Override
+    public boolean isOfType(String typeString) {
+        return typeString.equals("Interpreter");
     }
 }
