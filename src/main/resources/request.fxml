@@ -39,7 +39,7 @@
             <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
          </padding>
       </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0" styleClass="interaction-area" VBox.vgrow="ALWAYS">
+      <HBox fx:id="hbox" prefHeight="100.0" prefWidth="200.0" styleClass="interaction-area" VBox.vgrow="ALWAYS">
          <children>
             <JFXListView fx:id="list_view" onMouseClicked="#locationSelected" prefWidth="384.0">
                <HBox.margin>

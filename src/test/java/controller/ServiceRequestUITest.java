@@ -7,7 +7,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.request.*;
 import org.junit.Before;
@@ -21,6 +24,8 @@ import service.DatabaseService;
 import service.ResourceLoader;
 import testclassifications.FastTest;
 import testclassifications.UiTest;
+
+import java.awt.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -209,47 +214,6 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-
-    @Test
-    @Category(FastTest.class)
-    public void religiousTest() {
-        // Verify no requests of this type exist
-        assertThat(myDBS.getAllReligiousRequests().size(), is(0));
-
-        // Get and click on a location
-        JFXListView<Node> listView = GuiTest.find("#list_view");
-        clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
-
-        // Verify no subscene is present
-        Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
-
-        moveBy(500, 20);
-        scroll(40, VerticalDirection.DOWN);
-
-        // Click on the request type
-        Node tgNode = GuiTest.find("#religiousSelectNode");
-        clickOn(tgNode);
-
-        // Verify subscene appears
-        verifyThat(subSceneHolder.getChildren().size(), is(1));
-
-        // Get and Populate fields
-        JFXTextArea description = GuiTest.find("#description");
-        JFXComboBox type = GuiTest.find("#type");
-        JFXButton submit = GuiTest.find("#submit");
-        clickOn(description).write("A description here...");
-        clickOn(type).type(KeyCode.DOWN).type(KeyCode.DOWN).type(KeyCode.DOWN).type(KeyCode.ENTER);
-
-        // Submit
-        clickOn(submit);
-
-        // Verify submission in database
-        ReligiousRequest req = myDBS.getReligiousRequest(0);
-        verifyThat(req.getReligion(), is(ReligiousRequest.Religion.CATHOLIC));
-        verifyThat(req.getNotes(), is("A description here..."));
-    }
-
     @Test
     @Category(FastTest.class)
     public void patientInfoTest() {
@@ -263,9 +227,6 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Verify no subscene is present
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
         verifyThat(subSceneHolder.getChildren().size(), is(0));
-
-        moveBy(500, 20);
-        scroll(20, VerticalDirection.DOWN);
 
         // Click on the request type
         Node tgNode = GuiTest.find("#patientSelectNode");
@@ -302,7 +263,7 @@ public class ServiceRequestUITest extends ApplicationTest {
 
     @Test
     @Category(FastTest.class)
-    public void medicineRequest() {
+    public void medicineRequestTest() {
         // Verify no requests of this type exist
         assertThat(myDBS.getAllReligiousRequests().size(), is(0));
 
