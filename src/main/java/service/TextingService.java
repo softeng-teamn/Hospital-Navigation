@@ -4,7 +4,9 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,21 +15,22 @@ import java.util.stream.Stream;
 
 public class TextingService {
     // Find your Account Sid and Auth Token at twilio.com/console
-    private static String readLineByLineJava8(String filePath)
+    String[] secrets;
+    private void readLineByLineJava(URL filePath)
     {
+        BufferedReader reader = null;
         StringBuilder contentBuilder = new StringBuilder();
-        try (Stream<String> stream = Files.lines( Paths.get(filePath), StandardCharsets.UTF_8))
+        try
         {
-            stream.forEach(s -> contentBuilder.append(s).append("\n"));
+            reader = new BufferedReader(new InputStreamReader(ResourceLoader.edges.openStream(), "UTF-8"));
+            secrets[0] = reader.readLine();
+            secrets[1] = reader.readLine();
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
-        return contentBuilder.toString();
     }
-    String superSecret = readLineByLineJava8("/resources/SuperSecretPasswords.txt");
-    String[] secrets = superSecret.split("\n",2);
 
     public final String ACCOUNT_SID =
             secrets[0];
