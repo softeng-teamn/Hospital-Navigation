@@ -3,10 +3,13 @@ package controller;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
+import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.MaterialIconView;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -42,9 +45,13 @@ public class TopNav {
     @FXML
     private FontAwesomeIconView lock_icon;
     @FXML
+    private MaterialIconView home_icon;
+    @FXML
     private Label time_label;
     @FXML
     private JFXToggleNode edit_btn;
+    @FXML
+    private JFXHamburger hamburger;
 
     JFXTextField startSearch = new JFXTextField();
 
@@ -111,6 +118,13 @@ public class TopNav {
 
         // set Default time
         timeWatcher();
+
+        HamburgerBackArrowBasicTransition backArrow = new HamburgerBackArrowBasicTransition(hamburger);
+        backArrow.setRate(-1);
+        hamburger.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+            backArrow.setRate(backArrow.getRate()*-1);
+            backArrow.play();
+        });
     }
 
     private void timeWatcher() {
@@ -189,7 +203,7 @@ public class TopNav {
      */
     @FXML
     public void startNodeEnter(ActionEvent e) {
-        String search = search_bar.getText();
+        String search = startSearch.getText();
 
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
@@ -254,16 +268,20 @@ public class TopNav {
             startSearch.setPromptText("Start Node");
             startSearch.setOnAction(this::startNodeEnter);
             startSearch.setOnMouseClicked(this::setEventEndNode);
-            top_nav.getChildren().add(0, startSearch);
+            startSearch.getStyleClass().add("header-text-field");
+            top_nav.getChildren().add(2, startSearch);
             event.setEndNode(false);
             startNode_btn.setText("Use default");
-        } else {
+            home_icon.setIcon(MaterialIcon.ARROW_BACK);
+        }
+        else {
             top_nav.getChildren().remove(startSearch);
             event.setEndNode(true);
             event.setDefaultStartNode();
             event.setEventName("refresh");
             eventBus.post(event);
             startNode_btn.setText("Start Node");
+            home_icon.setIcon(MaterialIcon.LOCATION_ON);
         }
     }
 

@@ -2,6 +2,7 @@ package controller;
 
 import com.google.common.eventbus.EventBus;
 import javafx.fxml.FXML;
+import javafx.scene.layout.Pane;
 import model.EventBusFactory;
 import static controller.Controller.initConnections;
 
@@ -15,11 +16,23 @@ public class HomeController {
     private SearchResults searchResultsController;
     @FXML
     private TopNav topNavController;
+    @FXML
+    private Pane leftPane;
 
     @FXML
     void initialize() {
         initConnections();
 
     }
+
+    /*
+
+    pane switching
+
+    //TODO show search list view when receive "showSearch"
+
+    //TODO show text list view when receive "showText"
+
+    */
 
 }
