@@ -1,9 +1,11 @@
 package service;
 
+import model.ElevatorFloor;
 import model.MapNode;
 import model.Node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AlgorithmContext {
 
@@ -25,8 +27,7 @@ public class AlgorithmContext {
         return strategy.findDest(start, dest, accessibility, filter);
     }
 
-    public int getEstimatedTime() {
-        return strategy.getEstimatedTime();
-    }
+    public int getEstimatedTime() {return strategy.getEstimatedTime();}
+    public HashMap<String, ElevatorFloor> getElevTimes(){return strategy.getElevTimes();}
 
 }

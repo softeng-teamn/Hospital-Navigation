@@ -15,6 +15,12 @@ public class PathSettingController {
     @FXML
     private JFXToggleNode accessibilityButton;
 
+    @FXML
+    void showSearchResults(ActionEvent e) {
+        event.setEventName("showSearch");
+        eventBus.post(event);
+    }
+
     public void showREST(ActionEvent actionEvent) {
         Boolean accessibility = accessibilityButton.isSelected();
         event.setAccessiblePath(accessibility);
