@@ -5,6 +5,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -75,13 +76,16 @@
                      <graphic>
                         <FontAwesomeIconView glyphName="STAR" glyphStyle="FAR" size="48" styleClass="request-glyph" text="" />
                      </graphic>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="algorithm" />
+                     </toggleGroup>
                   </JFXToggleNode>
-                  <JFXToggleNode onAction="#depthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Depth" textAlignment="CENTER">
+                  <JFXToggleNode onAction="#depthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Depth" textAlignment="CENTER" toggleGroup="$algorithm">
                      <graphic>
                         <FontAwesomeIconView glyphName="" size="48" styleClass="request-glyph" text="" />
                      </graphic>
                   </JFXToggleNode>
-                  <JFXToggleNode onAction="#breadthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Breadth" textAlignment="CENTER">
+                  <JFXToggleNode onAction="#breadthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Breadth" textAlignment="CENTER" toggleGroup="$algorithm">
                      <graphic>
                         <FontAwesomeIconView glyphName="BOLD" size="48" styleClass="request-glyph" />
                      </graphic>
