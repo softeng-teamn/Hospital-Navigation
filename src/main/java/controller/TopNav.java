@@ -54,6 +54,7 @@ public class TopNav {
     private boolean barOpened = false;
 
     JFXTextField startSearch = new JFXTextField();
+    HamburgerBackArrowBasicTransition backArro;
 
     // events I send out/control
     @FXML
@@ -116,6 +117,8 @@ public class TopNav {
             backArrow.setRate(backArrow.getRate()*-1);
             backArrow.play();
         });
+
+        backArro = backArrow;
     }
 
     private void timeWatcher() {
@@ -240,12 +243,30 @@ public class TopNav {
 
 
     public void setEventEndNode(MouseEvent mouseEvent){
+
         event.setEndNode(false);
+        event.setEventName("showSearch");
+        eventBus.post(event);
+
+        if(backArro.getRate() == 1) {
+            backArro.setRate(backArro.getRate() * -1);
+            backArro.play();
+            barOpened = false;
+        }
     }
 
 
     public void setEventStartNode(MouseEvent mouseEvent) {
+
         event.setEndNode(true);
+        event.setEventName("showSearch");
+        eventBus.post(event);
+
+        if(backArro.getRate() == 1) {
+            backArro.setRate(backArro.getRate() * -1);
+            backArro.play();
+            barOpened = false;
+        }
     }
 
     @FXML
