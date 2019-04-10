@@ -61,7 +61,7 @@
                      <children>
                         <VBox prefWidth="256.0">
                            <children>
-                              <JFXToggleNode onAction="#itSelect" prefHeight="256.0" prefWidth="256.0" styleClass="request-toggle-node" text="%ITRequest">
+                              <JFXToggleNode fx:id="itSelectNode" onAction="#itSelect" prefHeight="256.0" prefWidth="256.0" styleClass="request-toggle-node" text="%ITRequest">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="DESKTOP" size="128" styleClass="button-glyph-icon" />
                                  </graphic>
@@ -70,7 +70,7 @@
                                  </toggleGroup>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                              <JFXToggleNode onAction="#interpreterRequestSelect" prefHeight="256.0" prefWidth="256.0" styleClass="request-toggle-node" text="%Interpreter" textAlignment="CENTER" toggleGroup="$requestType">
+                              <JFXToggleNode fx:id="interpreterSelectNode" onAction="#interpreterRequestSelect" prefHeight="256.0" prefWidth="256.0" styleClass="request-toggle-node" text="%Interpreter" textAlignment="CENTER" toggleGroup="$requestType">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="USER" size="128" styleClass="button-glyph-icon" />
                                  </graphic>
