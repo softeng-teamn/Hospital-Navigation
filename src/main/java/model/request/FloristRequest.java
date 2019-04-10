@@ -98,4 +98,9 @@ public class FloristRequest extends Request {
         return (ObservableList) myDBS.getAllFloristRequests() ;
     }
 
+    @Override
+    public void updateEmployee (Request selectedTask, Employee selectedEmp) {
+        myDBS.updateFloristRequest((FloristRequest) selectedTask) ;
+    }
+
 }
