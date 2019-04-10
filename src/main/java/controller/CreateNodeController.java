@@ -44,15 +44,13 @@ public class CreateNodeController extends Controller {
     @FXML
     Label instruction_label;
     @FXML
-    VBox node_info_vbox, narnar_vbox;
+    VBox node_info_vbox, narnar_vbox, floor_change_vbox;
     @FXML
     JFXTextField floor_field, type_field, short_field, long_field, building_field;
     @FXML
     JFXListView<String> time_view;
     @FXML
     Pane image_pane;
-    @FXML
-    VBox floor_change_vbox;
 
     private final Color DEFAULT_NODE_COLOR = Color.BLACK;
     private final Color SELECTED_NODE_COLOR = Color.RED;
@@ -70,7 +68,7 @@ public class CreateNodeController extends Controller {
     // Node data
     Node myCreatedNode;
     // Node info
-    String node_floor = "";
+    String node_floor = "1";
     String node_type = "";
     String node_short = "";
     String node_long = "";
@@ -346,6 +344,7 @@ public class CreateNodeController extends Controller {
         // remove map
         anchor_pane.getChildren().remove(map_scrollpane);
         anchor_pane.getChildren().remove(zoom_slider);
+        anchor_pane.getChildren().remove(floor_change_vbox);
         // add the narwhal
         if (!anchor_pane.getChildren().contains(narnar_vbox)) {
             anchor_pane.getChildren().add(narnar_vbox);
