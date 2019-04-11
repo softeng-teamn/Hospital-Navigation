@@ -70,9 +70,8 @@ public class ServiceRequestUITest extends ApplicationTest {
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
         // Click on the service_request type
         Node tgNode = GuiTest.find("#itSelectNode");
@@ -107,9 +106,8 @@ public class ServiceRequestUITest extends ApplicationTest {
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
         // Click on the service_request type
         Node tgNode = GuiTest.find("#toySelectNode");
@@ -144,9 +142,8 @@ public class ServiceRequestUITest extends ApplicationTest {
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
         // Click on the service_request type
         Node tgNode = GuiTest.find("#securitySelectNode");
@@ -181,9 +178,8 @@ public class ServiceRequestUITest extends ApplicationTest {
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
         // Click on the service_request type
         Node tgNode = GuiTest.find("#sanitationSelectNode");
@@ -221,9 +217,8 @@ public class ServiceRequestUITest extends ApplicationTest {
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
         // Click on the service_request type
         Node tgNode = GuiTest.find("#patientSelectNode");
@@ -268,9 +263,8 @@ public class ServiceRequestUITest extends ApplicationTest {
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
         // Click on the service_request type
         Node tgNode = GuiTest.find("#medicineSelectNode");
