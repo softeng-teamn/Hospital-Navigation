@@ -60,7 +60,6 @@ public class ServiceRequestUITest extends ApplicationTest {
         assertThat(true, is(true));
     }
 
-    @Ignore
     @Test
     @Category(FastTest.class)
     public void itTest() {
@@ -98,7 +97,6 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
     @Category(FastTest.class)
     public void toyTest() {
@@ -136,7 +134,6 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
     @Category(FastTest.class)
     public void securityTest() {
@@ -174,7 +171,6 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
     @Category(FastTest.class)
     public void sanitationTest() {
@@ -215,7 +211,6 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
     @Category(FastTest.class)
     public void patientInfoTest() {
@@ -263,7 +258,6 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
     @Category(FastTest.class)
     public void medicineRequestTest() {
