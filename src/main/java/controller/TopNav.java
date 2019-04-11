@@ -3,6 +3,7 @@ package controller;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
@@ -54,9 +55,11 @@ public class TopNav {
     @FXML
     private Label time_label;
     @FXML
-    private JFXToggleNode edit_btn;
+    private JFXToggleNode edit_btn, accessibilityButton;
     @FXML
     private JFXHamburger hamburger;
+    @FXML
+    private JFXCheckBox callElev;
 
     private boolean barOpened = false;
 
@@ -173,9 +176,13 @@ public class TopNav {
                     nodeSelectedHandler(newEvent.getNodeStart());
                 }
                 break;
-
             case "login":     // receives from AdminLoginContoller?
                 event.setAdmin(newEvent.isAdmin());
+                break;
+            case "showSearch":
+                backArro.setRate(-1);
+                backArro.play();
+                barOpened = false;
                 break;
             default:
                 break;
@@ -251,6 +258,10 @@ public class TopNav {
     }
 
     public void startNavigation(ActionEvent actionEvent) {
+        //if(callElev.isSelected()){
+            event.setCallElev(true);
+        //}
+
         event.setEventName("navigation");
         eventBus.post(event);
     }
