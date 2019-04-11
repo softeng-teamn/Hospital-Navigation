@@ -46,6 +46,8 @@ public class AVServiceRequestController extends RequestController {
         if(selectedNode != null) {
             AVServiceRequest avServiceRequest = new AVServiceRequest(-1, description.getText(), selectedNode, false, AVTypeSelected);
             avServiceRequest.makeRequest();
+            description.setText("");
+            AVType.selectToggle(null);
         }
     }
 
