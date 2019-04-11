@@ -21,6 +21,7 @@ public class GiftStoreRequestController extends RequestController {
 
     @FXML
     private JFXButton submit;
+
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @FXML
