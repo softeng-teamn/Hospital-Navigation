@@ -55,6 +55,7 @@ public class DirectionsController {
                     case "printText":
 //                        Thread.sleep(100);
                         path = event.getPath();
+                        System.out.println("WTF");
                         printDirections(makeDirections(path));
                         break;
                     default:
@@ -129,8 +130,10 @@ public class DirectionsController {
                 directions.add(csDirPrint(path.get(i), path.get(i+1), path.get(i+2)));
                 afterFloorChange = false;
             }
+            System.out.println("in loop: " + directions);
         }
 
+        System.out.println("pre-simplifying: " + directions);
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
@@ -160,6 +163,7 @@ public class DirectionsController {
 
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
+        System.out.println("end of making dirs: " + directions);
         return directions;
     }
 
