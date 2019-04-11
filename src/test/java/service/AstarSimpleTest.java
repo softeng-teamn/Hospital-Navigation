@@ -1,8 +1,9 @@
 package service;
 
-import controller.MapController;
-import model.MapNode;
-import model.Node;
+import map.MapController;
+import map.pathfinding.Astar;
+import map.MapNode;
+import map.Node;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

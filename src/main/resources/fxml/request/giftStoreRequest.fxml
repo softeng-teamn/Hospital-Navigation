@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.controller.sub_controller.GiftStoreRequestController">
+   <children>
+      <FontAwesomeIconView glyphName="GIFT" size="240" styleClass="request-glyph">
+         <VBox.margin>
+            <Insets bottom="24.0" />
+         </VBox.margin>
+      </FontAwesomeIconView>
+      <JFXTextArea fx:id="description" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="%GiftTitle">
+         <VBox.margin>
+            <Insets bottom="24.0" left="12.0" right="12.0" />
+         </VBox.margin>
+         <padding>
+            <Insets left="12.0" right="12.0" top="12.0" />
+         </padding>
+         <rotationAxis>
+            <Point3D />
+         </rotationAxis>
+      </JFXTextArea>
+      <Label styleClass="big-label" text="%GiftType" />
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" stylesheets="@/theme.css">
+         <children>
+            <JFXTextField fx:id="patientName" minHeight="-Infinity" promptText="%PatientName" HBox.hgrow="ALWAYS" />
+            <Region prefHeight="38.0" prefWidth="70.0" />
+            <JFXComboBox fx:id="type" prefHeight="34.0" prefWidth="184.0" promptText="%GiftType" unFocusColor="BLACK" />
+         </children>
+      </HBox>
+      <Region prefHeight="195.0" prefWidth="534.0" stylesheets="@/theme.css" />
+      <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="%Submit">
+         <VBox.margin>
+            <Insets bottom="24.0" />
+         </VBox.margin></JFXButton>
+   </children>
+   <padding>
+      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+   </padding>
+</VBox>
