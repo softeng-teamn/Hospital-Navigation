@@ -1,24 +1,8 @@
 package controller;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import model.Node;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.testfx.framework.junit.ApplicationTest;
-import service.DatabaseService;
-import service.ResourceLoader;
-import testclassifications.UiTest;
-
-import static controller.EmployeeEditController.myDBS;
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 //public class EditNodeControllerTest extends ApplicationTest {

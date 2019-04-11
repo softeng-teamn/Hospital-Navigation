@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="240.0" prefWidth="426.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="map.edit_node.EditConfirmController">
+   <children>
+      <Label layoutX="115.0" layoutY="28.0" styleClass="big-label" text="Are you sure?" textFill="WHITE" />
+      <JFXButton layoutX="254.0" layoutY="160.0" mnemonicParsing="false" onAction="#cancelConfirmAction" styleClass="confirm-button" text="Cancel" AnchorPane.bottomAnchor="33.0" AnchorPane.leftAnchor="254.0" />
+      <JFXButton layoutX="64.0" layoutY="160.0" mnemonicParsing="false" onAction="#deleteConfirmAction" style="-fx-background-color: #EF5250;" styleClass="confirm-button" text="Delete" AnchorPane.bottomAnchor="33.0" AnchorPane.rightAnchor="265.0" />
+      <Label layoutX="93.0" layoutY="77.0" prefHeight="71.0" prefWidth="234.0" styleClass="small-label" text="This node will be permanently removed from the databse." textAlignment="CENTER" textFill="#d3d3d3" wrapText="true" AnchorPane.topAnchor="77.0" />
+   </children>
+</AnchorPane>
