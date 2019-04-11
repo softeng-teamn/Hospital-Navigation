@@ -509,7 +509,7 @@ public class DirectionsController {
      */
     public void sendMapToPhone(){
         TextingService textSender = new TextingService();
-        textSender.textMap("+16504538306",printDirections(makeDirections(path)));
+        textSender.textMap("+19787298044",printDirections(makeDirections(path)));
     }
 
     /**

@@ -23,8 +23,4 @@ public class NodeFacade {
     public void MapNodeCompareTo(MapNode node){
         mapNode.compareTo(node);
     }
-
-    public void NodeValidateType(String nodeType){
-        node.validateType(nodeType);
-    }
 }
