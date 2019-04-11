@@ -20,6 +20,7 @@ public class InternalTransportController extends RequestController{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         dropdown.setItems(FXCollections.observableArrayList(InternalTransportRequest.TransportType.values()));
+        dropdown.getSelectionModel().select(0);
     }
 
     @FXML
@@ -27,7 +28,7 @@ public class InternalTransportController extends RequestController{
         if (selectedNode != null) {
             InternalTransportRequest request = new InternalTransportRequest(-1, text_area.getText(), RequestController.selectedNode, false, dropdown.getSelectionModel().getSelectedItem());
             request.makeRequest();
-            dropdown.getSelectionModel().clearSelection();
+            dropdown.getSelectionModel().select(0);
             text_area.setText("");
         }
     }

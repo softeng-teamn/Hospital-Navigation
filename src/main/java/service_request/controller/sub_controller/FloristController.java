@@ -27,6 +27,7 @@ public class FloristController extends RequestController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         quantity.setItems(FXCollections.observableArrayList(1,2,3,4,5,6,7,8,9));
+        quantity.getSelectionModel().select(0);
     }
     @FXML
     void submitRequest(ActionEvent event) {
@@ -35,7 +36,7 @@ public class FloristController extends RequestController {
             floristRequest.makeRequest();
             description.setText("");
             bouquetType.setText("");
-            quantity.getSelectionModel().clearSelection();
+            quantity.getSelectionModel().select(0);
         }
     }
 

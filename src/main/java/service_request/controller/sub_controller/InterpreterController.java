@@ -21,6 +21,7 @@ public class InterpreterController extends RequestController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         type.setItems(FXCollections.observableArrayList(InterpreterRequest.Language.values()));
+        type.getSelectionModel().select(0);
     }
 
     @FXML
@@ -29,7 +30,7 @@ public class InterpreterController extends RequestController {
             InterpreterRequest interpRequest = new InterpreterRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
             interpRequest.makeRequest();
             description.setText("");
-            type.getSelectionModel().clearSelection();
+            type.getSelectionModel().select(0);
         }
     }
 
