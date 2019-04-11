@@ -1,5 +1,6 @@
 package service;
 
+import model.ElevatorFloor;
 import model.MapNode;
 import model.Node;
 
@@ -30,6 +31,11 @@ public class BreadthFS implements Algorithm {
     public int getEstimatedTime() {
         return 0;
     }
+
+    @Override
+    public HashMap<String, ElevatorFloor> getElevTimes() {return new HashMap<>(); }
+
+
 
     /**
      *  Will either return the last MapNode with a parent chain back to the start
