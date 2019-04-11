@@ -1,6 +1,8 @@
 package service;
 
 import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class  ResourceLoader {
 
@@ -58,4 +60,9 @@ public class  ResourceLoader {
     public static final URL pencilIcon = service.ResourceLoader.class.getResource("/Images/pencil.jpg");
     public static final URL wrenchICon = service.ResourceLoader.class.getResource("/Images/wrench.jpg");
     public static final URL adminLogin = service.ResourceLoader.class.getResource("/administratorLogin.fxml");
+
+
+    public static final ResourceBundle dfBundle = ResourceBundle.getBundle("strings", Locale.getDefault());
+    public static final ResourceBundle enBundle = ResourceBundle.getBundle("strings", new Locale("en"));
+    public static final ResourceBundle esBundle = ResourceBundle.getBundle("strings", new Locale("es"));
 }

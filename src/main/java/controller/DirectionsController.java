@@ -35,7 +35,7 @@ public class DirectionsController {
     private JFXListView<Label> directionsView;
 
     //text message global variable
-    private String units = "feet";    // Feet or meters conversion
+    private String units = "Ft";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
     private ArrayList<Node> path;
 
@@ -59,6 +59,7 @@ public class DirectionsController {
             public void run() {
                 switch (event.getEventName()) {
                     case "printText":
+//                        Thread.sleep(100);
                         path = event.getPath();
                         printDirections(makeDirections(path));
                         break;
@@ -144,7 +145,7 @@ public class DirectionsController {
             String prevOne = prevDir.substring(0,1);
             String newDir = "";
             boolean changed = false;
-            if (currOne.equals("A")) {
+            if (currOne.equals("A") && !"IJ".contains(prevOne)) {
                 int prevDist = Integer.parseInt(prevDir.substring(1));
                 int currDist = Integer.parseInt(currDir.substring(1));
                 int totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
@@ -405,7 +406,7 @@ public class DirectionsController {
 
         // Distance in feet based on measurements from the map: 260 pixels per 85 feet
         double distance;
-        if (units.equals("feet")) {
+        if (units.equals("Ft")) {
             distance = lengthNew /260 * 85;    // Pixels to feet
         }
         else {
@@ -494,16 +495,15 @@ public class DirectionsController {
      * Set the current units as feet or meters
      */
     public void setUnits() {
-        if (units.equals("feet")) {
-            units = "Meter";
+        if (unitSwitch_btn.getText().equals("M")) {
+            units = "M";
+            unitSwitch_btn.setText("Ft");
         }
         else {
-            units = "feet";
+            units = "Ft";
+            unitSwitch_btn.setText("M");
         }
-
-        unitSwitch_btn.setText(units);
         printDirections(makeDirections(path));
-
     }
 
     /**
