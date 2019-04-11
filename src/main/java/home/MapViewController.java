@@ -657,7 +657,6 @@ public class MapViewController {
 
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
-        System.out.println("AHHHH");
         return directions;
     }
 
