@@ -39,7 +39,7 @@
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXListView>
-        <JFXButton styleClass="confirm-button" text="Send Path as Text Message">
+        <JFXButton fx:id="textingButton" onAction="#sendMapToPhone" styleClass="confirm-button" text="Send Path as Text Message">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXButton>

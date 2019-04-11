@@ -1,7 +1,5 @@
-/*
 package service;
 // Install the Java helper library from twilio.com/docs/libraries/java
-import com.sun.xml.internal.bind.api.impl.NameConverter;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -23,7 +21,7 @@ public class TextingService {
         BufferedReader reader;
         try
         {
-            reader = new BufferedReader(new InputStreamReader(ResourceLoader.edges.openStream(), StandardCharsets.UTF_8));
+            reader = new BufferedReader(new InputStreamReader(ResourceLoader.textingService.openStream(), StandardCharsets.UTF_8));
             secrets[0] = reader.readLine();
             secrets[1] = reader.readLine();
             reader.close();
@@ -36,9 +34,9 @@ public class TextingService {
     }
 
     private final String ACCOUNT_SID =
-            secrets[0];
+            "AC71f0446a3ec9e6790458fa5f4739730d";
     private final String AUTH_TOKEN =
-            secrets[1];
+            "2bcd148080c10578255d1091762d0f07";
 
     public void textMap(String phone, String mapUrl){
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
@@ -51,6 +49,11 @@ public class TextingService {
 
         System.out.println(message.getSid());
     }
-}
 
-*/
+
+    public static void main(String[] args) {
+        TextingService potato = new TextingService();
+        potato.textMap("+19787298044","Test");
+    }
+
+}
