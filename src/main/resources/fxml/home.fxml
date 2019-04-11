@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="root" prefHeight="862.0" prefWidth="1395.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.HomeController">
+   <children>
+      <fx:include fx:id="topNav" source="home/topNav.fxml" />
+      <HBox fx:id="hbox_container" VBox.vgrow="ALWAYS">
+         <children>
+            <Pane fx:id="leftPane" prefHeight="200.0" prefWidth="480.0">
+               <children>
+                  <!--<fx:include fx:id="searchResults" source="searchResults.fxml" />-->
+               </children>
+            </Pane>
+            <fx:include fx:id="mapView" source="home/mapView.fxml" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

@@ -1,14 +1,11 @@
 import javafx.application.Platform;
-import service.CSVService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-import service.DatabaseService;
+import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
-import java.lang.SuppressWarnings;
 
 public class Main extends Application {
 
