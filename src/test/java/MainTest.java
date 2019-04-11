@@ -1,15 +1,13 @@
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.testfx.api.FxRobot;
-import service.DatabaseService;
+import database.DatabaseService;
 import testclassifications.*;
 
 import javafx.stage.Window;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
