@@ -1,22 +1,16 @@
 package service;
 
-import service.CSVService;
-import controller.Controller;
-import model.MapNode;
-import model.Node;
-import org.apache.commons.io.FileUtils;
+import database.DatabaseService;
+import map.pathfinding.Astar;
+import map.MapNode;
+import map.Node;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import testclassifications.FastTest;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
-import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class AstarIntegrationTest {
 

@@ -1,20 +1,16 @@
 package service;
 
-import service.CSVService;
-import controller.MapController;
-import model.MapNode;
-import model.Node;
-import org.apache.commons.io.FileUtils;
+import map.pathfinding.Astar;
+import map.MapNode;
+import map.Node;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import testclassifications.FastTest;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
