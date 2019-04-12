@@ -22,6 +22,7 @@ public class MaintenanceRequestController extends RequestController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         type.setItems(FXCollections.observableArrayList(MaintenanceRequest.MaintenanceType.values()));
+        type.getSelectionModel().select(0);
     }
 
     @FXML
@@ -29,6 +30,8 @@ public class MaintenanceRequestController extends RequestController {
         if(selectedNode != null) {
             MaintenanceRequest maintenanceRequest = new MaintenanceRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
             maintenanceRequest.makeRequest();
+            description.setText("");
+            type.getSelectionModel().select(0);
         }
     }
 }
