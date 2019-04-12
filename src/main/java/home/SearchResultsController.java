@@ -24,6 +24,7 @@ import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import database.DatabaseService;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
 import java.util.function.Function;
@@ -39,22 +40,22 @@ public class SearchResultsController {
 
 
     @FXML
-    private JFXListView<HBox> list_view;    // TODO: changed
-    private HashMap<String, String> buildingAbbrev = new HashMap<>();
+    private JFXListView<HBox> list_view;    // Changed to HBox
+    private HashMap<String, String> buildingAbbrev = new HashMap<>();    // Abbreviate buildings to fit in listview
 
     private Node destNode;
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
-    ObservableList<Node> allNodesObservable;
+    ArrayList<Node> allNodesObservable;    // Changed to ArrayList
     ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
 
     @FXML
     void initialize() {
-        buildingAbbrev.put("Shapiro", "SHA");    // TODO: added
+        buildingAbbrev.put("Shapiro", "Sha");
         buildingAbbrev.put("BTM", "BTM");
-        buildingAbbrev.put("Tower", "TOW");
-        buildingAbbrev.put("45 Francis", "45FR");
-        buildingAbbrev.put("15 Francis", "15FR");
+        buildingAbbrev.put("Tower", "Tow");
+        buildingAbbrev.put("45 Francis", "45Fr");
+        buildingAbbrev.put("15 Francis", "15Fr");
         buildingAbbrev.put("RES", "RES");
         eventBus.register(this);
         repopulateList(event.isAdmin());
@@ -67,7 +68,7 @@ public class SearchResultsController {
         switch (event.getEventName()) {
             case "node-select":
                 //list_view.scrollTo(event.getNodeSelected());
-               // list_view.getSelectionModel().select(event.getNodeSelected());   // TODO what does this do?
+               // list_view.getSelectionModel().select(event.getNodeSelected());   // TODO what does this do? I commented it out
                 break;
             case "login":
                 //for functions that have threading issue, use this and it will be solved
@@ -97,7 +98,7 @@ public class SearchResultsController {
      */
     @FXML
     public void listViewClicked(MouseEvent e) {
-        HBox selectedNode = list_view.getSelectionModel().getSelectedItem();  // TODO: changed
+        HBox selectedNode = list_view.getSelectionModel().getSelectedItem();
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
         System.out.println("You clicked on: " + ID);
 
@@ -120,7 +121,7 @@ public class SearchResultsController {
         System.out.println("Repopulation of listView" + isAdmin);
 
         // wipe old observable
-        allNodesObservable = FXCollections.observableArrayList();
+        allNodesObservable = new ArrayList<>();
 
         if (isAdmin) {
             allNodesObservable.addAll(allNodes);
@@ -141,12 +142,64 @@ public class SearchResultsController {
             return;
         }
 
-        // TODO: showing building and floor. text color need to set?
-        // TODO: PRoblem: need to still be connected to node to pathfind to. or get it really fast
-        // tODO: make into function
+        // TODO: can change to full building name. or CAPS. or change alignment or coloring.
+        ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable);
+
+        list_view.getItems().clear();
+        // add to listView
+        list_view.setItems(observeHboxes);
+    }
+
+
+    /**
+     *Filters the ListView based on the string
+     */
+    private void filterList(String findStr) {
+        if (findStr.equals("")) {
+            list_view.getItems().clear();
+            ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable);
+            list_view.getItems().addAll(observeHboxes);
+        }
+        else {
+            //Get List of all nodes
+            ObservableList<Node> original = FXCollections.observableArrayList();
+            original.addAll(allNodesObservable);
+
+            //Get Sorted list of nodes based on search value
+            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, Node::getLongName),75);
+
+            // Map to nodes based on index
+            Stream<Node> stream = filtered.stream().map(er -> {
+                return original.get(er.getIndex());
+            });
+
+            // Convert to list and then to observable list
+            List<Node> filteredNodes = stream.collect(Collectors.toList());
+            ObservableList<HBox> observeHboxes = makeIntoHBoxes((ArrayList)filteredNodes);
+
+            // Add to view
+            list_view.getItems().clear();
+            list_view.getItems().addAll(observeHboxes);
+        }
+    }
+
+    /**
+     *for lists
+     */
+    private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
+        return from.stream().map(func).collect(Collectors.toList());
+    }
+
+    /**
+     * Make the passed in arraylist into an observable list of hboxes with name, building, floor
+     * to put into the listview
+     * @param nodes the list of nodes to display
+     * @return the list of hboxes, one for each node
+     */
+    private ObservableList<HBox> makeIntoHBoxes(ArrayList<Node> nodes) {
         ArrayList<HBox> hBoxes = new ArrayList<>();
-        for (int i = 0; i < allNodesObservable.size(); i++) {
-            Node currNode = allNodesObservable.get(i);
+        for (int i = 0; i < nodes.size(); i++) {
+            Node currNode = nodes.get(i);
             HBox hb = new HBox();
             HBox inner = new HBox();
             inner.setAlignment(Pos.CENTER_RIGHT);
@@ -167,115 +220,12 @@ public class SearchResultsController {
         }
         ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
         observeHboxes.addAll(hBoxes);
-
-        list_view.getItems().clear();
-        // add to listView
-        //list_view.getItems().addAll(allNodesObservable); TODO
-        list_view.setItems(observeHboxes);
-
-        // TODO: cut?
-//        list_view.setCellFactory(param -> new JFXListCell<Node>() {
-//            @Override
-//            protected  void updateItem(Node item, boolean empty) {
-//                super.updateItem(item, empty);
-//                if (empty || item == null || item.getNodeID() == null ) {
-//                    setText(null);
-//                } else {
-//                    setText(item.getLongName());
-//                }
-//            }
-//        });
+        return observeHboxes;
     }
-
-
-    /**
-     *Filters the ListView based on the string
-     */
-    private void filterList(String findStr) {
-        if (findStr.equals("")) {
-            list_view.getItems().clear();
-            // TODO: changed
-            ArrayList<HBox> hBoxes = new ArrayList<>();
-            for (int i = 0; i < allNodesObservable.size(); i++) {
-                Node currNode = allNodesObservable.get(i);
-                HBox hb = new HBox();
-                HBox inner = new HBox();
-                inner.setAlignment(Pos.CENTER_RIGHT);
-                Label longName = new Label(currNode.getLongName());
-                String buildFlStr = buildingAbbrev.get(currNode.getBuilding()) + ", " + currNode.getFloor();
-                Label buildFloor = new Label(buildFlStr);
-                Label nodeId = new Label(currNode.getNodeID());
-                nodeId.setPrefWidth(0);
-                nodeId.setVisible(false);
-                nodeId.setPadding(new Insets(0,-10,0,0));
-                hb.getChildren().add(longName);
-                inner.getChildren().add(nodeId);
-                inner.getChildren().add(buildFloor);
-                hb.getChildren().add(inner);
-                hb.setHgrow(inner, Priority.ALWAYS);
-                hb.setSpacing(0);
-                hBoxes.add(hb);
-            }
-            ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
-            observeHboxes.addAll(hBoxes);
-            list_view.getItems().addAll(observeHboxes);
-        }
-        else {
-            //Get List of all nodes
-            ObservableList<Node> original = allNodesObservable;
-
-            //Get Sorted list of nodes based on search value
-            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, Node::getLongName),75);
-
-            // Map to nodes based on index
-            Stream<Node> stream = filtered.stream().map(er -> {
-                return original.get(er.getIndex());
-            });
-
-            // Convert to list and then to observable list
-            List<Node> filteredNodes = stream.collect(Collectors.toList());
-            ObservableList<Node> toShow = FXCollections.observableList(filteredNodes);
-
-            ArrayList<HBox> hBoxes = new ArrayList<>();
-            for (int i = 0; i < filteredNodes.size(); i++) {
-                Node currNode = allNodesObservable.get(i);
-                HBox hb = new HBox();
-                HBox inner = new HBox();
-                inner.setAlignment(Pos.CENTER_RIGHT);
-                Label longName = new Label(currNode.getLongName());
-                String buildFlStr = buildingAbbrev.get(currNode.getBuilding()) + ", " + currNode.getFloor();
-                Label buildFloor = new Label(buildFlStr);
-                Label nodeId = new Label(currNode.getNodeID());
-                nodeId.setPrefWidth(0);
-                nodeId.setVisible(false);
-                nodeId.setPadding(new Insets(0,-10,0,0));
-                hb.getChildren().add(longName);
-                inner.getChildren().add(nodeId);
-                inner.getChildren().add(buildFloor);
-                hb.getChildren().add(inner);
-                hb.setHgrow(inner, Priority.ALWAYS);
-                hb.setSpacing(0);
-                hBoxes.add(hb);
-            }
-            ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
-            observeHboxes.addAll(hBoxes);
-
-            // Add to view
-            list_view.getItems().clear();
-            list_view.getItems().addAll(observeHboxes);
-         // todo: changed   list_view.getItems().addAll(toShow);
-        }
-    }
-
-    /**
-     *for lists
-     */
-    private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
-        return from.stream().map(func).collect(Collectors.toList());
-    }
-
 
 }
+
+
 
 
 // old code to show the selected location on the map and auto scroll to that
