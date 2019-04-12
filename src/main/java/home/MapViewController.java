@@ -37,6 +37,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import map.MapController;
 import map.MapNode;
 import map.Node;
 import database.DatabaseService;
@@ -44,6 +45,7 @@ import map.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.*;
@@ -249,7 +251,8 @@ public class MapViewController {
                             navigationHandler();
                         }
                         catch(Exception ex){
-                            System.out.println("error posting floor");
+                            //System.out.println("error posting floor");
+                            ex.printStackTrace();
                         }
                         break;
                     case "node-select":
@@ -596,7 +599,6 @@ public class MapViewController {
 
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
-            System.out.println("in loop: " + directions);
             String oldFl = (path.get(i+1).getFloor());
             String newFl = (path.get(i+2).getFloor());
             if (afterFloorChange && !path.get(i + 2).getNodeType().equals("ELEV") && !path.get(i + 2).getNodeType().equals("STAI")) {
@@ -631,11 +633,10 @@ public class MapViewController {
             String newDir = "";
             boolean changed = false;
             if (currOne.equals("A") && !"IJ".contains(prevOne)) {
-                System.out.println("straight " + prevDir + currDir);
                 int prevDist = Integer.parseInt(prevDir.substring(1,6));
                 int currDist = Integer.parseInt(currDir.substring(1,6));
                 double totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
-                newDir = prevOne + padWithZeros(totalDist);
+                newDir = prevOne + padWithZeros(totalDist) + currDir.substring(6);
                 changed = true;
             }
             else if ("NOPQ".contains(currOne) && currOne.equals(prevOne)) {    // If the current direction contains straight, get the distance substring
@@ -648,9 +649,8 @@ public class MapViewController {
                 directions.add(i-1, newDir);
                 i--;
             }
-            System.out.println("in loop simplifying");
+            System.out.println(directions);
         }
-        System.out.println("out of loop");
 
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
@@ -721,28 +721,28 @@ public class MapViewController {
             String direct = ds.get(i);
             switch(direct.substring(0,1)) {
                 case "A":
-                    direct = "Walk straight for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Walk straight for " + Integer.parseInt(direct.substring(1,6)) + " " + units + direct.substring(6) + ".\n";
                     break;
                 case "B":
-                    direct = "Turn left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Turn left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "C":
-                    direct = "Turn slightly left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Turn slightly left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "D":
-                    direct = "Turn sharply left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Turn sharply left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "E":
-                    direct = "Turn right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Turn right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "F":
-                    direct = "Turn slightly right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Turn slightly right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "G":
-                    direct = "Turn sharply right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Turn sharply right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "H":
-                    direct = "Turn around and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Turn around and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "I":
                     direct = "Walk to the elevator.\n";
@@ -763,28 +763,28 @@ public class MapViewController {
                     direct = "Take the stairs down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
                     break;
                 case "S":
-                    direct = "Walk north for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Walk north for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "T":
-                    direct = "Walk north west for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Walk north west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "U":
-                    direct = "Walk west for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Walk west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "V":
-                    direct = "Walk south west for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Walk south west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "W":
-                    direct = "Walk south for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Walk south for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "X":
-                    direct = "Walk south east for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Walk south east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "Y":
-                    direct = "Walk east for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Walk east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 case "Z":
-                    direct = "Walk north east for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
+                    direct = "Walk north east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
                     break;
                 default:
                     direct = "Houston we have a problem";
@@ -969,9 +969,23 @@ public class MapViewController {
             }
         }
 
+        // TODO: landmarks
+        // TODO: maintain landmarks when simplifying
+        String landmark = "";
+        ArrayList<Node> closeNodes = MapController.getNodesConnectedTo(next);
+      //  ArrayList<Node> closeNodes = DatabaseService.getDatabaseService().getNodesConnectedTo(next);
+        for (Node n: closeNodes) {
+            if (n.getNodeType().equals("HALL")) {
+                landmark = " down the hall";
+            }
+            if (!n.getNodeType().equals("HALL") && !n.getNodeType().equals("ELEV") && !n.getNodeType().equals("STAI")) {
+                landmark = " towards " + n.getLongName();
+            }
+        }
+
         // Create and return the direction
         String distPadded = padWithZeros(distance);    // Pad direction with zeros so always same lengtb
-        String direction = turn + distPadded;
+        String direction = turn + distPadded + landmark;
         return direction;
     }
 
