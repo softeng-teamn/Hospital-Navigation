@@ -148,6 +148,9 @@ test {
 repositories {
     mavenCentral()
     jcenter()
+    maven {
+        url 'https://ravana.dyn.wpi.edu/maven'
+    }
 }
 
 dependencies {
@@ -171,7 +174,8 @@ dependencies {
             [group: 'de.jensd', name:'fontawesomefx-fontawesome', version: '4.7.0-5'],
             [group: 'de.jensd', name:'fontawesomefx-materialicons', version: '2.2.0-5'],
             [group: 'de.jensd', name:'fontawesomefx-emojione', version: '2.2.7-2'],
-            [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4']
+            [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4'],
+            [group: 'edu.wpi.cs3733.b17.teamG', name: 'FoodRequest', version:'1.0.0']
     )
     compile(
             [group: 'com.google.guava', name: 'guava', version: '23.0'],
@@ -187,7 +191,8 @@ dependencies {
             [group: 'de.jensd', name:'fontawesomefx-fontawesome', version: '4.7.0-5'],
             [group: 'de.jensd', name:'fontawesomefx-materialicons', version: '2.2.0-5'],
             [group: 'de.jensd', name:'fontawesomefx-emojione', version: '2.2.7-2'],
-            [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4']
+            [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4'],
+            [group: 'edu.wpi.cs3733.b17.teamG', name: 'FoodRequest', version:'1.0.0']
     )
 }
 
@@ -198,3 +203,4 @@ jar {
     }
     from configurations.runtime.collect { zipTree(it) }
 }
+
