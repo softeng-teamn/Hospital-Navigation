@@ -1,5 +1,6 @@
 package map.edit_node;
 
+import application_state.ApplicationState;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -46,8 +47,6 @@ public class EditNodeController extends Control {
     private EventBus eventBus = EventBusFactory.getEventBus();
     Circle selectedCircle = new Circle();
     Node tempEditNode;      // mutating the node based on edits
-    Node nodeToEdit;        // the unchanged node that is being edited
-    ArrayList<Edge> edgesToEdit;
     boolean isEditEdges = false;
     ArrayList<Circle> circleCollection = new ArrayList<>();
     ArrayList<Node> edgeNodeCollection;
@@ -79,6 +78,8 @@ public class EditNodeController extends Control {
 
     @FXML
     void initialize() {
+
+        tempEditNode = ApplicationState.getApplicationState().getNodeToEdit();
 
         node_id_label.setText("Node: " + tempEditNode.getNodeID());
 
@@ -174,7 +175,7 @@ public class EditNodeController extends Control {
     }
 
     void fillNodeInfo() {
-        Node node = nodeToEdit;
+        Node node = ApplicationState.getApplicationState().getNodeToEdit();
         building_field.setText(node.getBuilding());
         type_field.setText(node.getNodeType());
         floor_combo.getItems().add("3");
@@ -248,7 +249,7 @@ public class EditNodeController extends Control {
 
     @FXML
     void deleteAction(ActionEvent e) throws IOException {
-        edgesToEdit = oldEdgesFromEditNode;
+        ApplicationState.getApplicationState().setEdgesToEdit(oldEdgesFromEditNode);
         Parent root = FXMLLoader.load(ResourceLoader.deleteNodeConfirm);
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
@@ -257,7 +258,7 @@ public class EditNodeController extends Control {
         stage.initOwner(image_pane.getScene().getWindow());
         stage.showAndWait();
 
-        if (nodeToEdit == null) {
+        if (ApplicationState.getApplicationState().getNodeToEdit() == null) {
             try {
                 Parent myRoot = FXMLLoader.load(ResourceLoader.home);
                 Stage myStage = (Stage)map_scrollpane.getScene().getWindow();
@@ -273,7 +274,7 @@ public class EditNodeController extends Control {
     @FXML
     void saveAction(ActionEvent e) throws IOException {
         updateNode();
-        nodeToEdit = tempEditNode;
+        ApplicationState.getApplicationState().setNodeToEdit(tempEditNode);
         // remove old edges
         for (Edge edge : oldEdgesFromEditNode) {
             DatabaseService.getDatabaseService().deleteEdge(edge);
@@ -286,11 +287,11 @@ public class EditNodeController extends Control {
             DatabaseService.getDatabaseService().insertEdge(edge);
         }
         // updating node
-        DatabaseService.getDatabaseService().updateNode(nodeToEdit);
+        DatabaseService.getDatabaseService().updateNode(tempEditNode);
         System.out.println("SHOW UPDATED NODE:");
-        System.out.println(DatabaseService.getDatabaseService().getNode(nodeToEdit.getNodeID()));
+        System.out.println(DatabaseService.getDatabaseService().getNode(tempEditNode.getNodeID()));
         // set edges globally
-        edgesToEdit = newEdges;
+        ApplicationState.getApplicationState().setEdgesToEdit(newEdges);
         // fire confirmation
         Parent root = FXMLLoader.load(ResourceLoader.saveNodeConfirm);
         Stage stage = new Stage();

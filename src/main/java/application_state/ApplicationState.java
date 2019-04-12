@@ -1,13 +1,15 @@
 package application_state;
 
-import database.DatabaseService;
+import map.Edge;
 import map.Node;
+import java.util.ArrayList;
 
 public class ApplicationState {
 
     //******************************************
 
     private Node nodeToEdit;
+    private ArrayList<Edge> edgesToEdit;
 
 
     //******************************************
@@ -30,5 +32,13 @@ public class ApplicationState {
 
     public void setNodeToEdit(Node nodeToEdit) {
         this.nodeToEdit = nodeToEdit;
+    }
+
+    public ArrayList<Edge> getEdgesToEdit() {
+        return edgesToEdit;
+    }
+
+    public void setEdgesToEdit(ArrayList<Edge> edgesToEdit) {
+        this.edgesToEdit = edgesToEdit;
     }
 }
