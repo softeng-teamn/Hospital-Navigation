@@ -68,7 +68,7 @@ public class MapViewController {
     private ArrayList<Circle> circleCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
-    private String units = "Ft";    // Feet or meters conversion
+    private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
 
 
@@ -586,16 +586,16 @@ public class MapViewController {
         ArrayList<String> directions = new ArrayList<>();    // Collection of instructions
         directions.add("\nStart at " + path.get(0).getLongName() + ".\n");    // First instruction
 
-        // Make the next instruction cardinal, or up/down if it is a floor connector
+        // Make the first instruction cardinal, or up/down if it is a floor connector
         String oldFloor = path.get(0).getFloor();
         String newFloor = path.get(1).getFloor();
         if (!floors.get(oldFloor).equals(floors.get(newFloor))) {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
         }
-        else if (path.get(1).getNodeType().equals("ELEV")) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("ELEV")) || (path.size() > 2 && path.get(2).getNodeType().equals("ELEV"))) {
             directions.add("I");
         }
-        else if (path.get(1).getNodeType().equals("STAI")) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("STAI")) || (path.size() > 2 && path.get(2).getNodeType().equals("STAI"))) {
             directions.add("J");
         }
         else {
@@ -612,6 +612,7 @@ public class MapViewController {
             }
             else if(!path.get(i+1).getNodeType().equals("ELEV") && !path.get(i+1).getNodeType().equals("STAI") && (path.get(i+2).getNodeType().equals("ELEV") || path.get(i+2).getNodeType().equals("STAI"))
                     && ((i < path.size() - 3 && (path.get(i+3).getNodeType().equals("ELEV") || path.get(i+3).getNodeType().equals("STAI"))) || i == path.size() -3)) {    // If next node is elevator, say so
+                System.out.println(path.get(i).getNodeType()+ path.get(i+1).getNodeType() + path.get(i+2).getNodeType() + path.get(i+3).getNodeType());
                 if (path.get(i+2).getNodeType().equals("ELEV")) {
                     directions.add("I");
                 } else {
@@ -657,6 +658,7 @@ public class MapViewController {
 
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
+        System.out.println(directions); // TODO cut
         return directions;
     }
 

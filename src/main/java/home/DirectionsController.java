@@ -99,10 +99,10 @@ public class DirectionsController {
         if (!floors.get(oldFloor).equals(floors.get(newFloor))) {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
         }
-        else if (path.get(1).getNodeType().equals("ELEV")) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("ELEV")) || (path.size() > 2 && path.get(2).getNodeType().equals("ELEV"))) {
             directions.add("I");
         }
-        else if (path.get(1).getNodeType().equals("STAI")) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("STAI")) || (path.size() > 2 && path.get(2).getNodeType().equals("STAI"))) {
             directions.add("J");
         }
         else {
