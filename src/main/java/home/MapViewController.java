@@ -586,16 +586,16 @@ public class MapViewController {
         ArrayList<String> directions = new ArrayList<>();    // Collection of instructions
         directions.add("\nStart at " + path.get(0).getLongName() + ".\n");    // First instruction
 
-        // Make the next instruction cardinal, or up/down if it is a floor connector
+        // Make the first instruction cardinal, or up/down if it is a floor connector
         String oldFloor = path.get(0).getFloor();
         String newFloor = path.get(1).getFloor();
         if (!floors.get(oldFloor).equals(floors.get(newFloor))) {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
         }
-        else if (path.get(1).getNodeType().equals("ELEV")) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("ELEV")) || (path.size() > 2 && path.get(1).getNodeType().equals("ELEV") && path.get(2).getNodeType().equals("ELEV"))) {
             directions.add("I");
         }
-        else if (path.get(1).getNodeType().equals("STAI")) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("STAI")) || (path.size() > 2 && path.get(1).getNodeType().equals("STAI") && path.get(2).getNodeType().equals("STAI"))) {
             directions.add("J");
         }
         else {
@@ -604,6 +604,7 @@ public class MapViewController {
 
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
+            System.out.println("in loop: " + directions);
             String oldFl = (path.get(i+1).getFloor());
             String newFl = (path.get(i+2).getFloor());
             if (afterFloorChange && !path.get(i + 2).getNodeType().equals("ELEV") && !path.get(i + 2).getNodeType().equals("STAI")) {
@@ -628,6 +629,7 @@ public class MapViewController {
             }
         }
 
+        System.out.println("before simplifying: " + directions);
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
@@ -637,10 +639,11 @@ public class MapViewController {
             String newDir = "";
             boolean changed = false;
             if (currOne.equals("A") && !"IJ".contains(prevOne)) {
-                int prevDist = Integer.parseInt(prevDir.substring(1));
-                int currDist = Integer.parseInt(currDir.substring(1));
-                int totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
-                newDir = prevOne + totalDist;
+                System.out.println("straight " + prevDir + currDir);
+                int prevDist = Integer.parseInt(prevDir.substring(1,6));
+                int currDist = Integer.parseInt(currDir.substring(1,6));
+                double totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
+                newDir = prevOne + padWithZeros(totalDist);
                 changed = true;
             }
             else if ("NOPQ".contains(currOne) && currOne.equals(prevOne)) {    // If the current direction contains straight, get the distance substring
@@ -653,10 +656,13 @@ public class MapViewController {
                 directions.add(i-1, newDir);
                 i--;
             }
+            System.out.println("in loop simplifying");
         }
+        System.out.println("out of loop");
 
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
+        System.out.println(directions); // TODO cut
         return directions;
     }
 
@@ -701,6 +707,7 @@ public class MapViewController {
      * @return a String that is the sum of all the directions
      */
     public String printDirections(ArrayList<String> ds) {
+        System.out.println("printing...");
         HashMap<String, String> backToFloors = new HashMap<>();
         backToFloors.put("A", "L2");
         backToFloors.put("B", "L1");
@@ -722,28 +729,28 @@ public class MapViewController {
             String direct = ds.get(i);
             switch(direct.substring(0,1)) {
                 case "A":
-                    direct = "Walk straight for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk straight for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "B":
-                    direct = "Turn left and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "C":
-                    direct = "Turn slightly left and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn slightly left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "D":
-                    direct = "Turn sharply left and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn sharply left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "E":
-                    direct = "Turn right and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "F":
-                    direct = "Turn slightly right and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn slightly right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "G":
-                    direct = "Turn sharply right and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn sharply right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "H":
-                    direct = "Turn around and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn around and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "I":
                     direct = "Walk to the elevator.\n";
@@ -764,28 +771,28 @@ public class MapViewController {
                     direct = "Take the stairs down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
                     break;
                 case "S":
-                    direct = "Walk north for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk north for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "T":
-                    direct = "Walk north west for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk north west for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "U":
-                    direct = "Walk west for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk west for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "V":
-                    direct = "Walk south west for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk south west for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "W":
-                    direct = "Walk south for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk south for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "X":
-                    direct = "Walk south east for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk south east for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "Y":
-                    direct = "Walk east for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk east for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 case "Z":
-                    direct = "Walk north east for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk north east for " + Integer.parseInt(direct.substring(1,6)) + " " + units + ".\n";
                     break;
                 default:
                     direct = "Houston we have a problem";
@@ -815,6 +822,7 @@ public class MapViewController {
             buf.append(directions.get(i));
         }
         String total = buf.toString();
+        System.out.println(total);
         return total;
     }
 
@@ -970,8 +978,24 @@ public class MapViewController {
         }
 
         // Create and return the direction
-        String direction = String.format(turn +  "%.0f", distance);
+        String distPadded = padWithZeros(distance);    // Pad direction with zeros so always same lengtb
+        String direction = turn + distPadded;
         return direction;
+    }
+
+    /**
+     * Pad a distance with zeros so all distances are the same length
+     * @param distance the distance to pad with zeros
+     * @return the padded distance as a string
+     */
+    private String padWithZeros(double distance) {
+        String orig = String.format("%.0f", distance);
+        for (int i = 0; i < 6; i++) {    // Assume max distance is less than 99999 feet
+            if (orig.length() < i) {    // Pad with zeroes while string length is less than 6
+                orig = "0" + orig;
+            }
+        }
+        return orig;
     }
 
     /**
@@ -1017,7 +1041,6 @@ public class MapViewController {
     public void setUnits() {
         if (units.equals("feet")) {
             units = "meters";
-            // TODO: also change button text
         }
         else {
             units = "feet";
@@ -1035,5 +1058,6 @@ public class MapViewController {
         return "";
     }
 
+    // TODO: add all changes to directions controller... blech. also cut print statements.
 
 }
