@@ -92,7 +92,6 @@ public class ServiceRequestUITest extends ApplicationTest {
         clickOn(submit);
 
         // Verify submission in database
-        System.out.println(myDBS.getAllITRequests());
         ITRequest req = myDBS.getITRequest(0);
         verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getItRequestType(), is(ITRequest.ITRequestType.Maintenance));
@@ -167,6 +166,7 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Verify submission in database
         SecurityRequest req = myDBS.getSecurityRequest(0);
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getUrgency(), is(SecurityRequest.Urgency.VERY));
         verifyThat(req.getNotes(), is("A description here..."));
     }
@@ -205,6 +205,7 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Verify submission in database
         SanitationRequest req = myDBS.getSanitationRequest(0);
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getUrgency(), is("Low"));
         verifyThat(req.getMaterialState(), is("Solid"));
         verifyThat(req.getNotes(), is("A description here..."));
@@ -250,6 +251,7 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Verify submission in database
         PatientInfoRequest req = myDBS.getPatientInfoRequest(0);
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getFirstName(), is("John"));
         verifyThat(req.getLastName(), is("Doe"));
         verifyThat(req.getBirthDay(), is("20190409"));
@@ -290,6 +292,7 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Verify submission in database
         MedicineRequest req = myDBS.getMedicineRequest(0);
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getMedicineType(), is("Something"));
         verifyThat(req.getNotes(), is("A description here..."));
     }
