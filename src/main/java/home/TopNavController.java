@@ -46,7 +46,7 @@ public class TopNavController {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn, requestBtn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -67,7 +67,7 @@ public class TopNavController {
     JFXTextField startSearch = new JFXTextField();
     HamburgerBackArrowBasicTransition backArro;
 
-    // events I send out/control
+
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
         if (event.isAdmin()) {
@@ -81,6 +81,21 @@ public class TopNavController {
             StageManager.changeExistingWindow(stage, root, "Admin Login");
         }
     }
+    /*
+    @FXML
+    void showEmployeeLogin(ActionEvent e) throws Exception {
+        if (event.isEmployee()) {
+            event.setEmployee(false);
+            event.setLoggedIn(false);
+            resetBtn();
+
+        } else {
+            Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
+            Stage stage = (Stage) navigate_btn.getScene().getWindow();
+            StageManager.changeExistingWindow(stage, root, "Admin Login");
+        }
+    }
+  */
 
     @FXML
     // switches window to map editor screen.
@@ -114,7 +129,6 @@ public class TopNavController {
         event.setEditing(false);
         eventBus.post(event);
 
-        // SHOULD THIS GO HERE? (was in intialize of old map controller)
         navigate_btn.setVisible(false);
 
         resetBtn();
@@ -196,10 +210,16 @@ public class TopNavController {
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
+            bookBtn.setVisible(true);
+            requestBtn.setVisible(true);
+
         } else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
+            bookBtn.setVisible(false);
+            requestBtn.setVisible(false);
+
         }
     }
 
