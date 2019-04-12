@@ -35,22 +35,23 @@ public class TextingService {
         return resultStringBuilder.toString();
     }
 
-    public void secretHunter(){
+    public TextingService(){
         try{
             URLConnection urlConnection = ResourceLoader.textingService.openConnection();
             InputStream inputStream = urlConnection.getInputStream();
             String data = readFromInputStream(inputStream);
-            secrets = readFromInputStream(inputStream).split("\n",2);
+            System.out.println(data);
+            this.secrets = data.split("-",2);
+            this.ACCOUNT_SID = secrets[0];
+            this.AUTH_TOKEN = secrets[1];
         }
         catch(IOException IE){
             System.out.println("IOEXCEPTION TRIGGERED");
         }
     }
 
-    private final String ACCOUNT_SID =
-            "AC71f0446a3ec9e6790458fa5f4739730d";
-    private final String AUTH_TOKEN =
-            "2bcd148080c10578255d1091762d0f07";
+    private String ACCOUNT_SID = "toBeReplaced";
+    private String AUTH_TOKEN = "toBeReplaced";
 
     public void textMap(String phone, String mapUrl){
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
