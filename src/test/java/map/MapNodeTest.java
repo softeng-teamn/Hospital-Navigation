@@ -1,7 +1,5 @@
 package map;
 
-import map.MapNode;
-import map.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -28,7 +26,8 @@ public class MapNodeTest {
     public void checkHeuristic() {
 
         // testing heuristic
-        mn1.calculateHeuristic(mn2);
+        NodeFacade nf = new NodeFacade(mn1);
+        nf.mapNodeCalculateHeuristic(mn2);
 
         assertEquals(6.7, mn1.h, 0.1);
     }

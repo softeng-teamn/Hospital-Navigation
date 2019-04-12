@@ -9,6 +9,8 @@ import service_request.model.sub_model.ExternalTransportRequest;
 import database.DatabaseService;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 public class ExternalTransportationController  extends RequestController {
@@ -33,6 +35,9 @@ public class ExternalTransportationController  extends RequestController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         transport.setItems(FXCollections.observableArrayList(ExternalTransportRequest.TransportationType.values()));
+        datePicker.setValue(LocalDate.now());
+        timePicker.setValue(LocalTime.now());
+        transport.getSelectionModel().select(2);
     }
 
     @FXML
@@ -44,6 +49,10 @@ public class ExternalTransportationController  extends RequestController {
             Date d = new Date((g.getTimeInMillis()/1000));
             ExternalTransportRequest extTrans = new ExternalTransportRequest(-1, description.getText(), selectedNode, false, d, transport.getSelectionModel().getSelectedItem(), "");
             extTrans.makeRequest();
+            transport.getSelectionModel().select(2);
+            description.setText("");
+            datePicker.setValue(LocalDate.now());
+            timePicker.setValue(LocalTime.now());
         }
     }
 }
