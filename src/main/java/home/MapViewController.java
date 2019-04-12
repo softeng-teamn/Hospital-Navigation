@@ -592,10 +592,10 @@ public class MapViewController {
         if (!floors.get(oldFloor).equals(floors.get(newFloor))) {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
         }
-        else if ((path.size() == 2 && path.get(1).getNodeType().equals("ELEV")) || (path.size() > 2 && path.get(1).getNodeType().equals("ELEV") && !path.get(2).getNodeType().equals("ELEV"))) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("ELEV")) || (path.size() > 2 && path.get(1).getNodeType().equals("ELEV") && path.get(2).getNodeType().equals("ELEV"))) {
             directions.add("I");
         }
-        else if ((path.size() == 2 && path.get(1).getNodeType().equals("STAI")) || (path.size() > 2 && path.get(1).getNodeType().equals("STAI") && !path.get(2).getNodeType().equals("STAI"))) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("STAI")) || (path.size() > 2 && path.get(1).getNodeType().equals("STAI") && path.get(2).getNodeType().equals("STAI"))) {
             directions.add("J");
         }
         else {
@@ -630,34 +630,35 @@ public class MapViewController {
             }
         }
 
-        System.out.println("befor simplifying: " + directions);
+        System.out.println("before simplifying: " + directions);
         // Simplify directions that continue approximately straight from each other
-//        for (int i = 1; i < directions.size(); i++) {
-//            String currDir = directions.get(i);
-//            String currOne = currDir.substring(0,1);
-//            String prevDir = directions.get(i-1);
-//            String prevOne = prevDir.substring(0,1);
-//            String newDir = "";
-//            boolean changed = false;
-//            if (currOne.equals("A") && !"IJ".contains(prevOne)) {
-//                int prevDist = Integer.parseInt(prevDir.substring(1,6));
-//                int currDist = Integer.parseInt(currDir.substring(1,6));
-//                int totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
-//                newDir = prevOne + totalDist;
-//                changed = true;
-//            }
-//            else if ("NOPQ".contains(currOne) && currOne.equals(prevOne)) {    // If the current direction contains straight, get the distance substring
-//                newDir = currOne + prevDir.substring(1, 2) + currDir.substring(2, 3);
-//                changed = true;
-//            }
-//            if (changed) {
-//                directions.remove(i);
-//                directions.remove(i-1);
-//                directions.add(i-1, newDir);
-//                i--;
-//            }
-//            System.out.println("in loop simplifying");
-//        }
+        for (int i = 1; i < directions.size(); i++) {
+            String currDir = directions.get(i);
+            String currOne = currDir.substring(0,1);
+            String prevDir = directions.get(i-1);
+            String prevOne = prevDir.substring(0,1);
+            String newDir = "";
+            boolean changed = false;
+            if (currOne.equals("A") && !"IJ".contains(prevOne)) {
+                System.out.println("straight " + prevDir + currDir);
+                int prevDist = Integer.parseInt(prevDir.substring(1,6));
+                int currDist = Integer.parseInt(currDir.substring(1,6));
+                double totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
+                newDir = prevOne + padWithZeros(totalDist);
+                changed = true;
+            }
+            else if ("NOPQ".contains(currOne) && currOne.equals(prevOne)) {    // If the current direction contains straight, get the distance substring
+                newDir = currOne + prevDir.substring(1, 2) + currDir.substring(2, 3);
+                changed = true;
+            }
+            if (changed) {
+                directions.remove(i);
+                directions.remove(i-1);
+                directions.add(i-1, newDir);
+                i--;
+            }
+            System.out.println("in loop simplifying");
+        }
         System.out.println("out of loop");
 
         // Add the final direction
