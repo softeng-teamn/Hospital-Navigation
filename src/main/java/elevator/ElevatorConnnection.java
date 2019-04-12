@@ -62,7 +62,7 @@ public class ElevatorConnnection {
         String t = "" + time.getTimeInMillis() / 1000;
 
         String urlParameters = "elevator=" + elevator + "&floor=" + floorNum + "&time=" + t + "&isESP=false";
-        System.out.println("Posting " + urlParameters);
+        //System.out.println("Posting " + urlParameters);
         post(URL, urlParameters);
     }
 

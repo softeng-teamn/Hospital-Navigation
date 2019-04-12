@@ -265,14 +265,17 @@ public class MapViewController {
                         break;
                     case "node-select":
                         if(event.isEndNode()){
+                            System.out.println("isEditnode-select");
                             drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125), false);
                         } else {
+                            System.out.println("noteditNode-select");
                             drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
                         }
                         directionsView.getItems().clear();
                         hideDirections();
                         break;
                     case "refresh":
+                        System.out.println("REFRESH");
                         drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
                         drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125), false);
                         break;
@@ -481,6 +484,7 @@ public class MapViewController {
         if (newpath == null){
             System.out.println("DIDNT FIND A PATH");
         } else {
+            System.out.println("FOund a path");
             drawPoint(newpath.get(newpath.size()-1), selectCircle, Color.rgb(72,87,125), false);
         }
 
