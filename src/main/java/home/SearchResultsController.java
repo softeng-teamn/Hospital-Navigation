@@ -40,7 +40,7 @@ public class SearchResultsController {
 
 
     @FXML
-    private JFXListView<HBox> list_view;    // Changed to HBox
+    private JFXListView<HBox> list_view;    // Changed to HBox TODO: put in requests pane, too
     private HashMap<String, String> buildingAbbrev = new HashMap<>();    // Abbreviate buildings to fit in listview
 
     private Node destNode;
