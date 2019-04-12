@@ -83,7 +83,7 @@ public class MapViewController {
     @FXML
     private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
-    private Label cur_el_floor;
+    private Label cur_el_floor, FloorInfo;
     @FXML
     public JFXListView directionsView;
 
@@ -240,6 +240,7 @@ public class MapViewController {
                 }
                 break;
         }
+
         image_pane.getChildren().clear();
         image_pane.getChildren().add(imageView);
         event.setFloor(floorName);
@@ -396,11 +397,15 @@ public class MapViewController {
         } else {
             selectCircle = circle;
         }
-        //switch floor
-        switchFloors(node.getFloor());
-
         // Scroll to new point
         scrollTo(node);
+
+        //show floor and building info
+        FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
+
+        //switch floor
+        //switchFloors(node.getFloor());
+
 
     }
 
