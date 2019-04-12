@@ -20,6 +20,7 @@ import database.DatabaseService;
 import service.ResourceLoader;
 import service_request.model.sub_model.*;
 import testclassifications.FastTest;
+import testclassifications.SlowTest;
 import testclassifications.UiTest;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -62,7 +63,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     }
 
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void itTest() {
         // Verify no service_request of this type exist
         assertThat(myDBS.getAllITRequests().size(), is(0));
@@ -99,7 +100,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     }
 
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void toyTest() {
         // Verify no service_request of this type exist
         assertThat(myDBS.getAllToyRequests().size(), is(0));
@@ -135,7 +136,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     }
 
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void securityTest() {
         // Verify no service_request of this type exist
         assertThat(myDBS.getAllSecurityRequests().size(), is(0));
@@ -172,7 +173,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     }
 
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void sanitationTest() {
         // Verify no service_request of this type exist
         assertThat(myDBS.getAllSanitationRequests().size(), is(0));
@@ -212,7 +213,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     }
 
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void patientInfoTest() {
         // Verify no service_request of this type exist
         assertThat(myDBS.getAllPatientInfoRequests().size(), is(0));
@@ -259,7 +260,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     }
 
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void medicineRequestTest() {
         // Verify no service_request of this type exist
         assertThat(myDBS.getAllMedicineRequests().size(), is(0));
