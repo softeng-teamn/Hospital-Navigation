@@ -81,21 +81,21 @@ public class TopNavController {
             StageManager.changeExistingWindow(stage, root, "Admin Login");
         }
     }
-    /*
+
     @FXML
     void showEmployeeLogin(ActionEvent e) throws Exception {
-        if (event.isEmployee()) {
-            event.setEmployee(false);
+        if (event.isLoggedIn()) {
+            event.setLoggedIn(false);
             event.setLoggedIn(false);
             resetBtn();
 
         } else {
             Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
             Stage stage = (Stage) navigate_btn.getScene().getWindow();
-            StageManager.changeExistingWindow(stage, root, "Admin Login");
+            StageManager.changeExistingWindow(stage, root, "Employee Login");
         }
     }
-  */
+
 
     @FXML
     // switches window to map editor screen.
@@ -206,14 +206,27 @@ public class TopNavController {
     }
 
     private void resetBtn() {
+
+        // if admin is logged in
         if(event.isAdmin()){
+            System.out.println("USER IS AN ADMIN");
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
             bookBtn.setVisible(true);
             requestBtn.setVisible(true);
-
-        } else {
+        }
+        // if employee is logged in
+        else if ((event.isAdmin() == false) && (event.isLoggedIn() == true)) {
+            System.out.println("USER IS AN EMPLOYEE");
+            fulfillBtn.setVisible(true);
+            edit_btn.setVisible(false);
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
+            bookBtn.setVisible(true);
+            requestBtn.setVisible(true);
+        }
+        // no one is logged in
+        else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
