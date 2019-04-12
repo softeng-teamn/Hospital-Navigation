@@ -1,5 +1,6 @@
 package home;
 
+import application_state.ApplicationState;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
@@ -288,28 +289,19 @@ public class MapViewController {
                         Stage stage = (Stage) image_pane.getScene().getWindow();
                         Circle c = (Circle)event.getSource();
                         tp.show(c, stage.getX()+event.getSceneX()+15, stage.getY()+event.getSceneY());
-                        image_pane.getScene().setCursor(Cursor.HAND);
                     }
                 });
                 nodeCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
                         tp.hide();
-                        image_pane.getScene().setCursor(Cursor.DEFAULT);
                     }
                 });
                 nodeCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        // ************
 
-
-                        //      Need to pass node clicked to global AppState
-
-//                        eventBus.post(n);
-//                        nodeToEdit = n;
-
-                        // ************
+                        ApplicationState.getApplicationState().setNodeToEdit(n);
 
                         System.out.println("WE CLICKED THE CIRCLE");
                         try {

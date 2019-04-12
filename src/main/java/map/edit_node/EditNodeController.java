@@ -1,5 +1,6 @@
 package map.edit_node;
 
+import application_state.ApplicationState;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -13,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -46,12 +48,11 @@ public class EditNodeController extends Control {
     private EventBus eventBus = EventBusFactory.getEventBus();
     Circle selectedCircle = new Circle();
     Node tempEditNode;      // mutating the node based on edits
-    Node nodeToEdit;        // the unchanged node that is being edited
-    ArrayList<Edge> edgesToEdit;
     boolean isEditEdges = false;
     ArrayList<Circle> circleCollection = new ArrayList<>();
     ArrayList<Node> edgeNodeCollection;
     static ArrayList<Edge> oldEdgesFromEditNode;
+    double orgSceneX, orgSceneY;    // for circle dragging
 
     //    @FXML
 //    private Pane img_pane;
@@ -80,6 +81,8 @@ public class EditNodeController extends Control {
     @FXML
     void initialize() {
 
+        tempEditNode = ApplicationState.getApplicationState().getNodeToEdit();
+
         node_id_label.setText("Node: " + tempEditNode.getNodeID());
 
 
@@ -103,7 +106,7 @@ public class EditNodeController extends Control {
         // Setting View Scrolling
         zoom_slider.setMin(0.3);
         zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.3);
+        zoom_slider.setValue(0.4);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.4);
         drawSelectedCircle(tempEditNode.getXcoord(), tempEditNode.getYcoord());
@@ -154,10 +157,29 @@ public class EditNodeController extends Control {
         circle.setCenterY(y);
         circle.setRadius(20);
         circle.setFill(Color.GREEN);
+        circle.setCursor(Cursor.HAND);
+        circle.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                t.consume();
+                orgSceneX = t.getX() - circle.getCenterX();
+                orgSceneY = t.getY() - circle.getCenterY();
+            }
+        });
+        circle.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                t.consume();
+                circle.setCenterX(t.getX() - orgSceneX);
+                circle.setCenterY(t.getY() - orgSceneY);
+            }
+        });
         selectedCircle = circle;
         zoomGroup.getChildren().add(circle);
         scrollTo(tempEditNode);
     }
+
+
 
     private void scrollTo(Node node) {
         // animation scroll to new position
@@ -174,7 +196,7 @@ public class EditNodeController extends Control {
     }
 
     void fillNodeInfo() {
-        Node node = nodeToEdit;
+        Node node = ApplicationState.getApplicationState().getNodeToEdit();
         building_field.setText(node.getBuilding());
         type_field.setText(node.getNodeType());
         floor_combo.getItems().add("3");
@@ -248,7 +270,7 @@ public class EditNodeController extends Control {
 
     @FXML
     void deleteAction(ActionEvent e) throws IOException {
-        edgesToEdit = oldEdgesFromEditNode;
+        ApplicationState.getApplicationState().setEdgesToEdit(oldEdgesFromEditNode);
         Parent root = FXMLLoader.load(ResourceLoader.deleteNodeConfirm);
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
@@ -257,7 +279,7 @@ public class EditNodeController extends Control {
         stage.initOwner(image_pane.getScene().getWindow());
         stage.showAndWait();
 
-        if (nodeToEdit == null) {
+        if (ApplicationState.getApplicationState().getNodeToEdit() == null) {
             try {
                 Parent myRoot = FXMLLoader.load(ResourceLoader.home);
                 Stage myStage = (Stage)map_scrollpane.getScene().getWindow();
@@ -273,7 +295,7 @@ public class EditNodeController extends Control {
     @FXML
     void saveAction(ActionEvent e) throws IOException {
         updateNode();
-        nodeToEdit = tempEditNode;
+        ApplicationState.getApplicationState().setNodeToEdit(tempEditNode);
         // remove old edges
         for (Edge edge : oldEdgesFromEditNode) {
             DatabaseService.getDatabaseService().deleteEdge(edge);
@@ -286,11 +308,11 @@ public class EditNodeController extends Control {
             DatabaseService.getDatabaseService().insertEdge(edge);
         }
         // updating node
-        DatabaseService.getDatabaseService().updateNode(nodeToEdit);
+        DatabaseService.getDatabaseService().updateNode(tempEditNode);
         System.out.println("SHOW UPDATED NODE:");
-        System.out.println(DatabaseService.getDatabaseService().getNode(nodeToEdit.getNodeID()));
+        System.out.println(DatabaseService.getDatabaseService().getNode(tempEditNode.getNodeID()));
         // set edges globally
-        edgesToEdit = newEdges;
+        ApplicationState.getApplicationState().setEdgesToEdit(newEdges);
         // fire confirmation
         Parent root = FXMLLoader.load(ResourceLoader.saveNodeConfirm);
         Stage stage = new Stage();
@@ -302,7 +324,8 @@ public class EditNodeController extends Control {
     }
 
     void updateNode() {
-//        tempEditNode.set
+        tempEditNode.setXcoord((int)selectedCircle.getCenterX());
+        tempEditNode.setYcoord((int)selectedCircle.getCenterY());
         tempEditNode.setNodeType(type_field.getText());
         tempEditNode.setBuilding(building_field.getText());
         tempEditNode.setLongName(long_field.getText());
