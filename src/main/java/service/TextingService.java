@@ -15,20 +15,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import static org.apache.commons.codec.CharEncoding.UTF_8;
+
 public class TextingService {
     // Find your Account Sid and Auth Token at twilio.com/console
     private String[] secrets= new String[2];
 
-
-
-
     private String readFromInputStream(InputStream inputStream)
             throws IOException {
-        StringBuilder resultStringBuilder = new StringBuilder();
+        StringBuilder resultStringBuilder = new StringBuilder(UTF_8);
         try (BufferedReader br
                      = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((line =br.readLine()) != null) {
                 resultStringBuilder.append(line).append("\n");
             }
         }

@@ -3,6 +3,7 @@ package map.pathfinding;
 import elevator.ElevatorFloor;
 import map.MapNode;
 import map.Node;
+import map.NodeFacade;
 
 import java.util.*;
 
@@ -77,8 +78,9 @@ public class Astar implements Algorithm {
             //System.out.println("Iterating through children of current...");
             for (MapNode child : getChildren(current)){
                 //System.out.println("child: " + child.getData().getNodeID());
-                child.calculateG(current);
-                child.calculateHeuristic(dest);
+                NodeFacade nf = new NodeFacade(child);
+                nf.mapNodeCalculateG(current);
+                nf.mapNodeCalculateHeuristic(dest);
                 double cost = current.getG() + child.getG() + child.getH();
 
                 if (child.equals(dest)) {
