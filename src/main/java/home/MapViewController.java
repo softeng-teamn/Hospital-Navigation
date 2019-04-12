@@ -404,7 +404,7 @@ public class MapViewController {
         FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
 
         //switch floor
-        //switchFloors(node.getFloor());
+        switchFloors(node.getFloor());
 
 
     }
