@@ -51,7 +51,7 @@ public class SearchResultsController {
 
     @FXML
     void initialize() {
-        buildingAbbrev.put("Shapiro", "Sha");
+        buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
         buildingAbbrev.put("BTM", "BTM");
         buildingAbbrev.put("Tower", "Tow");
         buildingAbbrev.put("45 Francis", "45Fr");
