@@ -21,6 +21,7 @@ public class ITRequestController extends RequestController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         type.setItems(FXCollections.observableArrayList(ITRequest.ITRequestType.values()));
+        type.getSelectionModel().select(0);
     }
 
     @FXML
@@ -30,7 +31,7 @@ public class ITRequestController extends RequestController {
             itRequest.makeRequest();
 
             description.setText("");
-            type.getSelectionModel().select(1);
+            type.getSelectionModel().select(0);
         }
     }
 }

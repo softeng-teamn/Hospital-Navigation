@@ -9,6 +9,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ToggleGroup;
 import service_request.model.sub_model.AVServiceRequest;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class AVServiceRequestController extends RequestController {
 
     @FXML
@@ -19,6 +22,14 @@ public class AVServiceRequestController extends RequestController {
 
     @FXML
     private ToggleGroup AVType;
+
+    @FXML
+    private JFXToggleNode audioToggle;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        AVType.selectToggle(audioToggle);
+    }
 
     @FXML
     void submitRequest(ActionEvent event) {
@@ -46,6 +57,8 @@ public class AVServiceRequestController extends RequestController {
         if(selectedNode != null) {
             AVServiceRequest avServiceRequest = new AVServiceRequest(-1, description.getText(), selectedNode, false, AVTypeSelected);
             avServiceRequest.makeRequest();
+            description.setText("");
+            AVType.selectToggle(audioToggle);
         }
     }
 
