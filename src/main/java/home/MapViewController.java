@@ -191,11 +191,21 @@ public class MapViewController {
     @FXML
     void floorChangeAction(ActionEvent e) throws IOException {
         JFXButton btn = (JFXButton)e.getSource();
-        ImageView imageView;
+        switchFloors(btn.getText());
+        if (hasPath){
+            drawPath();
+        }
+        // Handle Floor changes
+        editNodeHandler(event.isEditing());
+    }
+
+
+    private void switchFloors(String floor){
+        ImageView imageView = null;
         event.setEventName("floor");
         String floorName = "";
-        event.setFloor(btn.getText());
-        switch (btn.getText()) {
+        event.setFloor(floor);
+        switch (floor) {
             case "3":
                 imageView = imageCache.get("3");
                 floorName = "3";
@@ -222,20 +232,20 @@ public class MapViewController {
                 break;
             default:
                 System.out.println("We should not have default here!!!");
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
+                try {
+                    imageView = new ImageView(new Image(
+                            ResourceLoader.groundFloor.openStream()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
         image_pane.getChildren().clear();
         image_pane.getChildren().add(imageView);
         event.setFloor(floorName);
         eventBus.post(event);
-        if (hasPath){
-            drawPath();
-        }
-        // Handle Floor changes
-        editNodeHandler(event.isEditing());
     }
+
 
     @Subscribe
     void eventListener(Event event) {
@@ -561,6 +571,7 @@ public class MapViewController {
         final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
         timeline.getKeyFrames().add(kf);
         timeline.play();
+        switchFloors(node.getFloor());
     }
 
     /**
