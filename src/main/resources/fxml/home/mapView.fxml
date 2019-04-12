@@ -73,7 +73,11 @@
                     <Insets right="300.0" />
                 </StackPane.margin>
                 <children>
-            <Label fx:id="FloorInfo" />
+            <Label fx:id="FloorInfo" style="-fx-background-color: #465AAC;" text="Floor 1" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
                     <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="200.0">
                         <children>
                             <Pane prefHeight="40.0" prefWidth="58.0">

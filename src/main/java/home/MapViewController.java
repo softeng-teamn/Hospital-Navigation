@@ -192,11 +192,6 @@ public class MapViewController {
     void floorChangeAction(ActionEvent e) throws IOException {
         JFXButton btn = (JFXButton)e.getSource();
         switchFloors(btn.getText());
-        if (hasPath){
-            drawPath();
-        }
-        // Handle Floor changes
-        editNodeHandler(event.isEditing());
     }
 
 
@@ -245,6 +240,12 @@ public class MapViewController {
         image_pane.getChildren().add(imageView);
         event.setFloor(floorName);
         eventBus.post(event);
+
+        if (hasPath){
+            drawPath();
+        }
+        // Handle Floor changes
+        editNodeHandler(event.isEditing());
     }
 
 
