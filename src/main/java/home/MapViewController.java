@@ -192,6 +192,8 @@ public class MapViewController {
     void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
         switchFloors(btn.getText());
+        event.setEventName("floor");
+        eventBus.post(event);
 
         if (hasPath){
             drawPath();
@@ -202,34 +204,27 @@ public class MapViewController {
 
 
     private void switchFloors(String floor){
-        ImageView imageView = null;
-        event.setEventName("floor");
-        String floorName = "";
         event.setFloor(floor);
+        System.out.println("switching floors " + floor);
+        ImageView imageView = null;
         switch (floor) {
             case "3":
                 imageView = imageCache.get("3");
-                floorName = "3";
                 break;
             case "2":
                 imageView = imageCache.get("2");
-                floorName = "2";
                 break;
             case "1":
                 imageView = imageCache.get("1");
-                floorName = "1";
                 break;
             case "L1":
                 imageView = imageCache.get("L1");
-                floorName = "L1";
                 break;
             case "L2":
                 imageView = imageCache.get("L2");
-                floorName = "L2";
                 break;
             case "G":
                 imageView = imageCache.get("G");
-                floorName = "G";
                 break;
             default:
                 System.out.println("We should not have default here!!!");
@@ -244,8 +239,7 @@ public class MapViewController {
 
         image_pane.getChildren().clear();
         image_pane.getChildren().add(imageView);
-        event.setFloor(floorName);
-        eventBus.post(event);
+        System.out.println("done switching floors");
     }
 
 
@@ -289,7 +283,7 @@ public class MapViewController {
                         editNodeHandler(event.isEditing());
                         break;
                     default:
-//                        System.out.println("I don'");
+                        System.out.println("default nothing happens");
                         break;
                 }
             }
@@ -376,6 +370,7 @@ public class MapViewController {
 
 
     private void drawPoint(Node node, Circle circle, Color color, boolean start) {
+        System.out.println("drawing point");
         // remove points
         for (Line line : lineCollection) {
             if (zoomGroup.getChildren().contains(line)) {
@@ -405,11 +400,12 @@ public class MapViewController {
         scrollTo(node);
 
         //switch the map
+        System.out.println(node + node.getFloor());
         switchFloors(node.getFloor());
 
         //display node info
         FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
-
+        System.out.println("done drawing point");
     }
 
     // generate path on the screen
