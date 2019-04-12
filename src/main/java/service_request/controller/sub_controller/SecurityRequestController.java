@@ -20,11 +20,11 @@ public class SecurityRequestController extends RequestController {
     private ToggleGroup urgency;
 
     @FXML
-    private JFXToggleNode lowToggle;
+    private JFXToggleNode urgency_low;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        urgency.selectToggle(lowToggle);
+        urgency.selectToggle(urgency_low);
     }
 
     @FXML
@@ -54,7 +54,7 @@ public class SecurityRequestController extends RequestController {
             SecurityRequest securityRequest = new SecurityRequest(-1, description.getText(), selectedNode, false, urgencyLevel);
             securityRequest.makeRequest();
             description.setText("");
-            urgency.selectToggle(lowToggle);
+            urgency.selectToggle(urgency_low);
         }
     }
 }
