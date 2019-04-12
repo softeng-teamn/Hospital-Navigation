@@ -23,6 +23,7 @@ import testclassifications.FastTest;
 import testclassifications.UiTest;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
@@ -91,7 +92,9 @@ public class ServiceRequestUITest extends ApplicationTest {
         clickOn(submit);
 
         // Verify submission in database
+        System.out.println(myDBS.getAllITRequests());
         ITRequest req = myDBS.getITRequest(0);
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getItRequestType(), is(ITRequest.ITRequestType.Maintenance));
         verifyThat(req.getNotes(), is("A description here..."));
     }
