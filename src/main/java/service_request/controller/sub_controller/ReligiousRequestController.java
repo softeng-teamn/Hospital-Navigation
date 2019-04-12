@@ -21,7 +21,7 @@ public class ReligiousRequestController extends RequestController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         type.setItems(FXCollections.observableArrayList(ReligiousRequest.Religion.values()));
-        type.getSelectionModel().select(0);
+        type.getSelectionModel().select(4);
     }
 
     @FXML
@@ -30,7 +30,7 @@ public class ReligiousRequestController extends RequestController {
             ReligiousRequest religiousRequest = new ReligiousRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
             religiousRequest.makeRequest();
             description.setText("");
-            type.getSelectionModel().select(0);
+            type.getSelectionModel().select(4);
         }
     }
 }

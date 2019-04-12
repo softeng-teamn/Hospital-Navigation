@@ -37,7 +37,7 @@ public class ExternalTransportationController  extends RequestController {
         transport.setItems(FXCollections.observableArrayList(ExternalTransportRequest.TransportationType.values()));
         datePicker.setValue(LocalDate.now());
         timePicker.setValue(LocalTime.now());
-        transport.getSelectionModel().select(0);
+        transport.getSelectionModel().select(2);
     }
 
     @FXML
@@ -49,7 +49,7 @@ public class ExternalTransportationController  extends RequestController {
             Date d = new Date((g.getTimeInMillis()/1000));
             ExternalTransportRequest extTrans = new ExternalTransportRequest(-1, description.getText(), selectedNode, false, d, transport.getSelectionModel().getSelectedItem(), "");
             extTrans.makeRequest();
-            transport.getSelectionModel().select(0);
+            transport.getSelectionModel().select(2);
             description.setText("");
             datePicker.setValue(LocalDate.now());
             timePicker.setValue(LocalTime.now());

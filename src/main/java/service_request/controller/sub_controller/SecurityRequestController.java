@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ToggleGroup;
 import service_request.model.sub_model.SecurityRequest;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class SecurityRequestController extends RequestController {
 
     @FXML
@@ -15,6 +18,14 @@ public class SecurityRequestController extends RequestController {
 
     @FXML
     private ToggleGroup urgency;
+
+    @FXML
+    private JFXToggleNode lowToggle;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        urgency.selectToggle(lowToggle);
+    }
 
     @FXML
     void submitRequest(ActionEvent event) {
@@ -43,7 +54,7 @@ public class SecurityRequestController extends RequestController {
             SecurityRequest securityRequest = new SecurityRequest(-1, description.getText(), selectedNode, false, urgencyLevel);
             securityRequest.makeRequest();
             description.setText("");
-            urgency.selectToggle(null);
+            urgency.selectToggle(lowToggle);
         }
     }
 }
