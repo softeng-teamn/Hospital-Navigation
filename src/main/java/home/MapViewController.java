@@ -380,7 +380,7 @@ public class MapViewController {
         }
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
-            System.out.println("we found new Selected Circles");
+            //System.out.println("we found new Selected Circles");
             zoomGroup.getChildren().remove(circle);
         }
         // create new Circle
@@ -396,9 +396,11 @@ public class MapViewController {
         } else {
             selectCircle = circle;
         }
+        //switch floor
+        switchFloors(node.getFloor());
+
         // Scroll to new point
         scrollTo(node);
-
 
     }
 
@@ -561,17 +563,19 @@ public class MapViewController {
 
     private void scrollTo(Node node) {
         // animation scroll to new position
+        System.out.println("SCROLLING");
         double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
         double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
         double scrollH = (Double) (node.getXcoord() / mapWidth);
         double scrollV = (Double) (node.getYcoord() / mapHeight);
         final Timeline timeline = new Timeline();
+        System.out.println("Still scrolling");
         final KeyValue kv1 = new KeyValue(map_scrollpane.hvalueProperty(), scrollH);
         final KeyValue kv2 = new KeyValue(map_scrollpane.vvalueProperty(), scrollV);
         final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
         timeline.getKeyFrames().add(kf);
         timeline.play();
-        switchFloors(node.getFloor());
+        System.out.println("DONE SCROLLING");
     }
 
     /**
