@@ -307,14 +307,12 @@ public class MapViewController {
                         Stage stage = (Stage) image_pane.getScene().getWindow();
                         Circle c = (Circle)event.getSource();
                         tp.show(c, stage.getX()+event.getSceneX()+15, stage.getY()+event.getSceneY());
-//                        image_pane.getScene().setCursor(Cursor.HAND);
                     }
                 });
                 nodeCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
                         tp.hide();
-//                        image_pane.getScene().setCursor(Cursor.DEFAULT);
                     }
                 });
                 nodeCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
