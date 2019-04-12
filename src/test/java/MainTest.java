@@ -26,7 +26,6 @@ public class MainTest {
         DatabaseService.getDatabaseService().wipeTables();
     }
 
-    @Ignore
     @Test
     @Category({SlowTest.class})
     public void testMain() {

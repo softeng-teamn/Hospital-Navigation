@@ -42,7 +42,7 @@
          </VBox.margin>
       </JFXTextArea>
       <Region prefHeight="283.0" prefWidth="534.0" />
-      <JFXButton onAction="#makeRequestHandler" styleClass="confirm-button" text="%Submit">
+      <JFXButton fx:id="submit" onAction="#makeRequestHandler" styleClass="confirm-button" text="%Submit">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXButton>
