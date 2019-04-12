@@ -51,6 +51,8 @@ public class SanitationRequestController extends RequestController {
                         "Other"
                 );
         materialBox.setItems(options);
+        urgencyBox.getSelectionModel().select(0);
+        materialBox.getSelectionModel().select(0);
     }
 
     @FXML
@@ -62,8 +64,8 @@ public class SanitationRequestController extends RequestController {
             SanitationRequest sanitationRequest = new SanitationRequest(-1, notes.getText(), selectedNode, false, urgencyBox.getValue(), materialBox.getValue());
             sanitationRequest.makeRequest();
             notes.setText("");
-            urgencyBox.getSelectionModel().clearSelection();
-            materialBox.getSelectionModel().clearSelection();
+            urgencyBox.getSelectionModel().select(0);
+            materialBox.getSelectionModel().select(0);
         }
         else {
             errorLbl.setVisible(true);
