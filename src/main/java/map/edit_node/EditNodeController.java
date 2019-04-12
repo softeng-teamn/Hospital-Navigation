@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,6 +52,7 @@ public class EditNodeController extends Control {
     ArrayList<Circle> circleCollection = new ArrayList<>();
     ArrayList<Node> edgeNodeCollection;
     static ArrayList<Edge> oldEdgesFromEditNode;
+    double orgSceneX, orgSceneY;    // for circle dragging
 
     //    @FXML
 //    private Pane img_pane;
@@ -104,7 +106,7 @@ public class EditNodeController extends Control {
         // Setting View Scrolling
         zoom_slider.setMin(0.3);
         zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.3);
+        zoom_slider.setValue(0.4);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.4);
         drawSelectedCircle(tempEditNode.getXcoord(), tempEditNode.getYcoord());
@@ -155,10 +157,29 @@ public class EditNodeController extends Control {
         circle.setCenterY(y);
         circle.setRadius(20);
         circle.setFill(Color.GREEN);
+        circle.setCursor(Cursor.HAND);
+        circle.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                t.consume();
+                orgSceneX = t.getX() - circle.getCenterX();
+                orgSceneY = t.getY() - circle.getCenterY();
+            }
+        });
+        circle.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                t.consume();
+                circle.setCenterX(t.getX() - orgSceneX);
+                circle.setCenterY(t.getY() - orgSceneY);
+            }
+        });
         selectedCircle = circle;
         zoomGroup.getChildren().add(circle);
         scrollTo(tempEditNode);
     }
+
+
 
     private void scrollTo(Node node) {
         // animation scroll to new position
@@ -303,7 +324,8 @@ public class EditNodeController extends Control {
     }
 
     void updateNode() {
-//        tempEditNode.set
+        tempEditNode.setXcoord((int)selectedCircle.getCenterX());
+        tempEditNode.setYcoord((int)selectedCircle.getCenterY());
         tempEditNode.setNodeType(type_field.getText());
         tempEditNode.setBuilding(building_field.getText());
         tempEditNode.setLongName(long_field.getText());

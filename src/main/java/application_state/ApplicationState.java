@@ -8,7 +8,7 @@ public class ApplicationState {
 
     //******************************************
 
-    private Node nodeToEdit;
+    private Node nodeToEdit = new Node("AELEV00S01",1534,2777,"1","BTM","ELEV","Elevator S 01","Elevator S 1");
     private ArrayList<Edge> edgesToEdit;
 
 
