@@ -189,9 +189,15 @@ public class MapViewController {
     }
 
     @FXML
-    void floorChangeAction(ActionEvent e) throws IOException {
+    void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
         switchFloors(btn.getText());
+
+        if (hasPath){
+            drawPath();
+        }
+        // Handle Floor changes
+        editNodeHandler(event.isEditing());
     }
 
 
@@ -240,12 +246,6 @@ public class MapViewController {
         image_pane.getChildren().add(imageView);
         event.setFloor(floorName);
         eventBus.post(event);
-
-        if (hasPath){
-            drawPath();
-        }
-        // Handle Floor changes
-        editNodeHandler(event.isEditing());
     }
 
 
@@ -401,12 +401,11 @@ public class MapViewController {
         // Scroll to new point
         scrollTo(node);
 
-        //show floor and building info
-        FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
-
-        //switch floor
+        //switch the map
         switchFloors(node.getFloor());
 
+        //display node info
+        FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
 
     }
 
@@ -569,19 +568,16 @@ public class MapViewController {
 
     private void scrollTo(Node node) {
         // animation scroll to new position
-        System.out.println("SCROLLING");
         double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
         double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
         double scrollH = (Double) (node.getXcoord() / mapWidth);
         double scrollV = (Double) (node.getYcoord() / mapHeight);
         final Timeline timeline = new Timeline();
-        System.out.println("Still scrolling");
         final KeyValue kv1 = new KeyValue(map_scrollpane.hvalueProperty(), scrollH);
         final KeyValue kv2 = new KeyValue(map_scrollpane.vvalueProperty(), scrollV);
         final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
         timeline.getKeyFrames().add(kf);
         timeline.play();
-        System.out.println("DONE SCROLLING");
     }
 
     /**

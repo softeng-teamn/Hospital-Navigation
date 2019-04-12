@@ -37,19 +37,19 @@ public class ElevatorConnnection {
             case "L2":
                 floorNum = "-2";
                 break;
-            case "00":
+            case " 0":
                 floorNum = "0";
                 break;
-            case "01":
+            case " 1":
                 floorNum = "1";
                 break;
-            case "02":
+            case " 2":
                 floorNum = "2";
                 break;
-            case "03":
+            case " 3":
                 floorNum = "3";
                 break;
-            case"04":
+            case" 4":
                 floorNum = "4";
                 break;
             default:
