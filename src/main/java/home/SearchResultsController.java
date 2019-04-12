@@ -10,14 +10,22 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import map.Node;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import database.DatabaseService;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,7 +39,8 @@ public class SearchResultsController {
 
 
     @FXML
-    private JFXListView<Node> list_view;
+    private JFXListView<HBox> list_view;    // TODO: changed
+    private HashMap<String, String> buildingAbbrev = new HashMap<>();
 
     private Node destNode;
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
@@ -41,10 +50,13 @@ public class SearchResultsController {
 
     @FXML
     void initialize() {
-
+        buildingAbbrev.put("Shapiro", "SHA");    // TODO: added
+        buildingAbbrev.put("BTM", "BTM");
+        buildingAbbrev.put("Tower", "TOW");
+        buildingAbbrev.put("45 Francis", "45FR");
+        buildingAbbrev.put("15 Francis", "15FR");
+        buildingAbbrev.put("RES", "RES");
         eventBus.register(this);
-
-
         repopulateList(event.isAdmin());
     }
 
@@ -55,7 +67,7 @@ public class SearchResultsController {
         switch (event.getEventName()) {
             case "node-select":
                 //list_view.scrollTo(event.getNodeSelected());
-                list_view.getSelectionModel().select(event.getNodeSelected());
+               // list_view.getSelectionModel().select(event.getNodeSelected());   // TODO what does this do?
                 break;
             case "login":
                 //for functions that have threading issue, use this and it will be solved
@@ -85,12 +97,13 @@ public class SearchResultsController {
      */
     @FXML
     public void listViewClicked(MouseEvent e) {
-        Node selectedNode = list_view.getSelectionModel().getSelectedItem();
-        System.out.println("You clicked on: " + selectedNode.getLongName());
+        HBox selectedNode = list_view.getSelectionModel().getSelectedItem();  // TODO: changed
+        String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
+        System.out.println("You clicked on: " + ID);
 
 
         // set destination node
-        destNode = selectedNode;
+        destNode = DatabaseService.getDatabaseService().getNode(ID);
 
         if (event.isEndNode()){
             event.setNodeSelected(destNode);
@@ -128,21 +141,50 @@ public class SearchResultsController {
             return;
         }
 
+        // TODO: showing building and floor. text color need to set?
+        // TODO: PRoblem: need to still be connected to node to pathfind to. or get it really fast
+        // tODO: make into function
+        ArrayList<HBox> hBoxes = new ArrayList<>();
+        for (int i = 0; i < allNodesObservable.size(); i++) {
+            Node currNode = allNodesObservable.get(i);
+            HBox hb = new HBox();
+            HBox inner = new HBox();
+            inner.setAlignment(Pos.CENTER_RIGHT);
+            Label longName = new Label(currNode.getLongName());
+            String buildFlStr = buildingAbbrev.get(currNode.getBuilding()) + ", " + currNode.getFloor();
+            Label buildFloor = new Label(buildFlStr);
+            Label nodeId = new Label(currNode.getNodeID());
+            nodeId.setPrefWidth(0);
+            nodeId.setVisible(false);
+            nodeId.setPadding(new Insets(0,-10,0,0));
+            hb.getChildren().add(longName);
+            inner.getChildren().add(nodeId);
+            inner.getChildren().add(buildFloor);
+            hb.getChildren().add(inner);
+            hb.setHgrow(inner, Priority.ALWAYS);
+            hb.setSpacing(0);
+            hBoxes.add(hb);
+        }
+        ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
+        observeHboxes.addAll(hBoxes);
+
         list_view.getItems().clear();
         // add to listView
-        list_view.getItems().addAll(allNodesObservable);
+        //list_view.getItems().addAll(allNodesObservable); TODO
+        list_view.setItems(observeHboxes);
 
-        list_view.setCellFactory(param -> new JFXListCell<Node>() {
-            @Override
-            protected  void updateItem(Node item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNodeID() == null ) {
-                    setText(null);
-                } else {
-                    setText(item.getLongName());
-                }
-            }
-        });
+        // TODO: cut?
+//        list_view.setCellFactory(param -> new JFXListCell<Node>() {
+//            @Override
+//            protected  void updateItem(Node item, boolean empty) {
+//                super.updateItem(item, empty);
+//                if (empty || item == null || item.getNodeID() == null ) {
+//                    setText(null);
+//                } else {
+//                    setText(item.getLongName());
+//                }
+//            }
+//        });
     }
 
 
@@ -152,7 +194,31 @@ public class SearchResultsController {
     private void filterList(String findStr) {
         if (findStr.equals("")) {
             list_view.getItems().clear();
-            list_view.getItems().addAll(allNodesObservable);
+            // TODO: changed
+            ArrayList<HBox> hBoxes = new ArrayList<>();
+            for (int i = 0; i < allNodesObservable.size(); i++) {
+                Node currNode = allNodesObservable.get(i);
+                HBox hb = new HBox();
+                HBox inner = new HBox();
+                inner.setAlignment(Pos.CENTER_RIGHT);
+                Label longName = new Label(currNode.getLongName());
+                String buildFlStr = buildingAbbrev.get(currNode.getBuilding()) + ", " + currNode.getFloor();
+                Label buildFloor = new Label(buildFlStr);
+                Label nodeId = new Label(currNode.getNodeID());
+                nodeId.setPrefWidth(0);
+                nodeId.setVisible(false);
+                nodeId.setPadding(new Insets(0,-10,0,0));
+                hb.getChildren().add(longName);
+                inner.getChildren().add(nodeId);
+                inner.getChildren().add(buildFloor);
+                hb.getChildren().add(inner);
+                hb.setHgrow(inner, Priority.ALWAYS);
+                hb.setSpacing(0);
+                hBoxes.add(hb);
+            }
+            ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
+            observeHboxes.addAll(hBoxes);
+            list_view.getItems().addAll(observeHboxes);
         }
         else {
             //Get List of all nodes
@@ -170,9 +236,34 @@ public class SearchResultsController {
             List<Node> filteredNodes = stream.collect(Collectors.toList());
             ObservableList<Node> toShow = FXCollections.observableList(filteredNodes);
 
+            ArrayList<HBox> hBoxes = new ArrayList<>();
+            for (int i = 0; i < filteredNodes.size(); i++) {
+                Node currNode = allNodesObservable.get(i);
+                HBox hb = new HBox();
+                HBox inner = new HBox();
+                inner.setAlignment(Pos.CENTER_RIGHT);
+                Label longName = new Label(currNode.getLongName());
+                String buildFlStr = buildingAbbrev.get(currNode.getBuilding()) + ", " + currNode.getFloor();
+                Label buildFloor = new Label(buildFlStr);
+                Label nodeId = new Label(currNode.getNodeID());
+                nodeId.setPrefWidth(0);
+                nodeId.setVisible(false);
+                nodeId.setPadding(new Insets(0,-10,0,0));
+                hb.getChildren().add(longName);
+                inner.getChildren().add(nodeId);
+                inner.getChildren().add(buildFloor);
+                hb.getChildren().add(inner);
+                hb.setHgrow(inner, Priority.ALWAYS);
+                hb.setSpacing(0);
+                hBoxes.add(hb);
+            }
+            ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
+            observeHboxes.addAll(hBoxes);
+
             // Add to view
             list_view.getItems().clear();
-            list_view.getItems().addAll(toShow);
+            list_view.getItems().addAll(observeHboxes);
+         // todo: changed   list_view.getItems().addAll(toShow);
         }
     }
 
