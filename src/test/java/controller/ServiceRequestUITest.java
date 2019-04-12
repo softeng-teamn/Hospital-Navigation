@@ -208,7 +208,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         SanitationRequest req = myDBS.getSanitationRequest(0);
         verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getUrgency(), is("Medium"));
-        verifyThat(req.getMaterialState(), is("Solid"));
+        verifyThat(req.getMaterialState(), is("Mixture"));
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
