@@ -68,7 +68,6 @@ public class SearchResultsController {
         switch (event.getEventName()) {
             case "node-select":
                 //list_view.scrollTo(event.getNodeSelected());
-                //list_view.getSelectionModel().select(event.getNodeSelected());   // TODO what does this do? I commented it out
                 break;
             case "login":
                 //for functions that have threading issue, use this and it will be solved
