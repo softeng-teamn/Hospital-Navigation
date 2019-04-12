@@ -46,7 +46,7 @@ public class TopNavController {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn, about_btn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -61,6 +61,7 @@ public class TopNavController {
     private JFXHamburger hamburger;
     @FXML
     private JFXCheckBox callElev;
+
 
     private boolean barOpened = false;
 
@@ -103,6 +104,13 @@ public class TopNavController {
         Stage stage = (Stage) navigate_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage,root,"Service Request");
+    }
+
+    @FXML
+    void showAbout(ActionEvent e) throws Exception {
+        Stage stage = (Stage) about_btn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.about,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"About Page");
     }
 
     @FXML

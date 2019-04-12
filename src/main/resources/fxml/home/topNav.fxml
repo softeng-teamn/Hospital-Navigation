@@ -54,6 +54,7 @@
         </JFXToggleNode>
         <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="time_label" styleClass="header-label" textAlignment="CENTER" />
+      <JFXButton fx:id="about_btn" onAction="#showAbout" text="About" />
         <Region prefWidth="310.0" />
         <JFXButton fx:id="fulfillBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showAdminScene" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
             <graphic>
