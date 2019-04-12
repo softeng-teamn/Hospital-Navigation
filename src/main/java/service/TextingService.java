@@ -21,6 +21,8 @@ import static org.apache.commons.codec.CharEncoding.UTF_8;
 public class TextingService {
     // Find your Account Sid and Auth Token at twilio.com/console
     private String[] secrets= new String[2];
+    private String ACCOUNT_SID = "toBeReplaced";
+    private String AUTH_TOKEN = "toBeReplaced";
 
     private String readFromInputStream(InputStream inputStream)
             throws IOException {
@@ -49,9 +51,6 @@ public class TextingService {
             System.out.println("IOEXCEPTION TRIGGERED");
         }
     }
-
-    private String ACCOUNT_SID = "toBeReplaced";
-    private String AUTH_TOKEN = "toBeReplaced";
 
     public void textMap(String phone, String mapUrl){
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
