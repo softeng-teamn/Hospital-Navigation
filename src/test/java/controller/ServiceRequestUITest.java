@@ -95,7 +95,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Verify submission in database
         ITRequest req = myDBS.getITRequest(0);
         verifyThat(req, is(notNullValue()), informedErrorMessage(this));
-        verifyThat(req.getItRequestType(), is(ITRequest.ITRequestType.Maintenance));
+        verifyThat(req.getItRequestType(), is(ITRequest.ITRequestType.New_Computer));
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
@@ -207,7 +207,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Verify submission in database
         SanitationRequest req = myDBS.getSanitationRequest(0);
         verifyThat(req, is(notNullValue()), informedErrorMessage(this));
-        verifyThat(req.getUrgency(), is("Low"));
+        verifyThat(req.getUrgency(), is("Medium"));
         verifyThat(req.getMaterialState(), is("Solid"));
         verifyThat(req.getNotes(), is("A description here..."));
     }
