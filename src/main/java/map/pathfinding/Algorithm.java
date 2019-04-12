@@ -11,8 +11,8 @@ import java.util.HashMap;
 public interface Algorithm {
 
     ArrayList<Node> findDest(MapNode start, MapNode dest, boolean accessibility, String filter);
-    int getEstimatedTime();
-    HashMap<String, ElevatorFloor> getElevTimes();
+//    int getEstimatedTime();
+//    HashMap<String, ElevatorFloor> getElevTimes();
 
     /**
      * Gets reachable MapNodes from given MapNode
