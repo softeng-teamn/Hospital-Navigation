@@ -1,6 +1,7 @@
 package service;
 
 import map.MapController;
+import map.pathfinding.AlgorithmContext;
 import map.pathfinding.Astar;
 import map.MapNode;
 import map.Node;
@@ -37,7 +38,7 @@ public class AstarSimpleTest {
     final MapNode mn5 = new MapNode(3, 1, n5);
     final Node n6 = new Node("n6", 4, 0, "1", "f", "f", "f", "f");
     final MapNode mn6 = new MapNode(4, 0, n6);
-    final Astar mockPF = spy(new Astar());
+    final AlgorithmContext mockPF = spy(new Astar());
     @Mock
     MapController mockMapController;
 
@@ -112,7 +113,7 @@ public class AstarSimpleTest {
     @Category(FastTest.class)
     public void testAStar() {
         // a path can be found
-        assertThat(mockPF.aStar(mn1, mn6, false, null), is(mn6));
+        assertThat(mockPF.findDest(mn1, mn6, false, null), is(mn6));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package map.pathfinding;
 
 import elevator.ElevatorFloor;
+import map.MapController;
 import map.MapNode;
 import map.Node;
 

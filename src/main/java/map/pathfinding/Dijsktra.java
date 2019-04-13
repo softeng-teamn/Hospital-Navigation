@@ -1,12 +1,11 @@
 package map.pathfinding;
 
+import map.MapController;
 import map.MapNode;
+import map.Node;
 import map.NodeFacade;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 public class Dijsktra extends AlgorithmContext implements Algorithm{
     public int estimatedTime;

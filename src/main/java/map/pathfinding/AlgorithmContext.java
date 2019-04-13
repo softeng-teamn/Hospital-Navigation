@@ -1,6 +1,7 @@
 package map.pathfinding;
 
 import elevator.ElevatorFloor;
+import map.MapController;
 import map.MapNode;
 import map.Node;
 
@@ -47,7 +48,19 @@ public abstract class AlgorithmContext{
         return null;
     }
 
-
+    /**
+     * Gets reachable MapNodes from given MapNode
+     * @param node
+     * @return
+     */
+    public ArrayList<MapNode> getChildren(MapNode node) {
+        ArrayList<Node> neighbors = MapController.getNodesConnectedTo(node.getData());
+        ArrayList<MapNode> nodeChildren = new ArrayList<>();
+        for (Node n : neighbors) {
+            nodeChildren.add(new MapNode(n.getXcoord(), n.getYcoord(), n));
+        }
+        return nodeChildren;
+    }
 
     public int getEstimatedTime() {
         return getET();
