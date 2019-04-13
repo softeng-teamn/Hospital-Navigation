@@ -69,7 +69,7 @@ public class MapViewController {
     private ArrayList<Circle> circleCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
-    private String units = "Ft";    // Feet or meters conversion
+    private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
 
 
