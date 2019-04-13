@@ -331,7 +331,7 @@ public class TopNavController {
     public void showPathSetting(MouseEvent mouseEvent) {
         if (barOpened){
             barOpened = false;
-            event.setEventName("showSearch");
+            event.setEventName("closeDrawer");
             eventBus.post(event);
         } else {
             barOpened = true;
