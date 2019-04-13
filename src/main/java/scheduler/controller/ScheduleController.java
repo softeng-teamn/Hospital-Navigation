@@ -428,6 +428,8 @@ public class ScheduleController extends Controller {
 
         // Check user input for valid ID
         inputErrorLbl.setVisible(false);
+        // ******************HERE*****************
+        // change to employee id gotten from application state
         String id = employeeID.getText();
         boolean badId = false;
 

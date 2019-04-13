@@ -1,5 +1,6 @@
 package home;
 
+import application_state.ApplicationState;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
@@ -75,11 +76,16 @@ public class TopNavController {
             event.setAdmin(false);
             event.setLoggedIn(false);
             resetBtn();
-        // when employee logs out, or login process begins
+            ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
+            System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
+            // when employee logs out, or login process begins
         } else {
             Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
             Stage stage = (Stage) navigate_btn.getScene().getWindow();
             StageManager.changeExistingWindow(stage, root, "Admin Login");
+            ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
+            System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
+
         }
     }
 
@@ -216,7 +222,7 @@ public class TopNavController {
             System.out.println("USER IS AN EMPLOYEE");
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
-            lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
             bookBtn.setVisible(true);
             requestBtn.setVisible(true);
         }
