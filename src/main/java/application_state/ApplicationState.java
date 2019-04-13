@@ -10,7 +10,7 @@ public class ApplicationState {
 
     private Node nodeToEdit;
     private ArrayList<Edge> edgesToEdit;
-    private FakeEventBus feb;
+    private FakeEventBus feb = new FakeEventBus();
 
 
     //******************************************

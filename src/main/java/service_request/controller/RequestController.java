@@ -1,5 +1,6 @@
 package service_request.controller;
 
+import application_state.ApplicationState;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import controller.Controller;
@@ -59,8 +60,7 @@ public class RequestController extends Controller implements Initializable {
     @SuppressFBWarnings(value="MS_CANNOT_BE_FINAL", justification = "I need to")
     public static Node selectedNode = null;
 
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event;
 
     /**
      * initializes the service_request controller
@@ -70,6 +70,7 @@ public class RequestController extends Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         repopulateList();
     }
 
@@ -92,6 +93,7 @@ public class RequestController extends Controller implements Initializable {
      */
     @FXML
     public void showEnglish() throws Exception{
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setCurrentBundle(enBundle);
         Stage stage = (Stage) englishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
@@ -105,6 +107,7 @@ public class RequestController extends Controller implements Initializable {
      */
     @FXML
     public void showSpanish() throws Exception{
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setCurrentBundle(esBundle);
         Stage stage = (Stage) spanishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());

@@ -1,5 +1,8 @@
 package home;
 
+import application_state.ApplicationState;
+import application_state.Observer;
+import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXListView;
@@ -28,10 +31,9 @@ import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 
-public class SearchResultsController {
+public class SearchResultsController implements Observer {
 
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event;
 
 
     @FXML
@@ -46,20 +48,21 @@ public class SearchResultsController {
 
     @FXML
     void initialize() {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
         buildingAbbrev.put("BTM", "BTM");
         buildingAbbrev.put("Tower", "Tow");
         buildingAbbrev.put("45 Francis", "45Fr");
         buildingAbbrev.put("15 Francis", "15Fr");
         buildingAbbrev.put("RES", "RES");
-        eventBus.register(this);
+        ApplicationState.getApplicationState().getFeb().register(this);
         repopulateList(event.isAdmin());
     }
 
-    @Subscribe
-    private void eventListener(Event newEvent) throws InterruptedException {
+    @Override
+    public void notify(Object newEvent)  {
+        event = (Event) newEvent;
         // set new event
-        event = newEvent;
         switch (event.getEventName()) {
             case "node-select":
                 //list_view.scrollTo(event.getNodeSelected());
@@ -92,6 +95,7 @@ public class SearchResultsController {
      */
     @FXML
     public void listViewClicked(MouseEvent e) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         HBox selectedNode = list_view.getSelectionModel().getSelectedItem();
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
         System.out.println("You clicked on: " + ID);
@@ -106,7 +110,7 @@ public class SearchResultsController {
             event.setNodeStart(destNode);
         }
         event.setEventName("node-select");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
 
     }
 

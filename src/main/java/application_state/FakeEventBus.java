@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FakeEventBus {
-    private Event event;
+    private Event event = new Event();
     private List<Observer> observers = new ArrayList<Observer>();
 
     public void updateEvent(Event ev){

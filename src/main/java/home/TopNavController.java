@@ -1,5 +1,7 @@
 package home;
 
+import application_state.ApplicationState;
+import application_state.Observer;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
@@ -38,11 +40,10 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 
-public class TopNavController {
+public class TopNavController implements Observer {
 
     public HBox top_nav;
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event;
 
     @FXML
     private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn;    // TODO: rename fulfillbtn and change icon
@@ -69,9 +70,11 @@ public class TopNavController {
     // events I send out/control
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         if (event.isAdmin()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
+            ApplicationState.getApplicationState().getFeb().updateEvent(event);
             resetBtn();
 
         } else {
@@ -84,8 +87,9 @@ public class TopNavController {
     @FXML
     // switches window to map editor screen.
     public void showAdminScene() throws Exception {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("showAdmin");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     @FXML
@@ -106,12 +110,13 @@ public class TopNavController {
 
     @FXML
     void initialize() {
-        eventBus.register(this);
+        ApplicationState.getApplicationState().getFeb().register(this);
 
         // Turn off editing
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("editing");
         event.setEditing(false);
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
 
         // SHOULD THIS GO HERE? (was in intialize of old map controller)
         navigate_btn.setVisible(false);
@@ -161,23 +166,23 @@ public class TopNavController {
 
 
     // events I care about: am "subscribed" to
-    @Subscribe
-    private void eventListener(Event newEvent) {
-
-        switch (newEvent.getEventName()) {
+    @Override
+    public void notify(Object newEvent) {
+        event = (Event) newEvent;
+        switch (event.getEventName()) {
             case "node-select":
-                event.setNodeSelected(newEvent.getNodeSelected());
+                event.setNodeSelected(event.getNodeSelected());
                 // show navigation button
                 // navigate_btn.setVisible(true);
                 //showNavigationBtn(event);
                 if (event.isEndNode()){
-                    nodeSelectedHandler(newEvent.getNodeSelected());        // will make nav btn visible, fill search with node
+                    nodeSelectedHandler(event.getNodeSelected());        // will make nav btn visible, fill search with node
                 } else {
-                    nodeSelectedHandler(newEvent.getNodeStart());
+                    nodeSelectedHandler(event.getNodeStart());
                 }
                 break;
             case "login":     // receives from AdminLoginContoller?
-                event.setAdmin(newEvent.isAdmin());
+                event.setAdmin(event.isAdmin());
                 break;
             case "showSearch":
                 backArro.setRate(-1);
@@ -204,10 +209,11 @@ public class TopNavController {
 
     @FXML
     public void editButtonAction(ActionEvent e) throws Exception {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("editing");
         event.setEditing(!event.isEditing());
         System.out.println("Editing: " + event.isEditing());
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     /**
@@ -217,11 +223,12 @@ public class TopNavController {
     @FXML
     public void startNodeEnter(ActionEvent e) {
         String search = startSearch.getText();
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
 
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
         event.setEndNode(false);
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     /**
@@ -230,12 +237,13 @@ public class TopNavController {
      */
     @FXML
     public void searchBarEnter(ActionEvent e) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         String search = search_bar.getText();
 
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
         event.setEndNode(true);
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     // when event comes in with a node-selected:
@@ -258,20 +266,23 @@ public class TopNavController {
     }
 
     public void startNavigation(ActionEvent actionEvent) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         //if(callElev.isSelected()){
             event.setCallElev(true);
         //}
 
         event.setEventName("navigation");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
 
     public void setEventEndNode(MouseEvent mouseEvent){
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
 
         event.setEndNode(false);
         event.setEventName("showSearch");
-        eventBus.post(event);
+
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
 
         if(backArro.getRate() == 1) {
             backArro.setRate(backArro.getRate() * -1);
@@ -282,10 +293,12 @@ public class TopNavController {
 
 
     public void setEventStartNode(MouseEvent mouseEvent) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
 
         event.setEndNode(true);
         event.setEventName("showSearch");
-        eventBus.post(event);
+
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
 
         if(backArro.getRate() == 1) {
             backArro.setRate(backArro.getRate() * -1);
@@ -296,6 +309,7 @@ public class TopNavController {
 
     @FXML
     public void showStartSearch(ActionEvent actionEvent) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         if (startNode_btn.getText().equals("Start Node")){
             startSearch.setPromptText("Start Node");
             startSearch.setOnAction(this::startNodeEnter);
@@ -311,7 +325,7 @@ public class TopNavController {
             event.setEndNode(true);
             event.setDefaultStartNode();
             event.setEventName("refresh");
-            eventBus.post(event);
+            ApplicationState.getApplicationState().getFeb().updateEvent(event);
             startNode_btn.setText("Start Node");
             home_icon.setIcon(MaterialIcon.LOCATION_ON);
         }
@@ -328,14 +342,15 @@ public class TopNavController {
     }
 
     public void showPathSetting(MouseEvent mouseEvent) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         if (barOpened){
             barOpened = false;
             event.setEventName("showSearch");
-            eventBus.post(event);
+            ApplicationState.getApplicationState().getFeb().updateEvent(event);
         } else {
             barOpened = true;
             event.setEventName("showPathSetting");
-            eventBus.post(event);
+            ApplicationState.getApplicationState().getFeb().updateEvent(event);
         }
     }
 }

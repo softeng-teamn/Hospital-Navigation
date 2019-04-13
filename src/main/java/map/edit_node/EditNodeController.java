@@ -1,7 +1,6 @@
 package map.edit_node;
 
 import application_state.ApplicationState;
-import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -44,7 +43,6 @@ import java.util.ArrayList;
 public class EditNodeController extends Control {
 
     Group zoomGroup;
-    private EventBus eventBus = EventBusFactory.getEventBus();
     Circle selectedCircle = new Circle();
     Node tempEditNode;      // mutating the node based on edits
     boolean isEditEdges = false;
