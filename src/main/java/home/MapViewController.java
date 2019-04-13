@@ -370,16 +370,20 @@ public class MapViewController {
         } else {
             selectCircle = circle;
         }
+
+        if(!node.getFloor().equals(event.getFloor())){
+            //switch the map
+            //System.out.println(node + node.getFloor());
+            try {
+                switchFloors(node.getFloor());
+            } catch (IOException e) {
+                System.out.println("error switching floors");
+                e.printStackTrace();
+            }
+        }
+
         // Scroll to new point
         scrollTo(node);
-
-        //switch the map
-        //System.out.println(node + node.getFloor());
-        try {
-            switchFloors(node.getFloor());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         //display node info
         FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
