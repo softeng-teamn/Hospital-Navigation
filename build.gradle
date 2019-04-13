@@ -28,6 +28,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
 apply plugin: 'jacoco'
+apply plugin: 'java-library'
 
 jacocoTestReport {
     reports {
@@ -150,6 +151,11 @@ repositories {
     jcenter()
 }
 
+configurations {
+    compileApi
+}
+
+
 dependencies {
     testCompile(
             [group: 'junit', name: 'junit', version: '4.12'],
@@ -190,6 +196,14 @@ dependencies {
             [group: 'de.jensd', name:'fontawesomefx-emojione', version: '2.2.7-2'],
             [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4']
     )
+
+    compileApi (
+            [group: 'com.jfoenix', name: 'jfoenix', version: '8.0.3'],
+            [group: 'de.jensd', name:'fontawesomefx-fontawesome', version: '4.7.0-5'],
+            [group: 'de.jensd', name:'fontawesomefx-materialicons', version: '2.2.0-5'],
+            [group: 'de.jensd', name:'fontawesomefx-emojione', version: '2.2.7-2'],
+            [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4']
+    )
 }
 
 // This allows the jar to be created, it appears in the build/libs folder
@@ -198,4 +212,18 @@ jar {
         attributes 'Main-Class': mainClassName
     }
     from configurations.runtime.collect { zipTree(it) }
+}
+
+// api.jar
+//noinspection GroovyAssignabilityCheck
+task apiJar(type: Jar) {
+    from(sourceSets.main.output) {
+        include "/elevator_api/**"
+    }
+    from {
+        configurations.compileApi.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    from(sourceSets.main.resources) {
+        include "/fxml/api/internalTransportRequest.fxml"
+    }
 }
