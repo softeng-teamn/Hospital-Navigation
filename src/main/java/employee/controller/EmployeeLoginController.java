@@ -1,18 +1,20 @@
 package employee.controller;
 
+import application_state.ApplicationState;
+import application_state.Observer;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.Controller;
 import employee.model.Employee;
+import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import application_state.Event;
-import application_state.EventBusFactory;
 import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -30,9 +32,7 @@ public class EmployeeLoginController extends Controller implements Initializable
     private JFXPasswordField passwordField;
 
     Event event = new Event();
-    private EventBus eventBus = EventBusFactory.getEventBus();
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
-
 
     @FXML
     public void showHome() throws Exception {
@@ -55,11 +55,12 @@ public class EmployeeLoginController extends Controller implements Initializable
                 // Invalid password
                 passwordField.getStyleClass().add("wrong-credentials");
             } else {
+                event = ApplicationState.getApplicationState().getFeb().getEvent();
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
                 Controller.setCurrentJob(user.getJob());
                 event.setEventName("login");
-                eventBus.post(event);
+                ApplicationState.getApplicationState().getFeb().updateEvent(event);
                 showHome();
             }
         }
@@ -67,6 +68,6 @@ public class EmployeeLoginController extends Controller implements Initializable
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        eventBus.register(this);
+        // todo?
     }
 }

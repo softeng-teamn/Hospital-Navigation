@@ -33,7 +33,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import map.Edge;
-import application_state.EventBusFactory;
 import map.Node;
 import database.DatabaseService;
 import service.ResourceLoader;

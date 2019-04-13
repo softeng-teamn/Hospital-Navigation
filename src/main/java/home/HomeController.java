@@ -1,22 +1,23 @@
 package home;
 
+import application_state.ApplicationState;
+import application_state.Observer;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import map.MapController;
 import application_state.Event;
-import application_state.EventBusFactory;
 import service.ResourceLoader;
 
 import java.io.IOException;
 
-public class HomeController {
+public class HomeController implements Observer {
 
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event;
 
     @FXML
     private MapViewController mapViewController;
@@ -29,44 +30,38 @@ public class HomeController {
 
     @FXML
     void initialize() throws IOException {
-        eventBus.register(this);
+        ApplicationState.getApplicationState().getFeb().register(this);
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
 
         MapController.initConnections();
 
         leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults));
 
-
     }
 
-
-
-    @Subscribe
-    private void eventListener(Event newevent) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    switch (event.getEventName()) {
-                        case "showText":
-                            showText();
-                            break;
-                        case "showSearch":
-                            showSearch();
-                            break;
-                        case "showAdmin":
-                            showAdmin();
-                            break;
-                        case "showPathSetting":
-                            showPathSetting();
-                            break;
-                        default:
-                            break;
-                    }
-                } catch (IOException e){
-                    e.printStackTrace();
-                }
+    @Override
+    public void notify(Object newevent) {
+        event = (Event) newevent;
+        try {
+            switch (event.getEventName()) {
+                case "showText":
+                    showText();
+                    break;
+                case "showSearch":
+                    showSearch();
+                    break;
+                case "showAdmin":
+                    showAdmin();
+                    break;
+                case "showPathSetting":
+                    showPathSetting();
+                    break;
+                default:
+                    break;
             }
-        });
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private void showAdmin() throws IOException {

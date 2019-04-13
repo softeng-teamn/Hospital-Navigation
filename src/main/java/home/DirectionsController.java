@@ -1,19 +1,17 @@
 package home;
 
+import application_state.ApplicationState;
+import application_state.Observer;
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import application_state.Event;
-import application_state.EventBusFactory;
 import map.MapController;
 import map.Node;
 import service.TextingService;
@@ -21,9 +19,8 @@ import service.TextingService;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DirectionsController {
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+public class DirectionsController implements Observer {
+    private Event event;
 
     @FXML
     private JFXButton home_btn, unitSwitch_btn;
@@ -42,7 +39,8 @@ public class DirectionsController {
 
     @FXML
     void initialize() {
-        eventBus.register(this);
+        ApplicationState.getApplicationState().getFeb().register(this);
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         System.out.println("initialize");
         path = event.getPath();
         printDirections(makeDirections(path));
@@ -50,28 +48,24 @@ public class DirectionsController {
 
     @FXML
     void showSearchList(ActionEvent e) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("showSearch");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
+    @Override
+    public void notify(Object o) {
+        event = (Event) o;
+        switch (event.getEventName()) {
+            case "printText":
+                path = event.getPath();
+                printDirections(makeDirections(path));
+                break;
+            default:
+                break;
+        }
 
-//    @Subscribe todo
-//    void eventListener(Event newevent) {
-//        Platform.runLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                switch (event.getEventName()) {
-//                    case "printText":
-////                        Thread.sleep(100);
-//                        path = event.getPath();
-//                        printDirections(makeDirections(path));
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//        });
-//    }
+    }
 
 
     // TODO: why does 1st instruction turn into ... if not scrollable?
@@ -560,7 +554,7 @@ public class DirectionsController {
         return units;
     }
 
-    // TODO: add all changes to directions controller... blech. also cut print statements.
+    // TODO:  cut print statements.
 
     /**
      * Set the current units as feet or meters

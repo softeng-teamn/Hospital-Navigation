@@ -1,5 +1,7 @@
 package home;
 
+import application_state.ApplicationState;
+import application_state.Observer;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import controller.Controller;
@@ -9,7 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import application_state.Event;
-import application_state.EventBusFactory;
 import database.CSVService;
 import service.ResourceLoader;
 import service.StageManager;
@@ -18,9 +19,7 @@ import java.io.IOException;
 
 public class AdminServiceController extends Controller {
 
-    private EventBus eventBus = EventBusFactory.getEventBus();
-    private Event event = EventBusFactory.getEvent();
-
+    private Event event = ApplicationState.getApplicationState().getFeb().getEvent();
 
     @FXML
     private JFXButton fulfillRequestBtn, editEmployeeBtn, mapEditorController, exportCSVBtn, showHomeBtn, newNode_btn;
@@ -43,8 +42,9 @@ public class AdminServiceController extends Controller {
 
     @FXML
     void showSearchResults(ActionEvent e) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("showSearch");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     @FXML
@@ -63,22 +63,24 @@ public class AdminServiceController extends Controller {
     }
 
     public void astarSwitch(ActionEvent actionEvent) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("methodSwitch");
         event.setSearchMethod("astar");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     public void depthSwitch(ActionEvent actionEvent) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!! function called !!!!!!!!!!!!!!!!!!");
         event.setEventName("methodSwitch");
         event.setSearchMethod("depth");
-        eventBus.post(event);
-    }
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);    }
 
     public void breadthSwitch(ActionEvent actionEvent) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("methodSwitch");
         event.setSearchMethod("breadth");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     @FXML

@@ -10,6 +10,7 @@ public class ApplicationState {
 
     private Node nodeToEdit;
     private ArrayList<Edge> edgesToEdit;
+    private FakeEventBus feb;
 
 
     //******************************************
@@ -40,5 +41,9 @@ public class ApplicationState {
 
     public void setEdgesToEdit(ArrayList<Edge> edgesToEdit) {
         this.edgesToEdit = edgesToEdit;
+    }
+
+    public FakeEventBus getFeb() {
+        return feb;
     }
 }

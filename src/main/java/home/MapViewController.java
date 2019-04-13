@@ -1,25 +1,22 @@
 package home;
 
 import application_state.ApplicationState;
+import application_state.Observer;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import elevator.ElevatorConnnection;
 import application_state.Event;
-import application_state.EventBusFactory;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
@@ -29,7 +26,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -37,7 +33,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import map.MapController;
 import map.MapNode;
 import map.Node;
 import database.DatabaseService;
@@ -45,22 +40,20 @@ import map.PathFindingService;
 import service.ResourceLoader;
 import service.StageManager;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
-public class MapViewController {
+public class MapViewController implements Observer {
     static ElevatorConnnection elevatorCon = new ElevatorConnnection();
 
     @FXML
     public VBox showDirVbox;
     @FXML
     public JFXButton showDirectionsBtn;
-    private EventBus eventBus = EventBusFactory.getEventBus();
-    private Event event = EventBusFactory.getEvent();
+    private Event event;
 
     private String currentMethod;
 
@@ -113,7 +106,8 @@ public class MapViewController {
         pingTiming();
 
         // listen to changes
-        eventBus.register(this);
+        ApplicationState.getApplicationState().getFeb().register(this);
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
 
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
         Group contentGroup = new Group();
@@ -234,7 +228,7 @@ public class MapViewController {
         image_pane.getChildren().clear();
         image_pane.getChildren().add(imageView);
         event.setFloor(floorName);
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
         if (hasPath) {
             drawPath();
         }
@@ -242,48 +236,44 @@ public class MapViewController {
         editNodeHandler(event.isEditing());
     }
 
-    @Subscribe
-    void eventListener(Event event) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                switch (event.getEventName()) {
-                    case "navigation":
-                        try {
-                            navigationHandler();
-                        } catch (Exception ex) {
-                            //System.out.println("error posting floor");
-                            ex.printStackTrace();
-                        }
-                        break;
-                    case "node-select":
-                        if (event.isEndNode()) {
-                            drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
-                        } else {
-                            drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
-                        }
-                        directionsView.getItems().clear();    // TODO here
-                        //hideDirections();
-                        break;
-                    case "refresh":
-                        drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
-                        drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
-                        break;
-                    case "filter":
-                        filteredHandler();
-                        break;
-                    case "methodSwitch":
-                        currentMethod = event.getSearchMethod();
-                        break;
-                    case "editing":
-                        editNodeHandler(event.isEditing());
-                        break;
-                    default:
-//                        System.out.println("I don'");
-                        break;
+    @Override
+    public void notify(Object e) {
+        event = (Event) e;
+        switch (event.getEventName()) {
+            case "navigation":
+                try {
+                    navigationHandler();
+                } catch (Exception ex) {
+                    //System.out.println("error posting floor");
+                    ex.printStackTrace();
                 }
-            }
-        });
+                break;
+            case "node-select":
+                if (event.isEndNode()) {
+                    drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
+                } else {
+                    drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
+                }
+                directionsView.getItems().clear();    // TODO here
+                //hideDirections();
+                break;
+            case "refresh":
+                drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
+                drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
+                break;
+            case "filter":
+                filteredHandler();
+                break;
+            case "methodSwitch":
+                currentMethod = event.getSearchMethod();
+                break;
+            case "editing":
+                editNodeHandler(event.isEditing());
+                break;
+            default:
+//                        System.out.println("I don'");
+                break;
+        }
     }
 
 
@@ -402,28 +392,28 @@ public class MapViewController {
             // not accessible
             newpath = pathFinder.genPath(start, dest, false, currentMethod);
         }
-//        if (event.isCallElev()) {//if we are supposed to call elevator
-//            ElevatorConnnection e = new ElevatorConnnection();
-//            for (String key : pathFinder.getElevTimes().keySet()
-//            ) {
-//                System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
-//                GregorianCalendar gc = new GregorianCalendar();
-//                gc.add(Calendar.MINUTE, pathFinder.getElevTimes().get(key).getEta());
-//                try {
-//                    e.postFloor(key.substring(key.length() - 1), pathFinder.getElevTimes().get(key).getFloor(), gc);
-//                } catch (Exception ex) {
-//                    System.out.println("WifiConnectionError, post didn't happen");
-//                    throw new Exception(ex);
-//                }
-//            }
-//        } // todo
+        if (event.isCallElev()) {//if we are supposed to call elevator
+            ElevatorConnnection e = new ElevatorConnnection();
+            for (String key : pathFinder.getElevTimes().keySet()
+            ) {
+                System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
+                GregorianCalendar gc = new GregorianCalendar();
+                gc.add(Calendar.MINUTE, pathFinder.getElevTimes().get(key).getEta());
+                try {
+                    e.postFloor(key.substring(key.length() - 1), pathFinder.getElevTimes().get(key).getFloor(), gc);
+                } catch (Exception ex) {
+                    System.out.println("WifiConnectionError, post didn't happen");
+                    throw new Exception(ex);
+                }
+            }
+        } // todo
 
         path = newpath;
         drawPath();
-
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setPath(path);
         event.setEventName("showText");     // TODO here
-        //eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     private void filteredHandler() {

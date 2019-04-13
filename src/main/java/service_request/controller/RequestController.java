@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import application_state.Event;
-import application_state.EventBusFactory;
 import map.Node;
 import service_request.model.Request;
 import database.DatabaseService;
