@@ -79,12 +79,20 @@ public class TopNavController {
             ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
             System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
             // when employee logs out, or login process begins
+        }
+        if (event.isLoggedIn()) {
+            event.setAdmin(false);
+            event.setLoggedIn(false);
+            resetBtn();
+            ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
+            System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
+            // when employee logs out, or login process begins
         } else {
             Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
             Stage stage = (Stage) navigate_btn.getScene().getWindow();
             StageManager.changeExistingWindow(stage, root, "Admin Login");
-            ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
-            System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
+            //ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
+            //System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
 
         }
     }
