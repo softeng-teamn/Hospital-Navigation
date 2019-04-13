@@ -71,29 +71,20 @@ public class TopNavController {
 
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
-        // when admin logs out
-        if (event.isAdmin()) {
+        // when admin or employee logs out
+        if (event.isAdmin() || event.isLoggedIn()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
             resetBtn();
             ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
-            System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
-            // when employee logs out, or login process begins
+            System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null) " + ApplicationState.getApplicationState().getEmployeeLoggedIn());
         }
-        if (event.isLoggedIn()) {
-            event.setAdmin(false);
-            event.setLoggedIn(false);
-            resetBtn();
-            ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
-            System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
-            // when employee logs out, or login process begins
-        } else {
+        // go to login screen
+        else {
+            System.out.println("RIGHT HERE LOOK AT ME ");
             Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
             Stage stage = (Stage) navigate_btn.getScene().getWindow();
             StageManager.changeExistingWindow(stage, root, "Admin Login");
-            //ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
-            //System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
-
         }
     }
 
