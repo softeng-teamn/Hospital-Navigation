@@ -241,34 +241,64 @@ public class MapViewController implements Observer {
         event = (Event) e;
         switch (event.getEventName()) {
             case "navigation":
-                try {
-                    navigationHandler();
-                } catch (Exception ex) {
-                    //System.out.println("error posting floor");
-                    ex.printStackTrace();
-                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            navigationHandler();
+                        } catch (Exception ex) {
+                            //System.out.println("error posting floor");
+                            ex.printStackTrace();
+                        }
+                    }
+                });
                 break;
             case "node-select":
-                if (event.isEndNode()) {
-                    drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
-                } else {
-                    drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
-                }
-                directionsView.getItems().clear();    // TODO here
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (event.isEndNode()) {
+                            drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
+                        } else {
+                            drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
+                        }
+                        directionsView.getItems().clear();    // TODO here
+                    }
+                });
                 //hideDirections();
                 break;
             case "refresh":
-                drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
-                drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
+                        drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
+                    }
+                });
                 break;
             case "filter":
-                filteredHandler();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        filteredHandler();
+                    }
+                });
                 break;
             case "methodSwitch":
-                currentMethod = event.getSearchMethod();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        currentMethod = event.getSearchMethod();
+                    }
+                });
                 break;
             case "editing":
-                editNodeHandler(event.isEditing());
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        editNodeHandler(event.isEditing());
+                    }
+                });
                 break;
             default:
 //                        System.out.println("I don'");

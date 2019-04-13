@@ -5,6 +5,7 @@ import application_state.Observer;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -58,8 +59,13 @@ public class DirectionsController implements Observer {
         event = (Event) o;
         switch (event.getEventName()) {
             case "printText":
-                path = event.getPath();
-                printDirections(makeDirections(path));
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        path = event.getPath();
+                        printDirections(makeDirections(path));
+                    }
+                });
                 break;
             default:
                 break;

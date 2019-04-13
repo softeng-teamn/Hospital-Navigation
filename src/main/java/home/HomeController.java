@@ -42,25 +42,57 @@ public class HomeController implements Observer {
     @Override
     public void notify(Object newevent) {
         event = (Event) newevent;
-        try {
-            switch (event.getEventName()) {
-                case "showText":
-                    showText();
-                    break;
-                case "showSearch":
-                    showSearch();
-                    break;
-                case "showAdmin":
-                    showAdmin();
-                    break;
-                case "showPathSetting":
-                    showPathSetting();
-                    break;
-                default:
-                    break;
-            }
-        } catch (IOException e){
-            e.printStackTrace();
+        switch (event.getEventName()) {
+            case "showText":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            showText();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                break;
+            case "showSearch":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            showSearch();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                break;
+            case "showAdmin":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            showAdmin();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                break;
+            case "showPathSetting":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            showPathSetting();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                break;
+            default:
+                break;
         }
     }
 

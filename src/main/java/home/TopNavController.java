@@ -171,23 +171,38 @@ public class TopNavController implements Observer {
         event = (Event) newEvent;
         switch (event.getEventName()) {
             case "node-select":
-                event.setNodeSelected(event.getNodeSelected());
-                // show navigation button
-                // navigate_btn.setVisible(true);
-                //showNavigationBtn(event);
-                if (event.isEndNode()){
-                    nodeSelectedHandler(event.getNodeSelected());        // will make nav btn visible, fill search with node
-                } else {
-                    nodeSelectedHandler(event.getNodeStart());
-                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        event.setNodeSelected(event.getNodeSelected());
+                        // show navigation button
+                        // navigate_btn.setVisible(true);
+                        //showNavigationBtn(event);
+                        if (event.isEndNode()){
+                            nodeSelectedHandler(event.getNodeSelected());        // will make nav btn visible, fill search with node
+                        } else {
+                            nodeSelectedHandler(event.getNodeStart());
+                        }
+                    }
+                });
                 break;
             case "login":     // receives from AdminLoginContoller?
-                event.setAdmin(event.isAdmin());
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        event.setAdmin(event.isAdmin());
+                    }
+                });
                 break;
             case "showSearch":
-                backArro.setRate(-1);
-                backArro.play();
-                barOpened = false;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        backArro.setRate(-1);
+                        backArro.play();
+                        barOpened = false;
+                    }
+                });
                 break;
             default:
                 break;
