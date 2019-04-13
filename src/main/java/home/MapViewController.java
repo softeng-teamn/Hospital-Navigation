@@ -78,7 +78,7 @@ public class MapViewController {
     @FXML
     private Slider zoom_slider;
     @FXML
-    private JFXButton f1_btn, f2_btn, f3_btn, l1_btn, l2_btn, ground_btn;
+    private JFXButton f1_btn, f2_btn, f3_btn, l1_btn, l2_btn, ground_btn, about_btn;
     @FXML
     private Pane image_pane;
     @FXML
@@ -90,6 +90,16 @@ public class MapViewController {
 
     private static HashMap<String, ImageView> imageCache = new HashMap<>();
     private static boolean imagesCached = false;
+
+
+    // switch to about page
+    @FXML
+    void showAbout(ActionEvent e) throws Exception {
+        Stage stage = (Stage) about_btn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.about,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"About Page");
+    }
+
 
     // ELEVATOR CALL BUTTONS
     @FXML

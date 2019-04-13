@@ -3,6 +3,7 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXSlider?>
+<?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -88,7 +89,7 @@
         <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="347.0" prefWidth="263.0" StackPane.alignment="BOTTOM_RIGHT">
          <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">
             <children>
-                  <Label text="Call Elevator" />
+                  <Label text="Call Elevator" VBox.vgrow="ALWAYS" />
                   <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" styleClass="confirm-button" stylesheets="@/theme.css" text="Level 1">
                   <VBox.margin>
                      <Insets top="10.0" />
@@ -118,6 +119,15 @@
                      <Insets bottom="6.0" />
                   </VBox.margin>
                   </Label>
+               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                  <children>
+                     <JFXButton fx:id="about_btn" contentDisplay="GRAPHIC_ONLY" onAction="#showAbout" text="About" HBox.hgrow="ALWAYS">
+                      <graphic>
+                          <MaterialIconView fx:id="question_icon" glyphName="LOCATION_ON" size="35" />
+                      </graphic>
+                      </JFXButton>
+                  </children>
+               </HBox>
             </children>
             <padding>
                <Insets bottom="10.0" top="10.0" />

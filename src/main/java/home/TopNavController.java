@@ -106,12 +106,6 @@ public class TopNavController {
         StageManager.changeExistingWindow(stage,root,"Service Request");
     }
 
-    @FXML
-    void showAbout(ActionEvent e) throws Exception {
-        Stage stage = (Stage) about_btn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.about,event.getCurrentBundle());
-        StageManager.changeExistingWindow(stage,root,"About Page");
-    }
 
     @FXML
     void initialize() {
