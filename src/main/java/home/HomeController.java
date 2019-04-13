@@ -80,10 +80,12 @@ public class HomeController {
     }
 
     private void showText() throws IOException {
+        System.out.println("showing text");
         leftPane.getChildren().clear();
         leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.directionMessage));
-        event.setEventName("printText");
-        eventBus.post(event);
+
+        //event.setEventName("printText");
+       // eventBus.post(event); todo here
     }
 
     private void showPathSetting() throws IOException {

@@ -14,7 +14,7 @@
     <children>
         <HBox alignment="TOP_CENTER">
             <children>
-                <JFXButton fx:id="unitSwitch_btn" minWidth="-Infinity" onAction="#setUnits" prefHeight="56.0" prefWidth="56.0" styleClass="confirm-button" text="M" />
+                <JFXButton fx:id="unitSwitch_btn" minWidth="-Infinity" onAction="#setUnits" prefHeight="56.0" prefWidth="106.0" styleClass="confirm-button" text="Meters" />
             <Region prefHeight="56.0" prefWidth="159.0" />
                 <Pane prefHeight="20.0">
                     <children>

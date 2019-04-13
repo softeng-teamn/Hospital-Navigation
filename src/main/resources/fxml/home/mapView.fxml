@@ -76,7 +76,7 @@
                                     <Insets />
                                 </HBox.margin>
                             </Pane>
-                            <JFXButton fx:id="showDirectionsBtn" onAction="#showDirections" style="-fx-background-color: #456AAC;" text="Show Textual Directions">
+                            <JFXButton fx:id="showDirectionsBtn" style="-fx-background-color: #456AAC;" text="Show Textual Directions">
                                 <HBox.margin>
                                     <Insets left="5.0" />
                                 </HBox.margin>
