@@ -85,7 +85,7 @@ public class Astar implements Algorithm {
 
                 if (child.equals(dest)) {
                     //System.out.println("This child is our destination node!");
-                    child.setParent(current, current.getG() + child.getG());
+                    child.setParent(current, child.getG());
                     estimatedTime = child.getG()/734;
                     return child;
                 }
@@ -107,7 +107,7 @@ public class Astar implements Algorithm {
 
                 else if(!open.contains(child) || cost < child.getF()){
                     //System.out.println("setting child's parent to be current");
-                    child.setParent(current, current.getG() + child.getG());
+                    child.setParent(current, child.getG());
                     if(open.contains(child)){
                         open.remove(child);
                     }
