@@ -39,12 +39,12 @@ public class SearchResultsController {
     ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
 
+    DatabaseService myDBS;
+
     @FXML
     void initialize() {
-
+        myDBS = DatabaseService.getDatabaseService();
         eventBus.register(this);
-
-
         repopulateList(event.isAdmin());
     }
 
@@ -105,6 +105,9 @@ public class SearchResultsController {
     void repopulateList(boolean isAdmin) {
 
         System.out.println("Repopulation of listView" + isAdmin);
+
+        allNodes = myDBS.getAllNodes();
+        filteredNodes = (ArrayList<Node>) myDBS.getNodesFilteredByType("STAI", "HALL").stream().filter((n) -> !n.isClosed()).collect(Collectors.toList());
 
         // wipe old observable
         allNodesObservable = FXCollections.observableArrayList();
