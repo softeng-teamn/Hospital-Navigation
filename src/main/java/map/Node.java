@@ -7,6 +7,16 @@ public class Node {
     private int xcoord, ycoord;
     private String nodeID, floor, building, nodeType, longName, shortName;
 
+    private boolean isClosed;
+
+    public boolean isClosed() {
+        return isClosed;
+    }
+
+    public void setClosed(boolean closed) {
+        isClosed = closed;
+    }
+
     public boolean validateID(String nodeID) {
         return true;
     }
@@ -102,6 +112,7 @@ public class Node {
                 ", nodeType='" + nodeType + '\'' +
                 ", longName='" + longName + '\'' +
                 ", shortName='" + shortName + '\'' +
+                ", isClosed=" + isClosed +
                 '}';
     }
 
@@ -113,12 +124,14 @@ public class Node {
         xcoord = x;
         ycoord = y;
         nodeID = "" + x + y;
+        isClosed = false;
     }
 
     public Node(String id, int x, int y) {
         xcoord = x;
         ycoord = y;
         nodeID = id;
+        isClosed = false;
     }
 
     public Node(String nodeID, int xcord, int ycord, String nodeType){
@@ -126,6 +139,7 @@ public class Node {
         this.xcoord = xcord;
         this.ycoord = ycord;
         this.nodeType = nodeType;
+        this.isClosed = false;
     }
 
     public Node( String nodeID, int xcoord, int ycoord, String floor, String building, String nodeType, String longName, String shortName) {
@@ -137,6 +151,7 @@ public class Node {
         this.nodeType = nodeType;
         this.longName = longName;
         this.shortName = shortName;
+        this.isClosed = false;
     }
 
     public Node(int xcoord, int ycoord, String nodeID, String floor, String building, String nodeType, String longName, String shortName) {
@@ -148,6 +163,7 @@ public class Node {
         this.nodeType = nodeType;
         this.longName = longName;
         this.shortName = shortName;
+        this.isClosed = false;
     }
 
     /**
@@ -176,7 +192,8 @@ public class Node {
                 Objects.equals(building, node.building) &&
                 Objects.equals(nodeType, node.nodeType) &&
                 Objects.equals(longName, node.longName) &&
-                Objects.equals(shortName, node.shortName);
+                Objects.equals(shortName, node.shortName) &&
+                isClosed == node.isClosed;
     }
 
     /**
