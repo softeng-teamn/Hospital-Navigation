@@ -29,6 +29,15 @@ public class ElevatorConnnection {
      * @throws ProtocolException
      * @throws IOException
      */
+
+    public void postFloor(String elevator, String floorNum)throws MalformedURLException,
+            ProtocolException, IOException{
+        GregorianCalendar time = new GregorianCalendar();
+        postFloor(elevator, floorNum, time, false);
+    }
+
+
+
     public void postFloor(String elevator, String floorNum, GregorianCalendar time)throws MalformedURLException,
             ProtocolException, IOException{
         postFloor(elevator, floorNum, time, false);
