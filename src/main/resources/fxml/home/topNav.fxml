@@ -69,7 +69,7 @@
             <HBox.margin>
                 <Insets right="8.0" />
             </HBox.margin></JFXButton>
-        <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#showRequest" prefHeight="80.0" prefWidth="80.0" text="Service Request">
+        <JFXButton fx:id="requestBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showRequest" prefHeight="80.0" prefWidth="80.0" text="Service Request">
             <graphic>
                 <FontAwesomeIconView glyphName="WRENCH" size="60" />
             </graphic>
