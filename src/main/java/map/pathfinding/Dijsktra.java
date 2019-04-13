@@ -56,28 +56,29 @@ public class Dijsktra extends AlgorithmContext implements Algorithm{
                     return child;
                 }
 
-                if(open.contains(child) && cost>=child.getG()) {
-                    //System.out.println("skipping this node because it was already seen");
-                    continue;
-                }
-
-                if(explored.contains(child) && cost<=child.getG()) {
-                    //System.out.println("skipping this node because the cost is to big");
-                    child.setParent(current, current.getG() + child.getG());
-                    continue;
-                }
+//                if(open.contains(child)) {
+//                    //System.out.println("skipping this node because it was already seen");
+//                    continue;
+//                }
 
                 if(child.getData().getNodeType().equals("STAI") && accessibility) {
                     //System.out.println("skipping this node because the cost is to big");
                     continue;
                 }
 
-                else if(!open.contains(child) || cost < child.getG()){
-                    //System.out.println("setting child's parent to be current");
-                    child.setParent(current, current.getG() + child.getG());
-                    if(open.contains(child)){
-                        open.remove(child);
+                if(explored.contains(child)) {
+                    if (cost >= child.getG()){
+                        //System.out.println("skipping this node because the cost is to big");
+                        continue;
                     }
+                    child.setParent(current, child.getG());
+                    open.add(child);
+                }
+
+
+                if(!open.contains(child) || cost < child.getG()){
+                    //System.out.println("setting child's parent to be current");
+                    child.setParent(current, child.getG());
                     //System.out.println("adding child to open list");
                     open.add(child);
                 }

@@ -1,10 +1,7 @@
 package map;
 
 import elevator.ElevatorFloor;
-import map.pathfinding.AlgorithmContext;
-import map.pathfinding.Astar;
-import map.pathfinding.BreadthFS;
-import map.pathfinding.DepthFS;
+import map.pathfinding.*;
 
 import java.util.*;
 
@@ -13,7 +10,9 @@ public class PathFindingService {
     public int estimatedTimeOfArrival;
     public HashMap<String, ElevatorFloor> elevTimes;
 
-    public PathFindingService() { }
+    public PathFindingService() {
+        this.elevTimes = new HashMap<>();
+    }
 
     /**
      *  attempts to generate a path from a start node to a dest node
@@ -46,6 +45,11 @@ public class PathFindingService {
                 target = current.findDest(start, dest, accessibility, null);
                 estimatedTimeOfArrival = current.getEstimatedTime();
                 //elevTimes = ctx.getElevTimes();
+                break;
+            case "dijsktra":
+                current = new Dijsktra();
+                target = current.findDest(start, dest, accessibility, null);
+//                estimatedTimeOfArrival = current.getEstimatedTime();
                 break;
             default:
                 current = new BreadthFS();

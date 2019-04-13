@@ -231,7 +231,8 @@ public class MapViewController {
                             navigationHandler();
                         }
                         catch(Exception ex){
-                            System.out.println("error posting floor");
+                            ex.printStackTrace();
+                            System.out.println(ex);
                         }
                         break;
                     case "node-select":
