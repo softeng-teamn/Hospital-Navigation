@@ -41,6 +41,8 @@ public class EmployeeLoginController extends Controller implements Initializable
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
+
+
     @FXML
     public void login() throws Exception{
         String username = usernameText.getText();
@@ -54,16 +56,24 @@ public class EmployeeLoginController extends Controller implements Initializable
             if (!password.equals(user.getPassword())) {
                 // Invalid password
                 passwordField.getStyleClass().add("wrong-credentials");
-            } else {
+            } else if (user.isAdmin()){
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
                 Controller.setCurrentJob(user.getJob());
                 event.setEventName("login");
                 eventBus.post(event);
                 showHome();
+            } else {
+                event.setLoggedIn(true);
+                event.setAdmin(user.isAdmin() == false);
+                Controller.setCurrentJob(user.getJob());
+                event.setEventName("empLogin");
+                eventBus.post(event);
+                showHome();
             }
         }
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

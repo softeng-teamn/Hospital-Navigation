@@ -70,32 +70,18 @@ public class TopNavController {
 
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
+        // when admin logs out
         if (event.isAdmin()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
             resetBtn();
-
+        // when employee logs out, or login process begins
         } else {
             Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
             Stage stage = (Stage) navigate_btn.getScene().getWindow();
             StageManager.changeExistingWindow(stage, root, "Admin Login");
         }
     }
-
-    @FXML
-    void showEmployeeLogin(ActionEvent e) throws Exception {
-        if (event.isLoggedIn()) {
-            event.setLoggedIn(false);
-            event.setLoggedIn(false);
-            resetBtn();
-
-        } else {
-            Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
-            Stage stage = (Stage) navigate_btn.getScene().getWindow();
-            StageManager.changeExistingWindow(stage, root, "Employee Login");
-        }
-    }
-
 
     @FXML
     // switches window to map editor screen.
@@ -194,6 +180,10 @@ public class TopNavController {
             case "login":     // receives from AdminLoginContoller?
                 event.setAdmin(newEvent.isAdmin());
                 break;
+                // remove if way off base
+            case "empLogin":
+                event.setLoggedIn((newEvent.isLoggedIn()));
+                break ;
             case "showSearch":
                 backArro.setRate(-1);
                 backArro.play();
@@ -207,6 +197,11 @@ public class TopNavController {
 
     private void resetBtn() {
 
+        // check why not entering if statment below
+        System.out.println("isAdmin = " + event.isAdmin()) ;
+        System.out.println("isLoggedIn = " + event.isLoggedIn());
+
+
         // if admin is logged in
         if(event.isAdmin()){
             System.out.println("USER IS AN ADMIN");
@@ -219,7 +214,7 @@ public class TopNavController {
         // if employee is logged in
         else if ((event.isAdmin() == false) && (event.isLoggedIn() == true)) {
             System.out.println("USER IS AN EMPLOYEE");
-            fulfillBtn.setVisible(true);
+            fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
             bookBtn.setVisible(true);
