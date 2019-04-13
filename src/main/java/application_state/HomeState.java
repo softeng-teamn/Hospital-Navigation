@@ -1,10 +1,15 @@
 package application_state;
 
+import java.util.Timer;
+
+import static application_state.ApplicationState.getApplicationState;
+
 public class HomeState {
 
     private boolean isLoggedIn; // 'true or false'
     private String loginType; // ex 'Admin' or 'Employee' or 'Staff'
     private String searchQuery;
+    private Timer timer;
 
     void HomeState() {
         isLoggedIn = false;
@@ -19,6 +24,9 @@ public class HomeState {
         isLoggedIn = loggedIn;
     }
 
+    public void timeOut(){
+        setLoggedIn(false);
+    }
     public String getLoginType() {
         return loginType;
     }

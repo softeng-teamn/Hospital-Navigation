@@ -20,6 +20,8 @@ import service.StageManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static application_state.ApplicationState.getApplicationState;
+
 public class EmployeeLoginController extends Controller implements Initializable {
 
     @FXML
@@ -57,6 +59,7 @@ public class EmployeeLoginController extends Controller implements Initializable
             } else {
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
+                getApplicationState().setEmployeeID(user.getID());
                 Controller.setCurrentJob(user.getJob());
                 event.setEventName("login");
                 eventBus.post(event);

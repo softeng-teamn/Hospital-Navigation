@@ -1,8 +1,11 @@
 package application_state;
 
+import employee.model.Employee;
 import map.Edge;
 import map.Node;
 import java.util.ArrayList;
+
+import static database.DatabaseService.getDatabaseService;
 
 public class ApplicationState {
 
@@ -10,6 +13,7 @@ public class ApplicationState {
 
     private Node nodeToEdit;
     private ArrayList<Edge> edgesToEdit;
+    private int employeeID;
 
 
     //******************************************
@@ -40,5 +44,13 @@ public class ApplicationState {
 
     public void setEdgesToEdit(ArrayList<Edge> edgesToEdit) {
         this.edgesToEdit = edgesToEdit;
+    }
+
+    public int getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(int employeeID) {
+        this.employeeID = employeeID;
     }
 }
