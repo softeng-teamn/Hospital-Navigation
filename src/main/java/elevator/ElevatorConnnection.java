@@ -16,9 +16,14 @@ public class ElevatorConnnection {
     private static HttpURLConnection con;
     private String teamName;
 
-    //default constructor
+    //for other teams
     public ElevatorConnnection(String teamName) {
         this.teamName = teamName;
+    }
+
+    //for our team
+    public ElevatorConnnection(){
+        this.teamName = "N";
     }
 
 
