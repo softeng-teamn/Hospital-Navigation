@@ -1,5 +1,6 @@
 package map.edit_node;
 
+import application_state.ApplicationState;
 import com.jfoenix.controls.JFXButton;
 import controller.Controller;
 import javafx.event.ActionEvent;
@@ -13,17 +14,16 @@ import java.util.ArrayList;
 
 public class EditConfirmController extends Controller {
 
-    private Node nodeToEdit;
-    ArrayList<Edge> edgesToEdit;
-
     @FXML
     void deleteConfirmAction(ActionEvent e) throws Exception {
         // Delete the edges
-        for (Edge edge : edgesToEdit) {
+        for (Edge edge : ApplicationState.getApplicationState().getEdgesToEdit()) {
             DatabaseService.getDatabaseService().deleteEdge(edge);
         }
         // DELETE THE NODE
-        DatabaseService.getDatabaseService().deleteNode(nodeToEdit);
+        DatabaseService.getDatabaseService().deleteNode(ApplicationState.getApplicationState().getNodeToEdit());
+        // Set to null
+        ApplicationState.getApplicationState().setNodeToEdit(null);
         // Close the window
         JFXButton btn = (JFXButton) e.getSource();
         Stage stage = (Stage) btn.getScene().getWindow();
