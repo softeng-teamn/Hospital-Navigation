@@ -166,15 +166,17 @@ public class AstarAdvancedTest {
 //        when(mockPF.getChildren(mn10)).thenReturn(list);
     }
 
+
+
     @Test
     @Category(FastTest.class)
     public void testAStar() {
         // a path can be found
-        assertThat(mockPF.findDest(mn1, mn6, false, null), is(mn6));
-        assertThat(mockPF.findDest(mn10, mn8, false, null), is(mn8));
-        assertThat(mockPF.findDest(mn6, mn8, false, null), is(mn8));
-        assertThat(mockPF.findDest(mn2, mn10, false, null), is(mn10));
-        assertThat(mockPF.findDest(mn1, mn8, false, null), is(mn8));
+        assertThat(mockPF.returnMapNode(mn1, mn6, false, null), is(mn6));
+        assertThat(mockPF.returnMapNode(mn10, mn8, false, null), is(mn8));
+        assertThat(mockPF.returnMapNode(mn6, mn8, false, null), is(mn8));
+        assertThat(mockPF.returnMapNode(mn2, mn10, false, null), is(mn10));
+        assertThat(mockPF.returnMapNode(mn1, mn8, false, null), is(mn8));
     }
 
     @Test

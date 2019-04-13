@@ -18,9 +18,7 @@ public abstract class AlgorithmContext{
 
 
     public ArrayList<Node> findDest(MapNode start, MapNode dest, boolean accessibility, String filter) {
-        initial(start, dest, accessibility, filter);
-
-        MapNode target = throughMap();
+        MapNode target = returnMapNode(start, dest, accessibility, filter);
 
         elevTimes = new HashMap<>();
         if (target != null) {
@@ -46,6 +44,13 @@ public abstract class AlgorithmContext{
             return path;
         }
         return null;
+    }
+
+    public MapNode returnMapNode(MapNode start, MapNode dest, boolean accessibility, String filter){
+        initial(start, dest, accessibility, filter);
+
+        MapNode target = throughMap();
+        return target;
     }
 
     /**

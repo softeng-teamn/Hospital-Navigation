@@ -34,8 +34,8 @@ public class AstarSimpleTest {
     final MapNode mn3 = new MapNode(1,1, n3);
     final Node n4 = new Node("n4", 2, 1, "1", "f", "f", "f", "f");
     final MapNode mn4 = new MapNode(2, 1, n4);
-    final Node n5 = new Node("n5", 3, 1, "1", "f", "f", "f", "f");
-    final MapNode mn5 = new MapNode(3, 1, n5);
+    final Node n5 = new Node("n5", 4, 1, "1", "f", "f", "f", "f");
+    final MapNode mn5 = new MapNode(4, 1, n5);
     final Node n6 = new Node("n6", 4, 0, "1", "f", "f", "f", "f");
     final MapNode mn6 = new MapNode(4, 0, n6);
     final AlgorithmContext mockPF = spy(new Astar());
@@ -53,9 +53,9 @@ public class AstarSimpleTest {
 
     // generates the mock scenario
     //
-    //  1 - 2 - - - 6
-    //      |       |
-    //      3 - 4 - 5
+    //  1 - 2 - - - 6 - -
+    //      |           |
+    //      3 - 4 - - - 5
     //
     @Before
     public void mockingGetChildren() {
@@ -113,7 +113,7 @@ public class AstarSimpleTest {
     @Category(FastTest.class)
     public void testAStar() {
         // a path can be found
-        assertThat(mockPF.findDest(mn1, mn6, false, null), is(mn6));
+        assertThat(mockPF.returnMapNode(mn1, mn6, false, null), is(mn6));
     }
 
     @Test
