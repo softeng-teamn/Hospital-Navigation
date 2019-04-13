@@ -14,9 +14,11 @@ import java.util.GregorianCalendar;
 
 public class ElevatorConnnection {
     private static HttpURLConnection con;
+    private String teamName;
 
     //default constructor
-    public ElevatorConnnection() {
+    public ElevatorConnnection(String teamName) {
+        this.teamName = teamName;
     }
 
 
@@ -76,7 +78,8 @@ public class ElevatorConnnection {
         //change into time since 12
         String t = "" + time.getTimeInMillis() / 1000;
 
-        String urlParameters = "elevator=" + elevator + "&floor=" + floorNum + "&time=" + t;
+        String urlParameters = "elevator=" + elevator + "&floor=" + floorNum +
+                "&time=" + t + "&team=" + this.teamName;
         //System.out.println("Posting " + urlParameters);
         post(URL, urlParameters);
     }
