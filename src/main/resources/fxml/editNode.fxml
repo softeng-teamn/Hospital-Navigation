@@ -94,7 +94,7 @@
          <children>
             <ScrollPane fx:id="map_scrollpane" prefHeight="200.0" prefWidth="200.0">
                <content>
-                  <Pane fx:id="image_pane" onMouseClicked="#mapClickedHandler">
+                  <Pane fx:id="image_pane">
                      <children>
                         <ImageView>
                            <image>
