@@ -67,7 +67,7 @@ public class ScheduleController extends Controller {
     public JFXButton submitBtn;
 
     @FXML
-    public JFXTextField eventName, searchBar /*employeeID */;
+    public JFXTextField eventName, searchBar, employeeID;
 
     @FXML
     private TableView<ScheduleWrapper> scheduleTable;
@@ -87,7 +87,7 @@ public class ScheduleController extends Controller {
     @FXML
     public JFXComboBox<String> privacyLvlBox;
 
-    JFXTextField employeeID = new JFXTextField() ;
+
 
 
     // Map Stuff
@@ -292,9 +292,7 @@ public class ScheduleController extends Controller {
 
         int idNum = ApplicationState.getApplicationState().getEmployeeLoggedIn().getID();
         String id = Integer.toString(idNum);
-        System.out.println("THE EMPLOYEE IS: " + id);
         employeeID.setText(id);
-        System.out.println("employeeID = " + employeeID.getText());
 
     }
 
@@ -449,17 +447,7 @@ public class ScheduleController extends Controller {
 
         // Check user input for valid ID
         inputErrorLbl.setVisible(false);
-        // ******************HERE*****************
-        // change to employee id gotten from application state
-        // String id = employeeID.getText();
-        // get employee id from application state
-        /*
-        int idNum = ApplicationState.getApplicationState().getEmployeeLoggedIn().getID();
-        String id = Integer.toString(idNum) ;
 
-        employeeID.setText(id);
-        System.out.println("employeeID = " + employeeID);
-*/
         String id = employeeID.getId() ;
         boolean badId = false;
 

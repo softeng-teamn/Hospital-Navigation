@@ -77,11 +77,9 @@ public class TopNavController {
             event.setLoggedIn(false);
             resetBtn();
             ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
-            System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null) " + ApplicationState.getApplicationState().getEmployeeLoggedIn());
         }
         // go to login screen
         else {
-            System.out.println("RIGHT HERE LOOK AT ME ");
             Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
             Stage stage = (Stage) navigate_btn.getScene().getWindow();
             StageManager.changeExistingWindow(stage, root, "Admin Login");
