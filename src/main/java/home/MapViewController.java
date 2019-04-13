@@ -649,7 +649,6 @@ public class MapViewController {
                 directions.add(i-1, newDir);
                 i--;
             }
-            System.out.println(directions);
         }
 
         // Add the final direction
@@ -699,7 +698,6 @@ public class MapViewController {
      * @return a String that is the sum of all the directions
      */
     public String printDirections(ArrayList<String> ds) {
-        System.out.println("printing...");
         HashMap<String, String> backToFloors = new HashMap<>();
         backToFloors.put("A", "L2");
         backToFloors.put("B", "L1");
@@ -975,12 +973,15 @@ public class MapViewController {
         ArrayList<Node> closeNodes = MapController.getNodesConnectedTo(next);
       //  ArrayList<Node> closeNodes = DatabaseService.getDatabaseService().getNodesConnectedTo(next);
         for (Node n: closeNodes) {
-            if (n.getNodeType().equals("HALL")) {
+            if (!landmark.contains("towards") && n.getNodeType().equals("HALL")) {
                 landmark = " down the hall";
             }
             if (!n.getNodeType().equals("HALL") && !n.getNodeType().equals("ELEV") && !n.getNodeType().equals("STAI")) {
                 landmark = " towards " + n.getLongName();
             }
+        }
+        if (!next.getNodeType().equals("HALL") && !next.getNodeType().equals("ELEV") && !next.getNodeType().equals("STAI")) {
+            landmark = " towards " + next.getLongName();
         }
 
         // Create and return the direction
