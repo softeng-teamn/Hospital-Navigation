@@ -88,9 +88,6 @@ public class MapViewController {
     @FXML
     public JFXListView directionsView;
 
-    private static HashMap<String, ImageView> imageCache = new HashMap<>();
-    private static boolean imagesCached = false;
-
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
@@ -145,21 +142,6 @@ public class MapViewController {
         zoom(0.4);
 
         directionsView.setVisible(false);
-
-        // Cache imageViews so they can be reused, but only if they haven't already been cached
-        if(!imagesCached) {
-            try {
-                imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
-                imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
-                imageCache.put("1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
-                imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
-                imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
-                imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
-                imagesCached = true;
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     void pingTiming() {
