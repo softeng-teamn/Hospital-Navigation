@@ -174,7 +174,11 @@ public class MapViewController {
     @FXML
     void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
-        switchFloors(btn.getText());
+        try {
+            switchFloors(btn.getText());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         event.setEventName("floor");
         eventBus.post(event);
 
@@ -186,7 +190,7 @@ public class MapViewController {
     }
 
 
-    private void switchFloors(String floor){
+    private void switchFloors(String floor) throws IOException {
         event.setFloor(floor);
         System.out.println("switching floors " + floor);
         ImageView imageView = null;
@@ -371,7 +375,11 @@ public class MapViewController {
 
         //switch the map
         //System.out.println(node + node.getFloor());
-        switchFloors(node.getFloor());
+        try {
+            switchFloors(node.getFloor());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //display node info
         FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
