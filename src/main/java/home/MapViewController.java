@@ -88,9 +88,6 @@ public class MapViewController {
     @FXML
     public JFXListView directionsView;
 
-    private static HashMap<String, ImageView> imageCache = new HashMap<>();
-    private static boolean imagesCached = false;
-
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
@@ -145,21 +142,6 @@ public class MapViewController {
         zoom(0.4);
 
         directionsView.setVisible(false);
-
-        // Cache imageViews so they can be reused, but only if they haven't already been cached
-        if(!imagesCached) {
-            try {
-                imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
-                imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
-                imageCache.put("1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
-                imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
-                imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
-                imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
-                imagesCached = true;
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     void pingTiming() {
@@ -210,22 +192,23 @@ public class MapViewController {
         ImageView imageView = null;
         switch (floor) {
             case "3":
-                imageView = imageCache.get("3");
+                imageView = new ImageView(new Image(ResourceLoader.thirdFloor.openStream()));
                 break;
             case "2":
-                imageView = imageCache.get("2");
+
+                imageView = new ImageView(new Image(ResourceLoader.secondFloor.openStream()));
                 break;
             case "1":
-                imageView = imageCache.get("1");
-                break;
+                imageView = new ImageView(new Image(ResourceLoader.firstFloor.openStream()));
+               break;
             case "L1":
-                imageView = imageCache.get("L1");
-                break;
+                imageView = new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream()));
+               break;
             case "L2":
-                imageView = imageCache.get("L2");
-                break;
+                imageView = new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream()));
+               break;
             case "G":
-                imageView = imageCache.get("G");
+                imageView = new ImageView(new Image(ResourceLoader.groundFloor.openStream()));
                 break;
             default:
                 System.out.println("We should not have default here!!!");
@@ -237,7 +220,6 @@ public class MapViewController {
                 }
                 break;
         }
-
         image_pane.getChildren().clear();
         image_pane.getChildren().add(imageView);
         System.out.println("done switching floors");
@@ -260,17 +242,14 @@ public class MapViewController {
                         break;
                     case "node-select":
                         if(event.isEndNode()){
-                            System.out.println("isEditnode-select");
                             drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125), false);
                         } else {
-                            System.out.println("noteditNode-select");
                             drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
                         }
                         directionsView.getItems().clear();
                         hideDirections();
                         break;
                     case "refresh":
-                        System.out.println("REFRESH");
                         drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
                         drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72,87,125), false);
                         break;
@@ -284,7 +263,7 @@ public class MapViewController {
                         editNodeHandler(event.isEditing());
                         break;
                     default:
-                        System.out.println("default nothing happens");
+//                        System.out.println("I don'");
                         break;
                 }
             }
@@ -362,7 +341,6 @@ public class MapViewController {
 
 
     private void drawPoint(Node node, Circle circle, Color color, boolean start) {
-        System.out.println("drawing point");
         // remove points
         for (Line line : lineCollection) {
             if (zoomGroup.getChildren().contains(line)) {
@@ -392,7 +370,7 @@ public class MapViewController {
         scrollTo(node);
 
         //switch the map
-        System.out.println(node + node.getFloor());
+        //System.out.println(node + node.getFloor());
         switchFloors(node.getFloor());
 
         //display node info
@@ -472,7 +450,6 @@ public class MapViewController {
         if (newpath == null){
             System.out.println("DIDNT FIND A PATH");
         } else {
-            System.out.println("FOund a path");
             drawPoint(newpath.get(newpath.size()-1), selectCircle, Color.rgb(72,87,125), false);
         }
 
