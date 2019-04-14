@@ -22,6 +22,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -265,7 +266,7 @@ public class TopNavController implements Observer {
      * @param e
      */
     @FXML
-    public void startNodeEnter(ActionEvent e) {
+    public void startNodeEnter(javafx.event.Event e) {
         String search = startSearch.getText();
         event = ApplicationState.getApplicationState().getFeb().getEvent();
 
@@ -277,7 +278,6 @@ public class TopNavController implements Observer {
 
     /**
      * searches for room
-     * @param e
      */
     @FXML
     public void searchBarEnter() {
@@ -287,7 +287,6 @@ public class TopNavController implements Observer {
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
         event.setEndNode(true);    // todo: should this really happen here? they haven't selected a node. or is this only called by the end search bar?
-        // todo: modify start search bar to on key released as well if can get that to work
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
@@ -357,7 +356,8 @@ public class TopNavController implements Observer {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         if (startNode_btn.getText().equals("Start Node")){
             startSearch.setPromptText("Start Node");
-            startSearch.setOnAction(this::startNodeEnter);
+            startSearch.setOnInputMethodTextChanged(this::startNodeEnter);
+            startSearch.setOnKeyReleased(this::startNodeEnter);
             startSearch.setOnMouseClicked(this::setEventEndNode);
             startSearch.getStyleClass().add("header-text-field");
             top_nav.getChildren().add(2, startSearch);
