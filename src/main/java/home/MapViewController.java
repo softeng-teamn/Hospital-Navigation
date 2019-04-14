@@ -69,7 +69,7 @@ public class MapViewController {
     private ArrayList<Circle> circleCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
-    private String units = "Ft";    // Feet or meters conversion
+    private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
 
 
@@ -84,7 +84,7 @@ public class MapViewController {
     @FXML
     private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
-    private Label cur_el_floor;
+    private Label cur_el_floor, FloorInfo;
     @FXML
     public JFXListView directionsView;
 
@@ -172,53 +172,63 @@ public class MapViewController {
     }
 
     @FXML
-    void floorChangeAction(ActionEvent e) throws IOException {
+    void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
-        ImageView imageView;
-        event.setEventName("floor");
-        String floorName = "";
-        event.setFloor(btn.getText());
-        switch (btn.getText()) {
-            case "3":
-                imageView = new ImageView(new Image(ResourceLoader.thirdFloor.openStream()));
-                floorName = "3";
-                break;
-            case "2":
-                imageView = new ImageView(new Image(ResourceLoader.secondFloor.openStream()));
-                floorName = "2";
-                break;
-            case "1":
-                imageView = new ImageView(new Image(ResourceLoader.firstFloor.openStream()));
-                floorName = "1";
-                break;
-            case "L1":
-                imageView = new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream()));
-                floorName = "L1";
-                break;
-            case "L2":
-                imageView = new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream()));
-                floorName = "L2";
-                break;
-            case "G":
-                imageView = new ImageView(new Image(ResourceLoader.groundFloor.openStream()));
-                floorName = "G";
-                break;
-            default:
-                System.out.println("We should not have default here!!!");
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
-                break;
+        try {
+            switchFloors(btn.getText());
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
-        image_pane.getChildren().clear();
-        image_pane.getChildren().add(imageView);
-        event.setFloor(floorName);
+        event.setEventName("floor");
         eventBus.post(event);
+
         if (hasPath){
             drawPath();
         }
         // Handle Floor changes
         editNodeHandler(event.isEditing());
     }
+
+
+    private void switchFloors(String floor) throws IOException {
+        event.setFloor(floor);
+        System.out.println("switching floors " + floor);
+        ImageView imageView = null;
+        switch (floor) {
+            case "3":
+                imageView = new ImageView(new Image(ResourceLoader.thirdFloor.openStream()));
+                break;
+            case "2":
+
+                imageView = new ImageView(new Image(ResourceLoader.secondFloor.openStream()));
+                break;
+            case "1":
+                imageView = new ImageView(new Image(ResourceLoader.firstFloor.openStream()));
+               break;
+            case "L1":
+                imageView = new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream()));
+               break;
+            case "L2":
+                imageView = new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream()));
+               break;
+            case "G":
+                imageView = new ImageView(new Image(ResourceLoader.groundFloor.openStream()));
+                break;
+            default:
+                System.out.println("We should not have default here!!!");
+                try {
+                    imageView = new ImageView(new Image(
+                            ResourceLoader.groundFloor.openStream()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+        image_pane.getChildren().clear();
+        image_pane.getChildren().add(imageView);
+        System.out.println("done switching floors");
+    }
+
 
     @Subscribe
     void eventListener(Event event) {
@@ -345,7 +355,7 @@ public class MapViewController {
         }
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
-            System.out.println("we found new Selected Circles");
+            //System.out.println("we found new Selected Circles");
             zoomGroup.getChildren().remove(circle);
         }
         // create new Circle
@@ -361,10 +371,24 @@ public class MapViewController {
         } else {
             selectCircle = circle;
         }
+
+        if(!node.getFloor().equals(event.getFloor())){
+            //switch the map
+            //System.out.println(node + node.getFloor());
+            try {
+                switchFloors(node.getFloor());
+            } catch (IOException e) {
+                System.out.println("error switching floors");
+                e.printStackTrace();
+            }
+        }
+
         // Scroll to new point
         scrollTo(node);
 
-
+        //display node info
+        FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
+        System.out.println("done drawing point");
     }
 
     // generate path on the screen

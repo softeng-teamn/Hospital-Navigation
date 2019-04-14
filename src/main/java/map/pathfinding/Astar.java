@@ -78,6 +78,11 @@ public class Astar extends AlgorithmContext implements Algorithm{
                     continue;
                 }
 
+                if(child.getData().isClosed()) {
+                    //System.out.println("skipping this node because the cost is to big");
+                    continue;
+                }
+
                 else if(!open.contains(child) || cost < child.getF()){
                     //System.out.println("setting child's parent to be current");
                     child.setParent(current, child.getG());

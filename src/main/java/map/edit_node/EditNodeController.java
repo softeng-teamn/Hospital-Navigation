@@ -18,10 +18,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -76,6 +73,8 @@ public class EditNodeController extends Control {
     private MaterialIconView edit_icon_down, edit_icon_up;
     @FXML
     private Label node_id_label;
+    @FXML
+    private ToggleButton closedToggle;
 
 
     @FXML
@@ -208,6 +207,7 @@ public class EditNodeController extends Control {
         floor_combo.getSelectionModel().select(node.getFloor());
         short_field.setText(node.getShortName());
         long_field.setText(node.getLongName());
+        closedToggle.setSelected(node.isClosed());
     }
 
     @FXML
@@ -330,6 +330,7 @@ public class EditNodeController extends Control {
         tempEditNode.setBuilding(building_field.getText());
         tempEditNode.setLongName(long_field.getText());
         tempEditNode.setShortName(short_field.getText());
+        tempEditNode.setClosed(closedToggle.isSelected());
     }
 
     @FXML

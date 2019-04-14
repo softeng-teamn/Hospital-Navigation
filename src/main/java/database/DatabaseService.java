@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class DatabaseService {
 
     public static final String DATABASE_NAME = "hospital-db";
-    public static final Integer DATABASE_VERSION = 8;
+    public static final Integer DATABASE_VERSION = 10;
 
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
@@ -188,7 +188,7 @@ public class DatabaseService {
         try {
             statement = connection.createStatement();
             // Check to see if the tables have already been created, if they have, do not create them a second time.
-            statement.addBatch("CREATE TABLE NODE (nodeID varchar(255) PRIMARY KEY, xcoord int, ycoord int, floor varchar(255), building varchar(255), nodeType varchar(255), longName varchar(255), shortName varchar(255))");
+            statement.addBatch("CREATE TABLE NODE (nodeID varchar(255) PRIMARY KEY, xcoord int, ycoord int, floor varchar(255), building varchar(255), nodeType varchar(255), longName varchar(255), shortName varchar(255), isClosed boolean default false)");
 
             statement.addBatch("CREATE TABLE EDGE(edgeID varchar(21) PRIMARY KEY, node1 varchar(255), node2 varchar(255))");
 
@@ -284,8 +284,8 @@ public class DatabaseService {
      * @return true if the node is successfully inserted, false otherwise.
      */
     public boolean insertNode(Node n) {
-        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-        boolean successful = executeInsert(nodeStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
+        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        boolean successful = executeInsert(nodeStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName(), n.isClosed());
         if (successful) executeNodeCallbacks();
         return successful;
     }
@@ -297,9 +297,9 @@ public class DatabaseService {
      * @return true if the update is successful, false otherwise
      */
     public boolean updateNode(Node n) {
-        String query = "UPDATE NODE SET xcoord=?, ycoord=?, floor=?, building=?, nodeType=?, longName=?, shortName=? WHERE (nodeID = ?)";
+        String query = "UPDATE NODE SET xcoord=?, ycoord=?, floor=?, building=?, nodeType=?, longName=?, shortName=?, isClosed=? WHERE (nodeID = ?)";
         boolean successful = executeUpdate(query, n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(),
-                n.getLongName(), n.getShortName(), n.getNodeID());
+                n.getLongName(), n.getShortName(), n.isClosed(), n.getNodeID());
         if (successful) executeNodeCallbacks();
         return successful;
     }
@@ -329,7 +329,7 @@ public class DatabaseService {
     }
 
     public boolean insertAllNodes(List<Node> nodes) {
-        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
         PreparedStatement insertStatement = null;
 
         // Track the status of the insert
@@ -342,7 +342,7 @@ public class DatabaseService {
             for (int i = 0; i <= nodes.size() / 1000; i++) {
                 for (int j = (i * 1000); j < i * 1000 + 1000 && j < nodes.size(); j++) {
                     Node n = nodes.get(j);
-                    prepareStatement(insertStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName());
+                    prepareStatement(insertStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName(), n.isClosed());
                     insertStatement.addBatch();
                 }
                 // Execute
@@ -436,7 +436,7 @@ public class DatabaseService {
      */
     public ArrayList<Node> getNodesConnectedTo(Node n) {
         String nodeID = n.getNodeID();
-        String query = "SELECT NODE.NodeID, NODE.xcoord, NODE.ycoord, NODE.floor, NODE.building, NODE.nodeType, NODE.longName, NODE.shortName FROM NODE INNER JOIN EDGE ON (NODE.NodeID = EDGE.node1 AND EDGE.node2 = ?) OR (NODE.NodeID = EDGE.node2 AND EDGE.Node1 = ?)";
+        String query = "SELECT NODE.NodeID, NODE.xcoord, NODE.ycoord, NODE.floor, NODE.building, NODE.nodeType, NODE.longName, NODE.shortName, NODE.isClosed FROM NODE INNER JOIN EDGE ON (NODE.NodeID = EDGE.node1 AND EDGE.node2 = ?) OR (NODE.NodeID = EDGE.node2 AND EDGE.Node1 = ?) WHERE NODE.isClosed = false";
 
         return (ArrayList<Node>) (List<?>) executeGetMultiple(query, Node.class, nodeID, nodeID);
     }
@@ -465,7 +465,7 @@ public class DatabaseService {
      * @return the edge corresponding to the given ID
      */
     public Edge getEdge(String edgeID) {
-        String query = "SELECT e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID WHERE (EDGEID = ?)";
+        String query = "SELECT e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n1.isClosed as n1isClosed, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName, n2.isClosed as n2isClosed FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID WHERE (EDGEID = ?)";
         return (Edge) executeGetById(query, Edge.class, edgeID);
     }
 
@@ -496,12 +496,12 @@ public class DatabaseService {
     }
 
     public ArrayList<Edge> getAllEdges() {
-        String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID";
+        String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n1.isClosed as n1isClosed, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName, n2.isClosed as n2isClosed FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID";
         return (ArrayList<Edge>) (List<?>) executeGetMultiple(query, Edge.class, new Object[]{});
     }
 
     public ArrayList<Edge> getAllEdgesWithNode(String nodeId) {
-        String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID Where (n1.NODEID = ? or n2.NODEID = ?)";
+        String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n1.isClosed as n1isClosed, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName, n2.isClosed as n2isClosed FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID Where (n1.NODEID = ? or n2.NODEID = ?)";
         return (ArrayList<Edge>) (List<?>) executeGetMultiple(query, Edge.class, nodeId, nodeId);
     }
 
@@ -1974,9 +1974,12 @@ public class DatabaseService {
         String newNodeType = rs.getString(name + "nodeType");
         String newLongName = rs.getString(name + "longName");
         String newShortName = rs.getString(name + "shortName");
+        boolean isClosed = rs.getBoolean(name + "isClosed");
 
         // construct the new node and return it
-        return new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
+        Node n =  new Node(newNodeID, newxcoord, newycoord, newFloor, newBuilding, newNodeType, newLongName, newShortName);
+        n.setClosed(isClosed);
+        return n;
     }
 
     private Node extractNode(ResultSet rs) throws SQLException {
