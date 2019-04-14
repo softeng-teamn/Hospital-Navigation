@@ -152,7 +152,7 @@ public class ScheduleController extends Controller {
     @FXML
     public void initialize() {
 
-        setID();
+
 
         // Map Initialization
 
@@ -173,7 +173,7 @@ public class ScheduleController extends Controller {
 
 
 
-        resInfoLbl.setText("");
+//        resInfoLbl.setText("");
         timeErrorText = "Please enter valid start and end times.";
         availRoomsText = "Show Available Spaces";
         bookedRoomsText = "Show Booked Spaces";
@@ -194,7 +194,10 @@ public class ScheduleController extends Controller {
                         "Public",
                         "Private"
                 );
-        privacyLvlBox.setItems(options);
+
+
+        // *************** MOVE
+       // privacyLvlBox.setItems(options);
 
         // Set default date to today's date
         LocalDate date =  LocalDate.now();
@@ -288,17 +291,6 @@ public class ScheduleController extends Controller {
     }
 
 
-    /**
-     * pre-fill employee id field with id of logged in employee
-     */
-    @FXML
-    public void setID() {
-
-        int idNum = ApplicationState.getApplicationState().getEmployeeLoggedIn().getID();
-        String id = Integer.toString(idNum);
-        employeeID.setText(id);
-
-    }
 
         /**
          * Listener to update listview of rooms and info label
@@ -447,52 +439,32 @@ public class ScheduleController extends Controller {
      */
     @FXML
     public void makeReservation() {
+
         boolean valid = validTimes(true);
-
-        // Check user input for valid ID
-        inputErrorLbl.setVisible(false);
-
-        String id = employeeID.getId() ;
-        boolean badId = false;
-
-        // Check whether the ID is a number
-        for (char letter: id.toCharArray()) {
-            if (!Character.isDigit(letter)) {
-                badId = true;
-            }
-        }
-
-        // If the user has not entered an event name, has entered an invalid ID,
-        // or has not chosen a privacy level, display an error message
-        if (eventName.getText().length() < 1 || id.length() < 1 || privacyLvlBox.getValue() == null) {
-            inputErrorLbl.setText("Error: Please complete all fields to make a reservation.");
-            inputErrorLbl.setVisible(true);
-            valid = false;
-        }
-        // If the event name is too long, show an error
-        if (eventName.getText().length() > 50) {
-            inputErrorLbl.setText("Error: Please enter a shorter reservation name.");
-            inputErrorLbl.setVisible(true);
-            valid = false;
-        }
-
-        // If the ID number is bad, display an error message.
-        if (myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null) {
-            inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
-            inputErrorLbl.setVisible(true);
-            valid = false;
-        }
 
         // If evreything is okay, create the reservation
         if (valid){
             createReservation();
         }
+
+
+        // if date/time is valid
+        // convert to proper calendar stuff
+        // pass times and stuff to next screen - event bus?
+
     }
 
+
+
+
+
+
+
+    /*************************************
     /**
      * Create the reservation and send it to the database.
      */
-    @FXML
+   @FXML
     public void createReservation() {
         // Get the times and dates and turn them into gregorian calendars
         ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
@@ -511,6 +483,12 @@ public class ScheduleController extends Controller {
         resetView();
         populateMap();
     }
+
+
+
+
+
+
 
     /**
      * Make gregorian calendars from the currently selected date and time.
@@ -538,7 +516,7 @@ public class ScheduleController extends Controller {
         eventName.setText("");
         employeeID.setText("");
         privacyLvlBox.setValue(null);
-        resInfoLbl.setText("");
+       // resInfoLbl.setText("");
     }
 
     /**

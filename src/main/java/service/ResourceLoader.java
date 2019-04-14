@@ -8,7 +8,7 @@ public class  ResourceLoader {
 
     public static final URL home = service.ResourceLoader.class.getResource("/fxml/home.fxml");
     public static final URL editNode = service.ResourceLoader.class.getResource("/fxml/editNode.fxml");
-    public static final URL scheduler = service.ResourceLoader.class.getResource("/fxml/schedule.fxml");
+    public static final URL scheduler = service.ResourceLoader.class.getResource("/fxml/schedule2.fxml");
     public static final URL request = service.ResourceLoader.class.getResource("/fxml/request.fxml");
     public static final URL createNode = service.ResourceLoader.class.getResource("/fxml/createNode.fxml");
     public static final URL deleteNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/deleteNodeConfirm.fxml");
