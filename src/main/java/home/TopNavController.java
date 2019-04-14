@@ -270,7 +270,7 @@ public class TopNavController implements Observer {
         String search = startSearch.getText();
         event = ApplicationState.getApplicationState().getFeb().getEvent();
 
-        event.setSearchBarQuery(search);     // todo ahh diff functions lol fix stuff here too?
+        event.setSearchBarQuery(search);
         event.setEventName("search-query");
         event.setEndNode(false);
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
@@ -366,7 +366,8 @@ public class TopNavController implements Observer {
             home_icon.setIcon(MaterialIcon.ARROW_BACK);
         }
         else {
-            top_nav.getChildren().remove(startSearch);
+            startSearch.clear();
+            top_nav.getChildren().remove(startSearch);    // todo: repopulate list
             event.setEndNode(true);
             event.setDefaultStartNode();
             event.setEventName("refresh");
