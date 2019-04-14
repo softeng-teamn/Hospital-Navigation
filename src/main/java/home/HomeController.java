@@ -103,6 +103,18 @@ public class HomeController implements Observer {
                     }
                 });
                 break;
+            case "logout":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            showSearch();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                break;
             default:
                 break;
         }

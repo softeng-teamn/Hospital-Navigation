@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXSlider?>
 <?import javafx.geometry.Insets?>
@@ -21,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane prefWidth="1280.0" stylesheets="@/theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
+<StackPane prefWidth="1280.0" stylesheets="@/theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
         <children>
             <ScrollPane fx:id="map_scrollpane" prefHeight="749.0" prefWidth="998.0">
                 <content>
@@ -61,41 +53,6 @@
             <Insets />
          </opaqueInsets>
       </Pane>
-            <JFXListView fx:id="directionsView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" StackPane.alignment="BOTTOM_RIGHT">
-                <StackPane.margin>
-                    <Insets bottom="20.0" right="300.0" />
-                </StackPane.margin>
-            </JFXListView>
-            <VBox fx:id="showDirVbox" alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="360.0" prefWidth="300.0" StackPane.alignment="BOTTOM_RIGHT">
-                <StackPane.margin>
-                    <Insets right="300.0" />
-                </StackPane.margin>
-                <children>
-            <Label fx:id="FloorInfo" style="-fx-background-color: #465AAC;" text="Floor 1" textFill="WHITE">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-                    <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="200.0">
-                        <children>
-                            <Pane prefHeight="40.0" prefWidth="58.0">
-                                <children>
-                                    <Polygon fill="RED" layoutX="56.0" layoutY="29.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
-                                    <Polygon fill="WHITE" layoutX="66.0" layoutY="39.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="WHITE" strokeType="INSIDE" />
-                                </children>
-                                <HBox.margin>
-                                    <Insets />
-                                </HBox.margin>
-                            </Pane>
-                            <JFXButton fx:id="showDirectionsBtn" onAction="#showDirections" style="-fx-background-color: #456AAC;" text="Show Textual Directions">
-                                <HBox.margin>
-                                    <Insets left="5.0" />
-                                </HBox.margin>
-                            </JFXButton>
-                        </children>
-                    </HBox>
-                </children>
-            </VBox>
         <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="347.0" prefWidth="263.0" StackPane.alignment="BOTTOM_RIGHT">
            <children>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">

@@ -75,7 +75,7 @@ public class TopNavController implements Observer {
         if (event.isAdmin() || event.isLoggedIn()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
-            event.setEventName("");   // todo: trying this
+            event.setEventName("logout");   // todo: trying logging out
             ApplicationState.getApplicationState().getFeb().updateEvent(event);
             resetBtn();
             ApplicationState.getApplicationState().setEmployeeLoggedIn(null);

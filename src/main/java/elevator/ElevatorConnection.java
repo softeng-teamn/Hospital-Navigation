@@ -12,17 +12,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class ElevatorConnnection {
+public class ElevatorConnection {
     private static HttpURLConnection con;
     private String teamName;
 
     //for other teams
-    public ElevatorConnnection(String teamName) {
+    public ElevatorConnection(String teamName) {
         this.teamName = teamName;
     }
 
     //for our team
-    public ElevatorConnnection(){
+    public ElevatorConnection(){
         this.teamName = "N";
     }
 

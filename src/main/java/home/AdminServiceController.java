@@ -9,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 import application_state.Event;
 import database.CSVService;
@@ -32,6 +34,9 @@ public class AdminServiceController extends Controller {
 
     @FXML
     private JFXToggleNode breadthFirstToggle;
+
+    @FXML
+    private ToggleGroup algorithm;
 
     @FXML
     private void showFulfillRequest() throws Exception {
@@ -63,6 +68,7 @@ public class AdminServiceController extends Controller {
     }
 
     public void astarSwitch(ActionEvent actionEvent) {
+        algorithm.selectToggle(aStarToggle);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("methodSwitch");
         event.setSearchMethod("astar");
@@ -70,6 +76,7 @@ public class AdminServiceController extends Controller {
     }
 
     public void depthSwitch(ActionEvent actionEvent) {
+        algorithm.selectToggle(depthFirstToggle);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!! function called !!!!!!!!!!!!!!!!!!");
         event.setEventName("methodSwitch");
@@ -77,6 +84,7 @@ public class AdminServiceController extends Controller {
         ApplicationState.getApplicationState().getFeb().updateEvent(event);    }
 
     public void breadthSwitch(ActionEvent actionEvent) {
+        algorithm.selectToggle(breadthFirstToggle);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("methodSwitch");
         event.setSearchMethod("breadth");
@@ -88,5 +96,18 @@ public class AdminServiceController extends Controller {
         Parent root = FXMLLoader.load(ResourceLoader.createNode);
         Stage stage = (Stage) newNode_btn.getScene().getWindow();
         StageManager.changeExistingWindow(stage, root, "Add Node");
+    }
+
+    @FXML
+    void initialize() {    // Added so that search method toggle is already selected
+        if (event.getSearchMethod().equals("astar")) {
+            algorithm.selectToggle(aStarToggle);
+        }
+        else if (event.getSearchMethod().equals("breadth")) {
+            algorithm.selectToggle(breadthFirstToggle);
+        }
+        else {
+            algorithm.selectToggle(depthFirstToggle);
+        }
     }
 }

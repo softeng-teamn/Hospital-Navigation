@@ -139,7 +139,7 @@ public class DirectionsController implements Observer {
             }
         }
 
-        //System.out.println("before simplifying: " + directions);
+        System.out.println("before simplifying: " + directions);
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
@@ -148,7 +148,8 @@ public class DirectionsController implements Observer {
             String prevOne = prevDir.substring(0,1);
             String newDir = "";
             boolean changed = false;
-            if (currOne.equals("A") && !"IJ".contains(prevOne)) {
+            if (currOne.equals("A") && !"IJNOPQ".contains(prevOne)) {
+                System.out.println(prevDir + currDir);
                 int prevDist = Integer.parseInt(prevDir.substring(1,6));
                 int currDist = Integer.parseInt(currDir.substring(1,6));
                 double totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one

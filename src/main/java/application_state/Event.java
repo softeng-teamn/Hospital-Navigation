@@ -19,7 +19,7 @@ public class Event {
     String searchBarQuery = ""; // search-query
     Node nodeStart = DEFAULT_NODE; // node-start
     Node nodeSelected = null;   // node-select
-    boolean isLoggedIn = false; // login
+    boolean isLoggedIn = false; // login, logout
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change

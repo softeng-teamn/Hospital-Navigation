@@ -17,7 +17,7 @@ public class PathSettingController {
     @FXML
     void initialize() {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
-       accessibilityButton.setSelected(event.isAccessiblePath());
+        accessibilityButton.setSelected(event.isAccessiblePath());
     }
 
     @FXML

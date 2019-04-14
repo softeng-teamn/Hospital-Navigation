@@ -2,11 +2,9 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
-import elevator.ElevatorConnnection;
+import elevator.ElevatorConnection;
 import application_state.Event;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -47,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class MapViewController implements Observer {
-    static ElevatorConnnection elevatorCon = new ElevatorConnnection();
+    static ElevatorConnection elevatorCon = new ElevatorConnection();
 
     @FXML
     public VBox showDirVbox;
@@ -136,8 +134,6 @@ public class MapViewController implements Observer {
         zoom_slider.setValue(0.4);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.4);
-
-        directionsView.setVisible(false);
     }
 
     void pingTiming() {
@@ -409,7 +405,6 @@ public class MapViewController implements Observer {
         scrollTo(node);
 
         //display node info
-        FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
         System.out.println("done drawing point");
     }
 
@@ -429,28 +424,32 @@ public class MapViewController implements Observer {
             newpath = pathFinder.genPath(start, dest, false, currentMethod);
         }
         if (event.isCallElev()) {//if we are supposed to call elevator
-            ElevatorConnnection e = new ElevatorConnnection();
-            for (String key : pathFinder.getElevTimes().keySet()
-            ) {
-                System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
-                GregorianCalendar gc = new GregorianCalendar();
-                gc.add(Calendar.MINUTE, pathFinder.getElevTimes().get(key).getEta());
-                try {
-                    e.postFloor(key.substring(key.length() - 1), pathFinder.getElevTimes().get(key).getFloor(), gc);
-                } catch (Exception ex) {
-                    System.out.println("WifiConnectionError, post didn't happen");
-                    throw new Exception(ex);
+            ElevatorConnection e = new ElevatorConnection();
+            if (pathFinder.getElevTimes() != null) {    // TODO: do breadth and depth set elevTimes? I'm getting null pointer exceptions here when I use them
+                for (String key : pathFinder.getElevTimes().keySet()
+                ) {
+                    System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
+                    GregorianCalendar gc = new GregorianCalendar();
+                    gc.add(Calendar.MINUTE, pathFinder.getElevTimes().get(key).getEta());
+                    try {
+                        e.postFloor(key.substring(key.length() - 1), pathFinder.getElevTimes().get(key).getFloor(), gc);
+                    } catch (Exception ex) {
+                        System.out.println("WifiConnectionError, post didn't happen");
+                        throw new Exception(ex);
+                    }
                 }
             }
         } // todo
 
         System.out.println(newpath);
         path = newpath;
-        drawPath();
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
-        event.setPath(path);
-        event.setEventName("showText");     // TODO here
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        if (path.size() > 1) {
+            drawPath();
+            event = ApplicationState.getApplicationState().getFeb().getEvent();
+            event.setPath(path);
+            event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
+            ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        }
     }
 
     private void filteredHandler() {
