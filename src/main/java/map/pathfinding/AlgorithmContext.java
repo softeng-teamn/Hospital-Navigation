@@ -20,6 +20,7 @@ public abstract class AlgorithmContext{
     public ArrayList<Node> findDest(MapNode start, MapNode dest, boolean accessibility, String filter) {
         MapNode target = returnMapNode(start, dest, accessibility, filter);
 
+        System.out.println(target);
         elevTimes = new HashMap<>();
         if (target != null) {
             ArrayList<Node> path = new ArrayList<Node>();

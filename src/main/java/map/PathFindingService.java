@@ -63,6 +63,7 @@ public class PathFindingService {
         }
 
         if (target != null){
+            System.out.println(target);
             return target;
         } else {
             return null;

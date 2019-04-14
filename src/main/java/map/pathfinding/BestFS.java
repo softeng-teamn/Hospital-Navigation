@@ -33,44 +33,48 @@ public class BestFS extends AlgorithmContext implements Algorithm {
     @Override
     MapNode throughMap() {
         while(!open.isEmpty()){
-//            for(MapNode node : open){
-//                if (node.getH() < min){
-//                    min = node.getH();
-//                    minNode = node;
-//                }
-//            }
-//            open.remove(minNode);
-//            current = minNode;
+            double min = 99999999;
+            MapNode minNode = new MapNode(0, 0, new Node(0,0));
 
-            current = open.poll();
+            for(MapNode node : open){
+                if (node.getH() < min){
+                    min = node.getH();
+                    minNode = node;
+                }
+            }
+            current = minNode;
+            open.remove(minNode);
+
+//            current = open.poll();
             explored.add(current);
             if (current == dest){
                 return current;
             }
 
-            double min = 99999999;
-            MapNode minNode = new MapNode(0, 0, new Node(0,0));
+
 
 
             for (MapNode child : getChildren(current)){
-                child.calculateHeuristic(dest);
-                if (child.getH() < min && !explored.contains(child) && !open.contains(child)){
-                    min = child.getH();
-                    minNode = child;
+                if (child == dest){
+                    child.setParent(current, 0);
+                    return child;
                 }
 
-//                if (child.getData().getNodeType() == "STAI" && accessibility){
-//                    continue;
-//                }
-//                if (!explored.contains(child) && !open.contains(child)){
-//                    child.setParent(current, 0);
-//                    open.add(child);
+                child.calculateHeuristic(dest);
+//                if (child.getH() < min && !explored.contains(child) && !open.contains(child)){
+//                    min = child.getH();
+//                    minNode = child;
 //                }
 
-
+                if (child.getData().getNodeType() == "STAI" && accessibility){
+                    continue;
+                }
+                if (!explored.contains(child) && !open.contains(child)){
+//                    if(child.getH() < current.getH())
+                    child.setParent(current, 0);
+                    open.add(child);
+                }
             }
-            minNode.setParent(current, 0);
-            open.add(minNode);
         }
         return null;
     }
