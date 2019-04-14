@@ -43,7 +43,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        Parent root = FXMLLoader.load(ResourceLoader.createNode);
         //
         // Closes all threads
         primaryStage.setOnCloseRequest((ae) -> {
