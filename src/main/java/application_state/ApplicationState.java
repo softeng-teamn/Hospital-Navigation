@@ -11,7 +11,6 @@ public class ApplicationState {
 
     private Node nodeToEdit;
     private ArrayList<Edge> edgesToEdit;
-    private int employeeID;
     private Employee employeeLoggedIn;
 
 
@@ -43,14 +42,6 @@ public class ApplicationState {
 
     public void setEdgesToEdit(ArrayList<Edge> edgesToEdit) {
         this.edgesToEdit = edgesToEdit;
-    }
-
-    public int getEmployeeID() {
-        return employeeID;
-    }
-
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
     }
 
     public Employee getEmployeeLoggedIn() {

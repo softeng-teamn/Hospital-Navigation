@@ -515,7 +515,7 @@ public class DirectionsController {
     public void sendMapToPhone(){
         TextingService textSender = new TextingService();
         //this grabs the employee ID from the Application state and uses that to get the employee from the database, whose phone we want to use. and sends them the directions.
-        textSender.textMap(getDatabaseService().getEmployee(getApplicationState().getEmployeeID()).getPhone(),printDirections(makeDirections(path)));
+        textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(),printDirections(makeDirections(path)));
     }
 
     /**
