@@ -134,6 +134,9 @@ public class MapViewController implements Observer {
         zoom_slider.setValue(0.4);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.4);
+
+
+        scrollTo(event.getDefaultNode());
     }
 
     void pingTiming() {

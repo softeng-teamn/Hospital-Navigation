@@ -38,7 +38,6 @@ public class HomeController implements Observer {
         MapController.initConnections();
 
         leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults));
-
     }
 
     @Override
