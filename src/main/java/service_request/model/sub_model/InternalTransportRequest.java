@@ -141,8 +141,8 @@ public class InternalTransportRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Internal Transport Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getTransport().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Internal Transport Request %d, Description: %s, Type: %s, Urgency: %s Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getTransport().name(), this.getUrgency(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }
 
     @Override
