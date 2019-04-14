@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import application_state.Event;
 import application_state.EventBusFactory;
 import map.Node;
+import service.TextingService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,9 @@ public class DirectionsController {
 
     @FXML
     private JFXListView<Label> directionsView;
+
+    @FXML
+    private JFXButton textingButton;
 
     //text message global variable
     private String units = "Ft";    // Feet or meters conversion
@@ -498,6 +502,14 @@ public class DirectionsController {
             unitSwitch_btn.setText("M");
         }
         printDirections(makeDirections(path));
+    }
+
+    /**
+     * Send a text message with the URL of the map
+     */
+    public void sendMapToPhone(){
+        TextingService textSender = new TextingService();
+        textSender.textMap("+19787298044",printDirections(makeDirections(path)));
     }
 
     /**

@@ -21,6 +21,7 @@ public class GiftStoreRequestController extends RequestController {
 
     @FXML
     private JFXButton submit;
+
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @FXML
@@ -29,6 +30,7 @@ public class GiftStoreRequestController extends RequestController {
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<GiftStoreRequest.GiftType> options = FXCollections.observableArrayList(GiftStoreRequest.GiftType.BALLOONS, GiftStoreRequest.GiftType.TEDDY_BEAR, GiftStoreRequest.GiftType.GIFT_BASKET) ;
         type.getItems().addAll(options);
+        type.getSelectionModel().select(0);
     }
 
 
@@ -37,6 +39,9 @@ public class GiftStoreRequestController extends RequestController {
         if(selectedNode != null) {
             GiftStoreRequest giftStoreRequest = new GiftStoreRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem(), patientName.getText());
             giftStoreRequest.makeRequest();
+            description.setText("");
+            type.getSelectionModel().select(0);
+            patientName.setText("");
         }
     }
 }

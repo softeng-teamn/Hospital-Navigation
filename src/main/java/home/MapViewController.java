@@ -1,5 +1,6 @@
 package home;
 
+import application_state.ApplicationState;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
@@ -68,7 +69,7 @@ public class MapViewController {
     private ArrayList<Circle> circleCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
-    private String units = "Ft";    // Feet or meters conversion
+    private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
 
 
@@ -83,12 +84,9 @@ public class MapViewController {
     @FXML
     private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
-    private Label cur_el_floor;
+    private Label cur_el_floor, FloorInfo;
     @FXML
     public JFXListView directionsView;
-
-    private static HashMap<String, ImageView> imageCache = new HashMap<>();
-    private static boolean imagesCached = false;
 
     // ELEVATOR CALL BUTTONS
     @FXML
@@ -144,21 +142,6 @@ public class MapViewController {
         zoom(0.4);
 
         directionsView.setVisible(false);
-
-        // Cache imageViews so they can be reused, but only if they haven't already been cached
-        if(!imagesCached) {
-            try {
-                imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
-                imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
-                imageCache.put("1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
-                imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
-                imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
-                imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
-                imagesCached = true;
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     void pingTiming() {
@@ -189,53 +172,63 @@ public class MapViewController {
     }
 
     @FXML
-    void floorChangeAction(ActionEvent e) throws IOException {
+    void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
-        ImageView imageView;
-        event.setEventName("floor");
-        String floorName = "";
-        event.setFloor(btn.getText());
-        switch (btn.getText()) {
-            case "3":
-                imageView = imageCache.get("3");
-                floorName = "3";
-                break;
-            case "2":
-                imageView = imageCache.get("2");
-                floorName = "2";
-                break;
-            case "1":
-                imageView = imageCache.get("1");
-                floorName = "1";
-                break;
-            case "L1":
-                imageView = imageCache.get("L1");
-                floorName = "L1";
-                break;
-            case "L2":
-                imageView = imageCache.get("L2");
-                floorName = "L2";
-                break;
-            case "G":
-                imageView = imageCache.get("G");
-                floorName = "G";
-                break;
-            default:
-                System.out.println("We should not have default here!!!");
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
-                break;
+        try {
+            switchFloors(btn.getText());
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
-        image_pane.getChildren().clear();
-        image_pane.getChildren().add(imageView);
-        event.setFloor(floorName);
+        event.setEventName("floor");
         eventBus.post(event);
+
         if (hasPath){
             drawPath();
         }
         // Handle Floor changes
         editNodeHandler(event.isEditing());
     }
+
+
+    private void switchFloors(String floor) throws IOException {
+        event.setFloor(floor);
+        System.out.println("switching floors " + floor);
+        ImageView imageView = null;
+        switch (floor) {
+            case "3":
+                imageView = new ImageView(new Image(ResourceLoader.thirdFloor.openStream()));
+                break;
+            case "2":
+
+                imageView = new ImageView(new Image(ResourceLoader.secondFloor.openStream()));
+                break;
+            case "1":
+                imageView = new ImageView(new Image(ResourceLoader.firstFloor.openStream()));
+               break;
+            case "L1":
+                imageView = new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream()));
+               break;
+            case "L2":
+                imageView = new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream()));
+               break;
+            case "G":
+                imageView = new ImageView(new Image(ResourceLoader.groundFloor.openStream()));
+                break;
+            default:
+                System.out.println("We should not have default here!!!");
+                try {
+                    imageView = new ImageView(new Image(
+                            ResourceLoader.groundFloor.openStream()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+        image_pane.getChildren().clear();
+        image_pane.getChildren().add(imageView);
+        System.out.println("done switching floors");
+    }
+
 
     @Subscribe
     void eventListener(Event event) {
@@ -306,28 +299,19 @@ public class MapViewController {
                         Stage stage = (Stage) image_pane.getScene().getWindow();
                         Circle c = (Circle)event.getSource();
                         tp.show(c, stage.getX()+event.getSceneX()+15, stage.getY()+event.getSceneY());
-                        image_pane.getScene().setCursor(Cursor.HAND);
                     }
                 });
                 nodeCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
                         tp.hide();
-                        image_pane.getScene().setCursor(Cursor.DEFAULT);
                     }
                 });
                 nodeCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        // ************
 
-
-                        //      Need to pass node clicked to global AppState
-
-//                        eventBus.post(n);
-//                        nodeToEdit = n;
-
-                        // ************
+                        ApplicationState.getApplicationState().setNodeToEdit(n);
 
                         System.out.println("WE CLICKED THE CIRCLE");
                         try {
@@ -370,7 +354,7 @@ public class MapViewController {
         }
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
-            System.out.println("we found new Selected Circles");
+            //System.out.println("we found new Selected Circles");
             zoomGroup.getChildren().remove(circle);
         }
         // create new Circle
@@ -386,10 +370,24 @@ public class MapViewController {
         } else {
             selectCircle = circle;
         }
+
+        if(!node.getFloor().equals(event.getFloor())){
+            //switch the map
+            //System.out.println(node + node.getFloor());
+            try {
+                switchFloors(node.getFloor());
+            } catch (IOException e) {
+                System.out.println("error switching floors");
+                e.printStackTrace();
+            }
+        }
+
         // Scroll to new point
         scrollTo(node);
 
-
+        //display node info
+        FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
+        System.out.println("done drawing point");
     }
 
     // generate path on the screen
@@ -636,7 +634,7 @@ public class MapViewController {
             String prevOne = prevDir.substring(0,1);
             String newDir = "";
             boolean changed = false;
-            if (currOne.equals("A")) {
+            if (currOne.equals("A") && !"IJ".contains(prevOne)) {
                 int prevDist = Integer.parseInt(prevDir.substring(1));
                 int currDist = Integer.parseInt(currDir.substring(1));
                 int totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
