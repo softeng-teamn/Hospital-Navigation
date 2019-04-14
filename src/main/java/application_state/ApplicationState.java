@@ -14,6 +14,7 @@ public class ApplicationState {
     private Node nodeToEdit;
     private ArrayList<Edge> edgesToEdit;
     private static HashMap<String, ImageView> imageCache;
+    private int employeeID;
     private Employee employeeLoggedIn;
 
 
@@ -55,7 +56,13 @@ public class ApplicationState {
         this.edgesToEdit = edgesToEdit;
     }
 
-    public Employee getCurrentEmployee() { return employeeLoggedIn ; }
+    public int getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(int employeeID) {
+        this.employeeID = employeeID;
+    }
 
     public Employee getEmployeeLoggedIn() {
         return employeeLoggedIn;
