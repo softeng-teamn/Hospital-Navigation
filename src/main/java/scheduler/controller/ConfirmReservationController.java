@@ -28,7 +28,7 @@ public class ConfirmReservationController {
 
 
     @FXML
-    public JFXButton homeBtn, makeReservationBtn, backBtn ;
+    public JFXButton homeBtn, makeReservationBtn, backBtn;
     @FXML
     public Label inputErrorLbl;
     @FXML
@@ -42,8 +42,8 @@ public class ConfirmReservationController {
     private EventBus eventBus = EventBusFactory.getEventBus();
 
     // variables to hold incoming event information
-    String roomID = "" ;
-    ArrayList<GregorianCalendar> cals = null ;
+    String roomID = "";
+    ArrayList<GregorianCalendar> cals = null;
 
 
     /**
@@ -53,6 +53,7 @@ public class ConfirmReservationController {
     public void initialize() {
 
         eventBus.register(this);
+
 
         // sets ID to logged in employee
         setID();
@@ -71,7 +72,6 @@ public class ConfirmReservationController {
     }
 
 
-
     /**
      * pre-fill employee id field with id of logged in employee
      */
@@ -87,6 +87,7 @@ public class ConfirmReservationController {
 
     /**
      * switches window to home screen
+     *
      * @throws Exception
      */
     public void showHome() throws Exception {
@@ -96,7 +97,16 @@ public class ConfirmReservationController {
     }
 
 
-
+    /**
+     * switches window to home screen
+     *
+     * @throws Exception
+     */
+    public void backToScheduler() throws Exception {
+        Stage stage = (Stage) backBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.scheduler);
+        StageManager.changeExistingWindow(stage, root, "Scheduler");
+    }
 
 
     /**
@@ -112,17 +122,17 @@ public class ConfirmReservationController {
         // Check user input for valid ID
         inputErrorLbl.setVisible(false);
 
-        String id = employeeID.getId() ;
+        String id = employeeID.getId();
         boolean badId = false;
 
         // Check whether the ID is a number
-        for (char letter: id.toCharArray()) {
+        for (char letter : id.toCharArray()) {
             if (!Character.isDigit(letter)) {
                 badId = true;
             }
         }
 
-       // If the user has not entered an event name, has entered an invalid ID,
+        // If the user has not entered an event name, has entered an invalid ID,
         // or has not chosen a privacy level, display an error message
         if (eventName.getText().length() < 1 || id.length() < 1 || privacyLvlBox.getValue() == null) {
             inputErrorLbl.setText("Error: Please complete all fields to make a reservation.");
@@ -143,13 +153,13 @@ public class ConfirmReservationController {
             valid = false;
         }
 
+        System.out.println("VALID?? -> " + valid);
         // If evreything is okay, create the reservation
-        if (valid){
+        if (valid) {
+            System.out.println("IS VALID - CREATING RESERVATION");
             createReservation();
         }
     }
-
-
 
 
     /**
@@ -162,39 +172,38 @@ public class ConfirmReservationController {
     }
 
 
-
-
-
     // events I care about: am "subscribed" to
     @Subscribe
     private void eventListener(Event newEvent) {
+        System.out.println("INSIDE EVENT LISTENER");
 
         switch (newEvent.getEventName()) {
             case "times":
-                cals = event.getStartAndEndTimes() ;
+                System.out.println("INSIDE TIMES - VERY GOOD!");
+                cals = event.getStartAndEndTimes();
                 break;
             case "room":
-                roomID = event.getRoomId() ;
+                System.out.println("INSIDE ROOM - VERY GOOD!");
+                roomID = event.getRoomId();
                 break;
             default:
+                System.out.println("HIT DEFAULT - VERY BAD");
                 break;
         }
 
     }
 
 
-
-
- /**
- * Create the reservation and send it to the database.
- */
- @FXML
+    /**
+     * Create the reservation and send it to the database.
+     */
+    @FXML
     public void createReservation() {
 
 
         // Get the times and dates and turn them into gregorian calendars
-     // GET TIMES FROM SCHEDULE CONTROLLER
-       // ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
+        // GET TIMES FROM SCHEDULE CONTROLLER
+        // ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
 
         // Get the privacy level
         int privacy = 0;
@@ -203,13 +212,20 @@ public class ConfirmReservationController {
         }
 
         // Create the new reservation
-        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),roomID,cals.get(0),cals.get(1));
-        myDBS.insertReservation(newRes);
+        System.out.println("TIME TO PLAY..... WHERE IS THE NULL POINTER!?!??!?!?");
+        System.out.println("privacy: " + privacy);
+        System.out.println("employeeID: " + Integer.parseInt(employeeID.getText()));
+        System.out.println("eventName: " + eventName.getText());
+        System.out.println("roomID: " + roomID);
+        System.out.println(("cals(0): " + cals.get(0))) ;
+        System.out.println(("cals(1): " + cals.get(1))) ;
 
+        Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
+        myDBS.insertReservation(newRes);
+        System.out.println("NEW RESRVATION INSERTED INTO DATABASE");
         // Reset the screen
         resetView();
     }
-
 
 
     /**
@@ -222,13 +238,8 @@ public class ConfirmReservationController {
         employeeID.setText("");
         privacyLvlBox.setValue(null);
         // resInfoLbl.setText("");
+        System.out.println("ALL FIELDS HAVE BEEN CLEARED");
     }
 
 
-
-
-
-
-
-
- }
+}

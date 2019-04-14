@@ -15,6 +15,7 @@
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" styleClass="header">
          <children>
+            <JFXButton fx:id="backBtn" onAction="#backToScheduler" text="Back" />
             <Region prefHeight="100.0" prefWidth="724.0" />
             <Label text="Reserve a Room" textFill="WHITE">
                <font>
