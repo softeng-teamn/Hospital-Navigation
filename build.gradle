@@ -234,4 +234,5 @@ task apiJar(type: Jar) {
         include "theme.css"
         include "strings.properties"
     }
+    baseName 'TeamN-InternalTransportAPI'
 }
