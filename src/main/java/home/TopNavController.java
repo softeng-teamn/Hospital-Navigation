@@ -372,6 +372,8 @@ public class TopNavController implements Observer {
             event.setDefaultStartNode();
             event.setEventName("refresh");
             ApplicationState.getApplicationState().getFeb().updateEvent(event);
+            event.setEventName("showSearch");
+            ApplicationState.getApplicationState().getFeb().updateEvent(event);
             startNode_btn.setText("Start Node");
             home_icon.setIcon(MaterialIcon.LOCATION_ON);
         }
