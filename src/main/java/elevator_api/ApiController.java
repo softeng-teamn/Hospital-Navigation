@@ -4,6 +4,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import employee.model.Employee;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -89,19 +91,26 @@ public class ApiController implements Initializable {
         col_assigned_location.setCellValueFactory(new PropertyValueFactory<>("location"));
         col_assigned_details.setCellValueFactory(new PropertyValueFactory<>("notes"));
         col_assigned_type.setCellValueFactory(new PropertyValueFactory<>("transport"));
-
-        employeeComboBox.setCellFactory(param -> {
-            final ListCell<Employee> cell = new ListCell<Employee>() {
-                @Override public void updateItem(Employee item, boolean empty) {
-                    if (item != null) {
-                        setText(item.getUsername());
-                    } else {
-                        setText(null);
-                    }
-                }
-            };
-            return cell;
+        col_assigned_to.setCellValueFactory(p -> {
+            if (p.getValue() != null) {
+                return new SimpleStringProperty(myDBS.getEmployee(p.getValue().getAssignedTo()).getUsername());
+            } else {
+                return new SimpleStringProperty("error");
+            }
         });
+
+        Callback<ListView<Employee>, ListCell<Employee>> factory = lv -> new ListCell<Employee>() {
+
+            @Override
+            protected void updateItem(Employee item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? "" : item.getUsername());
+            }
+
+        };
+
+        employeeComboBox.setCellFactory(factory);
+        employeeComboBox.setButtonCell(factory.call(null));
 
 
         ObservableList<Employee> employees = FXCollections.observableArrayList();
@@ -127,7 +136,15 @@ public class ApiController implements Initializable {
     }
 
     public void onAssignTo(ActionEvent actionEvent) {
+        ApiInternalTransportRequest selectedReq = open_table.getSelectionModel().getSelectedItem();
+        Employee employee = employeeComboBox.getSelectionModel().getSelectedItem();
 
+        if (selectedReq != null && employee != null) {
+            selectedReq.setAssignedTo(employee.getID());
+            myDBS.updateInternalTransportRequest(selectedReq);
+
+            loadData();
+        }
     }
 
     private void loadData() {

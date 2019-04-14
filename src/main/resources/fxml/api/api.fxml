@@ -60,12 +60,12 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <JFXButton fx:id="assignTo" disable="true" onAction="#onAssignTo" text="Assign To">
+                        <JFXButton fx:id="assignTo" onAction="#onAssignTo" text="Assign To">
                            <HBox.margin>
                               <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
                            </HBox.margin>
                         </JFXButton>
-                        <JFXComboBox fx:id="employeeComboBox" prefHeight="38.0" prefWidth="239.0" promptText="Employee">
+                        <JFXComboBox fx:id="employeeComboBox" prefHeight="38.0" prefWidth="239.0" promptText="">
                            <HBox.margin>
                               <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
                            </HBox.margin>
