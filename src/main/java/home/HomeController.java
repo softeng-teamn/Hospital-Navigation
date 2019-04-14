@@ -32,6 +32,8 @@ public class HomeController implements Observer {
     void initialize() throws IOException {
         ApplicationState.getApplicationState().getFeb().register("homeContoller", this);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event.setDefaultStartNode();
+        event.setEndNode(true);
 
         MapController.initConnections();
 

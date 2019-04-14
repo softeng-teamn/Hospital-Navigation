@@ -489,7 +489,7 @@ public class DirectionsController implements Observer {
         // TODO: landmarks
         String landmark = "";
         ArrayList<Node> closeNodes = MapController.getNodesConnectedTo(next);
-        //  ArrayList<Node> closeNodes = DatabaseService.getDatabaseService().getNodesConnectedTo(next);
+        closeNodes.remove(curr);
         for (Node n: closeNodes) {
             if (!landmark.contains("towards") && n.getNodeType().equals("HALL")) {
                 landmark = " down the hall";
@@ -522,35 +522,6 @@ public class DirectionsController implements Observer {
         }
         return orig;
     }
-
-    /**
-     * On click, show the directions. On second click, hide them again.
-     */
-//    @FXML
-//    public void showDirections() {
-//        directionsView.setVisible(!directionsView.isVisible());
-//        if (showDirectionsBtn.getText().contains("Show")) {
-//            showDirectionsBtn.setText("Close Textual Directions");
-//            directionsView.toFront();
-//        }
-//        else {
-//            showDirectionsBtn.setText("Show Textual Directions");
-//            showDirVbox.toFront();
-//        }
-//        if (showDirVbox.getAlignment().equals(Pos.BOTTOM_RIGHT)) {
-//            showDirVbox.setAlignment(Pos.TOP_RIGHT);
-//        }
-//        else {
-//            showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
-//        }
-//    }   todo hmmm still needed or not?
-
-//    private void hideDirections() {
-//        showDirectionsBtn.setText("Show Textual Directions");
-//        showDirVbox.toFront();
-//        showDirVbox.setAlignment(Pos.BOTTOM_RIGHT);
-//        directionsView.setVisible(false);
-//    }
 
     /**
      * Get the current units

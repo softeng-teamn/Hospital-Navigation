@@ -28,6 +28,7 @@ public class Event {
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
     boolean callElev = false;
+    boolean endNode = true; //true for end node, false for start node
    // floor
     ArrayList<Node> path = null;
 
@@ -48,7 +49,6 @@ public class Event {
 
     public void setCallElev(boolean callElev) {this.callElev = callElev;}
 
-    boolean endNode = true; //true for end node, false for start node
 
 
     public ArrayList<Node> getPath() { return path; }

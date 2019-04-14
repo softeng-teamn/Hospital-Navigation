@@ -47,6 +47,7 @@ public class SearchResultsController implements Observer {
 
     @FXML
     void initialize() {
+        System.out.println("iniatilizing search pane");
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
         buildingAbbrev.put("BTM", "BTM");
@@ -76,6 +77,7 @@ public class SearchResultsController implements Observer {
                 });
                 break;
             case "search-query":
+                System.out.println("in search query case");
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -151,6 +153,7 @@ public class SearchResultsController implements Observer {
      *Filters the ListView based on the string
      */
     private void filterList(String findStr) {
+        System.out.println("filtering list");
         if (findStr.equals("")) {
             list_view.getItems().clear();
             ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable);
