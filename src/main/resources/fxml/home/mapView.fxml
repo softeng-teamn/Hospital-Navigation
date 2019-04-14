@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXSlider?>
 <?import javafx.geometry.Insets?>
@@ -13,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane prefWidth="1280.0" stylesheets="@/theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
+<StackPane prefWidth="1280.0" stylesheets="@/theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
         <children>
             <ScrollPane fx:id="map_scrollpane" prefHeight="749.0" prefWidth="998.0">
                 <content>
@@ -37,7 +45,7 @@
                            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="confirm-button" text="3" />
                            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="confirm-button" text="2" />
                            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="confirm-button" text="1" />
-                           <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="confirm-button" text="G" />
+                           <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="65.0" prefWidth="85.0" styleClass="confirm-button" text="G" />
                            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="confirm-button" text="L1" />
                            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="confirm-button" text="L2" />
                        </children>
@@ -53,44 +61,81 @@
             <Insets />
          </opaqueInsets>
       </Pane>
+            <JFXListView fx:id="directionsView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" StackPane.alignment="BOTTOM_RIGHT">
+                <StackPane.margin>
+                    <Insets bottom="20.0" right="300.0" />
+                </StackPane.margin>
+            </JFXListView>
+            <VBox fx:id="showDirVbox" alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="360.0" prefWidth="300.0" StackPane.alignment="BOTTOM_RIGHT">
+                <StackPane.margin>
+                    <Insets right="300.0" />
+                </StackPane.margin>
+                <children>
+            <Label fx:id="FloorInfo" style="-fx-background-color: #465AAC;" text="Floor 1" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+                    <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="200.0">
+                        <children>
+                            <Pane prefHeight="40.0" prefWidth="58.0">
+                                <children>
+                                    <Polygon fill="RED" layoutX="56.0" layoutY="29.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
+                                    <Polygon fill="WHITE" layoutX="66.0" layoutY="39.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="WHITE" strokeType="INSIDE" />
+                                </children>
+                                <HBox.margin>
+                                    <Insets />
+                                </HBox.margin>
+                            </Pane>
+                            <JFXButton fx:id="showDirectionsBtn" onAction="#showDirections" style="-fx-background-color: #456AAC;" text="Show Textual Directions">
+                                <HBox.margin>
+                                    <Insets left="5.0" />
+                                </HBox.margin>
+                            </JFXButton>
+                        </children>
+                    </HBox>
+                </children>
+            </VBox>
         <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="347.0" prefWidth="263.0" StackPane.alignment="BOTTOM_RIGHT">
-         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">
-            <children>
-                  <Label text="Call Elevator" />
-                  <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" styleClass="confirm-button" stylesheets="@/theme.css" text="Level 1">
-                  <VBox.margin>
-                     <Insets top="10.0" />
-                  </VBox.margin>
-                  </JFXButton>
-                  <JFXButton fx:id="call_el2_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 2">
-                  <VBox.margin>
-                     <Insets top="10.0" />
-                  </VBox.margin>
-                  </JFXButton>
-                  <JFXButton fx:id="call_el3_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 3">
-                  <VBox.margin>
-                     <Insets top="10.0" />
-                  </VBox.margin>
-                  </JFXButton>
-                  <JFXButton fx:id="call_el4_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 4">
-                  <VBox.margin>
-                     <Insets bottom="10.0" top="10.0" />
-                  </VBox.margin>
-                  </JFXButton>
-                  <Label text="Current Level" />
-                  <Label fx:id="cur_el_floor" text="2">
-                      <font>
-                          <Font size="24.0" />
-                      </font>
-                  <VBox.margin>
-                     <Insets bottom="6.0" />
-                  </VBox.margin>
-                  </Label>
-            </children>
-            <padding>
-               <Insets bottom="10.0" top="10.0" />
-            </padding>
-         </VBox>
+           <children>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">
+               <children>
+                     <Label text="Call Elevator" />
+                     <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" styleClass="confirm-button" stylesheets="@/theme.css" text="Level 1">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     </JFXButton>
+                     <JFXButton fx:id="call_el2_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 2">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     </JFXButton>
+                     <JFXButton fx:id="call_el3_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 3">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     </JFXButton>
+                     <JFXButton fx:id="call_el4_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 4">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </VBox.margin>
+                     </JFXButton>
+                     <Label text="Current Level" />
+                     <Label fx:id="cur_el_floor" text="2">
+                         <font>
+                             <Font size="24.0" />
+                         </font>
+                     <VBox.margin>
+                        <Insets bottom="6.0" />
+                     </VBox.margin>
+                     </Label>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
+            </VBox>
+           </children>
 <!--             <children>
                 <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;" stylesheets="@theme.css">
                     <children>

@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXTextField;
 import controller.Controller;
 import employee.model.Employee;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 import application_state.Event;
 import database.DatabaseService;
+import map.Edge;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -54,17 +56,34 @@ public class EmployeeLoginController extends Controller implements Initializable
             if (!password.equals(user.getPassword())) {
                 // Invalid password
                 passwordField.getStyleClass().add("wrong-credentials");
-            } else {
+                // if user has admin credentials
+            } else if (user.isAdmin()){
                 event = ApplicationState.getApplicationState().getFeb().getEvent();
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
                 Controller.setCurrentJob(user.getJob());
+                // set employee logged in with app state
+                ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
+                System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
+                event.setEventName("login");
+                ApplicationState.getApplicationState().getFeb().updateEvent(event);
+                showHome();
+                // else user is an employee
+            } else {
+                event.setLoggedIn(true);
+                event.setAdmin(user.isAdmin() == false);
+                Controller.setCurrentJob(user.getJob());
+                // set employee logged in with app state
+                ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
+                System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
+
                 event.setEventName("login");
                 ApplicationState.getApplicationState().getFeb().updateEvent(event);
                 showHome();
             }
         }
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

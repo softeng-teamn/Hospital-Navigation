@@ -46,7 +46,7 @@ public class TopNavController implements Observer {
     private Event event;
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn, requestBtn;    // TODO: rename fulfillbtn and change icon
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -67,18 +67,21 @@ public class TopNavController implements Observer {
     JFXTextField startSearch = new JFXTextField();
     HamburgerBackArrowBasicTransition backArro;
 
-    // events I send out/control
+
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
-        if (event.isAdmin()) {
+        // when admin or employee logs out
+        if (event.isAdmin() || event.isLoggedIn()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
             event.setEventName("");   // todo: trying this
             ApplicationState.getApplicationState().getFeb().updateEvent(event);
             resetBtn();
-
-        } else {
+            ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
+        }
+        // go to login screen
+        else {
             Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
             Stage stage = (Stage) navigate_btn.getScene().getWindow();
             StageManager.changeExistingWindow(stage, root, "Admin Login");
@@ -119,7 +122,6 @@ public class TopNavController implements Observer {
         event.setEditing(false);
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
 
-        // SHOULD THIS GO HERE? (was in intialize of old map controller)
         navigate_btn.setVisible(false);
 
         resetBtn();
@@ -195,6 +197,10 @@ public class TopNavController implements Observer {
                     }
                 });
                 break;
+            // remove if way off base
+            case "empLogin":
+               // event.setLoggedIn((newEvent.isLoggedIn())); todo: what's the point of this code?
+                break ;
             case "showSearch":
                 Platform.runLater(new Runnable() {
                     @Override
@@ -212,14 +218,36 @@ public class TopNavController implements Observer {
     }
 
     private void resetBtn() {
+
+        // check why not entering if statment below
+        System.out.println("isAdmin = " + event.isAdmin()) ;
+        System.out.println("isLoggedIn = " + event.isLoggedIn());
+
+
+        // if admin is logged in
         if(event.isAdmin()){
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
-        } else {
+            bookBtn.setVisible(true);
+            requestBtn.setVisible(true);
+        }
+        // if employee is logged in
+        else if ((event.isAdmin() == false) && (event.isLoggedIn() == true)) {
+            System.out.println("USER IS AN EMPLOYEE");
+            fulfillBtn.setVisible(false);
+            edit_btn.setVisible(false);
+            lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
+            bookBtn.setVisible(true);
+            requestBtn.setVisible(true);
+        }
+        // no one is logged in
+        else {
             fulfillBtn.setVisible(false);
             edit_btn.setVisible(false);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
+            bookBtn.setVisible(false);
+            requestBtn.setVisible(false);
         }
     }
 

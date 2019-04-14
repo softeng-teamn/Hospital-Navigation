@@ -30,7 +30,6 @@ public class HomeController implements Observer {
 
     @FXML
     void initialize() throws IOException {
-        System.out.println("    Home screen initizliaed, mapview ctrler: " + mapViewController + this);
         ApplicationState.getApplicationState().getFeb().register("homeContoller", this);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
 
@@ -80,6 +79,18 @@ public class HomeController implements Observer {
                     }
                 });
                 break;
+            case "showEmployee":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            showEmployee();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                break ;
             case "showPathSetting":
                 Platform.runLater(new Runnable() {
                     @Override
@@ -98,6 +109,11 @@ public class HomeController implements Observer {
     }
 
     private void showAdmin() throws IOException {
+        leftPane.getChildren().clear();
+        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+    }
+
+    private void showEmployee() throws IOException {
         leftPane.getChildren().clear();
         leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
     }

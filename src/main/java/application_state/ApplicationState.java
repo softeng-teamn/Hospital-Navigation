@@ -1,5 +1,6 @@
 package application_state;
 
+import employee.model.Employee;
 import map.Edge;
 import map.Node;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class ApplicationState {
     private Node nodeToEdit;
     private ArrayList<Edge> edgesToEdit;
     private FakeEventBus feb = new FakeEventBus();
+    private Employee employeeLoggedIn;
 
 
     //******************************************
@@ -45,5 +47,15 @@ public class ApplicationState {
 
     public FakeEventBus getFeb() {
         return feb;
+    }
+
+    public Employee getCurrentEmployee() { return employeeLoggedIn ; }
+
+    public Employee getEmployeeLoggedIn() {
+        return employeeLoggedIn;
+    }
+
+    public void setEmployeeLoggedIn(Employee employeeLoggedIn) {
+        this.employeeLoggedIn = employeeLoggedIn;
     }
 }
