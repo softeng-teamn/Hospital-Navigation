@@ -65,7 +65,14 @@ public class DepthFS implements Algorithm {
             if(child.getData().getNodeType().equals("STAI") && accessibility) {
                 //System.out.println("skipping this node because the cost is to big");
                 continue;
-            } else if (!visited.containsKey(child)){
+            }
+
+            if(child.getData().isClosed()) {
+                //System.out.println("skipping this node because the cost is to big");
+                continue;
+            }
+            
+            else if (!visited.containsKey(child)){
                 child.setParent(current, 0);
                 MapNode path = depthUtil(child, visited, dest, accessibility);
                 if (path != null){
