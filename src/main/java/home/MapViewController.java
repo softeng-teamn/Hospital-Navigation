@@ -234,11 +234,10 @@ public class MapViewController implements Observer {
 
     @Override
     public void notify(Object e) {
-        System.out.println("    mapView notified " + event.getEventName() + " " + this);
+        System.out.println("    mapView notified " + event.getEventName() + " " + this);   // todo cut
         event = (Event) e;
         switch (event.getEventName()) {
             case "navigation":
-                System.out.println("         in navigation case");
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -404,7 +403,6 @@ public class MapViewController implements Observer {
 
     // generate path on the screen
     private void navigationHandler() throws Exception {
-        System.out.println("handler");
         currentMethod = event.getSearchMethod();
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> newpath;
@@ -434,6 +432,7 @@ public class MapViewController implements Observer {
             }
         } // todo
 
+        System.out.println(newpath);
         path = newpath;
         drawPath();
         event = ApplicationState.getApplicationState().getFeb().getEvent();

@@ -15,6 +15,12 @@ public class PathSettingController {
     private JFXToggleNode accessibilityButton;
 
     @FXML
+    void initialize() {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
+       accessibilityButton.setSelected(event.isAccessiblePath());
+    }
+
+    @FXML
     void showSearchResults(ActionEvent e) {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("showSearch");
@@ -78,8 +84,10 @@ public class PathSettingController {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         if (event.isAccessiblePath()){
             event.setAccessiblePath(false);
+            accessibilityButton.setSelected(false);
         } else {
             event.setAccessiblePath(true);
+            accessibilityButton.setSelected(true);
         }
         //ApplicationState.getApplicationState().getFeb().updateEvent(event); // todo should this be here? I added it
     }

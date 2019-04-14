@@ -42,7 +42,6 @@ public class DirectionsController implements Observer {
     void initialize() {
         ApplicationState.getApplicationState().getFeb().register("directionsContoller",this);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
-        System.out.println("initialize: " + this);
         path = event.getPath();
         printDirections(makeDirections(path));
     }

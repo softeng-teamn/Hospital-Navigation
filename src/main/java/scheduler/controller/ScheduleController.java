@@ -337,7 +337,6 @@ public class ScheduleController extends Controller {
       */
     @FXML
     public void showRoomSchedule() {
-        System.out.println("showing schedule");
         // Clear the previous schedule
         currentSchedule.clear();
 

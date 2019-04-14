@@ -108,7 +108,6 @@ public class HomeController implements Observer {
     }
 
     private void showText() throws IOException {
-        System.out.println("showing text: ");
         leftPane.getChildren().clear();
         leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.directionMessage));
 

@@ -9,9 +9,7 @@ public class FakeEventBus {
     private HashMap<String, Observer> registeredObservers = new HashMap();
 
     public void updateEvent(Event ev){
-        // Make sure the input is 140 characters or less and contains only letters and spaces
         event = ev;
-        System.out.println("        Event NAME: " + event.getEventName());
         notifyObservers();
     }
 
