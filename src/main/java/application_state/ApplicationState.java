@@ -1,6 +1,7 @@
 package application_state;
 
 import javafx.scene.image.ImageView;
+import employee.model.Employee;
 import map.Edge;
 import map.Node;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class ApplicationState {
     private Node nodeToEdit;
     private ArrayList<Edge> edgesToEdit;
     private static HashMap<String, ImageView> imageCache;
+    private Employee employeeLoggedIn;
 
 
     //******************************************
@@ -51,5 +53,15 @@ public class ApplicationState {
 
     public void setEdgesToEdit(ArrayList<Edge> edgesToEdit) {
         this.edgesToEdit = edgesToEdit;
+    }
+
+    public Employee getCurrentEmployee() { return employeeLoggedIn ; }
+
+    public Employee getEmployeeLoggedIn() {
+        return employeeLoggedIn;
+    }
+
+    public void setEmployeeLoggedIn(Employee employeeLoggedIn) {
+        this.employeeLoggedIn = employeeLoggedIn;
     }
 }

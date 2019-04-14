@@ -73,7 +73,7 @@ public class MapViewController {
     private ArrayList<Circle> circleCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
-    private String units = "Ft";    // Feet or meters conversion
+    private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
     // Scroll & Zoom
     private ImageView floorImg;
@@ -93,7 +93,7 @@ public class MapViewController {
     @FXML
     private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
-    private Label cur_el_floor;
+    private Label cur_el_floor, FloorInfo;
     @FXML
     public JFXListView directionsView;
 
@@ -203,10 +203,11 @@ public class MapViewController {
     }
 
     @FXML
-    void floorChangeAction(ActionEvent e) throws IOException {
+    void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
         setFloor(btn.getText());
     }
+
 
     @Subscribe
     void eventListener(Event event) {
@@ -332,7 +333,7 @@ public class MapViewController {
         }
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
-            System.out.println("we found new Selected Circles");
+            //System.out.println("we found new Selected Circles");
             zoomGroup.getChildren().remove(circle);
         }
         // create new Circle
@@ -348,10 +349,19 @@ public class MapViewController {
         } else {
             selectCircle = circle;
         }
+
+        if(!node.getFloor().equals(event.getFloor())){
+            //switch the map
+            //System.out.println(node + node.getFloor());
+                setFloor(node.getFloor());
+        }
+
         // Scroll to new point
         scrollTo(node);
 
-
+        //display node info
+        FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
+        System.out.println("done drawing point");
     }
 
     // generate path on the screen

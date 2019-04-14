@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXSlider?>
@@ -28,6 +36,7 @@
                            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="G" />
                            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="L1" />
                            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="L2" />
+
                        </children>
                    </VBox>
                   <JFXSlider fx:id="zoom_slider" orientation="VERTICAL" />
@@ -51,6 +60,11 @@
                     <Insets right="300.0" />
                 </StackPane.margin>
                 <children>
+            <Label fx:id="FloorInfo" style="-fx-background-color: #465AAC;" text="Floor 1" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
                     <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="200.0">
                         <children>
                             <Pane prefHeight="40.0" prefWidth="58.0">
@@ -72,43 +86,45 @@
                 </children>
             </VBox>
         <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="347.0" prefWidth="263.0" StackPane.alignment="BOTTOM_RIGHT">
-         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">
-            <children>
-                  <Label text="Call Elevator" />
-                  <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" styleClass="confirm-button" stylesheets="@/theme.css" text="Level 1">
-                  <VBox.margin>
-                     <Insets top="10.0" />
-                  </VBox.margin>
-                  </JFXButton>
-                  <JFXButton fx:id="call_el2_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 2">
-                  <VBox.margin>
-                     <Insets top="10.0" />
-                  </VBox.margin>
-                  </JFXButton>
-                  <JFXButton fx:id="call_el3_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 3">
-                  <VBox.margin>
-                     <Insets top="10.0" />
-                  </VBox.margin>
-                  </JFXButton>
-                  <JFXButton fx:id="call_el4_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 4">
-                  <VBox.margin>
-                     <Insets bottom="10.0" top="10.0" />
-                  </VBox.margin>
-                  </JFXButton>
-                  <Label text="Current Level" />
-                  <Label fx:id="cur_el_floor" text="2">
-                      <font>
-                          <Font size="24.0" />
-                      </font>
-                  <VBox.margin>
-                     <Insets bottom="6.0" />
-                  </VBox.margin>
-                  </Label>
-            </children>
-            <padding>
-               <Insets bottom="10.0" top="10.0" />
-            </padding>
-         </VBox>
+           <children>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">
+               <children>
+                     <Label text="Call Elevator" />
+                     <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" styleClass="confirm-button" stylesheets="@/theme.css" text="Level 1">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     </JFXButton>
+                     <JFXButton fx:id="call_el2_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 2">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     </JFXButton>
+                     <JFXButton fx:id="call_el3_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 3">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     </JFXButton>
+                     <JFXButton fx:id="call_el4_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 4">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </VBox.margin>
+                     </JFXButton>
+                     <Label text="Current Level" />
+                     <Label fx:id="cur_el_floor" text="2">
+                         <font>
+                             <Font size="24.0" />
+                         </font>
+                     <VBox.margin>
+                        <Insets bottom="6.0" />
+                     </VBox.margin>
+                     </Label>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
+            </VBox>
+           </children>
 <!--             <children>
                 <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;" stylesheets="@theme.css">
                     <children>
