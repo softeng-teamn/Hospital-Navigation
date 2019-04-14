@@ -74,6 +74,14 @@ public class SearchResultsController {
                     }
                 });
                 break;
+            case "logout":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        repopulateList(event.isAdmin());
+                    }
+                });
+                break;
             default:
                 break;
         }
