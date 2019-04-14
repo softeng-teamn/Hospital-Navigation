@@ -185,6 +185,11 @@ public class TopNavController {
                 backArro.play();
                 barOpened = false;
                 break;
+            case "closeDrawer":
+                backArro.setRate(-1);
+                backArro.play();
+                barOpened = false;
+                break;
             default:
                 break;
         }

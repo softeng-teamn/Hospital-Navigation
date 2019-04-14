@@ -45,7 +45,7 @@ public class DirectionsController {
 
     @FXML
     void showSearchList(ActionEvent e) {
-        event.setEventName("showSearch");
+        event.setEventName("closeDrawer");
         eventBus.post(event);
     }
 

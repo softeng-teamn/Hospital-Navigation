@@ -9,6 +9,7 @@ import application_state.EventBusFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
@@ -77,6 +78,12 @@ public class SearchResultsController {
             default:
                 break;
         }
+    }
+
+    @FXML
+    void closeDrawer(ActionEvent e) {
+        event.setEventName("closeDrawer");
+        eventBus.post(event);
     }
 
     /**

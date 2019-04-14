@@ -42,8 +42,6 @@ public class HomeController {
         drawer.setOverLayVisible(false);
     }
 
-
-
     @Subscribe
     private void eventListener(Event newevent) {
         Platform.runLater(new Runnable() {
@@ -61,15 +59,12 @@ public class HomeController {
                             showAdmin();
                             break;
                         case "showPathSetting":
-                            showPathSetting();
+                            showPathSettings();
                             break;
                         case "closeDrawer":
                             drawer.close();
-                            drawer.setMinWidth(0);
                             break;
                         default:
-                            drawer.close();
-                            drawer.setMinWidth(0);
                             break;
                     }
                 } catch (IOException e){
@@ -82,24 +77,26 @@ public class HomeController {
     private void showAdmin() throws IOException {
         drawerPane.getChildren().clear();
         drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawer.open();
     }
 
     private void showSearch() throws IOException {
         drawerPane.getChildren().clear();
         drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults));
+        drawer.open();
     }
 
     private void showText() throws IOException {
         drawerPane.getChildren().clear();
         drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.directionMessage));
+        drawer.open();
         event.setEventName("printText");
         eventBus.post(event);
     }
 
-    private void showPathSetting() throws IOException {
+    private void showPathSettings() throws IOException {
         drawerPane.getChildren().clear();
         drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.pathFindingSettings));
         drawer.open();
-        drawer.setMinWidth(480);
     }
 }
