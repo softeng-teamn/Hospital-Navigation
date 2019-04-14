@@ -26,6 +26,7 @@ public class InternalTransportController extends RequestController{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+         urgency.selectToggle(low);
         dropdown.setItems(FXCollections.observableArrayList(InternalTransportRequest.TransportType.values()));
         dropdown.getSelectionModel().select(0);
     }
