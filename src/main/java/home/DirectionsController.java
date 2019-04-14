@@ -1,9 +1,11 @@
 package home;
 
+import application_state.HomeState;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import database.DatabaseService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +20,9 @@ import service.TextingService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static application_state.ApplicationState.getApplicationState;
+import static database.DatabaseService.getDatabaseService;
 
 public class DirectionsController {
     private Event event = EventBusFactory.getEvent();
@@ -509,7 +514,8 @@ public class DirectionsController {
      */
     public void sendMapToPhone(){
         TextingService textSender = new TextingService();
-        textSender.textMap("+19787298044",printDirections(makeDirections(path)));
+        //this grabs the employee ID from the Application state and uses that to get the employee from the database, whose phone we want to use. and sends them the directions.
+        textSender.textMap(getDatabaseService().getEmployee(getApplicationState().getEmployeeID()).getPhone(),printDirections(makeDirections(path)));
     }
 
     /**

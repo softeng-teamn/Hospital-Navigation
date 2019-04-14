@@ -23,6 +23,8 @@ import application_state.ApplicationState;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static application_state.ApplicationState.getApplicationState;
+
 public class EmployeeLoginController extends Controller implements Initializable {
 
     @FXML
@@ -63,6 +65,7 @@ public class EmployeeLoginController extends Controller implements Initializable
             } else if (user.isAdmin()){
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
+                getApplicationState().setEmployeeID(user.getID());
                 Controller.setCurrentJob(user.getJob());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
