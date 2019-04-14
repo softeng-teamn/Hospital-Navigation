@@ -1,5 +1,7 @@
 package elevator_api;
 
+import service_request.model.sub_model.InternalTransportRequest;
+
 import java.util.Objects;
 
 public class ApiInternalTransportRequest {
@@ -10,9 +12,17 @@ public class ApiInternalTransportRequest {
         Stretcher
     }
 
+    public enum Urgency {
+        NOT,
+        SOMEWHAT,
+        VERY
+    }
+
 
     private int id, assignedTo;
     private String notes, location;
+
+    private Urgency urgency;
     private TransportType transport;
 
     public int getId() {
@@ -47,13 +57,22 @@ public class ApiInternalTransportRequest {
         this.location = location;
     }
 
-    public ApiInternalTransportRequest(int id, String notes, String location, TransportType transportType) {
+    public ApiInternalTransportRequest(int id, String notes, String location, TransportType transportType, Urgency urgency) {
         this.id = id;
         this.notes = notes;
         this.location = location;
         this.transport = transportType;
         this.assignedTo = -1;
-        this.transport = transportType;
+        this.urgency = urgency;
+    }
+
+
+    public Urgency getUrgency() {
+        return urgency;
+    }
+
+    public void setUrgency(Urgency urgency) {
+        this.urgency = urgency;
     }
 
     public void makeRequest() {

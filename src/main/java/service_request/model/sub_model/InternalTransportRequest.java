@@ -26,7 +26,7 @@ public class InternalTransportRequest extends Request {
     public enum Urgency {
         NOT,
         SOMEWHAT,
-        VERY;
+        VERY
     }
 
     private Urgency urgency;

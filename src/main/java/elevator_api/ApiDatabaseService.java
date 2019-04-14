@@ -78,9 +78,7 @@ class ApiDatabaseService {
             statement = connection.createStatement();
             statement.addBatch("CREATE TABLE EMPLOYEE(employeeID int PRIMARY KEY, username varchar(255) UNIQUE)");
 
-            statement.addBatch("CREATE TABLE INTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar (255), completed boolean, transportType varchar(40), assignedEmployee int)");
-
-            statement.addBatch("ALTER TABLE INTERNALTRANSPORTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
+            statement.addBatch("CREATE TABLE INTERNALTRANSPORTREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar (255), completed boolean, transportType varchar(40), assignedEmployee int, urgency varchar(30))");
 
             statement.executeBatch();
         } catch (SQLException e) {
@@ -146,8 +144,8 @@ class ApiDatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     boolean insertInternalTransportRequest(ApiInternalTransportRequest req) {
-        String insertQuery = ("INSERT INTO INTERNALTRANSPORTREQUEST(notes, locationNodeID, transportType, assignedEmployee) VALUES(?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation(), req.getTransport().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
+        String insertQuery = ("INSERT INTO INTERNALTRANSPORTREQUEST(notes, locationNodeID, transportType, assignedEmployee, urgency) VALUES(?, ?, ?, ?, ?)");
+        return executeInsert(insertQuery, req.getNotes(), req.getLocation(), req.getTransport().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getUrgency().name());
     }
 
     /**
@@ -174,8 +172,8 @@ class ApiDatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     boolean updateInternalTransportRequest(ApiInternalTransportRequest req) {
-        String query = "UPDATE INTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, transportType=?, assignedEmployee=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation(), req.getTransport().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
+        String query = "UPDATE INTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, transportType=?, assignedEmployee=?, urgency=? WHERE (serviceID = ?)";
+        return executeUpdate(query, req.getNotes(), req.getLocation(), req.getTransport().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getUrgency().name(), req.getId());
     }
 
     /**
@@ -376,8 +374,9 @@ class ApiDatabaseService {
         String locationNodeId = rs.getString("locationNodeID");
         String enumVal = rs.getString("transportType");
         int assignedEmployee = rs.getInt("assignedEmployee");
+        ApiInternalTransportRequest.Urgency urgency = ApiInternalTransportRequest.Urgency.valueOf(rs.getString("urgency"));
 
-        ApiInternalTransportRequest req = new ApiInternalTransportRequest(serviceID, notes, locationNodeId, ApiInternalTransportRequest.TransportType.valueOf(enumVal));
+        ApiInternalTransportRequest req = new ApiInternalTransportRequest(serviceID, notes, locationNodeId, ApiInternalTransportRequest.TransportType.valueOf(enumVal), urgency);
         req.setAssignedTo(assignedEmployee);
         return req;
     }

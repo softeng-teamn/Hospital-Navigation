@@ -3,6 +3,7 @@ package elevator_api;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXToggleNode;
 import employee.model.Employee;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -26,6 +27,13 @@ public class ApiController implements Initializable {
     static ApiDatabaseService myDBS = ApiDatabaseService.getDatabaseService();
 
     @FXML
+    public JFXToggleNode low;
+    @FXML
+    public JFXToggleNode med;
+    @FXML
+    public JFXToggleNode high;
+
+    @FXML
     private JFXComboBox<ApiInternalTransportRequest.TransportType> dropdown;
     @FXML
     private JFXTextArea text_area;
@@ -43,7 +51,7 @@ public class ApiController implements Initializable {
     private TableColumn<ApiInternalTransportRequest, ApiInternalTransportRequest.TransportType> col_open_type;
 
     @FXML
-    private TableColumn<ApiInternalTransportRequest, String> col_open_urgency;
+    private TableColumn<ApiInternalTransportRequest, ApiInternalTransportRequest.Urgency> col_open_urgency;
 
     @FXML
     private TableColumn<ApiInternalTransportRequest, String> col_open_details;
@@ -67,7 +75,7 @@ public class ApiController implements Initializable {
     private TableColumn<ApiInternalTransportRequest, ApiInternalTransportRequest.TransportType> col_assigned_type;
 
     @FXML
-    private TableColumn<ApiInternalTransportRequest, String> col_assigned_urgency;
+    private TableColumn<ApiInternalTransportRequest, ApiInternalTransportRequest.Urgency> col_assigned_urgency;
 
     @FXML
     private TableColumn<ApiInternalTransportRequest, String> col_assigned_to;
@@ -86,11 +94,13 @@ public class ApiController implements Initializable {
         col_open_location.setCellValueFactory(new PropertyValueFactory<>("location"));
         col_open_details.setCellValueFactory(new PropertyValueFactory<>("notes"));
         col_open_type.setCellValueFactory(new PropertyValueFactory<>("transport"));
+        col_open_urgency.setCellValueFactory(new PropertyValueFactory<>("urgency"));
 
         col_assigned_id.setCellValueFactory(new PropertyValueFactory<>("id"));
         col_assigned_location.setCellValueFactory(new PropertyValueFactory<>("location"));
         col_assigned_details.setCellValueFactory(new PropertyValueFactory<>("notes"));
         col_assigned_type.setCellValueFactory(new PropertyValueFactory<>("transport"));
+        col_assigned_urgency.setCellValueFactory(new PropertyValueFactory<>("urgency"));
         col_assigned_to.setCellValueFactory(p -> {
             if (p.getValue() != null) {
                 return new SimpleStringProperty(myDBS.getEmployee(p.getValue().getAssignedTo()).getUsername());
@@ -117,13 +127,22 @@ public class ApiController implements Initializable {
         employees.setAll(myDBS.getAllEmployees());
         employeeComboBox.setItems(employees);
         employeeComboBox.getSelectionModel().select(0);
+
+        low.setSelected(true);
+
         loadData();
     }
 
 
     @FXML
     public void submitAction(javafx.event.ActionEvent actionEvent) {
-        ApiInternalTransportRequest request = new ApiInternalTransportRequest(-1, text_area.getText(),  InternalTransportRequestApi.originNodeID, dropdown.getSelectionModel().getSelectedItem());
+        ApiInternalTransportRequest.Urgency urgency;
+
+        if (low.isSelected()) urgency = ApiInternalTransportRequest.Urgency.NOT;
+        if (med.isSelected()) urgency = ApiInternalTransportRequest.Urgency.SOMEWHAT;
+        else urgency = ApiInternalTransportRequest.Urgency.VERY;
+
+        ApiInternalTransportRequest request = new ApiInternalTransportRequest(-1, text_area.getText(),  InternalTransportRequestApi.originNodeID, dropdown.getSelectionModel().getSelectedItem(), urgency);
         myDBS.insertInternalTransportRequest(request);
         dropdown.getSelectionModel().select(0);
         text_area.setText("");

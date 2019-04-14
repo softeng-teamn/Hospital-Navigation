@@ -1,5 +1,6 @@
 package elevator_api;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import employee.model.Employee;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +16,7 @@ public class InternalTransportRequestApi {
 
     static String originNodeID;
 
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
     public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin) throws ServiceException {
         Stage primaryStage = new Stage();
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/api/api.fxml"), ResourceBundle.getBundle("strings", Locale.getDefault()));
