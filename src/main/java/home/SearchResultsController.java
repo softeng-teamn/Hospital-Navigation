@@ -54,7 +54,7 @@ public class SearchResultsController implements Observer {
         buildingAbbrev.put("45 Francis", "45Fr");
         buildingAbbrev.put("15 Francis", "15Fr");
         buildingAbbrev.put("RES", "RES");
-        ApplicationState.getApplicationState().getFeb().register(this);
+        ApplicationState.getApplicationState().getFeb().register("searchResultsContoller",this);
         repopulateList(event.isAdmin());
     }
 

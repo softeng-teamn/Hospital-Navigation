@@ -104,7 +104,7 @@ public class MapViewController implements Observer {
         pingTiming();
 
         // listen to changes
-        ApplicationState.getApplicationState().getFeb().register(this);
+        ApplicationState.getApplicationState().getFeb().register("mapViewContoller", this);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
 
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars

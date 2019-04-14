@@ -1,11 +1,12 @@
 package application_state;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class FakeEventBus {
     private Event event = new Event();
-    private List<Observer> observers = new ArrayList<Observer>();
+    private HashMap<String, Observer> registeredObservers = new HashMap();
 
     public void updateEvent(Event ev){
         // Make sure the input is 140 characters or less and contains only letters and spaces
@@ -18,17 +19,18 @@ public class FakeEventBus {
         return event;
     }
 
-    public void register(Observer o){
-        observers.add(o);
+    public void register(String name, Observer o){
+        registeredObservers.put(name, o);
     }
 
-    public void deregister(Observer o) {
-        observers.remove(o);
-    }
+//    public void deregister(Observer o) {
+//        observers.remove(o);
+//    }
 
     public void notifyObservers(){
-        for (Observer o: observers) {
-            o.notify(event);
+        Set<String> observers = registeredObservers.keySet();
+        for (String o: observers) {
+            registeredObservers.get(o).notify(event);
         }
     }
 }

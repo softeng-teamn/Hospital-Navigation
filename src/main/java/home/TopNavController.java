@@ -111,7 +111,7 @@ public class TopNavController implements Observer {
 
     @FXML
     void initialize() {
-        ApplicationState.getApplicationState().getFeb().register(this);
+        ApplicationState.getApplicationState().getFeb().register("topNavController", this);
 
         // Turn off editing
         event = ApplicationState.getApplicationState().getFeb().getEvent();
