@@ -77,7 +77,7 @@ public class MapViewController {
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
     // Scroll & Zoom
     private ImageView floorImg;
-    private static HashMap<String, ImageView> imageCache = new HashMap<>();
+    private static HashMap<String, ImageView> imageCache;
     private static final double MIN_ZOOM = 0.4;
     private static final double MAX_ZOOM = 1.2;
 
@@ -156,16 +156,7 @@ public class MapViewController {
     }
 
     void imagesInit() {
-        try {
-            imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
-            imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
-            imageCache.put("1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
-            imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
-            imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
-            imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+        imageCache = ApplicationState.getApplicationState().getImageCache();
         this.floorImg = imageCache.get("1");
         setFloor("1"); // DEFAULT
     }

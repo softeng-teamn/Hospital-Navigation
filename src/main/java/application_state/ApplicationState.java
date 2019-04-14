@@ -1,8 +1,10 @@
 package application_state;
 
+import javafx.scene.image.ImageView;
 import map.Edge;
 import map.Node;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ApplicationState {
 
@@ -10,6 +12,7 @@ public class ApplicationState {
 
     private Node nodeToEdit;
     private ArrayList<Edge> edgesToEdit;
+    private static HashMap<String, ImageView> imageCache;
 
 
     //******************************************
@@ -24,6 +27,14 @@ public class ApplicationState {
 
     private ApplicationState() {
 
+    }
+
+    public static HashMap<String, ImageView> getImageCache() {
+        return imageCache;
+    }
+
+    public static void setImageCache(HashMap<String, ImageView> imageCache) {
+        ApplicationState.imageCache = imageCache;
     }
 
     public Node getNodeToEdit() {
