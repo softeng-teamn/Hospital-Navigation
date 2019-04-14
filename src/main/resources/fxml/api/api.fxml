@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="elevator_api.ApiController">
+   <children>
+      <HBox prefHeight="100.0" prefWidth="200.0" styleClass="interaction-area" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+               <children>
+                  <FontAwesomeIconView glyphName="WHEELCHAIR" size="240" styleClass="request-glyph">
+                     <VBox.margin>
+                        <Insets bottom="24.0" />
+                     </VBox.margin>
+                  </FontAwesomeIconView>
+                  <JFXTextArea fx:id="text_area" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="%InternalTitle">
+                     <VBox.margin>
+                        <Insets bottom="24.0" left="12.0" right="12.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="12.0" right="12.0" top="12.0" />
+                     </padding>
+                  </JFXTextArea>
+                  <JFXComboBox fx:id="dropdown" promptText="%InternalSelect" />
+                  <Region prefHeight="367.0" prefWidth="534.0" />
+                  <JFXButton onAction="#submitAction" styleClass="confirm-button" text="%Submit">
+                     <VBox.margin>
+                        <Insets bottom="24.0" />
+                     </VBox.margin></JFXButton>
+               </children>
+               <padding>
+                  <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="1080.0" prefWidth="1359.0">
+               <children>
+                  <Label text="Open Requests" />
+                  <HBox prefHeight="400.0" prefWidth="1300.0">
+                     <children>
+                        <TableView fx:id="open_table" editable="false" maxHeight="400.0" prefHeight="400.0" prefWidth="1300.0">
+                           <columns>
+                              <TableColumn fx:id="col_open_id" editable="false" prefWidth="70.0" resizable="false" text="ID" />
+                              <TableColumn fx:id="col_open_location" editable="false" prefWidth="140.0" resizable="false" text="LocationID" />
+                              <TableColumn fx:id="col_open_type" editable="false" prefWidth="270.0" resizable="false" text="Type" />
+                              <TableColumn fx:id="col_open_urgency" editable="false" prefWidth="155.0" resizable="false" text="Urgency" />
+                              <TableColumn fx:id="col_open_details" editable="false" prefWidth="665.0" resizable="false" text="Details" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <JFXButton fx:id="assignTo" disable="true" onAction="#onAssignTo" text="Assign To">
+                           <HBox.margin>
+                              <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                           </HBox.margin>
+                        </JFXButton>
+                        <JFXComboBox fx:id="employeeComboBox" prefHeight="38.0" prefWidth="239.0" promptText="Employee">
+                           <HBox.margin>
+                              <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                           </HBox.margin>
+                        </JFXComboBox>
+                     </children>
+                  </HBox>
+                  <Label text="Assigned Requests" />
+                  <HBox prefHeight="400.0" prefWidth="1300.0">
+                     <children>
+      
+                        <TableView fx:id="assigned_table" editable="false" maxHeight="400.0" prefHeight="400.0" prefWidth="1300.0">
+                           <columns>
+                              <TableColumn fx:id="col_assigned_id" editable="false" prefWidth="70.0" resizable="false" text="ID" />
+                              <TableColumn fx:id="col_assigned_location" editable="false" prefWidth="140.0" resizable="false" text="LocationID" />
+                              <TableColumn fx:id="col_assigned_type" editable="false" prefWidth="270.0" resizable="false" text="Type" />
+                              <TableColumn fx:id="col_assigned_urgency" editable="false" prefWidth="155.0" resizable="false" text="Urgency" />
+                              <TableColumn fx:id="col_assigned_to" editable="false" prefWidth="110.0" resizable="false" text="Assigned To" />
+                              <TableColumn fx:id="col_assigned_details" editable="false" prefWidth="555.0" resizable="false" text="Details" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>
