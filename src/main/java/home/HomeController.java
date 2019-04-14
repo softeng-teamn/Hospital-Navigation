@@ -56,6 +56,9 @@ public class HomeController {
                         case "showAdmin":
                             showAdmin();
                             break;
+                        case "showEmployee":
+                            showEmployee() ;
+                            break ;
                         case "showPathSetting":
                             showPathSetting();
                             break;
@@ -70,6 +73,11 @@ public class HomeController {
     }
 
     private void showAdmin() throws IOException {
+        leftPane.getChildren().clear();
+        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+    }
+
+    private void showEmployee() throws IOException {
         leftPane.getChildren().clear();
         leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
     }
