@@ -19,6 +19,30 @@ public class ElevatorConnnection {
     public ElevatorConnnection() {
     }
 
+
+    /**
+     * seee post floor, where emargency is false
+     * @param elevator
+     * @param floorNum
+     * @param time
+     * @throws MalformedURLException
+     * @throws ProtocolException
+     * @throws IOException
+     */
+
+    public void postFloor(String elevator, String floorNum)throws MalformedURLException,
+            ProtocolException, IOException{
+        GregorianCalendar time = new GregorianCalendar();
+        postFloor(elevator, floorNum, time, false);
+    }
+
+
+
+    public void postFloor(String elevator, String floorNum, GregorianCalendar time)throws MalformedURLException,
+            ProtocolException, IOException{
+        postFloor(elevator, floorNum, time, false);
+    }
+
     /**
      * @param elevator name of elevator to tell
      * @param floorNum the floor the specified elevator should go to
@@ -28,7 +52,7 @@ public class ElevatorConnnection {
      * @throws IOException
      */
     //tell the elevator to go to this floor at this time, will hold for 30s
-    public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws MalformedURLException,
+    public void postFloor(String elevator, String floorNum, GregorianCalendar time, boolean isEmergency) throws MalformedURLException,
             ProtocolException, IOException {
         switch (floorNum) {
             case "L1":
@@ -37,19 +61,19 @@ public class ElevatorConnnection {
             case "L2":
                 floorNum = "-2";
                 break;
-            case "00":
+            case " 0":
                 floorNum = "0";
                 break;
-            case "01":
+            case " 1":
                 floorNum = "1";
                 break;
-            case "02":
+            case " 2":
                 floorNum = "2";
                 break;
-            case "03":
+            case " 3":
                 floorNum = "3";
                 break;
-            case"04":
+            case" 4":
                 floorNum = "4";
                 break;
             default:
@@ -61,8 +85,9 @@ public class ElevatorConnnection {
         //change into time since 12
         String t = "" + time.getTimeInMillis() / 1000;
 
-        String urlParameters = "elevator=" + elevator + "&floor=" + floorNum + "&time=" + t + "&isESP=false";
-        System.out.println("Posting " + urlParameters);
+        String urlParameters = "elevator=" + elevator + "&floor=" + floorNum + "&time=" + t +
+                "&isESP=false&isEmergency=" + isEmergency;
+        //System.out.println("Posting " + urlParameters);
         post(URL, urlParameters);
     }
 
