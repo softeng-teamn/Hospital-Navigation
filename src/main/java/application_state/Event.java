@@ -2,6 +2,7 @@ package application_state;
 
 import map.Node;
 
+import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
 import static service.ResourceLoader.dfBundle;
@@ -32,6 +33,13 @@ public class Event {
     ArrayList<Node> path = null;
 
     ResourceBundle currentBundle = dfBundle;
+
+
+    // for scheduling an event
+    ArrayList<GregorianCalendar> startAndEndTimes = null ; // times
+    String roomId = "" ;    // room
+
+
 
     public ResourceBundle getCurrentBundle() {
         return currentBundle;
@@ -140,4 +148,13 @@ public class Event {
     public String getSearchMethod() { return searchMethod; }
 
     public void setSearchMethod(String searchMethod) { this.searchMethod = searchMethod; }
+
+    public ArrayList<GregorianCalendar> getStartAndEndTimes() { return startAndEndTimes; }
+
+    public void setStartAndEndTimes(ArrayList<GregorianCalendar> startAndEndTimes) { this.startAndEndTimes = startAndEndTimes; }
+
+    public String getRoomId() {return roomId; }
+
+    public void setRoomId(String roomId) { this.roomId = roomId; }
+
 }

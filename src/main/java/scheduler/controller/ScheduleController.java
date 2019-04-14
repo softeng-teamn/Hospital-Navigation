@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import application_state.ApplicationState;
+import application_state.Event;
+import application_state.EventBusFactory;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.*;
 import controller.Controller;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -37,18 +41,29 @@ import service.ResourceLoader;
 import service.StageManager;
 
 
-
 public class ScheduleController extends Controller {
 
 
     private static class ScheduleWrapper {
         private String time;
-        public void setTime(String value) { this.time = value; }
-        public String getTime() { return time; }
+
+        public void setTime(String value) {
+            this.time = value;
+        }
+
+        public String getTime() {
+            return time;
+        }
 
         private String availability;
-        public void setAvailability(String value) { this.availability = value; }
-        public String getAvailability() { return availability; }
+
+        public void setAvailability(String value) {
+            this.availability = value;
+        }
+
+        public String getAvailability() {
+            return availability;
+        }
 
         public ScheduleWrapper(String time) {
             this.time = time;
@@ -71,7 +86,7 @@ public class ScheduleController extends Controller {
     public JFXButton submitBtn;
 
     @FXML
-    public JFXTextField eventName, searchBar, employeeID;
+    public JFXTextField searchBar;
 
     @FXML
     private TableView<ScheduleWrapper> scheduleTable;
@@ -88,15 +103,14 @@ public class ScheduleController extends Controller {
     @FXML
     public Label resInfoLbl, inputErrorLbl;
 
-    @FXML
-    public JFXComboBox<String> privacyLvlBox;
 
-
+    private Event event = EventBusFactory.getEvent();
+    private EventBus eventBus = EventBusFactory.getEventBus();
 
 
     // Map Stuff
-    static final Color AVAILIBLE_COLOR = Color.rgb(87,255,132,0.8);
-    static final Color UNAVAILABLE_COLOR = Color.rgb(255,82,59, 0.8);
+    static final Color AVAILIBLE_COLOR = Color.rgb(87, 255, 132, 0.8);
+    static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
     Group zoomGroup;
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
     ArrayList<Circle> circleCollection = new ArrayList<Circle>();
@@ -109,7 +123,7 @@ public class ScheduleController extends Controller {
     private int openTime = 9;   // hour to start schedule dislay
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private int timeStep = 2;    // Fractions of an hour
-    private int timeStepMinutes = 60/timeStep;    // In Minutes
+    private int timeStepMinutes = 60 / timeStep;    // In Minutes
 
     // Currently selected location
     public ReservableSpace currentSelection;
@@ -152,6 +166,12 @@ public class ScheduleController extends Controller {
     @FXML
     public void initialize() {
 
+        // add event bus to pass info to the final 'make reservation' screen
+        eventBus.register(this);
+
+        // Turn off editing
+        //event.setEventName("times");
+        //eventBus.post(event);
 
 
         // Map Initialization
@@ -171,8 +191,6 @@ public class ScheduleController extends Controller {
         zoom(0.2);
 
 
-
-
 //        resInfoLbl.setText("");
         timeErrorText = "Please enter valid start and end times.";
         availRoomsText = "Show Available Spaces";
@@ -188,19 +206,14 @@ public class ScheduleController extends Controller {
 //        timeErrorLbl.setVisible(false);
         inputErrorLbl.setVisible(false);
 
-        // Set event privacy options
-        ObservableList<String> options =
-                FXCollections.observableArrayList(
-                        "Public",
-                        "Private"
-                );
+
 
 
         // *************** MOVE
-       // privacyLvlBox.setItems(options);
+        // privacyLvlBox.setItems(options);
 
         // Set default date to today's date
-        LocalDate date =  LocalDate.now();
+        LocalDate date = LocalDate.now();
         datePicker.setValue(date);
 
         // Set default start time to current time, or the closest open hour
@@ -245,7 +258,9 @@ public class ScheduleController extends Controller {
                     setText(null);
                 } else {
                     setText(item.getSpaceName());
-                    setOnMouseClicked(EventHandler -> {showRoomSchedule();} );
+                    setOnMouseClicked(EventHandler -> {
+                        showRoomSchedule();
+                    });
                 }
             }
         });
@@ -291,17 +306,16 @@ public class ScheduleController extends Controller {
     }
 
 
-
-        /**
-         * Listener to update listview of rooms and info label
-         * @param value
-         */
+    /**
+     * Listener to update listview of rooms and info label
+     *
+     * @param value
+     */
     private void focusState(boolean value) {
         if (!value && validTimes(false)) {
             if (availRoomsBtn.getText().contains("ear")) {
                 availRooms();
-            }
-            else if (bookedRoomsBtn.getText().contains("ear")) {
+            } else if (bookedRoomsBtn.getText().contains("ear")) {
                 bookedRooms();
             }
             showRoomSchedule();
@@ -324,6 +338,7 @@ public class ScheduleController extends Controller {
 
     /**
      * Listener to update label when listview selection changed
+     *
      * @param value
      */
     private void listFocus(boolean value) {
@@ -336,6 +351,7 @@ public class ScheduleController extends Controller {
 
     /**
      * switches window to home screen
+     *
      * @throws Exception
      */
     public void showHome() throws Exception {
@@ -344,9 +360,26 @@ public class ScheduleController extends Controller {
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
+
+
     /**
-     *   On room button click, show the schedule for that room and date.
-      */
+     * switches final window of scheduler
+     *
+     * @throws Exception
+     */
+    public void showConfirmationStage() throws Exception {
+        Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
+        StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
+    }
+
+
+
+
+
+    /**
+     * On room button click, show the schedule for that room and date.
+     */
     @FXML
     public void showRoomSchedule() {
         System.out.println("showing schedule");
@@ -403,22 +436,21 @@ public class ScheduleController extends Controller {
             // Get the start time
             int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
             int startMinutes = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60;
-            int startFrac = startMinutes/(int)(timeStepMinutes);
+            int startFrac = startMinutes / (int) (timeStepMinutes);
 
             // Get the end time
             int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
             int endMinutes = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60;
-            int endFrac = endMinutes/(int)(timeStepMinutes);
+            int endFrac = endMinutes / (int) (timeStepMinutes);
 
             // For every time between the start and end of the reservation,
             // Mark it as booked, color it red, and display the event name
             // or "Booked" depending on its privacy level
-            for (int box = (startHour - openTime)*timeStep + startFrac; box < (endHour - openTime)*timeStep + endFrac; box++) {
+            for (int box = (startHour - openTime) * timeStep + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
                 ScheduleWrapper time = schedToAdd.get(box);
                 if (res.getPrivacyLevel() == 0) {
                     time.setAvailability(res.getEventName());
-                }
-                else {
+                } else {
                     time.setAvailability("Booked");
                 }
                 currentSchedule.set(box, 1);
@@ -438,51 +470,51 @@ public class ScheduleController extends Controller {
      * Checks whether location, date, and time are valid.
      */
     @FXML
-    public void makeReservation() {
+    public void makeReservation() throws Exception{
 
         boolean valid = validTimes(true);
 
         // If evreything is okay, create the reservation
-        if (valid){
-            createReservation();
-        }
+        if (valid) {
 
+            // pass relevant info to next screen using event bus
+
+            // Get the times and dates and turn them into gregorian calendars
+            ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
+
+
+            // post event to pass times
+            event.setEventName("times");
+            event.setStartAndEndTimes(cals);
+            System.out.println("Calendars being passed: " + event.getStartAndEndTimes());
+            eventBus.post(event);
+
+
+            // post event to pass room id
+            event.setEventName("room");
+            event.setRoomId(currentSelection.getSpaceID());
+            System.out.println("Room id being passed: " + event.getRoomId());
+            eventBus.post(event);
+
+
+
+            Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
+            Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
+            StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
+
+        }
 
         // if date/time is valid
         // convert to proper calendar stuff
         // pass times and stuff to next screen - event bus?
 
-    }
-
-
-
-
-
-
-
-    /*************************************
-    /**
-     * Create the reservation and send it to the database.
-     */
-   @FXML
-    public void createReservation() {
-        // Get the times and dates and turn them into gregorian calendars
-        ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
-
-        // Get the privacy level
-        int privacy = 0;
-        if (privacyLvlBox.getValue().equals("Private")) {
-            privacy = 1;
-        }
-
-        // Create the new reservation
-        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),cals.get(0),cals.get(1));
-        myDBS.insertReservation(newRes);
 
         // Reset the screen
         resetView();
         populateMap();
+
     }
+
 
 
 
@@ -492,6 +524,7 @@ public class ScheduleController extends Controller {
 
     /**
      * Make gregorian calendars from the currently selected date and time.
+     *
      * @return a list of gregorian calendars of the current start time/date and end time/date
      */
     private ArrayList<GregorianCalendar> gCalsFromCurrTimes() {
@@ -513,18 +546,16 @@ public class ScheduleController extends Controller {
         showRoomSchedule();
         inputErrorLbl.setVisible(false);
 //        timeErrorLbl.setVisible(false);
-        eventName.setText("");
-        employeeID.setText("");
-        privacyLvlBox.setValue(null);
-       // resInfoLbl.setText("");
+//        resInfoLbl.setText("");
     }
 
     /**
      * Check whether the selected times are valid. If not, return false.
      * Valid times must: be within the chosen location's start and end times.
-     *      Have an end time greater than the start time.
-     *      Not conflict with any existing reservation.
-     *      Be in the future.
+     * Have an end time greater than the start time.
+     * Not conflict with any existing reservation.
+     * Be in the future.
+     *
      * @return true if the selected times are valid, false otherwise
      */
     private boolean validTimes(boolean forRes) {
@@ -532,10 +563,10 @@ public class ScheduleController extends Controller {
         makeMinutesValid();
         // Get the selected times
         int start = startTimePicker.getValue().getHour();
-        int mins = startTimePicker.getValue().getMinute()/(timeStepMinutes);
+        int mins = startTimePicker.getValue().getMinute() / (timeStepMinutes);
         int index = (start - openTime) * timeStep + mins;
         int end = endTimePicker.getValue().getHour();
-        int endMins = endTimePicker.getValue().getMinute()/(timeStepMinutes);
+        int endMins = endTimePicker.getValue().getMinute() / (timeStepMinutes);
         int endIndex = (end - openTime) * timeStep + endMins;
 
         // If the chosen date is in the past, show an error
@@ -569,26 +600,27 @@ public class ScheduleController extends Controller {
     /**
      * If the minutes selected are not an available time step
      * (ex. if timeStep is 2, so you can only select half-hour time incremenets,
-     *  then :30 and :00 are valid but :04 and :15, etc. are not),
-     *  round them down to the closest time step.
+     * then :30 and :00 are valid but :04 and :15, etc. are not),
+     * round them down to the closest time step.
      */
     private void makeMinutesValid() {
         // If the start minutes selected are not divisible by the timeStep (ex. 30 minutes)
-        if (startTimePicker.getValue().getMinute()%(timeStepMinutes)!= 0) {
+        if (startTimePicker.getValue().getMinute() % (timeStepMinutes) != 0) {
             // Then round them down to the nearest timeStep
-            int minutes = ((int) startTimePicker.getValue().getMinute()/(timeStepMinutes))*(timeStepMinutes);
+            int minutes = ((int) startTimePicker.getValue().getMinute() / (timeStepMinutes)) * (timeStepMinutes);
             startTimePicker.setValue(LocalTime.of(startTimePicker.getValue().getHour(), minutes));
         }
         // If the end minutes selected are not divisible by the timeStep (ex. 30 minutes)
-        if (endTimePicker.getValue().getMinute()%(timeStepMinutes)!= 0) {
+        if (endTimePicker.getValue().getMinute() % (timeStepMinutes) != 0) {
             // Rund them down to the nearest timeStep
-            int minutes = ((int) endTimePicker.getValue().getMinute()/(timeStepMinutes))*(timeStepMinutes);
+            int minutes = ((int) endTimePicker.getValue().getMinute() / (timeStepMinutes)) * (timeStepMinutes);
             endTimePicker.setValue(LocalTime.of(endTimePicker.getValue().getHour(), minutes));
         }
     }
 
     /**
      * Searches for reservable space
+     *
      * @param e
      */
     @FXML
@@ -598,7 +630,7 @@ public class ScheduleController extends Controller {
     }
 
     /**
-     *Filters the ListView based on the string
+     * Filters the ListView based on the string
      */
     private void filterList(String findStr) {
         ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
@@ -607,13 +639,12 @@ public class ScheduleController extends Controller {
         if (findStr.equals("")) {
             reservableList.getItems().clear();
             reservableList.getItems().addAll(resSpaces);
-        }
-        else {
+        } else {
             //Get List of all nodes
             ObservableList<ReservableSpace> original = resSpaces;
 
             //Get Sorted list of nodes based on search value
-            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName),75);
+            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName), 75);
 
             // Map to nodes based on index
             Stream<ReservableSpace> stream = filtered.stream().map(er -> {
@@ -631,7 +662,7 @@ public class ScheduleController extends Controller {
     }
 
     /**
-     *for lists
+     * for lists
      */
     private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
         return from.stream().map(func).collect(Collectors.toList());
@@ -655,7 +686,9 @@ public class ScheduleController extends Controller {
             });
             availRoomsBtn.setText(clearFilterText);
             bookedRoomsBtn.setText(bookedRoomsText);
-            bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
+            bookedRoomsBtn.setOnAction(EventHandler -> {
+                bookedRooms();
+            });
 
             Collections.sort(availBetween);
             resSpaces.clear();
@@ -692,7 +725,9 @@ public class ScheduleController extends Controller {
             });
             bookedRoomsBtn.setText(clearFilterText);
             availRoomsBtn.setText(availRoomsText);
-            availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
+            availRoomsBtn.setOnAction(EventHandler -> {
+                availRooms();
+            });
 
             reservableList.setItems(resSpaces);
 
@@ -719,8 +754,12 @@ public class ScheduleController extends Controller {
         reservableList.getFocusModel().focus(0);
         showRoomSchedule();
 
-        availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
-        bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
+        availRoomsBtn.setOnAction(EventHandler -> {
+            availRooms();
+        });
+        bookedRoomsBtn.setOnAction(EventHandler -> {
+            bookedRooms();
+        });
         availRoomsBtn.setText(availRoomsText);
         bookedRoomsBtn.setText(bookedRoomsText);
         availRoomsBtn.setDisable(false);
@@ -731,14 +770,14 @@ public class ScheduleController extends Controller {
     /**
      * Currently unused:
      * returns a list of roomIDs which have a max capacity of less than nPeople
+     *
      * @param nPeople
      * @return
      */
-    ArrayList<String> getMaxPeople(int nPeople){
+    ArrayList<String> getMaxPeople(int nPeople) {
         ArrayList<String> a = new ArrayList<>();
         return a;
     }
-
 
 
     // MAP STUFF DOWN HERE ****************
@@ -775,7 +814,7 @@ public class ScheduleController extends Controller {
         zoomGroup.getChildren().removeAll(circleCollection);
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
         circleCollection = new ArrayList<Circle>();
-        for(Node node : nodeCollection) {
+        for (Node node : nodeCollection) {
             Circle circle = new Circle();
             circle.setRadius(80);
             if (isNodeInReservableSpace(bookedRS, node)) {

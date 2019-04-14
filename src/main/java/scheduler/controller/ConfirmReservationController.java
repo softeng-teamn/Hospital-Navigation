@@ -1,6 +1,10 @@
 package scheduler.controller;
 
 import application_state.ApplicationState;
+import application_state.Event;
+import application_state.EventBusFactory;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -34,6 +38,12 @@ public class ConfirmReservationController {
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
+    private Event event = EventBusFactory.getEvent();
+    private EventBus eventBus = EventBusFactory.getEventBus();
+
+    // variables to hold incoming event information
+    String roomID = "" ;
+    ArrayList<GregorianCalendar> cals = null ;
 
 
     /**
@@ -41,6 +51,8 @@ public class ConfirmReservationController {
      */
     @FXML
     public void initialize() {
+
+        eventBus.register(this);
 
         // sets ID to logged in employee
         setID();
@@ -152,14 +164,37 @@ public class ConfirmReservationController {
 
 
 
+
+    // events I care about: am "subscribed" to
+    @Subscribe
+    private void eventListener(Event newEvent) {
+
+        switch (newEvent.getEventName()) {
+            case "times":
+                cals = event.getStartAndEndTimes() ;
+                break;
+            case "room":
+                roomID = event.getRoomId() ;
+                break;
+            default:
+                break;
+        }
+
+    }
+
+
+
+
  /**
  * Create the reservation and send it to the database.
  */
  @FXML
     public void createReservation() {
+
+
         // Get the times and dates and turn them into gregorian calendars
      // GET TIMES FROM SCHEDULE CONTROLLER
-        ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
+       // ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
 
         // Get the privacy level
         int privacy = 0;
@@ -168,7 +203,7 @@ public class ConfirmReservationController {
         }
 
         // Create the new reservation
-        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),currentSelection.getSpaceID(),cals.get(0),cals.get(1));
+        Reservation newRes = new Reservation(-1, privacy,Integer.parseInt(employeeID.getText()), eventName.getText(),roomID,cals.get(0),cals.get(1));
         myDBS.insertReservation(newRes);
 
         // Reset the screen
@@ -181,7 +216,6 @@ public class ConfirmReservationController {
      * Show the current schedule, clear errors, and clear user input.
      */
     private void resetView() {
-        showRoomSchedule();
         inputErrorLbl.setVisible(false);
 //        timeErrorLbl.setVisible(false);
         eventName.setText("");

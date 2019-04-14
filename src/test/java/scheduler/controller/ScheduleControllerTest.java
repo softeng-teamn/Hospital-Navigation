@@ -215,7 +215,7 @@ public class ScheduleControllerTest extends ApplicationTest {
 //        assertTrue(l2.getText().equals("5:30"));
         // TODO: rewrite test
     }
-
+/*
     @Ignore
     @Test
     @Category({UiTest.class, FastTest.class})
@@ -239,7 +239,7 @@ public class ScheduleControllerTest extends ApplicationTest {
         assertTrue(ScheduleController.myDBS.getReservation(0).getEndTime().equals(r.getEndTime()));
 
     }
-
+*/
 //    @Test
 //    @Category({FastTest.class})
 //    public void validTimes() {
