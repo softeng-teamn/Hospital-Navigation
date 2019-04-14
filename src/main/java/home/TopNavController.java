@@ -74,6 +74,7 @@ public class TopNavController implements Observer {
         if (event.isAdmin()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
+            event.setEventName("");   // todo: trying this
             ApplicationState.getApplicationState().getFeb().updateEvent(event);
             resetBtn();
 
@@ -281,6 +282,7 @@ public class TopNavController implements Observer {
     }
 
     public void startNavigation(ActionEvent actionEvent) {
+        System.out.println("        Starting navigation");
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         //if(callElev.isSelected()){
             event.setCallElev(true);
@@ -288,6 +290,7 @@ public class TopNavController implements Observer {
 
         event.setEventName("navigation");
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        System.out.println(" ending navigation");
     }
 
 

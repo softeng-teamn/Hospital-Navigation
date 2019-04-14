@@ -35,7 +35,6 @@ public class SearchResultsController implements Observer {
 
     private Event event;
 
-
     @FXML
     private JFXListView<HBox> list_view;    // Changed to HBox TODO: put in requests pane, too
     private HashMap<String, String> buildingAbbrev = new HashMap<>();    // Abbreviate buildings to fit in listview
@@ -99,7 +98,6 @@ public class SearchResultsController implements Observer {
         HBox selectedNode = list_view.getSelectionModel().getSelectedItem();
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
         System.out.println("You clicked on: " + ID);
-
 
         // set destination node
         destNode = DatabaseService.getDatabaseService().getNode(ID);

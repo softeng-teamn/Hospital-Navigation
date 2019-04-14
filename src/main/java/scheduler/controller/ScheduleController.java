@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -325,6 +326,8 @@ public class ScheduleController extends Controller {
      */
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
+        Scene sc = homeBtn.getScene();
+        System.out.println("    " + sc.getUserData());
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }

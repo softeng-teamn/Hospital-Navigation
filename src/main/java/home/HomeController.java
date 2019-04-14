@@ -30,6 +30,7 @@ public class HomeController implements Observer {
 
     @FXML
     void initialize() throws IOException {
+        System.out.println("    Home screen initizliaed, mapview ctrler: " + mapViewController + this);
         ApplicationState.getApplicationState().getFeb().register(this);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
 

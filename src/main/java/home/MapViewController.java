@@ -80,8 +80,6 @@ public class MapViewController implements Observer {
     private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
     private Label cur_el_floor;
-    @FXML
-    public JFXListView directionsView;
 
     private static HashMap<String, ImageView> imageCache = new HashMap<>();
     private static boolean imagesCached = false;
@@ -139,8 +137,6 @@ public class MapViewController implements Observer {
         zoom_slider.setValue(0.4);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.4);
-
-        directionsView.setVisible(false);
 
         // Cache imageViews so they can be reused, but only if they haven't already been cached
         if (!imagesCached) {
@@ -238,9 +234,11 @@ public class MapViewController implements Observer {
 
     @Override
     public void notify(Object e) {
+        System.out.println("    mapView notified " + event.getEventName() + " " + this);
         event = (Event) e;
         switch (event.getEventName()) {
             case "navigation":
+                System.out.println("         in navigation case");
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -262,10 +260,8 @@ public class MapViewController implements Observer {
                         } else {
                             drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
                         }
-                        directionsView.getItems().clear();    // TODO here
                     }
                 });
-                //hideDirections();
                 break;
             case "refresh":
                 Platform.runLater(new Runnable() {

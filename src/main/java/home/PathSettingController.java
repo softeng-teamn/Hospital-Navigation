@@ -81,6 +81,6 @@ public class PathSettingController {
         } else {
             event.setAccessiblePath(true);
         }
-        ApplicationState.getApplicationState().getFeb().updateEvent(event); // todo should this be here? I added it
+        //ApplicationState.getApplicationState().getFeb().updateEvent(event); // todo should this be here? I added it
     }
 }

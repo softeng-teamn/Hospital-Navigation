@@ -140,7 +140,7 @@ public class DirectionsController implements Observer {
             }
         }
 
-        System.out.println("before simplifying: " + directions);
+        //System.out.println("before simplifying: " + directions);
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);

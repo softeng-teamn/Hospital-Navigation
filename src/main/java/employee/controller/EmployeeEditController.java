@@ -180,7 +180,8 @@ public class EmployeeEditController {
 
     public void showHome(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        Parent root = fxmlLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 }
