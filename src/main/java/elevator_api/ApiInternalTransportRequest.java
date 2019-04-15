@@ -1,6 +1,6 @@
 package elevator_api;
 
-import elevator.ElevatorConnnection;
+import elevator.ElevatorConnection;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -87,7 +87,7 @@ public class ApiInternalTransportRequest {
     }
 
     public void callElev() {
-        ElevatorConnnection eCon = new ElevatorConnnection();
+        ElevatorConnection eCon = new ElevatorConnection();
         try {
             System.out.println("elevator = L, Floor = " + location.substring(8));
             eCon.postFloor("L", location.substring(location.length() - 2)); // post elevator, floornum

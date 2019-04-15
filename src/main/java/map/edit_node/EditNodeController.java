@@ -1,6 +1,10 @@
 package map.edit_node;
 
 import application_state.ApplicationState;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextField;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import de.jensd.fx.glyphs.materialicons.MaterialIconView;
@@ -25,7 +29,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import map.Edge;
-import application_state.EventBusFactory;
 import map.Node;
 import database.DatabaseService;
 import net.kurobako.gesturefx.GesturePane;
@@ -39,7 +42,6 @@ import java.util.HashMap;
 public class EditNodeController extends Control {
 
     Group zoomGroup;
-    private EventBus eventBus = EventBusFactory.getEventBus();
     Circle selectedCircle = new Circle();
     Node tempEditNode;      // mutating the node based on edits
     boolean isEditEdges = false;
