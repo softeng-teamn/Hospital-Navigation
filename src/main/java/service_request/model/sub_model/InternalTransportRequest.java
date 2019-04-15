@@ -11,6 +11,7 @@ import database.DatabaseService;
 import map.PathFindingService;
 import service_request.model.Request;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static employee.model.JobType.*;
@@ -68,9 +69,13 @@ public class InternalTransportRequest extends Request {
     @Override
     public void fillRequest() {
         if(this.urgency == Urgency.VERY){
-            //change stuff here for api
-           // ElevatorConnnection eCon = new ElevatorConnnection(<TEAM NUM>);
-            //eCon.postFloor(); // post elevator, floornum
+           ElevatorConnnection eCon = new ElevatorConnnection();
+            try {
+                eCon.postFloor("" + getLocation().getNodeID().charAt(7), getLocation().getFloor()); // post elevator, floornum
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("error posting elevator from internal transport req");
+            }
         }
         DatabaseService.getDatabaseService().updateInternalTransportRequest(this);
     }
