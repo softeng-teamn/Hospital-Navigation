@@ -233,7 +233,7 @@ public class ScheduleController {
 
 
 
-        resInfoLbl.setText("");
+        //resInfoLbl.setText("");
         timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
         availRoomsText = "Show Available Spaces";
         bookedRoomsText = "Show Booked Spaces";

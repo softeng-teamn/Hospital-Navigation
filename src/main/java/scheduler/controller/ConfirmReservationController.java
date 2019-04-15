@@ -98,6 +98,7 @@ public class ConfirmReservationController {
         int idNum = ApplicationState.getApplicationState().getEmployeeLoggedIn().getID();
         String id = Integer.toString(idNum);
         employeeID.setText(id);
+
     }
 
 
@@ -130,7 +131,7 @@ public class ConfirmReservationController {
      * Checks if event information is correct
      */
     @FXML
-    public void makeReservation() {
+    public void makeReservation() throws Exception {
 
         // initially set variable to true
         boolean valid = true;
@@ -139,6 +140,7 @@ public class ConfirmReservationController {
         inputErrorLbl.setVisible(false);
 
         // check employee id
+        // parse around prompt text
         String id = employeeID.getId();
         boolean badId = false;
 
@@ -147,6 +149,12 @@ public class ConfirmReservationController {
             if (!Character.isDigit(letter)) {
                 badId = true;
             }
+        }
+
+        if (badId) {
+            inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
+            inputErrorLbl.setVisible(true);
+            //valid = false ;
         }
 
         // If the user has not entered an event name, has entered an invalid ID,
@@ -174,6 +182,11 @@ public class ConfirmReservationController {
         if (valid) {
             System.out.println("IS VALID - CREATING RESERVATION");
             createReservation();
+
+
+            Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
+            Parent root = FXMLLoader.load(ResourceLoader.scheduler);
+            StageManager.changeExistingWindow(stage, root, "Scheduler");
         }
     }
 
