@@ -604,9 +604,6 @@ public class ScheduleController {
 
         // Get that date and turn it into gregorian calendars to pass to the database
         LocalDate chosenDate = datePicker.getValue();
-        LocalDate endDate = datePicker.getValue().plus(1, ChronoUnit.DAYS);
-        GregorianCalendar gcalStart = GregorianCalendar.from(chosenDate.atStartOfDay(ZoneId.systemDefault()));
-        GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
 
 
         // set label of weekly scheduler based on date
@@ -678,7 +675,6 @@ public class ScheduleController {
                 // Mark it as booked, color it red, and display the event name
                 // or "Booked" depending on its privacy level
                 for (int box = (startHour - openTime) * timeStep + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
-                    System.out.println("dailySched: " + dailySchedule );
                     // gets the time slot?
                     ScheduleWrapper time = schedToAdd.get(box);
                     if (res.getPrivacyLevel() == 0) {
@@ -700,10 +696,6 @@ public class ScheduleController {
         // schedToAdd = and array list of ScheduleWrapper
         wrap.addAll(schedToAdd);
         scheduleTable.setItems(wrap);
-        for (int i = 0; i < schedToAdd.size(); i++) {
-            System.out.println(scheduleTable.getItems().get(i));
-        }
-
 
     }
 
