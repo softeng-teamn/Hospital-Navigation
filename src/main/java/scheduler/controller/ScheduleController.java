@@ -432,9 +432,12 @@ public class ScheduleController {
         });
         sunday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                sunday.setStyle("-fx-background-color: #98FB98");
+                if (p.getValue().sunAvailability.equals("-")) {
+                    sunday.setStyle("-fx-background-color: #98FB98");
+                }
+                else {
+                    sunday.setStyle("-fx-background-color: #ff6347");
+                }
                 return new ReadOnlyStringWrapper(p.getValue().sunAvailability);
 
             }
@@ -645,13 +648,14 @@ public class ScheduleController {
             }
         }
 
-
+        LocalDate selectedDate = datePicker.getValue();
+        int selectedDayOfWeek = datePicker.getValue().getDayOfWeek().getValue();    // 1 is Monday, 7 is Sunday
+        if (selectedDayOfWeek != 7) {
+            selectedDate = selectedDate.plus(-selectedDayOfWeek, ChronoUnit.DAYS);
+        }
+        LocalDate startDate = selectedDate;
         // Populate each day's availability in the weekly schedule
         for (int dailySchedule = 0; dailySchedule < 7; dailySchedule++) {
-
-            LocalDate selectedDate = datePicker.getValue();
-            int selectedDayOfWeek = datePicker.getValue().getDayOfWeek().getValue();
-            LocalDate startDate = selectedDate.plus(dailySchedule - selectedDayOfWeek, ChronoUnit.DAYS);
             LocalDate secondDate = startDate.plus(1, ChronoUnit.DAYS);
             GregorianCalendar gcalStartDay = GregorianCalendar.from(startDate.atStartOfDay(ZoneId.systemDefault()));
             GregorianCalendar gcalEndDay = GregorianCalendar.from(secondDate.atStartOfDay(ZoneId.systemDefault()));
@@ -689,6 +693,7 @@ public class ScheduleController {
                     weeklySchedule.get(dailySchedule).set(box, 1);
                 }
             }
+            startDate = startDate.plus(1, ChronoUnit.DAYS);
 
         }
 
