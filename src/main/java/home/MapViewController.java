@@ -184,6 +184,7 @@ public class MapViewController implements Observer {
 
     // switch floor to new map image
     public void setFloor(String floor) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ImageView newImg;
         if (imageCache.containsKey(floor)) {
             newImg = imageCache.get(floor);
