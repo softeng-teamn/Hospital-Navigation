@@ -47,8 +47,9 @@ import database.DatabaseService;
 import map.PathFindingService;
 import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
-import service.StageManager;
+import service.StageManager;;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.*;
@@ -72,7 +73,7 @@ public class MapViewController {
     private Circle selectCircle;
     private ArrayList<Line> lineCollection;
     private ArrayList<Circle> circleCollection;
-    private ArrayList<Polyline> polylineCollection;
+    private HashMap<String, ArrayList<Polyline>> polylineCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
     private String units = "feet";    // Feet or meters conversion
@@ -126,7 +127,7 @@ public class MapViewController {
 
         // Setup collection of lines
         lineCollection = new ArrayList<>();
-        polylineCollection = new ArrayList<>();
+        polylineCollection = new HashMap<>();
 
         // Set start circle
         startCircle = new Circle();
@@ -413,6 +414,7 @@ public class MapViewController {
         }
 
         path = newpath;
+        hasPath = false;
         drawPath();
 
 
@@ -456,16 +458,26 @@ public class MapViewController {
         }
 
         path = newpath;
+        hasPath = false;
         drawPath();
     }
 
     private void drawPath() {
 
-        for (Polyline polyline : polylineCollection) {
-            if (zoomGroup.getChildren().contains(polyline)){
-                zoomGroup.getChildren().remove(polyline);
+        if(!hasPath){
+            setFloor(path.get(0).getFloor());
+            scrollTo(path.get(0));
+        }
+
+        for (ArrayList<Polyline> polylines : polylineCollection.values()) {
+            for(Polyline polyline : polylines){
+                if(zoomGroup.getChildren().contains(polyline)){
+                    zoomGroup.getChildren().remove(polyline);
+                }
             }
         }
+
+        polylineCollection.clear();
 
         Polyline polyline = new Polyline();
 
@@ -475,38 +487,65 @@ public class MapViewController {
         for(int i = 1; i < path.size(); i++) {
             Node current = path.get(i);
             if(!current.getFloor().equals(last.getFloor())){
-                if (last.getFloor().equals(event.getFloor())){
-                    addAnimation(polyline);
-                    zoomGroup.getChildren().add(polyline);
-                    if(i<path.size() - 1){
-                        Node next = path.get(i+1);
-                        JFXButton floorSwitcher = new JFXButton("Take the " + current.getNodeType() + " to floor " + next.getFloor());
-                        floorSwitcher.getStyleClass().add("path-button");
-                        floorSwitcher.setTranslateX(last.getXcoord());
-                        floorSwitcher.setTranslateY(last.getYcoord());
-                        floorSwitcher.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                setFloor(next.getFloor());
-                                drawPath();
-                            }
-                        });
-                        zoomGroup.getChildren().add(floorSwitcher);
+                addToList(last.getFloor(), polyline);
+                if(last.getFloor().equals(event.getFloor())){
+                    Node next = current;
+                    int j = i;
+                    while (next.getNodeType().equals(current.getNodeType())){
+                        j++;
+                        next = path.get(j);
                     }
+                    addButton(current, next);
                 }
-                polylineCollection.add(polyline);
                 polyline = new Polyline();
             }
             polyline.getPoints().addAll((double) current.getXcoord(), (double) current.getYcoord());
             last = current;
         }
 
-        if (last.getFloor().equals(event.getFloor())){
-            addAnimation(polyline);
-            zoomGroup.getChildren().add(polyline);
+        addToList(path.get(path.size() - 1).getFloor(), polyline);
+
+        for(String floor : polylineCollection.keySet()) {
+            if(floor.equals(event.getFloor())){
+                ArrayList<Polyline> polylines = polylineCollection.get(floor);
+                for(Polyline pl : polylines){
+                    addAnimation(pl);
+                    zoomGroup.getChildren().add(pl);
+
+                }
+            }
         }
-        polylineCollection.add(polyline);
+
         hasPath = true;
+    }
+
+    private void addButton(Node current, Node next){
+        JFXButton floorSwitcher = new JFXButton("Take the " + current.getNodeType() + " to floor " + next.getFloor());
+        floorSwitcher.getStyleClass().add("path-button");
+        floorSwitcher.setTranslateX(current.getXcoord());
+        floorSwitcher.setTranslateY(current.getYcoord());
+        floorSwitcher.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                setFloor(next.getFloor());
+                drawPath();
+            }
+        });
+        zoomGroup.getChildren().add(floorSwitcher);
+    }
+
+    private synchronized void addToList(String mapKey, Polyline polyline) {
+        ArrayList<Polyline> polylines = polylineCollection.get(mapKey);
+
+        // if list does not exist create it
+        if(polylines == null) {
+            polylines = new ArrayList<Polyline>();
+            polylines.add(polyline);
+            polylineCollection.put(mapKey, polylines);
+        } else {
+            // add if item is not already in list
+            if(!polylines.contains(polyline)) polylines.add(polyline);
+        }
     }
 
     private void addAnimation(Polyline line){
