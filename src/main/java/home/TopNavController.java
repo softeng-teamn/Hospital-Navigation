@@ -216,7 +216,7 @@ public class TopNavController implements Observer {
                     }
                 });
                 break;
-            case "employee-login":     // receives from AdminLoginContoller?
+            case "employee-login":     // receives from AdminLoginContoller
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
