@@ -24,7 +24,7 @@ public class Event {
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
     String filterSearch = ""; // filtered search
-    String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar
+    String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar, dijsktra, best for bestFS
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
     boolean callElev = false;

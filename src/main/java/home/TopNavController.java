@@ -75,6 +75,8 @@ public class TopNavController {
         if (event.isAdmin() || event.isLoggedIn()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
+            event.setEventName("logout");
+            eventBus.post(event);
             resetBtn();
             ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
         }
