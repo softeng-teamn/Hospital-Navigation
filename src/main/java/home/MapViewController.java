@@ -6,6 +6,7 @@ import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import elevator.ElevatorConnnection;
 import application_state.Event;
 import application_state.EventBusFactory;
@@ -336,7 +337,6 @@ public class MapViewController {
         }
     }
 
-
     private void drawPoint(Node node, Circle circle, Color color, boolean start) {
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
@@ -455,6 +455,7 @@ public class MapViewController {
         drawPath();
     }
 
+    @SuppressFBWarnings(value = "WMI_WRONG_MAP_ITERATOR")
     private void drawPath() {
 
         if(!hasPath){
