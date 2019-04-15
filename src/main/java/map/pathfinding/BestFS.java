@@ -47,7 +47,7 @@ public class BestFS extends AlgorithmContext implements Algorithm {
 
 //            current = open.poll();
             explored.add(current);
-            if (current == dest){
+            if (current.equals(dest)){
                 return current;
             }
 
@@ -55,7 +55,7 @@ public class BestFS extends AlgorithmContext implements Algorithm {
 
 
             for (MapNode child : getChildren(current)){
-                if (child == dest){
+                if (child.equals(dest)){
                     child.setParent(current, 0);
                     return child;
                 }
