@@ -117,5 +117,4 @@ public class Astar implements Algorithm {
         return null;
     }
 
-
 }
