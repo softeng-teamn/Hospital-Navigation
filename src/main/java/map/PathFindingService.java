@@ -51,15 +51,40 @@ public class PathFindingService {
                 target = current.findDest(start, dest, accessibility, null);
 //                estimatedTimeOfArrival = current.getEstimatedTime();
                 break;
-            case  "best":
+            case "best":
                 current = new BestFS();
                 target = current.findDest(start, dest, accessibility, null);
                 break;
-            default:
+            case "REST":
                 current = new BreadthFS();
                 target = current.findDest(start, null, accessibility, filter);
                 break;
-
+            case "ELEV":
+                current = new BreadthFS();
+                target = current.findDest(start, null, accessibility, filter);
+                break;
+            case "INFO":
+                current = new BreadthFS();
+                target = current.findDest(start, null, accessibility, filter);
+                break;
+            case "CONF":
+                current = new BreadthFS();
+                target = current.findDest(start, null, accessibility, filter);
+                break;
+            case "EXIT":
+                current = new BreadthFS();
+                target = current.findDest(start, null, accessibility, filter);
+                break;
+            case "STAI":
+                current = new BreadthFS();
+                target = current.findDest(start, null, accessibility, filter);
+                break;
+            default:
+                current = new Astar();
+                target = current.findDest(start, dest, accessibility, null);
+                estimatedTimeOfArrival = current.getEstimatedTime();
+                elevTimes = current.getElevTimes();
+                break;
         }
 
         if (target != null){
