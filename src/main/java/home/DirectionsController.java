@@ -2,6 +2,11 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import javafx.application.Platform;
@@ -10,13 +15,24 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import application_state.Event;
 import map.MapController;
 import map.Node;
+import net.swisstech.bitly.BitlyClient;
+import net.swisstech.bitly.model.Response;
+import net.swisstech.bitly.model.v3.ShortenResponse;
 import service.TextingService;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static application_state.ApplicationState.getApplicationState;
@@ -33,6 +49,9 @@ public class DirectionsController implements Observer {
     @FXML
     private JFXButton textingButton;
 
+    @FXML
+    private ImageView qrView;
+
     //text message global variable
     private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
@@ -45,6 +64,13 @@ public class DirectionsController implements Observer {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         path = event.getPath();
         printDirections(makeDirections(path));
+        try {
+            generateQRCode(makeDirections(path));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -63,7 +89,15 @@ public class DirectionsController implements Observer {
                     @Override
                     public void run() {
                         path = event.getPath();
-                        printDirections(makeDirections(path));
+                        ArrayList<String> dirs = makeDirections(path);
+                        printDirections(dirs);
+                        try {
+                            generateQRCode(dirs);
+                        } catch (WriterException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
                 break;
@@ -572,9 +606,39 @@ public class DirectionsController implements Observer {
      * Format: <Instruction> <Distance/Floor> <Hint>
      * @return the String to use in the QR code
      */
-    private String convertToQRCode(ArrayList<String> directions) {
-        // TODO if necc - ex all into one
-        return "";
+    private String convertDirectionsToParamerterString(ArrayList<String> directions) {
+        StringBuilder res = new StringBuilder();
+
+        for (int i = 1; i < directions.size() - 1; i++) {
+            res.append(directions.get(i));
+            res.append(",");
+        }
+        res.delete(res.lastIndexOf(","), res.lastIndexOf(",") + 1);
+        return res.toString();
+    }
+
+    /**
+     * Given a set of directions, generate and place a QR code on the list of directions
+     * @param directions
+     * @throws WriterException
+     * @throws IOException
+     */
+    public void generateQRCode(ArrayList<String> directions) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+
+        // Uncomment and use resp.data.url in the QR to shorten the URL
+//        BitlyClient client = new BitlyClient("bcba608ae5c6045d223241662c704f38c52930e4");
+//        Response<ShortenResponse> resp = client.shorten()
+//                .setLongUrl("https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions))
+//                .call();
+
+        BitMatrix bitMatrix = qrCodeWriter.encode("https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions), BarcodeFormat.QR_CODE, 350, 350);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        byte[] pngData = pngOutputStream.toByteArray();
+        Image qr = new Image(new ByteArrayInputStream(pngData));
+        qrView.setImage(qr);
     }
 
 }
