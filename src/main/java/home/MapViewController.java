@@ -1,19 +1,13 @@
 package home;
 
 import application_state.ApplicationState;
+import application_state.Event;
 import application_state.Observer;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXListView;
-import elevator.ElevatorConnection;
-import application_state.Event;
 import com.jfoenix.controls.JFXSlider;
-import elevator.ElevatorConnnection;
-import application_state.Event;
-import application_state.EventBusFactory;
+import database.DatabaseService;
+import elevator.ElevatorConnection;
 import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -21,17 +15,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -40,7 +30,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import map.MapNode;
 import map.Node;
-import database.DatabaseService;
 import map.PathFindingService;
 import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
@@ -48,7 +37,9 @@ import service.StageManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 
@@ -91,9 +82,6 @@ public class MapViewController implements Observer {
     private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
     private Label cur_el_floor, FloorInfo;
-    @FXML
-    public JFXListView directionsView;
-
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
@@ -135,8 +123,6 @@ public class MapViewController implements Observer {
         startCircle.setRadius(20);
         startCircle.setFill(Color.rgb(67, 70, 76));
         zoomGroup.getChildren().add(startCircle);
-
-        directionsView.setVisible(false);
     }
 
     void zoomGroupInit() {
@@ -300,7 +286,7 @@ public class MapViewController implements Observer {
                 nodeCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        Stage stage = (Stage) image_pane.getScene().getWindow();
+                        Stage stage = (Stage) gPane.getScene().getWindow();
                         Circle c = (Circle) event.getSource();
                         tp.show(c, stage.getX() + event.getSceneX() + 15, stage.getY() + event.getSceneY());
                     }

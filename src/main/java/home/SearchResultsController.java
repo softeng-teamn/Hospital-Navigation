@@ -104,8 +104,9 @@ public class SearchResultsController implements Observer {
 
     @FXML
     void closeDrawer(ActionEvent e) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setEventName("closeDrawer");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     /**

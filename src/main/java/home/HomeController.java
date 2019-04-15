@@ -105,22 +105,18 @@ public class HomeController implements Observer {
                     @Override
                     public void run() {
                         try {
-                            showPathSetting();
+                            showPathSettings();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                   });
                   break ;
-            case "showPathSetting":
+            case "closeDrawer":
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            drawer.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        drawer.close();
                     }
                 });
                 break;
