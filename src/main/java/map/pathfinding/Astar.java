@@ -89,15 +89,12 @@ public class Astar extends AlgorithmContext implements Algorithm{
                     if(open.contains(child)){
                         open.remove(child);
                     }
-                    //System.out.println("adding child to open list");
                     open.add(child);
                 }
             }
+            System.out.println(open);
         }
         return null;
     }
-
-
-
 
 }

@@ -1,11 +1,9 @@
 package home;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-import com.jfoenix.controls.JFXListCell;
+import application_state.ApplicationState;
+import application_state.Observer;
 import com.jfoenix.controls.JFXListView;
 import application_state.Event;
-import application_state.EventBusFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import map.Node;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
@@ -25,8 +22,6 @@ import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import database.DatabaseService;
 import scheduler.model.Reservation;
 
-import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
 import java.util.function.Function;
@@ -35,14 +30,12 @@ import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 
-public class SearchResultsController {
+public class SearchResultsController implements Observer {
 
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
-
+    private Event event;
 
     @FXML
-    private JFXListView<HBox> list_view;    // Changed to HBox
+    private JFXListView<HBox> list_view;    // Changed to HBox TODO: put in requests pane, too
     private HashMap<String, String> buildingAbbrev = new HashMap<>();    // Abbreviate buildings to fit in listview
 
     private Node destNode;
@@ -52,29 +45,29 @@ public class SearchResultsController {
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
     ArrayList<Reservation> allReservation = DatabaseService.getDatabaseService().getAllReservations();
     DatabaseService myDBS;
-    boolean displayNodes = false;
+    boolean displayNodes = true;
 
     @FXML
     void initialize() {
         myDBS = DatabaseService.getDatabaseService();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
         buildingAbbrev.put("BTM", "BTM");
         buildingAbbrev.put("Tower", "Tow");
         buildingAbbrev.put("45 Francis", "45Fr");
         buildingAbbrev.put("15 Francis", "15Fr");
         buildingAbbrev.put("RES", "RES");
-        eventBus.register(this);
+        ApplicationState.getApplicationState().getObservableBus().register("searchResultsContoller",this);
         repopulateList(event.isAdmin());
     }
 
-    @Subscribe
-    private void eventListener(Event newEvent) throws InterruptedException {
+    @Override
+    public void notify(Object newEvent)  {
+        event = (Event) newEvent;
         // set new event
-        event = newEvent;
         switch (event.getEventName()) {
             case "node-select":
-                //list_view.scrollTo(event.getNodeSelected());
-               // list_view.getSelectionModel().select(event.getNodeSelected());   // TODO what does this do? I commented it out
+                //list_view.scrollTo(event.getNodeSelected());   // todo nothing?
                 break;
             case "login":
                 //for functions that have threading issue, use this and it will be solved
@@ -108,8 +101,9 @@ public class SearchResultsController {
 
     @FXML
     void closeDrawer(ActionEvent e) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("closeDrawer");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     /**
@@ -118,21 +112,26 @@ public class SearchResultsController {
      */
     @FXML
     public void listViewClicked(MouseEvent e) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        ApplicationState currState = ApplicationState.getApplicationState();
         HBox selectedNode = list_view.getSelectionModel().getSelectedItem();
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
-        System.out.println("You clicked on: " + ID);
-
+        String Name = DatabaseService.getDatabaseService().getNode(ID).getLongName();
+        System.out.println("You clicked on: " + ID + Name);
 
         // set destination node
         destNode = DatabaseService.getDatabaseService().getNode(ID);
 
-        if (event.isEndNode()){
+        if (ApplicationState.getApplicationState().getStartEnd().equals("end")){
             event.setNodeSelected(destNode);
+            currState.setEndNode(destNode);
+            event.setEventName("node-select-end");
         } else {
-            event.setNodeStart(destNode);
+            event.setNodeSelected(destNode);
+            currState.setStartNode(destNode);
+            event.setEventName("node-select-start");
         }
-        event.setEventName("node-select");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
     }
 
@@ -166,7 +165,6 @@ public class SearchResultsController {
             return;
         }
 
-        // TODO: can change to full building name. or CAPS. or change alignment or coloring.
         ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable, allReservation);
 
         list_view.getItems().clear();

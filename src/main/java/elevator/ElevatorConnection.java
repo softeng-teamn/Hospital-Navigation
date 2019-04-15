@@ -12,17 +12,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class ElevatorConnnection {
+public class ElevatorConnection {
     private static HttpURLConnection con;
     private String teamName;
 
     //for other teams
-    public ElevatorConnnection(String teamName) {
+    public ElevatorConnection(String teamName) {
         this.teamName = teamName;
     }
 
     //for our team
-    public ElevatorConnnection(){
+    public ElevatorConnection(){
         this.teamName = "N";
     }
 
@@ -59,23 +59,14 @@ public class ElevatorConnnection {
             case "L2":
                 floorNum = "-2";
                 break;
-            case " 0":
+            case "0G":
                 floorNum = "0";
                 break;
-            case " 1":
-                floorNum = "1";
-                break;
-            case " 2":
-                floorNum = "2";
-                break;
-            case " 3":
-                floorNum = "3";
-                break;
-            case" 4":
-                floorNum = "4";
+            case " G":
+                floorNum = "0";
                 break;
             default:
-                floorNum = "-4";
+                floorNum = floorNum.substring(floorNum.length() - 1);//last num will be floor
                 break;
         }
 
