@@ -76,7 +76,14 @@ public class BreadthFS implements Algorithm {
                 if(child.getData().getNodeType().equals("STAI") && accessibility) {
                     //System.out.println("skipping this node because the cost is to big");
                     continue;
-                } else if (!visited.containsKey(child) && !needVisit.contains(child)){
+                }
+
+                if(child.getData().isClosed()) {
+                    //System.out.println("skipping this node because the cost is to big");
+                    continue;
+                }
+
+                else if (!visited.containsKey(child) && !needVisit.contains(child)){
                     child.setParent(current, 0);
                     needVisit.add(child);
                 }

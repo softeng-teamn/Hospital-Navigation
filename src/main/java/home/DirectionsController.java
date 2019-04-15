@@ -2,9 +2,11 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
+import application_state.HomeState;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import database.DatabaseService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,6 +21,9 @@ import service.TextingService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static application_state.ApplicationState.getApplicationState;
+import static database.DatabaseService.getDatabaseService;
 
 public class DirectionsController implements Observer {
     private Event event;
@@ -230,7 +235,6 @@ public class DirectionsController implements Observer {
         Label first = new Label(ds.get(0));
         first.setWrapText(true);
         first.setTextFill(Color.WHITE);
-        //first.setPrefWidth(450);
         labels.add(first);
 
         for (int i = 1; i < ds.size() - 1; i++) {
@@ -309,7 +313,6 @@ public class DirectionsController implements Observer {
 
             Label l = new Label(direct);
             l.setWrapText(true);
-           // l.setPrefWidth(450); todo: get text to wrap
             l.setTextFill(Color.WHITE);
             labels.add(l);
             directions.add(direct);
@@ -318,7 +321,6 @@ public class DirectionsController implements Observer {
 
         Label last = new Label(ds.get(ds.size() - 1));
         last.setWrapText(true);
-       // last.setPrefWidth(450);
         last.setTextFill(Color.WHITE);
         labels.add(last);
 
@@ -557,7 +559,8 @@ public class DirectionsController implements Observer {
      */
     public void sendMapToPhone(){
         TextingService textSender = new TextingService();
-        textSender.textMap("+19787298044",printDirections(makeDirections(path)));
+        //this grabs the employee ID from the Application state and uses that to get the employee from the database, whose phone we want to use. and sends them the directions.
+        textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(),printDirections(makeDirections(path)));
     }
 
     /**

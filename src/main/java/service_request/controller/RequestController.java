@@ -19,6 +19,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import application_state.Event;
 import map.Node;
+import service_request.controller.sub_controller.InternalTransportController;
 import service_request.model.Request;
 import database.DatabaseService;
 import service.ResourceLoader;
@@ -218,7 +219,9 @@ public class RequestController extends Controller implements Initializable {
     @FXML
     public void internalTransportSelect(ActionEvent e) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.internalTransportRequest,event.getCurrentBundle()));
+        FXMLLoader subscene = new FXMLLoader(ResourceLoader.internalTransportRequest,event.getCurrentBundle());
+        subscene.setController(new InternalTransportController());
+        subSceneHolder.getChildren().add(subscene.load());
     }
 
     @FXML

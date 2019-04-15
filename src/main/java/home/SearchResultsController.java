@@ -45,8 +45,11 @@ public class SearchResultsController implements Observer {
     ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
 
+    DatabaseService myDBS;
+
     @FXML
     void initialize() {
+        myDBS = DatabaseService.getDatabaseService();
         System.out.println("iniatilizing search pane");
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
@@ -120,6 +123,9 @@ public class SearchResultsController implements Observer {
     void repopulateList(boolean isAdmin) {
 
         System.out.println("Repopulation of listView" + isAdmin);
+
+        allNodes = myDBS.getAllNodes();
+        filteredNodes = (ArrayList<Node>) myDBS.getNodesFilteredByType("STAI", "HALL").stream().filter((n) -> !n.isClosed()).collect(Collectors.toList());
 
         // wipe old observable
         allNodesObservable = new ArrayList<>();
