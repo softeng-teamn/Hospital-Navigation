@@ -169,67 +169,6 @@ public class EmployeeEditController {
             max = e.getID() > max ? e.getID() : max;
         }
 
-//        JobType jobtype = JobType.GUEST;
-//
-//        switch (new_job.getValue()){
-//            case "Administrator":
-//                jobtype = JobType.ADMINISTRATOR;
-//                break;
-//            case "Doctor":
-//                jobtype = JobType.DOCTOR;
-//                break;
-//            case "Nurse":
-//                jobtype = JobType.NURSE;
-//                break;
-//            case "Janitor":
-//                jobtype = JobType.JANITOR;
-//                break;
-//            case "Security Personnel":
-//                jobtype = JobType.SECURITY_PERSONNEL;
-//                break;
-//            case "Maintenance Worker":
-//                jobtype = JobType.MAINTENANCE_WORKER;
-//                break;
-//            case "IT":
-//                jobtype = JobType.IT;
-//                break;
-//            case "Guest":
-//                jobtype = JobType.GUEST;
-//                break;
-//            case "Religious Official":
-//                jobtype = JobType.RELIGIOUS_OFFICIAL;
-//                break;
-//            case "Gift Services":
-//                jobtype = JobType.GIFT_SERVICES;
-//                break;
-//            case "Miscellaneous":
-//                jobtype = JobType.MISCELLANEOUS;
-//                break;
-//            case "AV":
-//                jobtype = JobType.AV;
-//                break;
-//            case "Interpreter":
-//                jobtype = JobType.INTERPRETER;
-//                break;
-//            case "Toy":
-//                jobtype = JobType.TOY;
-//                break;
-//            case "Patient Info":
-//                jobtype = JobType.PATIENT_INFO;
-//                break;
-//            case "Florist":
-//                jobtype = JobType.FLORIST;
-//                break;
-//            case "Internal Transport":
-//                jobtype = JobType.INTERNAL_TRANSPORT;
-//                break;
-//            case "External Transport":
-//                jobtype = JobType.EXTERNAL_TRANSPORT;
-//                break;
-//            default:
-//                break;
-//        }
-
         Employee employee = new Employee(max+1, new_username.getText(), JobType.valueOf(new_job.getValue()), new_is_admin.isSelected(), new_password.getText());
         boolean inserted = myDBS.insertEmployee(employee);
         loadData();
