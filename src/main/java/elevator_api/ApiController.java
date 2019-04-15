@@ -162,6 +162,10 @@ public class ApiController implements Initializable {
             selectedReq.setAssignedTo(employee.getID());
             myDBS.updateInternalTransportRequest(selectedReq);
 
+            if(selectedReq.getUrgency() == ApiInternalTransportRequest.Urgency.VERY){
+                selectedReq.callElev();
+            }
+
             loadData();
         }
     }
