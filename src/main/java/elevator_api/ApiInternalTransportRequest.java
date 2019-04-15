@@ -1,7 +1,8 @@
 package elevator_api;
 
-import service_request.model.sub_model.InternalTransportRequest;
+import elevator.ElevatorConnnection;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class ApiInternalTransportRequest {
@@ -66,7 +67,6 @@ public class ApiInternalTransportRequest {
         this.urgency = urgency;
     }
 
-
     public Urgency getUrgency() {
         return urgency;
     }
@@ -77,6 +77,24 @@ public class ApiInternalTransportRequest {
 
     public void makeRequest() {
         ApiDatabaseService.getDatabaseService().insertInternalTransportRequest(this);
+    }
+
+    public void fillRequest() {
+        if(this.urgency == Urgency.VERY){
+            callElev();
+        }
+        ApiDatabaseService.getDatabaseService().insertInternalTransportRequest(this);
+    }
+
+    public void callElev() {
+        ElevatorConnnection eCon = new ElevatorConnnection();
+        try {
+            System.out.println("elevator = L, Floor = " + location.substring(8));
+            eCon.postFloor("L", location.substring(location.length() - 2)); // post elevator, floornum
+        } catch (IOException e) {
+            System.out.println("error posting elevator check WIFI from Internal Transport API");
+            e.printStackTrace();
+        }
     }
 
     public TransportType getTransport() {
