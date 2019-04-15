@@ -2,6 +2,7 @@ package application_state;
 
 import javafx.scene.image.ImageView;
 import employee.model.Employee;
+import javafx.stage.Stage;
 import map.Edge;
 import map.Node;
 import java.util.ArrayList;
@@ -19,7 +20,9 @@ public class ApplicationState {
     private static HashMap<String, ImageView> imageCache;
     private int employeeID;
     private Employee employeeLoggedIn;
-
+    private boolean isInactive;
+    private InactivityManager IM;
+    private Stage primaryStage;
 
     //******************************************
 
@@ -68,5 +71,25 @@ public class ApplicationState {
 
     public void setEmployeeLoggedIn(Employee employeeLoggedIn) {
         this.employeeLoggedIn = employeeLoggedIn;
+    }
+
+    public boolean isInactive() {
+        return isInactive;
+    }
+
+    public void setInactive(boolean inactive) {
+        isInactive = inactive;
+    }
+
+    public InactivityManager getIM() {
+        return IM;
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 }

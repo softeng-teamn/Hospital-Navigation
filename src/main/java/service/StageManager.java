@@ -1,8 +1,12 @@
 package service;
 
+import application_state.InactivityManager;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import static application_state.ApplicationState.getApplicationState;
+import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseMotionListener;
 
 public class StageManager {
 
@@ -32,7 +36,9 @@ public class StageManager {
      * @throws Exception
      */
     public static Stage changeExistingWindow(Stage primaryStage, Parent root, String title) throws Exception {
+        getApplicationState().getIM().startTheTimer();
         primaryStage.setTitle(title);
+        addMouseMotionListener(getApplicationState().getIM());
         primaryStage.getScene().setRoot(root);
         primaryStage.setFullScreen(true);
         primaryStage.show();

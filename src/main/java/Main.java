@@ -13,6 +13,8 @@ import service.StageManager;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static application_state.ApplicationState.getApplicationState;
+
 public class Main extends Application {
 
     /**
@@ -32,7 +34,7 @@ public class Main extends Application {
         } catch(IOException e) {
             e.printStackTrace();
         }
-        ApplicationState.getApplicationState().setImageCache(imageCache);
+        getApplicationState().setImageCache(imageCache);
         launch();
     }
 
@@ -50,6 +52,7 @@ public class Main extends Application {
             Platform.exit();
             System.exit(0);
         });
+        getApplicationState().setPrimaryStage(primaryStage);
         primaryStage.setMaximized(true);
         StageManager.changeWindow(primaryStage, root, "Home");
     }
