@@ -10,6 +10,7 @@ import scheduler.model.Reservation;
 import service_request.model.sub_model.*;
 
 import java.io.File;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -582,6 +583,14 @@ public class DatabaseService {
      */
     public Employee getEmployeeByUsername(String username) {
         return employeeDatabase.getEmployeeByUsername(username);
+    }
+
+    public boolean updateEmployeeImage(int employeeId, InputStream stream) {
+        return employeeDatabase.updateEmployeeImage(employeeId, stream);
+    }
+
+    public InputStream getEmployeeImage(int employeeId) {
+        return employeeDatabase.getEmployeeImage(employeeId);
     }
 
     /**
