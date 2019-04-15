@@ -1,10 +1,7 @@
 package map.create_node;
 
 import application_state.ApplicationState;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXSlider;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import controller.Controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -39,6 +36,8 @@ import java.util.HashMap;
 public class CreateNodeController extends Controller {
 
     @FXML
+    public JFXComboBox<String> nodeType_combo;
+    @FXML
     AnchorPane anchor_pane;
     @FXML
     JFXButton cancel_btn, next_btn;
@@ -51,7 +50,7 @@ public class CreateNodeController extends Controller {
     @FXML
     VBox node_info_vbox, floor_change_vbox;
     @FXML
-    JFXTextField type_field, short_field, long_field, building_field;
+    JFXTextField short_field, long_field, building_field;
     @FXML
     JFXListView<String> time_view;
     @FXML
@@ -97,6 +96,8 @@ public class CreateNodeController extends Controller {
         zoomSliderInit();
         zoomGroupInit();
         imagesInit();
+
+        nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
 
         // start state at 0
         stateIterator = 0;
@@ -361,11 +362,6 @@ public class CreateNodeController extends Controller {
 
     // takes new text changes and adds them to info variables
     void addTextFieldHooks() {
-
-        type_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            node_type = newValue;
-            checkAllFields();
-        });
         long_field.textProperty().addListener((observable, oldValue, newValue) -> {
             node_long = newValue;
             checkAllFields();
@@ -449,5 +445,10 @@ public class CreateNodeController extends Controller {
         Parent root = FXMLLoader.load(ResourceLoader.home);
         Stage mainStage = (Stage) cancel_btn.getScene().getWindow();
         StageManager.changeExistingWindow(mainStage, root, "Home");
+    }
+
+    @FXML
+    public void comboAction(ActionEvent actionEvent) {
+        node_type = nodeType_combo.getSelectionModel().getSelectedItem();
     }
 }

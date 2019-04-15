@@ -5,9 +5,6 @@ import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import de.jensd.fx.glyphs.materialicons.MaterialIconView;
 import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,11 +15,9 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -61,9 +56,9 @@ public class EditNodeController extends Control {
     @FXML
     private JFXSlider zoom_slider;
     @FXML
-    private JFXTextField building_field, type_field, short_field, long_field;
+    private JFXTextField building_field, short_field, long_field;
     @FXML
-    private JFXComboBox<String> floor_combo;
+    private JFXComboBox<String> floor_combo, nodeType_combo;
     @FXML
     private GesturePane gPane;
     @FXML
@@ -223,7 +218,8 @@ public class EditNodeController extends Control {
     void fillNodeInfo() {
         Node node = ApplicationState.getApplicationState().getNodeToEdit();
         building_field.setText(node.getBuilding());
-        type_field.setText(node.getNodeType());
+        nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
+        nodeType_combo.getSelectionModel().select(node.getNodeType());
         floor_combo.getItems().add("3");
         floor_combo.getItems().add("2");
         floor_combo.getItems().add("1");
@@ -254,7 +250,7 @@ public class EditNodeController extends Control {
         hideEdges();
         setFloor(newFloor);
         scrollTo(tempEditNode);
-        System.out.println("Selecting NEW FLOOR RENDER: " + newFloor);
+//        System.out.println("Selecting NEW FLOOR RENDER: " + newFloor);
     }
 
     @FXML
@@ -315,7 +311,7 @@ public class EditNodeController extends Control {
     void updateNode() {
         tempEditNode.setXcoord((int)selectedCircle.getCenterX());
         tempEditNode.setYcoord((int)selectedCircle.getCenterY());
-        tempEditNode.setNodeType(type_field.getText());
+        tempEditNode.setNodeType(nodeType_combo.getSelectionModel().getSelectedItem());
         tempEditNode.setBuilding(building_field.getText());
         tempEditNode.setLongName(long_field.getText());
         tempEditNode.setShortName(short_field.getText());
