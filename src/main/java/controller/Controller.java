@@ -7,6 +7,9 @@ import map.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/** old class used to control applicationstate, replaced by {@link application_state.ApplicationState}
+ * @deprecated
+ */
 public class Controller {
     static boolean isAdmin = false;
 

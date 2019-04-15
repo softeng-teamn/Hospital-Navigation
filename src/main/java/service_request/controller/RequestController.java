@@ -1,8 +1,7 @@
 package service_request.controller;
 
-import com.google.common.eventbus.EventBus;
+import application_state.ApplicationState;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import foodRequest.FoodRequest;
 import foodRequest.ServiceException;
@@ -19,7 +18,6 @@ import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import application_state.Event;
-import application_state.EventBusFactory;
 import map.Node;
 import service_request.controller.sub_controller.InternalTransportController;
 import service_request.model.Request;
@@ -37,7 +35,7 @@ import java.util.stream.Stream;
 import static service.ResourceLoader.enBundle;
 import static service.ResourceLoader.esBundle;
 
-public class RequestController extends Controller implements Initializable {
+public class RequestController implements Initializable {
 
     @FXML
     private JFXButton cancelBtn;
@@ -63,8 +61,7 @@ public class RequestController extends Controller implements Initializable {
     @SuppressFBWarnings(value="MS_CANNOT_BE_FINAL", justification = "I need to")
     public static Node selectedNode = null;
 
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event;
 
     /**
      * initializes the service_request controller
@@ -74,6 +71,7 @@ public class RequestController extends Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         repopulateList();
     }
 
@@ -96,6 +94,7 @@ public class RequestController extends Controller implements Initializable {
      */
     @FXML
     public void showEnglish() throws Exception{
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setCurrentBundle(enBundle);
         Stage stage = (Stage) englishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
@@ -109,6 +108,7 @@ public class RequestController extends Controller implements Initializable {
      */
     @FXML
     public void showSpanish() throws Exception{
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setCurrentBundle(esBundle);
         Stage stage = (Stage) spanishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
@@ -169,14 +169,20 @@ public class RequestController extends Controller implements Initializable {
     }
 
     /**
-     * populates list based on the user
+     * Populates the list of nodes based on the logged in user.
+     * Admins have access to every node, while basic users can only see rooms.
      */
     void repopulateList() {
 
         System.out.println("Repopulation of listView");
-
-        if (Controller.getIsAdmin()) {
+        // if nobody is logged in, filter out stair and hall nodes
+        if (ApplicationState.getApplicationState().getEmployeeLoggedIn() == null){
+            allNodes = myDBS.getNodesFilteredByType("STAI", "HALL");
+        }
+        // if the user is admin, get everything
+        else if (ApplicationState.getApplicationState().getEmployeeLoggedIn().isAdmin()) {
             allNodes = myDBS.getAllNodes();
+            // filter out stair and hall nodes otherwise
         } else {
             allNodes = myDBS.getNodesFilteredByType("STAI", "HALL");
         }

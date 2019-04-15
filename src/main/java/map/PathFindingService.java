@@ -31,6 +31,7 @@ public class PathFindingService {
             case "astar":
                 current = new Astar();
                 target = current.findDest(start, dest, accessibility, null);
+                System.out.println("    TARGET: " + target);    // todo : cur
                 estimatedTimeOfArrival = current.getEstimatedTime();
                 elevTimes = current.getElevTimes();
                 break;
@@ -88,7 +89,6 @@ public class PathFindingService {
         }
 
         if (target != null){
-            System.out.println(target);
             return target;
         } else {
             return null;

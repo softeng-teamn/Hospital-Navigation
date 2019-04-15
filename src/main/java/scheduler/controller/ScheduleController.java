@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import application_state.ApplicationState;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -19,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -35,7 +35,7 @@ import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
-public class ScheduleController extends Controller {
+public class ScheduleController {
 
     private static class ScheduleWrapper {
         private String time;
@@ -353,7 +353,6 @@ public class ScheduleController extends Controller {
       */
     @FXML
     public void showRoomSchedule() {
-        System.out.println("showing schedule");
         // Clear the previous schedule
         currentSchedule.clear();
 
@@ -619,16 +618,14 @@ public class ScheduleController extends Controller {
      *Filters the ListView based on the string
      */
     private void filterList(String findStr) {
-        ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
-        resSpaces.addAll(dbResSpaces);
         if (findStr.equals("")) {
-            reservableList.getItems().clear();
-            reservableList.getItems().addAll(resSpaces);
+            reservableList.setItems(resSpaces);
+            System.out.println(resSpaces);
         }
         else {
             //Get List of all nodes
             ObservableList<ReservableSpace> original = resSpaces;
+            System.out.println(resSpaces);
 
             //Get Sorted list of nodes based on search value
             List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName),75);
@@ -643,8 +640,7 @@ public class ScheduleController extends Controller {
             ObservableList<ReservableSpace> toShow = FXCollections.observableList(filteredSpaces);
 
             // Add to view
-            reservableList.getItems().clear();
-            reservableList.getItems().addAll(toShow);
+            reservableList.setItems(toShow);
         }
     }
 
