@@ -47,29 +47,19 @@ public class ScheduleController extends Controller {
 
     private static class ScheduleWrapper {
         private String time;
-
-        public void setTime(String value) {
-            this.time = value;
-        }
-
-        public String getTime() {
-            return time;
-        }
-
         private String availability;
-
-        public void setAvailability(String value) {
-            this.availability = value;
-        }
-
-        public String getAvailability() {
-            return availability;
-        }
 
         public ScheduleWrapper(String time) {
             this.time = time;
             this.availability = "Available";
         }
+
+        public void setTime(String value) { this.time = value; }
+        public String getTime() { return time; }
+
+        public void setAvailability(String value) { this.availability = value; }
+        public String getAvailability() { return availability; }
+
 
         @Override
         public String toString() {
@@ -261,28 +251,112 @@ public class ScheduleController extends Controller {
             }
         });
 
+
+
+
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         // Select the first item and display its schedule
         reservableList.getSelectionModel().select(0);
         reservableList.getFocusModel().focus(0);
 
+
+
         // Create table columns, set what they display, and add to the table
         TableColumn<ScheduleWrapper, String> timeCol = new TableColumn<>("Time");
-        TableColumn<ScheduleWrapper, String> bookingCol = new TableColumn<>("Availability");
-        bookingCol.setPrefWidth(400);
+        TableColumn<ScheduleWrapper, String> sunday = new TableColumn<>("Sunday");
+        TableColumn<ScheduleWrapper, String> monday = new TableColumn<>("Monday");
+        TableColumn<ScheduleWrapper, String> tuesday = new TableColumn<>(" Tuesday");
+        TableColumn<ScheduleWrapper, String> wednesday = new TableColumn<>("Wednesday");
+        TableColumn<ScheduleWrapper, String> thursday = new TableColumn<>("Thursday");
+        TableColumn<ScheduleWrapper, String> friday = new TableColumn<>("Friday");
+        TableColumn<ScheduleWrapper, String> saturday = new TableColumn<>("Saturday");
+
+        // not doing anything??
+        // set max width for each col
+        timeCol.setPrefWidth(124);
+        sunday.setPrefWidth(126);
+        monday.setPrefWidth(126);
+        tuesday.setPrefWidth(126);
+        wednesday.setPrefWidth(126);
+        thursday.setPrefWidth(126);
+        friday.setPrefWidth(126);
+        saturday.setPrefWidth(126);
+
+
+        // make sure each column is uneditable
+        timeCol.setResizable(false);
+        sunday.setResizable(false);
+        monday.setResizable(false);
+        tuesday.setResizable(false);
+        wednesday.setResizable(false);
+        thursday.setResizable(false);
+        friday.setResizable(false);
+        saturday.setResizable(false);
+
+        sunday.setEditable(false);
+
+
+
+        // cannot edit!
         scheduleTable.setEditable(false);
+
+        // i have no idea what this means (but im going to apply to all new cols anyways - whoever wrote pls help
         timeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 return new ReadOnlyStringWrapper(p.getValue().getTime());
             }
         });
-        bookingCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+        sunday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 return new ReadOnlyStringWrapper(p.getValue().getAvailability());
             }
         });
-        scheduleTable.getColumns().addAll(timeCol, bookingCol);
+        monday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+            }
+        });
+        tuesday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+            }
+        });
+        wednesday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+            }
+        });
+        thursday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+            }
+        });
+        friday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+            }
+        });
+        saturday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+            }
+        });
+
+
+
+        scheduleTable.getColumns().addAll(timeCol, sunday, monday, tuesday, wednesday, thursday, friday, saturday);
 //        scheduleTable.setPrefHeight(900);
         showRoomSchedule();
 
@@ -300,6 +374,14 @@ public class ScheduleController extends Controller {
             focusState(newValue);
         });
     }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
 
     /**
@@ -369,6 +451,15 @@ public class ScheduleController extends Controller {
     }
 
 
+
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
     /**
      * On room button click, show the schedule for that room and date.
      */
@@ -422,6 +513,108 @@ public class ScheduleController extends Controller {
         // Get reservations for this space and these times
         ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
 
+
+
+
+        ///////// WORK IN PROGRESS FOR WEEKLY CALENDAR DISPLAY ///////////////////////////
+        /*
+
+
+        // list of reservations for this space for the week of the selected time
+        ArrayList<Reservation> reservationsForWeek = reservations ;
+
+        // get reservations for surrounding days
+        int day = gcalStart.get(Calendar.DAY_OF_WEEK) ;
+        System.out.println("DAY OF WEEK = " + gcalStart.get(Calendar.DAY_OF_WEEK));
+        int newStartDay ;
+        int newEndDay ;
+
+        //ArrayList<Reservation> databaseRes = reservations;
+        // switch case based on day of week
+        switch(day) {
+            // if day is a sunday
+            case 1:
+                // get reservations for following mon - sat
+                newStartDay = day ;
+                newEndDay = day + 6 ;
+                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
+                ArrayList<Reservation> databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd) ;
+               // if (databaseRes.size() > 0) {
+                    System.out.println("RIGHT HERE");
+                   // for (int i = 0 ; i < databaseRes.size() ; i++) {
+                        //System.out.println("Database reservations: " + databaseRes);
+                        //if (databaseRes.get(i).getEventID() != )
+                       // reservationsForWeek.addAll(databaseRes.get(i));
+                        //System.out.println("Success i think ");
+
+                        //if (databaseRes.get(i).getEventID() != )
+                    //}
+                reservationsForWeek = databaseRes ;
+                System.out.println("RESERVATIONS FOR WEEK: " + reservationsForWeek);
+
+            //}
+                break ;
+            case 2:
+                // get reservations for following mon - sat
+                newStartDay = day - 1 ;
+                newEndDay = day + 5 ;
+                gcalStart.set(Calendar.DAY_OF_WEEK, newStartDay);
+                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
+                databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd) ;
+                reservationsForWeek = databaseRes ;
+                System.out.println("RESERVATIONS FOR WEEK: " + reservationsForWeek);
+
+                break ;
+            case 3:
+                newStartDay = day - 2 ;
+                newEndDay = day + 4 ;
+                gcalStart.set(Calendar.DAY_OF_WEEK, newStartDay);
+                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
+                databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd) ;
+                reservationsForWeek = databaseRes ;
+                System.out.println("RESERVATIONS FOR WEEK: " + reservationsForWeek);
+                break ;
+            case 4:
+                newStartDay = day - 3 ;
+                newEndDay = day + 3 ;
+                gcalStart.set(Calendar.DAY_OF_WEEK, newStartDay);
+                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
+                databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd) ;
+                reservationsForWeek = databaseRes ;
+                break ;
+            case 5:
+                newStartDay = day - 4 ;
+                newEndDay = day + 2 ;
+                gcalStart.set(Calendar.DAY_OF_WEEK, newStartDay);
+                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
+                databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd) ;
+                reservationsForWeek = databaseRes ;
+               break ;
+            case 6:
+                newStartDay = day - 5 ;
+                newEndDay = day + 1 ;
+                gcalStart.set(Calendar.DAY_OF_WEEK, newStartDay);
+                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
+                databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd) ;
+                reservationsForWeek = databaseRes ;
+                break ;
+            case 7:
+                newStartDay = day - 6 ;
+                newEndDay = day ;
+                gcalStart.set(Calendar.DAY_OF_WEEK, newStartDay);
+                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
+                databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd) ;
+                reservationsForWeek = databaseRes ;
+                break ;
+            default:
+                System.out.println("should never get here");
+                break ;
+        }
+
+        System.out.println("reservation for week of selected time: " + reservationsForWeek) ;
+
+        */
+
         /**
          * For each of this location's reservations, mark it booked on the schedule
          */
@@ -456,7 +649,19 @@ public class ScheduleController extends Controller {
         for (int i = 0; i < schedToAdd.size(); i++) {
             System.out.println(scheduleTable.getItems().get(i));
         }
+
+
+
     }
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
     /**
      * Called by the Make Reservation button.
