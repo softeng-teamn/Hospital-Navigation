@@ -1,8 +1,8 @@
 package application_state;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+import java.util.*;
 
 public class FakeEventBus {
     private Event event = new Event();
@@ -21,10 +21,7 @@ public class FakeEventBus {
         registeredObservers.put(name, o);
     }
 
-//    public void deregister(Observer o) {
-//        observers.remove(o);
-//    }
-
+    @SuppressFBWarnings(value = "WMI_WRONG_MAP_ITERATOR")
     public void notifyObservers(){
         Set<String> observers = registeredObservers.keySet();
         for (String o: observers) {
