@@ -211,6 +211,9 @@ public class MapViewController {
     void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
         setFloor(btn.getText());
+        if (hasPath){
+            drawPath();
+        }
     }
 
 
@@ -456,47 +459,8 @@ public class MapViewController {
         drawPath();
     }
 
-    /*// draw path on the screen
     private void drawPath() {
-        // remove points
-        for (Line line : lineCollection) {
-            if (zoomGroup.getChildren().contains(line)) {
-                zoomGroup.getChildren().remove(line);
-            }
-        }
-        if (path != null && path.size() > 1) {
-            Node last = path.get(0);
-            Node current;
-            for (int i = 1; i < path.size(); i++) {
-                current = path.get(i);
-                Line line = new Line();
 
-                line.setStartX(current.getXcoord());
-                line.setStartY(current.getYcoord());
-
-                line.setEndX(last.getXcoord());
-                line.setEndY(last.getYcoord());
-
-                if (current.getFloor().equals(event.getFloor())){
-                    line.setStroke(Color.valueOf("183284"));
-                } else {
-                    line.setStroke(Color.rgb(139,155,177));
-                }
-                line.setStrokeWidth(20.0);
-                zoomGroup.getChildren().add(line);
-                lineCollection.add(line);
-                last = current;
-            }
-
-            printDirections(makeDirections(path));
-
-        }
-
-        hasPath = true;
-
-    }*/
-
-    private void drawPath() {
         for (Polyline polyline : polylineCollection) {
             if (zoomGroup.getChildren().contains(polyline)){
                 zoomGroup.getChildren().remove(polyline);
@@ -511,8 +475,25 @@ public class MapViewController {
         for(int i = 1; i < path.size(); i++) {
             Node current = path.get(i);
             if(!current.getFloor().equals(last.getFloor())){
-                addAnimation(polyline);
-                zoomGroup.getChildren().add(polyline);
+                if (last.getFloor().equals(event.getFloor())){
+                    addAnimation(polyline);
+                    zoomGroup.getChildren().add(polyline);
+                    if(i<path.size() - 1){
+                        Node next = path.get(i+1);
+                        JFXButton floorSwitcher = new JFXButton("Take the " + current.getNodeType() + " to floor " + next.getFloor());
+                        floorSwitcher.getStyleClass().add("path-button");
+                        floorSwitcher.setTranslateX(last.getXcoord());
+                        floorSwitcher.setTranslateY(last.getYcoord());
+                        floorSwitcher.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                setFloor(next.getFloor());
+                                drawPath();
+                            }
+                        });
+                        zoomGroup.getChildren().add(floorSwitcher);
+                    }
+                }
                 polylineCollection.add(polyline);
                 polyline = new Polyline();
             }
@@ -520,14 +501,18 @@ public class MapViewController {
             last = current;
         }
 
-        printDirections(makeDirections(path));
+        if (last.getFloor().equals(event.getFloor())){
+            addAnimation(polyline);
+            zoomGroup.getChildren().add(polyline);
+        }
+        polylineCollection.add(polyline);
         hasPath = true;
     }
 
     private void addAnimation(Polyline line){
-        line.getStrokeDashArray().setAll(10d, 10d);
-        line.fillProperty().setValue(Color.PINK);
-        line.setStrokeWidth(5);
+        line.getStrokeDashArray().setAll(16d, 16d);
+        line.setStroke(Color.BLUE);
+        line.setStrokeWidth(8);
 
         final double maxOffset =
                 line.getStrokeDashArray().stream()
@@ -554,6 +539,7 @@ public class MapViewController {
                         )
                 )
         );
+        timeline.setRate(-1);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
