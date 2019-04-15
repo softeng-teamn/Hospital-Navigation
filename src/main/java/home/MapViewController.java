@@ -87,13 +87,11 @@ public class MapViewController {
     @FXML
     private JFXSlider zoom_slider;
     @FXML
-    private JFXButton f1_btn, f2_btn, f3_btn, l1_btn, l2_btn, ground_btn, about_btn;
+    private JFXButton about_btn;
     @FXML
     private GesturePane gPane;
     @FXML
-    private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
-    @FXML
-    private Label cur_el_floor, FloorInfo;
+    private Label FloorInfo;
     @FXML
     public JFXListView directionsView;
 
@@ -123,7 +121,7 @@ public class MapViewController {
 
     @FXML
     void initialize() {
-        pingTiming();
+        //pingTiming();
 
         zoomSliderInit();
         zoomGroupInit();
@@ -170,6 +168,7 @@ public class MapViewController {
         setFloor("1"); // DEFAULT
     }
 
+    /*
     void pingTiming() {
 
         Task task = new Task<Void>() {
@@ -196,6 +195,7 @@ public class MapViewController {
         new Thread(task).start();
 
     }
+    */
 
     // switch floor to new map image
     public void setFloor(String floor) {
