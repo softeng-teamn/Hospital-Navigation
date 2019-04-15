@@ -58,6 +58,9 @@ public class HomeController {
                         case "showAdmin":
                             showAdmin();
                             break;
+                        case "showEmployee":
+                            showEmployee() ;
+                            break ;
                         case "showPathSetting":
                             showPathSettings();
                             break;
@@ -78,6 +81,11 @@ public class HomeController {
         drawerPane.getChildren().clear();
         drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
         drawer.open();
+    }
+
+    private void showEmployee() throws IOException {
+        leftPane.getChildren().clear();
+        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
     }
 
     private void showSearch() throws IOException {
