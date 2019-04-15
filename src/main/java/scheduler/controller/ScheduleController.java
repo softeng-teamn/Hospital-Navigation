@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import application_state.ApplicationState;
 import application_state.Event;
-import application_state.EventBusFactory;
+
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -193,8 +193,8 @@ public class ScheduleController {
     public Label resInfoLbl, inputErrorLbl, schedLbl;
 
 
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+
+    private Event event ;
 
 
     // Map Stuff
@@ -256,8 +256,7 @@ public class ScheduleController {
     @FXML
     public void initialize() {
 
-        // add event bus to pass info to the final 'make reservation' screen
-        eventBus.register(this);
+
 
 
         // Map Initialization
@@ -809,7 +808,7 @@ public class ScheduleController {
     public void makeReservation() throws Exception {
 
         boolean valid = validTimes(true);
-
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
 
         // If evreything is okay, create the reservation
         if (valid) {
@@ -824,14 +823,14 @@ public class ScheduleController {
             event.setEventName("times");
             event.setStartAndEndTimes(cals);
             System.out.println("Calendars being passed: " + event.getStartAndEndTimes());
-            eventBus.post(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
 
             // post event to pass room id
             event.setEventName("room");
             event.setRoomId(currentSelection.getSpaceID());
             System.out.println("Room id being passed: " + event.getRoomId());
-            eventBus.post(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
             // switch screen to final stage of scheduler
             Stage stage = (Stage) makeReservationBtn.getScene().getWindow();

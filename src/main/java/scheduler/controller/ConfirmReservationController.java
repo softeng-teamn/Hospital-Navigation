@@ -2,7 +2,7 @@ package scheduler.controller;
 
 import application_state.ApplicationState;
 import application_state.Event;
-import application_state.EventBusFactory;
+import application_state.Observer;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -25,7 +25,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
-public class ConfirmReservationController {
+public class ConfirmReservationController implements Observer {
 
 
     @FXML
@@ -39,9 +39,7 @@ public class ConfirmReservationController {
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
-    // event bus for passing date/time for reservation
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+
 
     // variables to hold incoming event information
     String roomID = "";
@@ -54,8 +52,6 @@ public class ConfirmReservationController {
     @FXML
     public void initialize() {
 
-        // register event bus
-        eventBus.register(this);
 
         // sets ID to logged in employee
         setID();
@@ -74,15 +70,15 @@ public class ConfirmReservationController {
 
 
     // events I care about: am "subscribed" to
-    @Subscribe
-    public void eventListener(Event newEvent) {
-        event = newEvent;
-        switch (event.getEventName()) {
+    @Override
+    public void notify(Object newEvent) {
+        Event e = (Event) newEvent ;
+        switch (e.getEventName()) {
             case "times":
-                cals = event.getStartAndEndTimes();
+                cals = e.getStartAndEndTimes();
                 break;
             case "room":
-                roomID = event.getRoomId();
+                roomID = e.getRoomId();
                 break;
             default:
                 break;
@@ -196,6 +192,8 @@ public class ConfirmReservationController {
      */
     @FXML
     public void createReservation() {
+
+        Event event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
 
         // Get the privacy level
         int privacy = 0;
