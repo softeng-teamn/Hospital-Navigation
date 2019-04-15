@@ -65,7 +65,6 @@ public class EmployeeLoginController extends Controller implements Initializable
             } else if (user.isAdmin()){
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
-                getApplicationState().setEmployeeID(user.getID());
                 Controller.setCurrentJob(user.getJob());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
