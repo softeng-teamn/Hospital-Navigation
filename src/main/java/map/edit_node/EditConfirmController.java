@@ -2,7 +2,6 @@ package map.edit_node;
 
 import application_state.ApplicationState;
 import com.jfoenix.controls.JFXButton;
-import controller.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
@@ -12,7 +11,7 @@ import database.DatabaseService;
 
 import java.util.ArrayList;
 
-public class EditConfirmController extends Controller {
+public class EditConfirmController {
 
     @FXML
     void deleteConfirmAction(ActionEvent e) throws Exception {

@@ -1,13 +1,12 @@
 package map;
 
-import controller.Controller;
 import database.DatabaseService;
 import map.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MapController extends Controller {
+public class MapController {
 
     // Creates static variables when compiled
     static {
