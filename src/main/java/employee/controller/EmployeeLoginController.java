@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import application_state.Event;
 import application_state.EventBusFactory;
@@ -92,5 +94,18 @@ public class EmployeeLoginController extends Controller implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         eventBus.register(this);
+    }
+
+
+    public void ifEnterLogin(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER))
+        {
+            try {
+                login();
+            } catch (Exception e) {
+                System.out.println("Error logging in");
+                e.printStackTrace();
+            }
+        }
     }
 }
