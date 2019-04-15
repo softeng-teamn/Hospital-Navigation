@@ -4,7 +4,6 @@ import application_state.ApplicationState;
 import application_state.Event;
 import application_state.Observer;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXSlider;
 import database.DatabaseService;
 import elevator.ElevatorConnection;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -79,15 +78,20 @@ public class MapViewController implements Observer {
     @FXML
     private ScrollPane map_scrollpane;
     @FXML
-    private JFXSlider zoom_slider;
-    @FXML
-    private JFXButton f1_btn, f2_btn, f3_btn, l1_btn, l2_btn, ground_btn;
+    private JFXButton about_btn;
     @FXML
     private GesturePane gPane;
     @FXML
-    private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
+    private Label FloorInfo;
+
+    // switch to about page
     @FXML
-    private Label cur_el_floor, FloorInfo;
+    void showAbout(ActionEvent e) throws Exception {
+        Stage stage = (Stage) about_btn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.about,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"About Page");
+    }
+
     // ELEVATOR CALL BUTTONS
     @FXML
     void callElevatorAction(ActionEvent e) {
@@ -105,9 +109,8 @@ public class MapViewController implements Observer {
 
     @FXML
     void initialize() {
-        pingTiming();
-
-        zoomSliderInit();
+        //pingTiming();
+        gPane.currentScaleProperty().setValue(MIN_ZOOM+0.1);
         zoomGroupInit();
         imagesInit();
         // listen to changes
@@ -138,21 +141,13 @@ public class MapViewController implements Observer {
         gPane.setContent(zoomGroup);
     }
 
-    void zoomSliderInit() {
-        gPane.currentScaleProperty().setValue(MIN_ZOOM+0.1);
-        zoom_slider.setMin(MIN_ZOOM);
-        zoom_slider.setMax(MAX_ZOOM);
-        zoom_slider.setIndicatorPosition(JFXSlider.IndicatorPosition.RIGHT);
-        zoom_slider.setValue(gPane.getCurrentScale());
-        gPane.currentScaleProperty().bindBidirectional(zoom_slider.valueProperty());
-    }
-
     void imagesInit() {
         imageCache = ApplicationState.getApplicationState().getImageCache();
         this.floorImg = imageCache.get("1");
         setFloor("1"); // DEFAULT
     }
 
+    /*
     void pingTiming() {
 
         Task task = new Task<Void>() {
@@ -181,6 +176,7 @@ public class MapViewController implements Observer {
         new Thread(task).start();
 
     }
+    */
 
     // switch floor to new map image
     public void setFloor(String floor) {
