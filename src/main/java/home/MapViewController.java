@@ -253,7 +253,6 @@ public class MapViewController {
                         currentMethod = event.getSearchMethod();
                         break;
                     case "editing":
-                        deletePath();
                         editNodeHandler(event.isEditing());
                         break;
                     case "logout":
@@ -339,8 +338,6 @@ public class MapViewController {
 
 
     private void drawPoint(Node node, Circle circle, Color color, boolean start) {
-        // remove points
-        deletePath();
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
             //System.out.println("we found new Selected Circles");
