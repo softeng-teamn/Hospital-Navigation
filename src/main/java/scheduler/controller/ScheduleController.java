@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import application_state.ApplicationState;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -35,7 +34,7 @@ import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
-public class ScheduleController extends Controller {
+public class ScheduleController {
 
     private static class ScheduleWrapper {
         private String time;

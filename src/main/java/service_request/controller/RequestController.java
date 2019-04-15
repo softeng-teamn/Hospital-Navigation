@@ -1,11 +1,12 @@
 package service_request.controller;
 
+import application_state.ApplicationState;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import foodRequest.FoodRequest;
 import foodRequest.ServiceException;
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -37,7 +38,9 @@ import java.util.stream.Stream;
 import static service.ResourceLoader.enBundle;
 import static service.ResourceLoader.esBundle;
 
-public class RequestController extends Controller implements Initializable {
+import static application_state.ApplicationState.getApplicationState;
+
+public class RequestController implements Initializable {
 
     @FXML
     private JFXButton cancelBtn;
@@ -169,14 +172,20 @@ public class RequestController extends Controller implements Initializable {
     }
 
     /**
-     * populates list based on the user
+     * Populates the list of nodes based on the logged in user.
+     * Admins have access to every node, while basic users can only see rooms.
      */
     void repopulateList() {
 
         System.out.println("Repopulation of listView");
-
-        if (Controller.getIsAdmin()) {
+        // if nobody is logged in, filter out stair and hall nodes
+        if (ApplicationState.getApplicationState().getEmployeeLoggedIn() == null){
+            allNodes = myDBS.getNodesFilteredByType("STAI", "HALL");
+        }
+        // if the user is admin, get everything
+        else if (ApplicationState.getApplicationState().getEmployeeLoggedIn().isAdmin()) {
             allNodes = myDBS.getAllNodes();
+            // filter out stair and hall nodes otherwise
         } else {
             allNodes = myDBS.getNodesFilteredByType("STAI", "HALL");
         }
