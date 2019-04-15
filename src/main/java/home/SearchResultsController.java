@@ -52,6 +52,7 @@ public class SearchResultsController {
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
     ArrayList<Reservation> allReservation = DatabaseService.getDatabaseService().getAllReservations();
     DatabaseService myDBS;
+    boolean displayNodes = false;
 
     @FXML
     void initialize() {
@@ -230,46 +231,50 @@ public class SearchResultsController {
      */
     private ObservableList<HBox> makeIntoHBoxes(ArrayList<Node> nodes, ArrayList<Reservation> reservations) {
         ArrayList<HBox> hBoxes = new ArrayList<>();
-        for (int i = 0; i < nodes.size(); i++) {    // For every node
-            Node currNode = nodes.get(i);
-            HBox hb = new HBox();
-            HBox inner = new HBox();    // So the building can be right-aligned
-            inner.setAlignment(Pos.CENTER_RIGHT);
-            Label longName = new Label(currNode.getLongName());    // Make a label for the long name
-            String buildFlStr = buildingAbbrev.get(currNode.getBuilding()) + ", " + currNode.getFloor();
-            Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
-            Label nodeId = new Label(currNode.getNodeID());    // Save the nodeID for pathfinding but make it invisible
-            nodeId.setPrefWidth(0);
-            nodeId.setVisible(false);
-            nodeId.setPadding(new Insets(0,-10,0,0));
-            hb.getChildren().add(longName);    // Add the node name
-            inner.getChildren().add(nodeId);
-            inner.getChildren().add(buildFloor);    // Add the ID and building and floor to the right-aligned hbox
-            hb.getChildren().add(inner);    // Combine them
-            hb.setHgrow(inner, Priority.ALWAYS);
-            hb.setSpacing(0);
-            hBoxes.add(hb);    // Add it all to the list
+        if(displayNodes) {
+            for (int i = 0; i < nodes.size(); i++) {    // For every node
+                Node currNode = nodes.get(i);
+                HBox hb = new HBox();
+                HBox inner = new HBox();    // So the building can be right-aligned
+                inner.setAlignment(Pos.CENTER_RIGHT);
+                Label longName = new Label(currNode.getLongName());    // Make a label for the long name
+                String buildFlStr = buildingAbbrev.get(currNode.getBuilding()) + ", " + currNode.getFloor();
+                Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
+                Label nodeId = new Label(currNode.getNodeID());    // Save the nodeID for pathfinding but make it invisible
+                nodeId.setPrefWidth(0);
+                nodeId.setVisible(false);
+                nodeId.setPadding(new Insets(0, -10, 0, 0));
+                hb.getChildren().add(longName);    // Add the node name
+                inner.getChildren().add(nodeId);
+                inner.getChildren().add(buildFloor);    // Add the ID and building and floor to the right-aligned hbox
+                hb.getChildren().add(inner);    // Combine them
+                hb.setHgrow(inner, Priority.ALWAYS);
+                hb.setSpacing(0);
+                hBoxes.add(hb);    // Add it all to the list
+            }
         }
-        for (int i = 0; i < reservations.size(); i++) {    // For every node
-            Reservation currRes = reservations.get(i);
-            HBox hb = new HBox();
-            HBox inner = new HBox();    // So the building can be right-aligned
-            inner.setAlignment(Pos.CENTER_RIGHT);
-            Label longName = new Label(currRes.getEventName());    // Make a label for the long name
-            String buildFlStr = "";
-            //String buildFlStr = buildingAbbrev.get(myDBS.getNode(currRes.getLocationID()).getBuilding()) + " " + myDBS.getNode(currRes.getLocationID()).getFloor();
-            Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
-            Label nodeId = new Label(currRes.getLocationID());    // Save the nodeID for pathfinding but make it invisible
-            nodeId.setPrefWidth(0);
-            nodeId.setVisible(false);
-            nodeId.setPadding(new Insets(0,-10,0,0));
-            hb.getChildren().add(longName);    // Add the node name
-            inner.getChildren().add(nodeId);
-            inner.getChildren().add(buildFloor);    // Add the ID and building and floor to the right-aligned hbox
-            hb.getChildren().add(inner);    // Combine them
-            hb.setHgrow(inner, Priority.ALWAYS);
-            hb.setSpacing(0);
-            hBoxes.add(hb);    // Add it all to the list
+        else if (!(displayNodes)) {
+            for (int i = 0; i < reservations.size(); i++) {    // For every node
+                Reservation currRes = reservations.get(i);
+                HBox hb = new HBox();
+                HBox inner = new HBox();    // So the building can be right-aligned
+                inner.setAlignment(Pos.CENTER_RIGHT);
+                Label longName = new Label(currRes.getEventName());    // Make a label for the long name
+                String buildFlStr = "";
+                //String buildFlStr = buildingAbbrev.get(myDBS.getNode(currRes.getLocationID()).getBuilding()) + ", " + myDBS.getNode(currRes.getLocationID()).getFloor();
+                Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
+                Label nodeId = new Label(currRes.getLocationID());    // Save the nodeID for pathfinding but make it invisible
+                nodeId.setPrefWidth(0);
+                nodeId.setVisible(false);
+                nodeId.setPadding(new Insets(0, -10, 0, 0));
+                hb.getChildren().add(longName);    // Add the node name
+                inner.getChildren().add(nodeId);
+                inner.getChildren().add(buildFloor);    // Add the ID and building and floor to the right-aligned hbox
+                hb.getChildren().add(inner);    // Combine them
+                hb.setHgrow(inner, Priority.ALWAYS);
+                hb.setSpacing(0);
+                hBoxes.add(hb);    // Add it all to the list
+            }
         }
         ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
         observeHboxes.addAll(hBoxes);
