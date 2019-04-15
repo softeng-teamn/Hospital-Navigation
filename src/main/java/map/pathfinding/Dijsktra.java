@@ -1,6 +1,5 @@
 package map.pathfinding;
 
-import elevator.ElevatorFloor;
 import map.MapController;
 import map.MapNode;
 import map.Node;
@@ -8,7 +7,7 @@ import map.NodeFacade;
 
 import java.util.*;
 
-public class Astar extends AlgorithmContext implements Algorithm{
+public class Dijsktra extends AlgorithmContext implements Algorithm{
     public int estimatedTime;
     PriorityQueue<MapNode> open;
     Set<MapNode> explored;
@@ -17,12 +16,6 @@ public class Astar extends AlgorithmContext implements Algorithm{
     private MapNode dest;
     private boolean accessibility;
     private String filter;
-
-
-    @Override
-    public int getET() {
-        return estimatedTime;
-    }
 
     @Override
     void initial(MapNode start, MapNode dest, boolean accessibility, String filter) {
@@ -53,8 +46,7 @@ public class Astar extends AlgorithmContext implements Algorithm{
                 //System.out.println("child: " + child.getData().getNodeID());
                 NodeFacade nf = new NodeFacade(child);
                 nf.mapNodeCalculateG(current);
-                nf.mapNodeCalculateHeuristic(dest);
-                double cost = current.getG() + child.getG() + child.getH();
+                double cost = current.getG() + child.getG();
 
                 if (child.equals(dest)) {
                     //System.out.println("This child is our destination node!");
@@ -63,32 +55,29 @@ public class Astar extends AlgorithmContext implements Algorithm{
                     return child;
                 }
 
-                if(open.contains(child) && cost>=child.getF()) {
-                    //System.out.println("skipping this node because it was already seen");
-                    continue;
-                }
-
-                if(explored.contains(child) && cost>=child.getF()) {
-                    //System.out.println("skipping this node because the cost is to big");
-                    continue;
-                }
+//                if(open.contains(child)) {
+//                    //System.out.println("skipping this node because it was already seen");
+//                    continue;
+//                }
 
                 if(child.getData().getNodeType().equals("STAI") && accessibility) {
                     //System.out.println("skipping this node because the cost is to big");
                     continue;
                 }
 
-                if(child.getData().isClosed()) {
-                    //System.out.println("skipping this node because the cost is to big");
-                    continue;
+                if(explored.contains(child)) {
+                    if (cost >= child.getG()){
+                        //System.out.println("skipping this node because the cost is to big");
+                        continue;
+                    }
+                    child.setParent(current, child.getG());
+                    open.add(child);
                 }
 
-                else if(!open.contains(child) || cost < child.getF()){
+
+                if(!open.contains(child) || cost < child.getG()){
                     //System.out.println("setting child's parent to be current");
                     child.setParent(current, child.getG());
-                    if(open.contains(child)){
-                        open.remove(child);
-                    }
                     //System.out.println("adding child to open list");
                     open.add(child);
                 }
@@ -97,7 +86,8 @@ public class Astar extends AlgorithmContext implements Algorithm{
         return null;
     }
 
-
-
-
+    @Override
+    int getET() {
+        return 0;
+    }
 }
