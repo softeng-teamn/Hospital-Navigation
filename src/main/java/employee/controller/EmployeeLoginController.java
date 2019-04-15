@@ -46,6 +46,13 @@ public class EmployeeLoginController extends Controller implements Initializable
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
+    @FXML
+    public void faceDetection(ActionEvent e) throws Exception {
+        Stage stage = (Stage) cancelBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.faceDetect);
+        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
+    }
+
 
 
     @FXML

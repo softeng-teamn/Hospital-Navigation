@@ -17,7 +17,7 @@ public class StageManager {
     public static Stage changeWindow(Stage primaryStage, Parent root, String title) throws Exception {
         primaryStage.setTitle(title);
         primaryStage.setScene(new Scene(root));
-        primaryStage.setFullScreen(true);
+//        primaryStage.setFullScreen(true);
         primaryStage.show();
         return primaryStage;
     }

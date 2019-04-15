@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane prefHeight="292.0" prefWidth="434.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="face_detect.FaceDetectController">
+     <center>
+        <ImageView fx:id="originalFrame" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+     </center>
+     <bottom>
+        <JFXButton fx:id="cameraButton" onAction="#startCamera" text="Start Camera" BorderPane.alignment="CENTER" />
+     </bottom>
+   <top>
+      <VBox>
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <JFXCheckBox fx:id="haarClassifier" onAction="#haarSelected" text="Haar Classifier" />
+                  <JFXCheckBox fx:id="lbpClassifier" onAction="#lbpSelected" text="LBP Classifier">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </JFXCheckBox>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+         </children>
+      </VBox>
+   </top>
+</BorderPane>

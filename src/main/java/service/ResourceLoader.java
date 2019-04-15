@@ -18,6 +18,7 @@ public class  ResourceLoader {
     public static final URL pathFindingSettings = service.ResourceLoader.class.getResource("/fxml/home/pathfindingSettings.fxml");
     public static final URL searchResults = service.ResourceLoader.class.getResource("/fxml/home/searchResults.fxml");
     public static final URL adminServices = service.ResourceLoader.class.getResource("/fxml/home/adminServices.fxml");
+    public static final URL faceDetect = service.ResourceLoader.class.getResource("/fxml/faceDetect.fxml");
 
     public static final URL superSecretPasswords = service.ResourceLoader.class.getResource("SuperSecretPasswords.txt");
 
@@ -60,4 +61,9 @@ public class  ResourceLoader {
     public static final ResourceBundle dfBundle = ResourceBundle.getBundle("strings", Locale.getDefault());
     public static final ResourceBundle enBundle = ResourceBundle.getBundle("strings", new Locale("en"));
     public static final ResourceBundle esBundle = ResourceBundle.getBundle("strings", new Locale("es"));
+
+    // classifiers
+//    public static final URL haarURL = service.ResourceLoader.class.getResource("/haarcascades/haarcascade_frontalface_alt.xml");
+//    public static final File haarFile = new File(haarURL.getFile());
+//    public static final URL lbpcascades = service.ResourceLoader.class.getResource("/lbpcascades/lbpcascade_frontalface.xml");
 }
