@@ -252,6 +252,7 @@ public class MapViewController {
                         zoomGroup.getChildren().removeAll(circleCollection);
                         circleCollection.clear();
                         drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
+                        break;
                     default:
 //                        System.out.println("I don'");
                         break;
