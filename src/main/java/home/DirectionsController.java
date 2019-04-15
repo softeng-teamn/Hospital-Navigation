@@ -2,11 +2,8 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
-import application_state.HomeState;
-import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
-import database.DatabaseService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static application_state.ApplicationState.getApplicationState;
-import static database.DatabaseService.getDatabaseService;
 
 public class DirectionsController implements Observer {
     private Event event;
@@ -45,17 +41,17 @@ public class DirectionsController implements Observer {
 
     @FXML
     void initialize() {
-        ApplicationState.getApplicationState().getFeb().register("directionsContoller",this);
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        ApplicationState.getApplicationState().getObservableBus().register("directionsContoller",this);
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         path = event.getPath();
         printDirections(makeDirections(path));
     }
 
     @FXML
     void showSearchList(ActionEvent e) {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("closeDrawer");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     @Override
@@ -336,9 +332,9 @@ public class DirectionsController implements Observer {
         }
         String total = buf.toString();
         System.out.println(total);
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("showDestination");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         return total;
     }
 
@@ -492,7 +488,6 @@ public class DirectionsController implements Observer {
             }
         }
 
-        // TODO: landmarks
         String landmark = "";
         ArrayList<Node> closeNodes = MapController.getNodesConnectedTo(next);
         for (Node n: closeNodes) {
@@ -522,6 +517,8 @@ public class DirectionsController implements Observer {
      * @return the padded distance as a string
      */
     private String padWithZeros(double distance) {
+        int fives = (int) distance / 5;
+        distance = fives * 5;
         String orig = String.format("%.0f", distance);
         for (int i = 0; i < 6; i++) {    // Assume max distance is less than 99999 feet
             if (orig.length() < i) {    // Pad with zeroes while string length is less than 6

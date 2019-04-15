@@ -30,7 +30,6 @@ import map.Node;
 import service.ResourceLoader;
 import service.StageManager;
 
-import javax.xml.crypto.Data;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -68,13 +67,13 @@ public class TopNavController implements Observer {
 
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         // when admin or employee logs out
         if (event.isAdmin() || event.isLoggedIn()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
             event.setEventName("logout");
-            ApplicationState.getApplicationState().getFeb().updateEvent(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
             resetBtn();
             ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
         }
@@ -89,9 +88,9 @@ public class TopNavController implements Observer {
     @FXML
     // switches window to map editor screen.
     public void showAdminScene() throws Exception {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("showAdmin");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     @FXML
@@ -112,13 +111,13 @@ public class TopNavController implements Observer {
 
     @FXML
     void initialize() {
-        ApplicationState.getApplicationState().getFeb().register("topNavController", this);
+        ApplicationState.getApplicationState().getObservableBus().register("topNavController", this);
 
         // Turn off editing
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("editing");
         event.setEditing(false);
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
         navigate_btn.setVisible(false);
 
@@ -288,11 +287,11 @@ public class TopNavController implements Observer {
 
     @FXML
     public void editButtonAction(ActionEvent e) throws Exception {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("editing");
         event.setEditing(!event.isEditing());
         System.out.println("Editing: " + event.isEditing());
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     /**
@@ -302,7 +301,7 @@ public class TopNavController implements Observer {
     @FXML
     public void startNodeEnter(javafx.event.Event e) {
         String search = startSearch.getText();
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ApplicationState currState = ApplicationState.getApplicationState();
 
         if (nodeLongNames.get(search) == null) {
@@ -312,7 +311,7 @@ public class TopNavController implements Observer {
 
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     /**
@@ -320,7 +319,7 @@ public class TopNavController implements Observer {
      */
     @FXML
     public void searchBarEnter() {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ApplicationState currState = ApplicationState.getApplicationState();
         String search = search_bar.getText();
 
@@ -331,11 +330,11 @@ public class TopNavController implements Observer {
 
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     public void startNavigation(ActionEvent actionEvent) {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ApplicationState currState = ApplicationState.getApplicationState();
         //if(callElev.isSelected()){
             event.setCallElev(true);
@@ -344,16 +343,16 @@ public class TopNavController implements Observer {
         event.setEventName("navigation");
         startSearch.setText(currState.getStartNode().getLongName());
         search_bar.setText(currState.getEndNode().getLongName());
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
 
     public void setEventEndNode(MouseEvent mouseEvent){
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
         event.setEventName("showSearch-end");
 
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
         if(backArro.getRate() == 1) {
             backArro.setRate(backArro.getRate() * -1);
@@ -364,11 +363,11 @@ public class TopNavController implements Observer {
 
 
     public void setEventStartNode(MouseEvent mouseEvent) {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
         event.setEventName("showSearch-start");
 
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
         if(backArro.getRate() == 1) {
             backArro.setRate(backArro.getRate() * -1);
@@ -379,10 +378,10 @@ public class TopNavController implements Observer {
 
     @FXML
     public void showStartSearch(ActionEvent actionEvent) {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ApplicationState currState = ApplicationState.getApplicationState();
         if (startNode_btn.getText().equals("Start Node")){
-            event = ApplicationState.getApplicationState().getFeb().getEvent();
+            event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             startSearch.setPromptText("Start Node");
             startSearch.setOnInputMethodTextChanged(this::startNodeEnter);
             startSearch.setOnKeyReleased(this::startNodeEnter);
@@ -398,9 +397,9 @@ public class TopNavController implements Observer {
             top_nav.getChildren().remove(startSearch);
             currState.setDefaultStartNode();
             event.setEventName("refresh");
-            ApplicationState.getApplicationState().getFeb().updateEvent(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
             event.setEventName("showSearch");    // Repopulate list
-            ApplicationState.getApplicationState().getFeb().updateEvent(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
             startNode_btn.setText("Start Node");
             home_icon.setIcon(MaterialIcon.LOCATION_ON);
         }
@@ -415,15 +414,15 @@ public class TopNavController implements Observer {
     }
 
     public void showPathSetting(MouseEvent mouseEvent) {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         if (barOpened){
             barOpened = false;
             event.setEventName("closeDrawer");
-            ApplicationState.getApplicationState().getFeb().updateEvent(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         } else {
             barOpened = true;
             event.setEventName("showPathSetting");
-            ApplicationState.getApplicationState().getFeb().updateEvent(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         }
     }
 }

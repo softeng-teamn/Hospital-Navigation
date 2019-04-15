@@ -1,14 +1,11 @@
 package home;
 
 import application_state.ApplicationState;
-import application_state.Observer;
-import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 import application_state.Event;
@@ -20,7 +17,7 @@ import java.io.IOException;
 
 public class AdminServiceController {
 
-    private Event event = ApplicationState.getApplicationState().getFeb().getEvent();
+    private Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
     @FXML
     private JFXButton fulfillRequestBtn, editEmployeeBtn, mapEditorController, exportCSVBtn, showHomeBtn, newNode_btn;
@@ -46,9 +43,9 @@ public class AdminServiceController {
 
     @FXML
     void showSearchResults(ActionEvent e) {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("closeDrawer");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     @FXML
@@ -68,26 +65,26 @@ public class AdminServiceController {
 
     public void astarSwitch(ActionEvent actionEvent) {
         algorithm.selectToggle(aStarToggle);
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("methodSwitch");
         event.setSearchMethod("astar");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     public void depthSwitch(ActionEvent actionEvent) {
         algorithm.selectToggle(depthFirstToggle);
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!! function called !!!!!!!!!!!!!!!!!!");
         event.setEventName("methodSwitch");
         event.setSearchMethod("depth");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);    }
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);    }
 
     public void breadthSwitch(ActionEvent actionEvent) {
         algorithm.selectToggle(breadthFirstToggle);
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("methodSwitch");
         event.setSearchMethod("breadth");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     @FXML

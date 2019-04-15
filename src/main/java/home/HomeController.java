@@ -2,15 +2,11 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXDrawer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import map.MapController;
 import application_state.Event;
 import service.ResourceLoader;
@@ -28,9 +24,9 @@ public class HomeController implements Observer {
 
     @FXML
     void initialize() throws IOException {
-        ApplicationState.getApplicationState().getFeb().register("homeContoller", this);
+        ApplicationState.getApplicationState().getObservableBus().register("homeContoller", this);
         ApplicationState currState = ApplicationState.getApplicationState();
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         currState.setDefaultStartNode();
         currState.setEndNode(null);
 

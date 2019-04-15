@@ -1,12 +1,10 @@
 package service_request.controller;
 
 import application_state.ApplicationState;
-import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import foodRequest.FoodRequest;
 import foodRequest.ServiceException;
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,8 +34,6 @@ import java.util.stream.Stream;
 
 import static service.ResourceLoader.enBundle;
 import static service.ResourceLoader.esBundle;
-
-import static application_state.ApplicationState.getApplicationState;
 
 public class RequestController implements Initializable {
 
@@ -75,7 +71,7 @@ public class RequestController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         repopulateList();
     }
 
@@ -98,7 +94,7 @@ public class RequestController implements Initializable {
      */
     @FXML
     public void showEnglish() throws Exception{
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setCurrentBundle(enBundle);
         Stage stage = (Stage) englishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
@@ -112,7 +108,7 @@ public class RequestController implements Initializable {
      */
     @FXML
     public void showSpanish() throws Exception{
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setCurrentBundle(esBundle);
         Stage stage = (Stage) spanishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());

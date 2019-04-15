@@ -77,7 +77,7 @@ public class InternalTransportRequest extends Request {
     }
 
     private void callElev(){
-        ElevatorConnnection eCon = new ElevatorConnnection();
+        ElevatorConnection eCon = new ElevatorConnection();
         try {
             eCon.postFloor("L", getLocation().getFloor()); // post elevator, floornum
         } catch (IOException e) {

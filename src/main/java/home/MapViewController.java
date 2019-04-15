@@ -28,7 +28,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import map.MapController;
 import map.MapNode;
 import map.Node;
 import map.PathFindingService;
@@ -103,8 +102,8 @@ public class MapViewController implements Observer {
         zoomGroupInit();
         imagesInit();
         // listen to changes
-        ApplicationState.getApplicationState().getFeb().register("mapViewContoller", this);
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        ApplicationState.getApplicationState().getObservableBus().register("mapViewContoller", this);
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ApplicationState currState = ApplicationState.getApplicationState();
 
         // Setup collection of lines
@@ -415,10 +414,10 @@ public class MapViewController implements Observer {
         path = newpath;
         if (path != null && path.size() > 1) {
             drawPath();
-            event = ApplicationState.getApplicationState().getFeb().getEvent();
+            event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
-            ApplicationState.getApplicationState().getFeb().updateEvent(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         }
     }
 
@@ -462,10 +461,10 @@ public class MapViewController implements Observer {
         path = newpath;
         if (path != null && path.size() > 1) {
             drawPath();
-            event = ApplicationState.getApplicationState().getFeb().getEvent();
+            event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
-            ApplicationState.getApplicationState().getFeb().updateEvent(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         }
     }
 

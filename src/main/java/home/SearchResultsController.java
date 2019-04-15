@@ -2,9 +2,6 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
-import com.google.common.eventbus.AllowConcurrentEvents;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXListView;
 import application_state.Event;
 import javafx.application.Platform;
@@ -52,14 +49,14 @@ public class SearchResultsController implements Observer {
     @FXML
     void initialize() {
         myDBS = DatabaseService.getDatabaseService();
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
         buildingAbbrev.put("BTM", "BTM");
         buildingAbbrev.put("Tower", "Tow");
         buildingAbbrev.put("45 Francis", "45Fr");
         buildingAbbrev.put("15 Francis", "15Fr");
         buildingAbbrev.put("RES", "RES");
-        ApplicationState.getApplicationState().getFeb().register("searchResultsContoller",this);
+        ApplicationState.getApplicationState().getObservableBus().register("searchResultsContoller",this);
         repopulateList(event.isAdmin());
     }
 
@@ -103,9 +100,9 @@ public class SearchResultsController implements Observer {
 
     @FXML
     void closeDrawer(ActionEvent e) {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("closeDrawer");
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     /**
@@ -114,7 +111,7 @@ public class SearchResultsController implements Observer {
      */
     @FXML
     public void listViewClicked(MouseEvent e) {
-        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ApplicationState currState = ApplicationState.getApplicationState();
         HBox selectedNode = list_view.getSelectionModel().getSelectedItem();
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
@@ -133,7 +130,7 @@ public class SearchResultsController implements Observer {
             currState.setStartNode(destNode);
             event.setEventName("node-select-start");
         }
-        ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
     }
 

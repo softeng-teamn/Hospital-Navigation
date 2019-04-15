@@ -1,14 +1,10 @@
 package employee.controller;
 
 import application_state.ApplicationState;
-import application_state.Observer;
-import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import employee.model.Employee;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,13 +14,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import application_state.Event;
 import database.DatabaseService;
-import map.Edge;
 import service.ResourceLoader;
 import service.StageManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import static application_state.ApplicationState.getApplicationState;
 
 public class EmployeeLoginController implements Initializable {
 
@@ -60,14 +54,14 @@ public class EmployeeLoginController implements Initializable {
                 passwordField.getStyleClass().add("wrong-credentials");
                 // if user has admin credentials
             } else if (user.isAdmin()){
-                event = ApplicationState.getApplicationState().getFeb().getEvent();
+                event = ApplicationState.getApplicationState().getObservableBus().getEvent();
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
                 event.setEventName("login");
-                ApplicationState.getApplicationState().getFeb().updateEvent(event);
+                ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
                 showHome();
                 // else user is an employee
             } else {
@@ -78,7 +72,7 @@ public class EmployeeLoginController implements Initializable {
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
 
                 event.setEventName("login");
-                ApplicationState.getApplicationState().getFeb().updateEvent(event);
+                ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
                 showHome();
             }
         }
