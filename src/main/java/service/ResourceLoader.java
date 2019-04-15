@@ -14,6 +14,7 @@ public class  ResourceLoader {
     public static final URL deleteNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/deleteNodeConfirm.fxml");
     public static final URL saveNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/saveNodeConfirm.fxml");
 
+    public static final URL about = service.ResourceLoader.class.getResource("/fxml/home/aboutPage.fxml");
     public static final URL directionMessage = service.ResourceLoader.class.getResource("/fxml/home/directionMessage.fxml");
     public static final URL pathFindingSettings = service.ResourceLoader.class.getResource("/fxml/home/pathfindingSettings.fxml");
     public static final URL searchResults = service.ResourceLoader.class.getResource("/fxml/home/searchResults.fxml");

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 
-<HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="128.0" prefWidth="1920.0" spacing="5.0" styleClass="header" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.TopNavController">
+<HBox fx:id="top_nav" alignment="CENTER_LEFT" prefHeight="128.0" prefWidth="1920.0" spacing="5.0" styleClass="header" stylesheets="@../../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.TopNavController">
     <padding><Insets bottom="6.0" left="24.0" right="24.0" top="6.0" /></padding>
     <children>
       <JFXHamburger fx:id="hamburger" onMouseClicked="#showPathSetting">
@@ -54,7 +54,7 @@
         </JFXToggleNode>
         <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="time_label" styleClass="header-label" textAlignment="CENTER" />
-        <Region prefWidth="310.0" />
+        <Region prefWidth="360.0" />
         <JFXButton fx:id="fulfillBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showAdminScene" prefHeight="80.0" prefWidth="80.0" text="Fulfill Request">
             <graphic>
                 <FontAwesomeIconView glyphName="COG" size="60" />

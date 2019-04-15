@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.AboutPageController">
+   <children>
+      <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" styleClass="header" stylesheets="@../../theme.css">
+         <children>
+            <Label styleClass="header-label" text="About" textFill="WHITE">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Region prefHeight="116.0" prefWidth="732.0" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <JFXButton fx:id="homeBtn" alignment="CENTER_RIGHT" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="HOME" size="60" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+      <VBox alignment="CENTER" prefHeight="300.0" prefWidth="100.0" spacing="25.0">
+         <children>
+            <Label styleClass="big-label" stylesheets="@../../../../../build/resources/main/theme.css" text="CS3733-D19 Software Engineering" />
+            <Label styleClass="big-label" stylesheets="@../../theme.css" text="WPI Computer Science Department" />
+            <Label styleClass="big-label" stylesheets="@../../theme.css" text="Prof. Wilson Wong" />
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </VBox>
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <Label styleClass="big-label" stylesheets="@../../theme.css" text="Our Team: " />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="350.0" prefWidth="200.0">
+         <children>
+            <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="300.0" spacing="10.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label text="Tyler Ferrara">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Nathan Kaplan">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Samuel Goldman ">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Maya Sun">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Nicolas Pingal ">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Nicole Cotto">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Lauren Hatfield ">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Calvin Kocienda">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Molly Wirtz">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Xinzhe Jiang">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="Mattheus Nascimento">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label text="James Ternent">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+               </children>
+               <HBox.margin>
+                  <Insets top="20.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="300.0" spacing="10.0" stylesheets="@../../theme.css" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label alignment="BASELINE_LEFT" text="Lead Software Engineer">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Project Manager">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="content" text="Test Engineer ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Product Owner">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Assistant Lead Engineer">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Assistant Lead Engineer">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Document Analyst">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Srcum Master">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Software Engineer">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Software Engineer">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Software Engineer">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label text="Software Engineer">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+               <HBox.margin>
+                  <Insets left="150.0" top="20.0" />
+               </HBox.margin>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Label text="A special thank you to Brigham and Women’s Faulkner Hospital and Andrew Shinn, for their time and thoughtful input.">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children></HBox>
+   </children>
+</VBox>
