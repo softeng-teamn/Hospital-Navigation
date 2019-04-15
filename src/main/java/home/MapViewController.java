@@ -6,6 +6,7 @@ import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import elevator.ElevatorConnnection;
 import application_state.Event;
 import application_state.EventBusFactory;
@@ -38,6 +39,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import map.MapNode;
@@ -46,8 +48,9 @@ import database.DatabaseService;
 import map.PathFindingService;
 import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
-import service.StageManager;
+import service.StageManager;;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.*;
@@ -71,6 +74,7 @@ public class MapViewController {
     private Circle selectCircle;
     private ArrayList<Line> lineCollection;
     private ArrayList<Circle> circleCollection;
+    private HashMap<String, ArrayList<Polyline>> polylineCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
     private String units = "feet";    // Feet or meters conversion
@@ -130,13 +134,14 @@ public class MapViewController {
         eventBus.register(this);
 
         // Setup collection of lines
-        lineCollection = new ArrayList<Line>();
+        lineCollection = new ArrayList<>();
+        polylineCollection = new HashMap<>();
 
         // Set start circle
         startCircle = new Circle();
 
         // Initialize Circle Collection
-        circleCollection = new ArrayList<Circle>();
+        circleCollection = new ArrayList<>();
 
         // Setting Up Circle Destination Point
         startCircle.setCenterX(event.getDefaultNode().getXcoord());
@@ -217,6 +222,9 @@ public class MapViewController {
     void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
         setFloor(btn.getText());
+        if (hasPath){
+            drawPath();
+        }
     }
 
 
@@ -255,7 +263,6 @@ public class MapViewController {
                         currentMethod = event.getSearchMethod();
                         break;
                     case "editing":
-                        deletePath();
                         editNodeHandler(event.isEditing());
                         break;
                     case "logout":
@@ -264,7 +271,6 @@ public class MapViewController {
                         drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
                         break;
                     default:
-//                        System.out.println("I don'");
                         break;
                 }
             }
@@ -340,10 +346,7 @@ public class MapViewController {
         }
     }
 
-
     private void drawPoint(Node node, Circle circle, Color color, boolean start) {
-        // remove points
-        deletePath();
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
             //System.out.println("we found new Selected Circles");
@@ -413,6 +416,7 @@ public class MapViewController {
         }
 
         path = newpath;
+        hasPath = false;
         drawPath();
 
 
@@ -456,56 +460,130 @@ public class MapViewController {
         }
 
         path = newpath;
+        hasPath = false;
         drawPath();
     }
 
-    // draw path on the screen
+    @SuppressFBWarnings(value = "WMI_WRONG_MAP_ITERATOR")
     private void drawPath() {
-        // remove points
-        deletePath();
-        if (path != null && path.size() > 1) {
-            Node last = path.get(0);
-            Node current;
-            for (int i = 1; i < path.size(); i++) {
-                current = path.get(i);
-                Line line = new Line();
 
-                line.setStartX(current.getXcoord());
-                line.setStartY(current.getYcoord());
+        if(!hasPath){
+            setFloor(path.get(0).getFloor());
+            scrollTo(path.get(0));
+        }
 
-                line.setEndX(last.getXcoord());
-                line.setEndY(last.getYcoord());
-
-                if (current.getFloor().equals(event.getFloor())){
-                    line.setStroke(Color.valueOf("183284"));
-                } else {
-                    line.setStroke(Color.rgb(139,155,177));
+        for (ArrayList<Polyline> polylines : polylineCollection.values()) {
+            for(Polyline polyline : polylines){
+                if(zoomGroup.getChildren().contains(polyline)){
+                    zoomGroup.getChildren().remove(polyline);
                 }
-                line.setStrokeWidth(20.0);
-                zoomGroup.getChildren().add(line);
-                lineCollection.add(line);
-                last = current;
             }
+        }
 
-//            event.setPath(path);
-//            event.setEventName("showText");
-//            eventBus.post(event);
+        polylineCollection.clear();
 
-            printDirections(makeDirections(path));
+        Polyline polyline = new Polyline();
 
+        Node last = path.get(0);
+        polyline.getPoints().addAll((double) last.getXcoord(), (double) last.getYcoord());
+
+        for(int i = 1; i < path.size(); i++) {
+            Node current = path.get(i);
+            if(!current.getFloor().equals(last.getFloor())){
+                addToList(last.getFloor(), polyline);
+                if(last.getFloor().equals(event.getFloor())){
+                    Node next = current;
+                    int j = i;
+                    while (next.getNodeType().equals(current.getNodeType())){
+                        j++;
+                        next = path.get(j);
+                    }
+                    addButton(current, next);
+                }
+                polyline = new Polyline();
+            }
+            polyline.getPoints().addAll((double) current.getXcoord(), (double) current.getYcoord());
+            last = current;
+        }
+
+        addToList(path.get(path.size() - 1).getFloor(), polyline);
+
+        for(String floor : polylineCollection.keySet()) {
+            if(floor.equals(event.getFloor())){
+                ArrayList<Polyline> polylines = polylineCollection.get(floor);
+                for(Polyline pl : polylines){
+                    addAnimation(pl);
+                    zoomGroup.getChildren().add(pl);
+
+                }
+            }
         }
 
         hasPath = true;
-
     }
 
-    private void deletePath(){
-        for (Line line : lineCollection) {
-            if (zoomGroup.getChildren().contains(line)) {
-                zoomGroup.getChildren().remove(line);
-                hasPath = false;
+    private void addButton(Node current, Node next){
+        JFXButton floorSwitcher = new JFXButton("Take the " + current.getNodeType() + " to floor " + next.getFloor());
+        floorSwitcher.getStyleClass().add("path-button");
+        floorSwitcher.setTranslateX(current.getXcoord());
+        floorSwitcher.setTranslateY(current.getYcoord());
+        floorSwitcher.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                setFloor(next.getFloor());
+                drawPath();
             }
+        });
+        zoomGroup.getChildren().add(floorSwitcher);
+    }
+
+    private synchronized void addToList(String mapKey, Polyline polyline) {
+        ArrayList<Polyline> polylines = polylineCollection.get(mapKey);
+
+        // if list does not exist create it
+        if(polylines == null) {
+            polylines = new ArrayList<Polyline>();
+            polylines.add(polyline);
+            polylineCollection.put(mapKey, polylines);
+        } else {
+            // add if item is not already in list
+            if(!polylines.contains(polyline)) polylines.add(polyline);
         }
+    }
+
+    private void addAnimation(Polyline line){
+        line.getStrokeDashArray().setAll(16d, 16d);
+        line.setStroke(Color.BLUE);
+        line.setStrokeWidth(8);
+
+        final double maxOffset =
+                line.getStrokeDashArray().stream()
+                        .reduce(
+                                0d,
+                                (a, b) -> a + b
+                        );
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.ZERO,
+                        new KeyValue(
+                                line.strokeDashOffsetProperty(),
+                                0,
+                                Interpolator.LINEAR
+                        )
+                ),
+                new KeyFrame(
+                        Duration.seconds(2),
+                        new KeyValue(
+                                line.strokeDashOffsetProperty(),
+                                maxOffset,
+                                Interpolator.LINEAR
+                        )
+                )
+        );
+        timeline.setRate(-1);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     private void scrollTo(Node node) {
