@@ -149,7 +149,8 @@ public class ScheduleController {
     public JFXTimePicker startTimePicker, endTimePicker;
 
     @FXML
-    public Label resInfoLbl, inputErrorLbl;
+    public Label resInfoLbl, inputErrorLbl, schedLbl;
+
 
 
     private Event event = EventBusFactory.getEvent();
@@ -313,8 +314,6 @@ public class ScheduleController {
 
 
 
-
-
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // Select the first item and display its schedule
@@ -460,7 +459,6 @@ public class ScheduleController {
 
 
 
-
         /**
          * Listener to update listview of rooms and info label
          * @param value
@@ -542,12 +540,15 @@ public class ScheduleController {
      */
     @FXML
     public void showRoomSchedule() {
+
+        // set label based on room
+        ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
+
+
         System.out.println("showing schedule");
         // Clear the previous schedule
         currentSchedule.clear();
 
-        // Get the selected location
-        ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
         currentSelection = curr;
 
         // Get that date and turn it into gregorian calendars to pass to the database
@@ -556,7 +557,15 @@ public class ScheduleController {
         GregorianCalendar gcalStart = GregorianCalendar.from(chosenDate.atStartOfDay(ZoneId.systemDefault()));
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
 
-        // Make a list of time and activity labels for the schedule
+
+        // set label based on date
+        String date = chosenDate.toString() ;
+        //date = date.substring(0, 9) ;
+
+        String name = curr.getSpaceName() ;
+        schedLbl.setText("Schedule for " + name + ": Week of " + date) ;
+
+                // Make a list of time and activity labels for the schedule
         ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
 
         // For every hour between the time the room closes and the time it opens

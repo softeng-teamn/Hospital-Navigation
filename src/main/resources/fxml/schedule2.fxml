@@ -114,7 +114,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Label styleClass="big-label" text="Weekly Schedule" />
+                  <Label fx:id="schedLbl" styleClass="big-label" text="Weekly Schedule for " />
                   <TableView fx:id="scheduleTable" prefHeight="600.0" prefWidth="200.0" />
                   <Pane fx:id="image_pane1" onMouseClicked="#mapClickedHandler" />
                   <HBox prefHeight="100.0" prefWidth="200.0">
