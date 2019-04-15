@@ -15,6 +15,9 @@ import java.util.*;
 import java.util.Date;
 import java.util.function.Function;
 
+/** DatabaseService controls each other class's access to the database, kept as a singleton for ease of access.
+ *
+ */
 public class DatabaseService {
 
     public static final String DATABASE_NAME = "hospital-db";
@@ -132,6 +135,9 @@ public class DatabaseService {
             System.err.println("File not deleted: " + f.getPath());
     }
 
+    /**
+     * Deletes the local database files from disk. Used exclusively for testing.
+     */
     public static void wipeOutFiles() {
         wipeOutFiles(new File(DATABASE_NAME));
     }
@@ -328,6 +334,10 @@ public class DatabaseService {
         return (Node) executeGetById(query, Node.class, nodeID);
     }
 
+    /** Takes a list of nodes and adds all of them to the database.
+     * @param nodes A list of nodes to add to the database
+     * @return true if the insertion is successful, and false if otherwise
+     */
     public boolean insertAllNodes(List<Node> nodes) {
         String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
         PreparedStatement insertStatement = null;
@@ -495,11 +505,18 @@ public class DatabaseService {
         return successful;
     }
 
+    /** Retrieves every edge from the database.
+     * @return An ArrayList of every edge in the database.
+     */
     public ArrayList<Edge> getAllEdges() {
         String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID";
         return (ArrayList<Edge>) (List<?>) executeGetMultiple(query, Edge.class, new Object[]{});
     }
 
+    /** Retrieves all edges connected to the given node
+     * @param nodeId The node to retrieve edges from
+     * @return All edges connected to the given node.
+     */
     public ArrayList<Edge> getAllEdgesWithNode(String nodeId) {
         String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID Where (n1.NODEID = ? or n2.NODEID = ?)";
         return (ArrayList<Edge>) (List<?>) executeGetMultiple(query, Edge.class, nodeId, nodeId);
@@ -572,7 +589,7 @@ public class DatabaseService {
     }
 
     /**
-     * Get all reservations made for the given space ID that fall entirely within {@param from} and {@param to}.
+     * Get all reservations made for the given space ID that fall entirely within from and to.
      *
      * @param id   the spaceID of the reservable space being requested for
      * @param from start of the window
@@ -608,7 +625,6 @@ public class DatabaseService {
 
     /**
      * retrieves a list of all employees from the database.
-     *
      * @return a list of all employees in the database.
      */
     public List<Employee> getAllEmployees() {
@@ -634,6 +650,10 @@ public class DatabaseService {
         return executeUpdate(query, employee.getID());
     }
 
+    /** Retrieves the Employee with the given username
+     * @param username the username of the desired employee
+     * @return the employee object associated with the given username.
+     */
     public Employee getEmployeeByUsername(String username) {
         String query = "SELECT * FROM EMPLOYEE WHERE (username = ?)";
         return (Employee) executeGetById(query, Employee.class, username);
@@ -834,9 +854,9 @@ public class DatabaseService {
         return (List<MedicineRequest>) (List<?>) executeGetMultiple(query, MedicineRequest.class, true);
     }
 
-    /**
+    /** retrieves a florist request from the database
      * @param id the ID of the service_request to retrieve
-     * @return
+     * @return the florist request associated with the given ID.
      */
     public FloristRequest getFloristRequest(int id) {
         String query = "SELECT * FROM FLORISTREQUEST WHERE (serviceID = ?)";
@@ -2127,6 +2147,9 @@ public class DatabaseService {
         }
     }
 
+    /** Gets the current version of the database, used for verification.
+     * @return the current version of the database
+     */
     public static int getDatabaseVersion() {
         return DATABASE_VERSION.intValue();
     }
