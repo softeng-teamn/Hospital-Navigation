@@ -123,7 +123,7 @@
                   <children>
                      <JFXButton fx:id="about_btn" contentDisplay="GRAPHIC_ONLY" onAction="#showAbout" text="About" HBox.hgrow="ALWAYS">
                       <graphic>
-                          <MaterialIconView fx:id="question_icon" glyphName="LOCATION_ON" size="35" />
+                          <MaterialIconView fx:id="question_icon" glyphName="INFO_OUTLINE" size="35" />
                       </graphic>
                       </JFXButton>
                   </children>
