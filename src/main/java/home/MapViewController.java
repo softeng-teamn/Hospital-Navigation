@@ -7,7 +7,13 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
 import database.DatabaseService;
 import elevator.ElevatorConnection;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import elevator.ElevatorConnection;
+import application_state.Event;
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -26,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import map.MapNode;
@@ -35,6 +42,7 @@ import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
 import service.StageManager;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +64,7 @@ public class MapViewController implements Observer {
     private Circle selectCircle;
     private ArrayList<Line> lineCollection;
     private ArrayList<Circle> circleCollection;
+    private HashMap<String, ArrayList<Polyline>> polylineCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
     private String units = "feet";    // Feet or meters conversion
@@ -107,13 +116,14 @@ public class MapViewController implements Observer {
         ApplicationState currState = ApplicationState.getApplicationState();
 
         // Setup collection of lines
-        lineCollection = new ArrayList<Line>();
+        lineCollection = new ArrayList<>();
+        polylineCollection = new HashMap<>();
 
         // Set start circle
         startCircle = new Circle();
 
         // Initialize Circle Collection
-        circleCollection = new ArrayList<Circle>();
+        circleCollection = new ArrayList<>();
 
         // Setting Up Circle Destination Point
         startCircle.setCenterX(currState.getStartNode().getXcoord());
@@ -177,9 +187,11 @@ public class MapViewController implements Observer {
         ImageView newImg;
         if (imageCache.containsKey(floor)) {
             newImg = imageCache.get(floor);
+            event.setFloor(floor);
         } else {
             // unknown floor change | SETTING TO DEFAULT
             newImg = imageCache.get("1");
+            event.setFloor("1");
         }
         zoomGroup.getChildren().remove(this.floorImg);
         zoomGroup.getChildren().add(newImg);
@@ -190,6 +202,9 @@ public class MapViewController implements Observer {
     void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
         setFloor(btn.getText());
+        if (hasPath){
+            drawPath();
+        }
     }
 
 
@@ -258,6 +273,16 @@ public class MapViewController implements Observer {
                     @Override
                     public void run() {
                         editNodeHandler(event.isEditing());
+                    }
+                });
+                break;
+            case "logout":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        zoomGroup.getChildren().removeAll(circleCollection);
+                        circleCollection.clear();
+                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67,70,76), true);
                     }
                 });
                 break;
@@ -336,7 +361,6 @@ public class MapViewController implements Observer {
         }
     }
 
-
     private void drawPoint(Node node, Circle circle, Color color, boolean start) {
         // remove points
         for (Line line : lineCollection) {
@@ -412,6 +436,7 @@ public class MapViewController implements Observer {
         } // todo
 
         path = newpath;
+        hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -459,6 +484,7 @@ public class MapViewController implements Observer {
         }
 
         path = newpath;
+        hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -468,76 +494,125 @@ public class MapViewController implements Observer {
         }
     }
 
-    // draw path on the screen
+    @SuppressFBWarnings(value = "WMI_WRONG_MAP_ITERATOR")
     private void drawPath() {
-        // remove points
-        for (Line line : lineCollection) {
-            if (zoomGroup.getChildren().contains(line)) {
-                zoomGroup.getChildren().remove(line);
+
+        if(!hasPath){
+            setFloor(path.get(0).getFloor());
+            scrollTo(path.get(0));
+        }
+
+        for (ArrayList<Polyline> polylines : polylineCollection.values()) {
+            for(Polyline polyline : polylines){
+                if(zoomGroup.getChildren().contains(polyline)){
+                    zoomGroup.getChildren().remove(polyline);
+                }
             }
         }
-        if (path != null && path.size() > 1) {
-            Node last = path.get(0);
-            Node current;
-            for (int i = 1; i < path.size(); i++) {
-                current = path.get(i);
-                Line line = new Line();
 
-                line.setStartX(current.getXcoord());
-                line.setStartY(current.getYcoord());
+        polylineCollection.clear();
 
-                line.setEndX(last.getXcoord());
-                line.setEndY(last.getYcoord());
+        Polyline polyline = new Polyline();
 
-                if (current.getFloor().equals(event.getFloor())) {
-                    line.setStroke(Color.valueOf("183284"));
-                } else {
-                    line.setStroke(Color.rgb(139, 155, 177));
+        Node last = path.get(0);
+        polyline.getPoints().addAll((double) last.getXcoord(), (double) last.getYcoord());
+
+        for(int i = 1; i < path.size(); i++) {
+            Node current = path.get(i);
+            if(!current.getFloor().equals(last.getFloor())){
+                addToList(last.getFloor(), polyline);
+                if(last.getFloor().equals(event.getFloor())){
+                    Node next = current;
+                    int j = i;
+                    while (next.getNodeType().equals(current.getNodeType())){
+                        j++;
+                        next = path.get(j);
+                    }
+                    addButton(current, next);
                 }
-                line.setStrokeWidth(20.0);
-                zoomGroup.getChildren().add(line);
-                lineCollection.add(line);
-                last = current;
+                polyline = new Polyline();
+            }
+            polyline.getPoints().addAll((double) current.getXcoord(), (double) current.getYcoord());
+            last = current;
+        }
+
+        addToList(path.get(path.size() - 1).getFloor(), polyline);
+
+        for(String floor : polylineCollection.keySet()) {
+            if(floor.equals(event.getFloor())){
+                ArrayList<Polyline> polylines = polylineCollection.get(floor);
+                for(Polyline pl : polylines){
+                    addAnimation(pl);
+                    zoomGroup.getChildren().add(pl);
+
+                }
             }
         }
         hasPath = true;
     }
 
-    /**
-     * zooms in the map
-     *
-     * @param event
-     */
-    @FXML
-    void zoomIn(ActionEvent event) {
-        zoom_slider.setValue(zoom_slider.getValue() + 0.05);
-        zoom_slider.setValue(zoom_slider.getValue());
+    private void addButton(Node current, Node next){
+        JFXButton floorSwitcher = new JFXButton("Take the " + current.getNodeType() + " to floor " + next.getFloor());
+        floorSwitcher.getStyleClass().add("path-button");
+        floorSwitcher.setTranslateX(current.getXcoord());
+        floorSwitcher.setTranslateY(current.getYcoord());
+        floorSwitcher.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                setFloor(next.getFloor());
+                drawPath();
+            }
+        });
+        zoomGroup.getChildren().add(floorSwitcher);
     }
 
-    /**
-     * zooms out the map
-     *
-     * @param event
-     */
-    @FXML
-    void zoomOut(ActionEvent event) {
-        zoom_slider.setValue(zoom_slider.getValue() - 0.05);
-        zoom_slider.setValue(zoom_slider.getValue());
+    private synchronized void addToList(String mapKey, Polyline polyline) {
+        ArrayList<Polyline> polylines = polylineCollection.get(mapKey);
+
+        // if list does not exist create it
+        if(polylines == null) {
+            polylines = new ArrayList<Polyline>();
+            polylines.add(polyline);
+            polylineCollection.put(mapKey, polylines);
+        } else {
+            // add if item is not already in list
+            if(!polylines.contains(polyline)) polylines.add(polyline);
+        }
     }
 
-    /**
-     * scales zoom grouping based on given value
-     *
-     * @param scaleValue
-     */
-    private void zoom(double scaleValue) {
-//    System.out.println("airportapp.Controller.zoom, scaleValue: " + scaleValue);
-        double scrollH = map_scrollpane.getHvalue();
-        double scrollV = map_scrollpane.getVvalue();
-        zoomGroup.setScaleX(scaleValue);
-        zoomGroup.setScaleY(scaleValue);
-        map_scrollpane.setHvalue(scrollH);
-        map_scrollpane.setVvalue(scrollV);
+    private void addAnimation(Polyline line){
+        line.getStrokeDashArray().setAll(16d, 16d);
+        line.setStroke(Color.BLUE);
+        line.setStrokeWidth(8);
+
+        final double maxOffset =
+                line.getStrokeDashArray().stream()
+                        .reduce(
+                                0d,
+                                (a, b) -> a + b
+                        );
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.ZERO,
+                        new KeyValue(
+                                line.strokeDashOffsetProperty(),
+                                0,
+                                Interpolator.LINEAR
+                        )
+                ),
+                new KeyFrame(
+                        Duration.seconds(2),
+                        new KeyValue(
+                                line.strokeDashOffsetProperty(),
+                                maxOffset,
+                                Interpolator.LINEAR
+                        )
+                )
+        );
+        timeline.setRate(-1);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     private void scrollTo(Node node) {
