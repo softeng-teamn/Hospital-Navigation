@@ -59,6 +59,12 @@ public class ScheduleController {
 
 
 
+        // color
+       public String color ;
+
+
+
+
         public ScheduleWrapper(String time) {
             this.time = time;
             //this.availability = "Available";
@@ -103,7 +109,9 @@ public class ScheduleController {
         public String getSatAvailability() { return satAvailability; }
         public void setSatAvailability(String satAvailability) { this.satAvailability = satAvailability; }
 
-
+        public String getColor() { return color; }
+        public void setColor(String color) { this.color = color /*this.setStyle("-fx-background-color: #98FB98")*/;
+            ; }
 
 
         /*
@@ -352,6 +360,7 @@ public class ScheduleController {
         scheduleTable.setEditable(false);
 
 
+
         // HERE!! IMPORTANT!! MAYBE!!
         // i have no idea what this means (but im going to apply to all new cols anyways - whoever wrote pls help
         timeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
@@ -364,7 +373,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-
+                sunday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().sunAvailability);
 
             }
@@ -373,6 +382,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+                monday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().monAvailability);
 
             }
@@ -381,6 +391,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+                tuesday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().tuesAvailability);
 
             }
@@ -389,6 +400,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+                wednesday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().wedAvailability);
 
             }
@@ -397,6 +409,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+                thursday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().thursAvailability);
 
             }
@@ -405,6 +418,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+                friday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().friAvailability);
 
             }
@@ -413,11 +427,11 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
+                saturday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().satAvailability);
 
             }
         });
-
 
 
         scheduleTable.getColumns().addAll(timeCol, sunday, monday, tuesday, wednesday, thursday, friday, saturday);
@@ -810,9 +824,14 @@ public class ScheduleController {
                     switch (res.getStartTime().get(Calendar.DAY_OF_WEEK)) {
                         case 1:
                             time.setSunAvailability("Booked");
+                            //time.setSunAvailability("");
+                            // set to red
+                            //TableCell cell = new TableCell()
+
                             break ;
                         case 2:
                             time.setMonAvailability("Booked");
+                            time.setColor("red") ;
                             break ;
                         case 3:
                             time.setTuesAvailability("Booked");
@@ -835,6 +854,28 @@ public class ScheduleController {
                     }
                     //time.setAvailability("Booked");
                     // time.setSunAvailability("Booked");
+
+
+/////////////////
+                    /*
+                    // Set the cell to display only the name of the reservableSpace
+                    scheduleTable.cellFactoryProperty(param -> new ListCell<ReservableSpace>() {
+                        @Override
+                        protected void updateItem(ReservableSpace item, boolean empty) {
+                            super.updateItem(item, empty);
+
+                            if (empty || item == null || item.getSpaceName() == null) {
+                                setText(null);
+                            } else {
+                                setText(item.getSpaceName());
+                                setOnMouseClicked(EventHandler -> {showRoomSchedule();} );
+                            }
+                        }
+                    });
+                    */
+///////////////////////////////////////
+
+
                 }
                 // what does this do (set to booked?)
                 currentSchedule.set(box, 1);
