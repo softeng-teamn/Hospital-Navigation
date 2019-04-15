@@ -41,7 +41,7 @@
                   </JFXButton>
                </children>
             </HBox>
-            <JFXTextField fx:id="building_field" labelFloat="true" promptText="Enter Building" />
+            <JFXComboBox fx:id="building_combo" maxWidth="1.7976931348623157E308" promptText="Select Building" />
             <JFXComboBox fx:id="nodeType_combo" maxWidth="1.7976931348623157E308" promptText="Select Node Type" />
             <JFXComboBox fx:id="floor_combo" maxWidth="1.7976931348623157E308" onAction="#comboAction" promptText="Select Floor" />
             <JFXTextField fx:id="short_field" labelFloat="true" promptText="Enter Short Name" />

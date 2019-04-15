@@ -63,12 +63,12 @@
             <Region prefHeight="350.0" prefWidth="1920.0" />
             <VBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" spacing="24.0">
                <children>
-                  <JFXTextField fx:id="building_field" labelFloat="true" maxWidth="200.0" promptText="Select Building">
+                  <JFXComboBox fx:id="building_combo" maxWidth="200.0" onAction="#buildingAction" promptText="Select Building">
                      <VBox.margin>
                         <Insets bottom="5.0" />
                      </VBox.margin>
-                  </JFXTextField>
-                  <JFXComboBox fx:id="nodeType_combo" maxWidth="200.0" onAction="#comboAction" promptText="Select Node Type">
+                  </JFXComboBox>
+                  <JFXComboBox fx:id="nodeType_combo" maxWidth="200.0" onAction="#nodeTypeAction" promptText="Select Node Type">
                      <VBox.margin>
                         <Insets bottom="5.0" />
                      </VBox.margin>

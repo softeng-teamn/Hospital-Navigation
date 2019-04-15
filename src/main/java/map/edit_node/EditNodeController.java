@@ -56,9 +56,9 @@ public class EditNodeController extends Control {
     @FXML
     private JFXSlider zoom_slider;
     @FXML
-    private JFXTextField building_field, short_field, long_field;
+    private JFXTextField short_field, long_field;
     @FXML
-    private JFXComboBox<String> floor_combo, nodeType_combo;
+    private JFXComboBox<String> floor_combo, nodeType_combo, building_combo;
     @FXML
     private GesturePane gPane;
     @FXML
@@ -217,7 +217,8 @@ public class EditNodeController extends Control {
 
     void fillNodeInfo() {
         Node node = ApplicationState.getApplicationState().getNodeToEdit();
-        building_field.setText(node.getBuilding());
+        building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis");
+        building_combo.getSelectionModel().select(node.getBuilding());
         nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
         nodeType_combo.getSelectionModel().select(node.getNodeType());
         floor_combo.getItems().add("3");
@@ -312,7 +313,7 @@ public class EditNodeController extends Control {
         tempEditNode.setXcoord((int)selectedCircle.getCenterX());
         tempEditNode.setYcoord((int)selectedCircle.getCenterY());
         tempEditNode.setNodeType(nodeType_combo.getSelectionModel().getSelectedItem());
-        tempEditNode.setBuilding(building_field.getText());
+        tempEditNode.setBuilding(building_combo.getSelectionModel().getSelectedItem());
         tempEditNode.setLongName(long_field.getText());
         tempEditNode.setShortName(short_field.getText());
         tempEditNode.setClosed(closedToggle.isSelected());

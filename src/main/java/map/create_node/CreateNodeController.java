@@ -36,7 +36,7 @@ import java.util.HashMap;
 public class CreateNodeController extends Controller {
 
     @FXML
-    public JFXComboBox<String> nodeType_combo;
+    JFXComboBox<String> nodeType_combo, building_combo;
     @FXML
     AnchorPane anchor_pane;
     @FXML
@@ -50,7 +50,7 @@ public class CreateNodeController extends Controller {
     @FXML
     VBox node_info_vbox, floor_change_vbox;
     @FXML
-    JFXTextField short_field, long_field, building_field;
+    JFXTextField short_field, long_field;
     @FXML
     JFXListView<String> time_view;
     @FXML
@@ -98,6 +98,7 @@ public class CreateNodeController extends Controller {
         imagesInit();
 
         nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
+        building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis");
 
         // start state at 0
         stateIterator = 0;
@@ -370,10 +371,6 @@ public class CreateNodeController extends Controller {
             node_short = newValue;
             checkAllFields();
         });
-        building_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            node_building = newValue;
-            checkAllFields();
-        });
     }
 
     // will allow next button to be clicked if valid fields
@@ -448,7 +445,12 @@ public class CreateNodeController extends Controller {
     }
 
     @FXML
-    public void comboAction(ActionEvent actionEvent) {
+    public void nodeTypeAction(ActionEvent actionEvent) {
         node_type = nodeType_combo.getSelectionModel().getSelectedItem();
+    }
+
+    @FXML
+    public void buildingAction(ActionEvent actionEvent) {
+        node_building = building_combo.getSelectionModel().getSelectedItem();
     }
 }
