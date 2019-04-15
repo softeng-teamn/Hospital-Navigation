@@ -38,6 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import map.MapNode;
@@ -71,6 +72,7 @@ public class MapViewController {
     private Circle selectCircle;
     private ArrayList<Line> lineCollection;
     private ArrayList<Circle> circleCollection;
+    private ArrayList<Polyline> polylineCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
     private String units = "feet";    // Feet or meters conversion
@@ -123,13 +125,14 @@ public class MapViewController {
         eventBus.register(this);
 
         // Setup collection of lines
-        lineCollection = new ArrayList<Line>();
+        lineCollection = new ArrayList<>();
+        polylineCollection = new ArrayList<>();
 
         // Set start circle
         startCircle = new Circle();
 
         // Initialize Circle Collection
-        circleCollection = new ArrayList<Circle>();
+        circleCollection = new ArrayList<>();
 
         // Setting Up Circle Destination Point
         startCircle.setCenterX(event.getDefaultNode().getXcoord());
@@ -254,7 +257,6 @@ public class MapViewController {
                         drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
                         break;
                     default:
-//                        System.out.println("I don'");
                         break;
                 }
             }
@@ -454,7 +456,7 @@ public class MapViewController {
         drawPath();
     }
 
-    // draw path on the screen
+    /*// draw path on the screen
     private void drawPath() {
         // remove points
         for (Line line : lineCollection) {
@@ -486,16 +488,74 @@ public class MapViewController {
                 last = current;
             }
 
-//            event.setPath(path);
-//            event.setEventName("showText");
-//            eventBus.post(event);
-
             printDirections(makeDirections(path));
 
         }
 
         hasPath = true;
 
+    }*/
+
+    private void drawPath() {
+        for (Polyline polyline : polylineCollection) {
+            if (zoomGroup.getChildren().contains(polyline)){
+                zoomGroup.getChildren().remove(polyline);
+            }
+        }
+
+        Polyline polyline = new Polyline();
+
+        Node last = path.get(0);
+        polyline.getPoints().addAll((double) last.getXcoord(), (double) last.getYcoord());
+
+        for(int i = 1; i < path.size(); i++) {
+            Node current = path.get(i);
+            if(!current.getFloor().equals(last.getFloor())){
+                addAnimation(polyline);
+                zoomGroup.getChildren().add(polyline);
+                polylineCollection.add(polyline);
+                polyline = new Polyline();
+            }
+            polyline.getPoints().addAll((double) current.getXcoord(), (double) current.getYcoord());
+            last = current;
+        }
+
+        printDirections(makeDirections(path));
+        hasPath = true;
+    }
+
+    private void addAnimation(Polyline line){
+        line.getStrokeDashArray().setAll(10d, 10d);
+        line.fillProperty().setValue(Color.PINK);
+        line.setStrokeWidth(5);
+
+        final double maxOffset =
+                line.getStrokeDashArray().stream()
+                        .reduce(
+                                0d,
+                                (a, b) -> a + b
+                        );
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.ZERO,
+                        new KeyValue(
+                                line.strokeDashOffsetProperty(),
+                                0,
+                                Interpolator.LINEAR
+                        )
+                ),
+                new KeyFrame(
+                        Duration.seconds(2),
+                        new KeyValue(
+                                line.strokeDashOffsetProperty(),
+                                maxOffset,
+                                Interpolator.LINEAR
+                        )
+                )
+        );
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     private void scrollTo(Node node) {
