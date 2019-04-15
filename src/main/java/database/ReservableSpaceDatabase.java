@@ -5,10 +5,10 @@ import scheduler.model.ReservableSpace;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class ReservableSpaceDatabase {
+ class ReservableSpaceDatabase {
     private final DatabaseService databaseService;
 
-    public ReservableSpaceDatabase(DatabaseService databaseService) {
+    ReservableSpaceDatabase(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 

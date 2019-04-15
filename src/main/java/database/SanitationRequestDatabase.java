@@ -4,10 +4,10 @@ import service_request.model.sub_model.SanitationRequest;
 
 import java.util.List;
 
-public class SanitationRequestDatabase {
+class SanitationRequestDatabase {
     private final DatabaseService databaseService;
 
-    public SanitationRequestDatabase(DatabaseService databaseService) {
+    SanitationRequestDatabase(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 

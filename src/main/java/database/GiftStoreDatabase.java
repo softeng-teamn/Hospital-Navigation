@@ -4,10 +4,10 @@ import service_request.model.sub_model.GiftStoreRequest;
 
 import java.util.List;
 
-public class GiftStoreDatabase {
+class GiftStoreDatabase {
     private final DatabaseService databaseService;
 
-    public GiftStoreDatabase(DatabaseService databaseService) {
+    GiftStoreDatabase(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 

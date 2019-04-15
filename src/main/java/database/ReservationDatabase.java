@@ -8,10 +8,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class ReservationDatabase {
+class ReservationDatabase {
     private final DatabaseService databaseService;
 
-    public ReservationDatabase(DatabaseService databaseService) {
+    ReservationDatabase(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 

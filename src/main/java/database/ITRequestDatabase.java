@@ -4,10 +4,10 @@ import service_request.model.sub_model.ITRequest;
 
 import java.util.List;
 
-public class ITRequestDatabase {
+class ITRequestDatabase {
     private final DatabaseService databaseService;
 
-    public ITRequestDatabase(DatabaseService databaseService) {
+    ITRequestDatabase(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 

@@ -35,6 +35,14 @@ public class DatabaseService {
     private final SecurityRequestDatabase securityRequestDatabase = new SecurityRequestDatabase(this);
     private final SanitationRequestDatabase sanitationRequestDatabase = new SanitationRequestDatabase(this);
     private final GiftStoreDatabase giftStoreDatabase = new GiftStoreDatabase(this);
+    private final ReligiousRequestDatabase religiousRequestDatabase = new ReligiousRequestDatabase(this);
+    private final InterpreterRequestDatabase interpreterRequestDatabase = new InterpreterRequestDatabase(this);
+    private final PatientInfoDatabase patientInfoDatabase = new PatientInfoDatabase(this);
+    private final InternalTransportRequestDatabase internalTransportRequestDatabase = new InternalTransportRequestDatabase(this);
+    private final ExternalTransportRequestDatabase externalTransportRequestDatabase = new ExternalTransportRequestDatabase(this);
+    private final database.AVRequestDatabase AVRequestDatabase = new AVRequestDatabase(this);
+    private final MaintenanceRequestDatabase maintenanceRequestDatabase = new MaintenanceRequestDatabase(this);
+    private final ToyRequestDatabase toyRequestDatabase = new ToyRequestDatabase(this);
 
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
@@ -966,76 +974,62 @@ public class DatabaseService {
     }
 
     public ReligiousRequest getReligiousRequest(int id) {
-        String query = "SELECT * FROM RELIGIOUSREQUEST WHERE (serviceID = ?)";
-        return (ReligiousRequest) executeGetById(query, ReligiousRequest.class, id);
+        return religiousRequestDatabase.getReligiousRequest(id);
     }
 
 
     public boolean insertReligiousRequest(ReligiousRequest req) {
-        String insertQuery = ("INSERT INTO RELIGIOUSREQUEST(notes, locationNodeID, completed, religion, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
+        return religiousRequestDatabase.insertReligiousRequest(req);
     }
 
     public boolean updateReligiousRequest(ReligiousRequest req) {
-        String query = "UPDATE RELIGIOUSREQUEST SET notes=?, locationNodeID=?, completed=?, religion=?, assignedEmployee=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getReligion().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
+        return religiousRequestDatabase.updateReligiousRequest(req);
     }
 
     public boolean deleteReligiousRequest(ReligiousRequest req) {
-        String query = "DELETE FROM RELIGIOUSREQUEST WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getId());
+        return religiousRequestDatabase.deleteReligiousRequest(req);
     }
 
     public List<ReligiousRequest> getAllReligiousRequests() {
-        String query = "Select * FROM RELIGIOUSREQUEST";
-        return (List<ReligiousRequest>)(List<?>) executeGetMultiple(query, ReligiousRequest.class, new Object[]{});
+        return religiousRequestDatabase.getAllReligiousRequests();
     }
     public List<ReligiousRequest> getAllIncompleteReligiousRequests() {
-        String query = "Select * FROM RELIGIOUSREQUEST WHERE (completed = ?)";
-        return (List<ReligiousRequest>) (List<?>) executeGetMultiple(query, ReligiousRequest.class, false);
+        return religiousRequestDatabase.getAllIncompleteReligiousRequests();
     }
     public List<ReligiousRequest> getAllCompleteReligiousRequests() {
-        String query = "Select * FROM RELIGIOUSREQUEST WHERE (completed = ?)";
-        return (List<ReligiousRequest>) (List<?>) executeGetMultiple(query, ReligiousRequest.class, true);
+        return religiousRequestDatabase.getAllCompleteReligiousRequests();
     }
 
     public InterpreterRequest getInterpreterRequest(int id) {
-        String query = "SELECT * FROM INTERPRETERREQUEST WHERE (serviceID = ?)";
-        return (InterpreterRequest) executeGetById(query, InterpreterRequest.class, id);
+        return interpreterRequestDatabase.getInterpreterRequest(id);
     }
 
 
     public boolean insertInterpreterRequest(InterpreterRequest req) {
-        String insertQuery = ("INSERT INTO INTERPRETERREQUEST(notes, locationNodeID, completed, language, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
+        return interpreterRequestDatabase.insertInterpreterRequest(req);
     }
 
     public boolean updateInterpreterRequest(InterpreterRequest req) {
-        String query = "UPDATE INTERPRETERREQUEST SET notes=?, locationNodeID=?, completed=?, language=?, assignedEmployee=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getLanguageType().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
+        return interpreterRequestDatabase.updateInterpreterRequest(req);
     }
 
     public boolean deleteInterpreterRequest(InterpreterRequest req) {
-        String query = "DELETE FROM INTERPRETERREQUEST WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getId());
+        return interpreterRequestDatabase.deleteInterpreterRequest(req);
     }
 
     public List<InterpreterRequest> getAllInterpreterRequests() {
-        String query = "Select * FROM INTERPRETERREQUEST";
-        return (List<InterpreterRequest>) (List<?>) executeGetMultiple(query, InterpreterRequest.class, new Object[]{});
+        return interpreterRequestDatabase.getAllInterpreterRequests();
     }
 
     public List<InterpreterRequest> getAllIncompleteInterpreterRequests() {
-        String query = "Select * FROM INTERPRETERREQUEST WHERE (completed = ?)";
-        return (List<InterpreterRequest>) (List<?>) executeGetMultiple(query, InterpreterRequest.class, false);
+        return interpreterRequestDatabase.getAllIncompleteInterpreterRequests();
     }
 
     /**
      * @return A list of interpreter requests
      */
     public List<InterpreterRequest> getAllCompleteInterpreterRequests() {
-        String query = "Select * FROM INTERPRETERREQUEST WHERE (completed = ?)";
-        return (List<InterpreterRequest>) (List<?>) executeGetMultiple(query, InterpreterRequest.class, true);
+        return interpreterRequestDatabase.getAllCompleteInterpreterRequests();
     }
 
     /**
@@ -1043,8 +1037,7 @@ public class DatabaseService {
      * @return the controller.PatientInfo service_request object with the given ID
      */
     public PatientInfoRequest getPatientInfoRequest(int id) {
-        String query = "SELECT * FROM PATIENTINFOREQUEST WHERE (serviceID = ?)";
-        return (PatientInfoRequest) executeGetById(query, PatientInfoRequest.class, id);
+        return patientInfoDatabase.getPatientInfoRequest(id);
     }
 
     /**
@@ -1052,8 +1045,7 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertPatientInfoRequest(PatientInfoRequest req) {
-        String insertQuery = ("INSERT INTO PATIENTINFOREQUEST(notes, locationNodeID, completed, firstName, lastName, birthDay, description, assignedEmployee) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
+        return patientInfoDatabase.insertPatientInfoRequest(req);
     }
 
     /**
@@ -1063,8 +1055,7 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updatePatientInfoRequest(PatientInfoRequest req) {
-        String query = "UPDATE PATIENTINFOREQUEST SET notes=?, locationNodeID=?, completed=?, firstName=?, lastName=?, birthDay=?, description=?, assignedEmployee=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getFirstName(), req.getLastName(), req.getBirthDay(), req.getDescription(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
+        return patientInfoDatabase.updatePatientInfoRequest(req);
     }
 
     /**
@@ -1074,32 +1065,28 @@ public class DatabaseService {
      * @return true if the delete succeeds and false if otherwise
      */
     public boolean deletePatientInfoRequest(PatientInfoRequest req) {
-        String query = "DELETE FROM PATIENTINFOREQUEST WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getId());
+        return patientInfoDatabase.deletePatientInfoRequest(req);
     }
 
     /**
      * @return all Patient Info service_request stored in the database in a List.
      */
     public List<PatientInfoRequest> getAllPatientInfoRequests() {
-        String query = "Select * FROM PATIENTINFOREQUEST";
-        return (List<PatientInfoRequest>) (List<?>) executeGetMultiple(query, PatientInfoRequest.class, new Object[]{});
+        return patientInfoDatabase.getAllPatientInfoRequests();
     }
 
     /**
      * @return a list of every Patient Info service_request that has not been completed yet.
      */
     public List<PatientInfoRequest> getAllIncompletePatientInfoRequests() {
-        String query = "Select * FROM PATIENTINFOREQUEST WHERE (completed = ?)";
-        return (List<PatientInfoRequest>) (List<?>) executeGetMultiple(query, PatientInfoRequest.class, false);
+        return patientInfoDatabase.getAllIncompletePatientInfoRequests();
     }
 
     /**
      * @return a list of every Patient Info service_request that has been completed.
      */
     public List<PatientInfoRequest> getAllCompletePatientInfoRequests() {
-        String query = "Select * FROM PATIENTINFOREQUEST WHERE (completed = ?)";
-        return (List<PatientInfoRequest>) (List<?>) executeGetMultiple(query, PatientInfoRequest.class, true);
+        return patientInfoDatabase.getAllCompletePatientInfoRequests();
     }
 
     /**
@@ -1107,8 +1094,7 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertInternalTransportRequest(InternalTransportRequest req) {
-        String insertQuery = ("INSERT INTO INTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, transportType, urgency, assignedEmployee) VALUES(?, ?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name(), req.getUrgency().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
+        return internalTransportRequestDatabase.insertInternalTransportRequest(req);
     }
 
     /**
@@ -1116,16 +1102,14 @@ public class DatabaseService {
      * @return the InternalTransportRequest service_request object with the given ID
      */
     public InternalTransportRequest getInternalTransportRequest(int id) {
-        String query = "SELECT * FROM INTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
-        return (InternalTransportRequest) executeGetById(query, InternalTransportRequest.class, id);
+        return internalTransportRequestDatabase.getInternalTransportRequest(id);
     }
 
     /**
      * @return all IT service_request stored in the database in a List.
      */
     public List<InternalTransportRequest> getAllInternalTransportRequests() {
-        String query = "Select * FROM INTERNALTRANSPORTREQUEST";
-        return (List<InternalTransportRequest>) (List<?>) executeGetMultiple(query, InternalTransportRequest.class, new Object[]{});
+        return internalTransportRequestDatabase.getAllInternalTransportRequests();
     }
 
     /**
@@ -1135,8 +1119,7 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateInternalTransportRequest(InternalTransportRequest req) {
-        String query = "UPDATE INTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, completed=?, transportType=?, urgency=?, assignedEmployee=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getTransport().name(), req.getUrgency().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
+        return internalTransportRequestDatabase.updateInternalTransportRequest(req);
     }
 
     /**
@@ -1146,29 +1129,25 @@ public class DatabaseService {
      * @return true if the delete succeeds and false if otherwise
      */
     public boolean deleteInternalTransportRequest(InternalTransportRequest req) {
-        String query = "DELETE FROM INTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getId());
+        return internalTransportRequestDatabase.deleteInternalTransportRequest(req);
     }
 
     /**
      * @return a list of every IT service_request that has not been completed yet.
      */
     public List<InternalTransportRequest> getAllIncompleteInternalTransportRequests() {
-        String query = "Select * FROM INTERNALTRANSPORTREQUEST WHERE (completed = ?)";
-        return (List<InternalTransportRequest>) (List<?>) executeGetMultiple(query, InternalTransportRequest.class, false);
+        return internalTransportRequestDatabase.getAllIncompleteInternalTransportRequests();
     }
 
     /**
      * @return a list of every IT service_request that has not been completed yet.
      */
     public List<InternalTransportRequest> getAllCompleteInternalTransportRequests() {
-        String query = "Select * FROM INTERNALTRANSPORTREQUEST WHERE (completed = ?)";
-        return (List<InternalTransportRequest>) (List<?>) executeGetMultiple(query, InternalTransportRequest.class, true);
+        return internalTransportRequestDatabase.getAllCompleteInternalTransportRequests();
     }
 
     public ExternalTransportRequest getExtTransRequest(int id) {
-        String query = "SELECT * FROM EXTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
-        return (ExternalTransportRequest) executeGetById(query, ExternalTransportRequest.class, id);
+        return externalTransportRequestDatabase.getExtTransRequest(id);
     }
 
     /**
@@ -1176,8 +1155,7 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertExtTransRequest(ExternalTransportRequest req) {
-        String insertQuery = ("INSERT INTO EXTERNALTRANSPORTREQUEST(notes, locationNodeID, completed, time, transportType, description, assignedEmployee) VALUES(?, ?, ?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType().name(), req.getDescription(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
+        return externalTransportRequestDatabase.insertExtTransRequest(req);
     }
 
     /**
@@ -1187,16 +1165,14 @@ public class DatabaseService {
      * @return true if the delete succeeds and false if otherwise
      */
     public boolean deleteExtTransRequest(ExternalTransportRequest req) {
-        String query = "DELETE FROM EXTERNALTRANSPORTREQUEST WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getId());
+        return externalTransportRequestDatabase.deleteExtTransRequest(req);
     }
 
     /**
      * @return all IT service_request stored in the database in a List.
      */
     public List<ExternalTransportRequest> getAllExtTransRequests() {
-        String query = "Select * FROM EXTERNALTRANSPORTREQUEST";
-        return (List<ExternalTransportRequest>) (List<?>) executeGetMultiple(query, ExternalTransportRequest.class, new Object[]{});
+        return externalTransportRequestDatabase.getAllExtTransRequests();
     }
 
     /**
@@ -1206,24 +1182,21 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateExtTransRequest(ExternalTransportRequest req) {
-        String query = "UPDATE EXTERNALTRANSPORTREQUEST SET notes=?, locationNodeID=?, completed=?, time=?, transportType=?, description=?, assignedEmployee=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getDate(), req.getTransportationType().name(), req.getDescription(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
+        return externalTransportRequestDatabase.updateExtTransRequest(req);
     }
 
     /**
      * @return a list of every IT service_request that has not been completed yet.
      */
     public List<ExternalTransportRequest> getAllIncompleteExtTransRequests() {
-        String query = "Select * FROM EXTERNALTRANSPORTREQUEST WHERE (completed = ?)";
-        return (List<ExternalTransportRequest>) (List<?>) executeGetMultiple(query, ExternalTransportRequest.class, false);
+        return externalTransportRequestDatabase.getAllIncompleteExtTransRequests();
     }
 
     /**
      * @return a list of every IT service_request that has not been completed yet.
      */
     public List<ExternalTransportRequest> getAllCompleteExtTransRequests() {
-        String query = "Select * FROM EXTERNALTRANSPORTREQUEST WHERE (completed = ?)";
-        return (List<ExternalTransportRequest>) (List<?>) executeGetMultiple(query, MaintenanceRequest.class, true);
+        return externalTransportRequestDatabase.getAllCompleteExtTransRequests();
     }
 
     /**
@@ -1231,8 +1204,7 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertAVServiceRequest(AVServiceRequest req) {
-        String insertQuery = ("INSERT INTO AVSERVICEREQUEST(notes, locationNodeID, completed, avServiceType, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getAVServiceType().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
+        return AVRequestDatabase.insertAVServiceRequest(req);
     }
 
     /**
@@ -1240,16 +1212,14 @@ public class DatabaseService {
      * @return the IT service_request object with the given ID
      */
     public AVServiceRequest getAVServiceRequest(int id) {
-        String query = "SELECT * FROM AVSERVICEREQUEST WHERE (serviceID = ?)";
-        return (AVServiceRequest) executeGetById(query, AVServiceRequest.class, id);
+        return AVRequestDatabase.getAVServiceRequest(id);
     }
 
     /**
      * @return all IT service_request stored in the database in a List.
      */
     public List<AVServiceRequest> getAllAVServiceRequests() {
-        String query = "Select * FROM AVSERVICEREQUEST";
-        return (List<AVServiceRequest>)(List<?>) executeGetMultiple(query, AVServiceRequest.class, new Object[]{});
+        return AVRequestDatabase.getAllAVServiceRequests();
     }
 
     /** updates a given IT service_request in the database.
@@ -1257,8 +1227,7 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateAVServiceRequest(AVServiceRequest req) {
-        String query = "UPDATE AVSERVICEREQUEST SET notes=?, locationNodeID=?, completed=?, avServiceType=?, assignedEmployee=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getAVServiceType().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
+        return AVRequestDatabase.updateAVServiceRequest(req);
     }
 
     /** deletes a given IT service_request from the database
@@ -1266,24 +1235,21 @@ public class DatabaseService {
      * @return true if the delete succeeds and false if otherwise
      */
     public boolean deleteAVServiceRequest(AVServiceRequest req) {
-        String query = "DELETE FROM AVSERVICEREQUEST WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getId());
+        return AVRequestDatabase.deleteAVServiceRequest(req);
     }
 
     /**
      * @return a list of every IT service_request that has not been completed yet.
      */
     public List<AVServiceRequest> getAllIncompleteAVServiceRequests() {
-        String query = "Select * FROM AVSERVICEREQUEST WHERE (completed = ?)";
-        return (List<AVServiceRequest>)(List<?>) executeGetMultiple(query, AVServiceRequest.class, false);
+        return AVRequestDatabase.getAllIncompleteAVServiceRequests();
     }
 
     /**
      * @return a list of every IT service_request that has not been completed yet.
      */
     public List<AVServiceRequest> getAllCompleteAVServiceRequests() {
-        String query = "Select * FROM AVSERVICEREQUEST WHERE (completed = ?)";
-        return (List<AVServiceRequest>)(List<?>) executeGetMultiple(query, AVServiceRequest.class, true);
+        return AVRequestDatabase.getAllCompleteAVServiceRequests();
     }
 
     /**
@@ -1291,8 +1257,7 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertMaintenanceRequest(MaintenanceRequest req) {
-        String insertQuery = ("INSERT INTO MAINTENANCEREQUEST(notes, locationNodeID, completed, maintenanceType, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMaintenanceType().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
+        return maintenanceRequestDatabase.insertMaintenanceRequest(req);
     }
 
     /**
@@ -1300,16 +1265,14 @@ public class DatabaseService {
      * @return the IT service_request object with the given ID
      */
     public MaintenanceRequest getMaintenanceRequest(int id) {
-        String query = "SELECT * FROM MAINTENANCEREQUEST WHERE (serviceID = ?)";
-        return (MaintenanceRequest) executeGetById(query, MaintenanceRequest.class, id);
+        return maintenanceRequestDatabase.getMaintenanceRequest(id);
     }
 
     /**
      * @return all IT service_request stored in the database in a List.
      */
     public List<MaintenanceRequest> getAllMaintenanceRequests() {
-        String query = "Select * FROM MAINTENANCEREQUEST";
-        return (List<MaintenanceRequest>) (List<?>) executeGetMultiple(query, MaintenanceRequest.class, new Object[]{});
+        return maintenanceRequestDatabase.getAllMaintenanceRequests();
     }
 
     /**
@@ -1319,8 +1282,7 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateMaintenanceRequest(MaintenanceRequest req) {
-        String query = "UPDATE MAINTENANCEREQUEST SET notes=?, locationNodeID=?, completed=?, maintenanceType=?, assignedEmployee=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getMaintenanceType().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
+        return maintenanceRequestDatabase.updateMaintenanceRequest(req);
     }
 
     /**
@@ -1330,24 +1292,21 @@ public class DatabaseService {
      * @return true if the delete succeeds and false if otherwise
      */
     public boolean deleteMaintenanceRequest(MaintenanceRequest req) {
-        String query = "DELETE FROM MAINTENANCEREQUEST WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getId());
+        return maintenanceRequestDatabase.deleteMaintenanceRequest(req);
     }
 
     /**
      * @return a list of every IT service_request that has not been completed yet.
      */
     public List<MaintenanceRequest> getAllIncompleteMaintenanceRequests() {
-        String query = "Select * FROM MAINTENANCEREQUEST WHERE (completed = ?)";
-        return (List<MaintenanceRequest>) (List<?>) executeGetMultiple(query, MaintenanceRequest.class, false);
+        return maintenanceRequestDatabase.getAllIncompleteMaintenanceRequests();
     }
 
     /**
      * @return a list of every IT service_request that has not been completed yet.
      */
     public List<MaintenanceRequest> getAllCompleteMaintenanceRequests() {
-        String query = "Select * FROM MAINTENANCEREQUEST WHERE (completed = ?)";
-        return (List<MaintenanceRequest>) (List<?>) executeGetMultiple(query, MaintenanceRequest.class, true);
+        return maintenanceRequestDatabase.getAllCompleteMaintenanceRequests();
     }
 
     /**
@@ -1355,8 +1314,7 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertToyRequest(ToyRequest req) {
-        String insertQuery = ("INSERT INTO TOYREQUEST(notes, locationNodeID, completed, toyName, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
-        return executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getToyName(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
+        return toyRequestDatabase.insertToyRequest(req);
     }
 
     /**
@@ -1364,16 +1322,14 @@ public class DatabaseService {
      * @return the IT service_request object with the given ID
      */
     public ToyRequest getToyRequest(int id) {
-        String query = "SELECT * FROM TOYREQUEST WHERE (serviceID = ?)";
-        return (ToyRequest) executeGetById(query, ToyRequest.class, id);
+        return toyRequestDatabase.getToyRequest(id);
     }
 
     /**
      * @return all IT service_request stored in the database in a List.
      */
     public List<ToyRequest> getAllToyRequests() {
-        String query = "Select * FROM TOYREQUEST";
-        return (List<ToyRequest>) (List<?>) executeGetMultiple(query, ToyRequest.class, new Object[]{});
+        return toyRequestDatabase.getAllToyRequests();
     }
 
     /**
@@ -1383,8 +1339,7 @@ public class DatabaseService {
      * @return true if the update succeeds and false if otherwise
      */
     public boolean updateToyRequest(ToyRequest req) {
-        String query = "UPDATE TOYREQUEST SET notes=?, locationNodeID=?, completed=?, toyName=?, assignedEmployee=? WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getToyName(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
+        return toyRequestDatabase.updateToyRequest(req);
     }
 
     /**
@@ -1394,21 +1349,18 @@ public class DatabaseService {
      * @return true if the delete succeeds and false if otherwise
      */
     public boolean deleteToyRequest(ToyRequest req) {
-        String query = "DELETE FROM TOYREQUEST WHERE (serviceID = ?)";
-        return executeUpdate(query, req.getId());
+        return toyRequestDatabase.deleteToyRequest(req);
     }
 
     /**
      * @return a list of every IT service_request that has not been completed yet.
      */
     public List<ToyRequest> getAllIncompleteToyRequests() {
-        String query = "Select * FROM TOYREQUEST WHERE (completed = ?)";
-        return (List<ToyRequest>) (List<?>) executeGetMultiple(query, ToyRequest.class, false);
+        return toyRequestDatabase.getAllIncompleteToyRequests();
     }
 
     public List<ToyRequest> getAllCompleteToyRequests() {
-        String query = "Select * FROM TOYREQUEST WHERE (completed = ?)";
-        return (List<ToyRequest>) (List<?>) executeGetMultiple(query, ToyRequest.class, true);
+        return toyRequestDatabase.getAllCompleteToyRequests();
     }
 
     /**

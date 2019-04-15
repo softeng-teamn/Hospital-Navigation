@@ -4,10 +4,10 @@ import service_request.model.sub_model.SecurityRequest;
 
 import java.util.List;
 
-public class SecurityRequestDatabase {
+class SecurityRequestDatabase {
     private final DatabaseService databaseService;
 
-    public SecurityRequestDatabase(DatabaseService databaseService) {
+    SecurityRequestDatabase(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 
