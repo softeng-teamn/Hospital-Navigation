@@ -38,6 +38,8 @@ import java.util.stream.Stream;
 import static service.ResourceLoader.enBundle;
 import static service.ResourceLoader.esBundle;
 
+import static application_state.ApplicationState.getApplicationState;
+
 public class RequestController implements Initializable {
 
     @FXML
@@ -177,11 +179,11 @@ public class RequestController implements Initializable {
 
         System.out.println("Repopulation of listView");
         // if nobody is logged in, filter out stair and hall nodes
-        if (ApplicationState.getApplicationState().getCurrentEmployee() == null){
+        if (ApplicationState.getApplicationState().getEmployeeLoggedIn() == null){
             allNodes = myDBS.getNodesFilteredByType("STAI", "HALL");
         }
         // if the user is admin, get everything
-        else if (ApplicationState.getApplicationState().getCurrentEmployee().isAdmin()) {
+        else if (ApplicationState.getApplicationState().getEmployeeLoggedIn().isAdmin()) {
             allNodes = myDBS.getAllNodes();
             // filter out stair and hall nodes otherwise
         } else {

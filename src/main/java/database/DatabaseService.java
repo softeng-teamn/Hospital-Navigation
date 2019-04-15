@@ -22,11 +22,17 @@ public class DatabaseService {
 
     public static final String DATABASE_NAME = "hospital-db";
     public static final Integer DATABASE_VERSION = 10;
+    private final NodeDatabase nodeDatabase = new NodeDatabase(this);
+    private final EdgeDatabase edgeDatabase = new EdgeDatabase(this);
 
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
     private ArrayList<Function<Void, Void>> edgeCallbacks;
     public boolean createFlag;
+
+    public Connection getConnection() {
+        return connection;
+    }
 
     private static class SingletonHelper {
         private static final DatabaseService dbs = new DatabaseService();
@@ -290,10 +296,7 @@ public class DatabaseService {
      * @return true if the node is successfully inserted, false otherwise.
      */
     public boolean insertNode(Node n) {
-        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        boolean successful = executeInsert(nodeStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName(), n.isClosed());
-        if (successful) executeNodeCallbacks();
-        return successful;
+        return nodeDatabase.insertNode(n);
     }
 
     /**
@@ -303,11 +306,7 @@ public class DatabaseService {
      * @return true if the update is successful, false otherwise
      */
     public boolean updateNode(Node n) {
-        String query = "UPDATE NODE SET xcoord=?, ycoord=?, floor=?, building=?, nodeType=?, longName=?, shortName=?, isClosed=? WHERE (nodeID = ?)";
-        boolean successful = executeUpdate(query, n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(),
-                n.getLongName(), n.getShortName(), n.isClosed(), n.getNodeID());
-        if (successful) executeNodeCallbacks();
-        return successful;
+        return nodeDatabase.updateNode(n);
     }
 
     /**
@@ -317,10 +316,7 @@ public class DatabaseService {
      * @return true if a record is deleted, false otherwise
      */
     public boolean deleteNode(Node n) {
-        String query = "DELETE FROM NODE WHERE (nodeID = ?)";
-        boolean successful = executeUpdate(query, n.getNodeID());
-        if (successful) executeNodeCallbacks();
-        return successful;
+        return nodeDatabase.deleteNode(n);
     }
 
     /**
@@ -330,8 +326,7 @@ public class DatabaseService {
      * @return a node with the given ID
      */
     public Node getNode(String nodeID) {
-        String query = "SELECT * FROM NODE WHERE (NODEID = ?)";
-        return (Node) executeGetById(query, Node.class, nodeID);
+        return nodeDatabase.getNode(nodeID);
     }
 
     /** Takes a list of nodes and adds all of them to the database.
@@ -339,36 +334,10 @@ public class DatabaseService {
      * @return true if the insertion is successful, and false if otherwise
      */
     public boolean insertAllNodes(List<Node> nodes) {
-        String nodeStatement = ("INSERT INTO NODE VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        PreparedStatement insertStatement = null;
 
         // Track the status of the insert
-        boolean insertStatus = false;
 
-        try {
-            // Prep the statement
-            insertStatement = connection.prepareStatement(nodeStatement);
-
-            for (int i = 0; i <= nodes.size() / 1000; i++) {
-                for (int j = (i * 1000); j < i * 1000 + 1000 && j < nodes.size(); j++) {
-                    Node n = nodes.get(j);
-                    prepareStatement(insertStatement, n.getNodeID(), n.getXcoord(), n.getYcoord(), n.getFloor(), n.getBuilding(), n.getNodeType(), n.getLongName(), n.getShortName(), n.isClosed());
-                    insertStatement.addBatch();
-                }
-                // Execute
-                insertStatement.executeBatch();
-
-                executeNodeCallbacks();
-
-                // If we made it this far, we're successful!
-                insertStatus = true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeStatement(insertStatement);
-        }
-        return insertStatus;
+        return nodeDatabase.insertAllNodes(nodes);
     }
 
     /**
@@ -377,8 +346,7 @@ public class DatabaseService {
      * @return list of all nodes in the database
      */
     public ArrayList<Node> getAllNodes() {
-        String query = "Select * FROM NODE";
-        return (ArrayList<Node>) (List<?>) executeGetMultiple(query, Node.class, new Object[]{});
+        return nodeDatabase.getAllNodes();
     }
 
     /**
@@ -389,16 +357,8 @@ public class DatabaseService {
      */
     @SuppressFBWarnings(value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING", justification = "Not a security issue - just add question marks based on number of types to filter out.")
     public ArrayList<Node> getNodesFilteredByType(String... filterOut) {
-        String query = "Select * from NODE where NODETYPE not in (";
-        StringBuilder builtQuery = new StringBuilder();
-        builtQuery.append(query);
-        for (int i = 0; i < filterOut.length; i++) {
-            builtQuery.append("?,");
-        }
-        builtQuery.deleteCharAt(builtQuery.lastIndexOf(","));
-        builtQuery.append(")");
 
-        return (ArrayList<Node>) (List<?>) executeGetMultiple(builtQuery.toString(), Node.class, (Object[]) filterOut);
+        return nodeDatabase.getNodesFilteredByType(filterOut);
     }
 
     /**
@@ -408,32 +368,11 @@ public class DatabaseService {
      * @return an arraylist of all nodes on the given floor.
      */
     public ArrayList<Node> getNodesByFloor(String floor) {
-        String query = "Select * FROM NODE WHERE NODE.FLOOR = ?";
-        return (ArrayList<Node>) (List<?>) executeGetMultiple(query, Node.class, floor);
+        return nodeDatabase.getNodesByFloor(floor);
     }
 
     public int getNumNodeTypeByFloor(String nodeType, String floor) {
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        try {
-            stmt = connection.prepareStatement("SELECT COUNT (*) AS TOTAL FROM NODE WHERE (floor=? AND nodeType=?)");
-            prepareStatement(stmt, floor, nodeType);
-
-            // execute the query
-            res = stmt.executeQuery();
-            int num = -1;
-            while (res.next()) {
-                num = res.getInt("TOTAL");
-            }
-            stmt.close();
-            res.close();
-            return num;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return -1;
-        } finally {
-            closeAll(stmt, res);
-        }
+        return nodeDatabase.getNumNodeTypeByFloor(nodeType, floor);
     }
 
     // EDGE FUNCTIONS
@@ -445,10 +384,8 @@ public class DatabaseService {
      * @return A list of all nodes connected to the given node.
      */
     public ArrayList<Node> getNodesConnectedTo(Node n) {
-        String nodeID = n.getNodeID();
-        String query = "SELECT NODE.NodeID, NODE.xcoord, NODE.ycoord, NODE.floor, NODE.building, NODE.nodeType, NODE.longName, NODE.shortName, NODE.isClosed FROM NODE INNER JOIN EDGE ON (NODE.NodeID = EDGE.node1 AND EDGE.node2 = ?) OR (NODE.NodeID = EDGE.node2 AND EDGE.Node1 = ?) WHERE NODE.isClosed = false";
 
-        return (ArrayList<Node>) (List<?>) executeGetMultiple(query, Node.class, nodeID, nodeID);
+        return nodeDatabase.getNodesConnectedTo(n);
     }
 
     /**
@@ -459,13 +396,8 @@ public class DatabaseService {
      * @return true if the insert succeeds and false if otherwise
      */
     public boolean insertEdge(Edge e) {
-        String insertStatement = ("INSERT INTO EDGE VALUES(?,?,?)");
-        String node1ID = e.getNode1().getNodeID();
-        String node2ID = e.getNode2().getNodeID();
 
-        boolean successful = executeInsert(insertStatement, e.getEdgeID(), node1ID, node2ID);
-        if (successful) executeEdgeCallbacks();
-        return successful;
+        return edgeDatabase.insertEdge(e);
     }
 
     /**
@@ -475,8 +407,7 @@ public class DatabaseService {
      * @return the edge corresponding to the given ID
      */
     public Edge getEdge(String edgeID) {
-        String query = "SELECT e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n1.isClosed as n1isClosed, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName, n2.isClosed as n2isClosed FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID WHERE (EDGEID = ?)";
-        return (Edge) executeGetById(query, Edge.class, edgeID);
+        return edgeDatabase.getEdge(edgeID);
     }
 
     /**
@@ -486,10 +417,7 @@ public class DatabaseService {
      * @return true or false based on whether the insert succeeded or not
      */
     public boolean updateEdge(Edge e) {
-        String query = "UPDATE EDGE SET edgeID=?, NODE1=?, NODE2=? WHERE(EDGEID = ?)";
-        boolean successful = executeUpdate(query, e.getEdgeID(), e.getNode1().getNodeID(), e.getNode2().getNodeID(), e.getEdgeID());
-        if (successful) executeEdgeCallbacks();
-        return successful;
+        return edgeDatabase.updateEdge(e);
     }
 
     /**
@@ -499,18 +427,14 @@ public class DatabaseService {
      * @return true or false based on whether the insert succeeded or not
      */
     public boolean deleteEdge(Edge e) {
-        String query = "DELETE FROM EDGE WHERE (edgeID = ?)";
-        boolean successful = executeUpdate(query, e.getEdgeID());
-        if (successful) executeEdgeCallbacks();
-        return successful;
+        return edgeDatabase.deleteEdge(e);
     }
 
     /** Retrieves every edge from the database.
      * @return An ArrayList of every edge in the database.
      */
     public ArrayList<Edge> getAllEdges() {
-        String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n1.isClosed as n1isClosed, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName, n2.isClosed as n2isClosed FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID";
-        return (ArrayList<Edge>) (List<?>) executeGetMultiple(query, Edge.class, new Object[]{});
+        return edgeDatabase.getAllEdges();
     }
 
     /** Retrieves all edges connected to the given node
@@ -518,8 +442,7 @@ public class DatabaseService {
      * @return All edges connected to the given node.
      */
     public ArrayList<Edge> getAllEdgesWithNode(String nodeId) {
-        String query = "Select e.*, n1.nodeID as n1nodeID, n1.xcoord as n1xcoord, n1.ycoord as n1ycoord, n1.floor as n1floor, n1.building as n1building, n1.nodeType as n1nodeType, n1.longName as n1longName, n1.shortName as n1shortName, n1.isClosed as n1isClosed, n2.nodeID as n2nodeID, n2.xcoord as n2xcoord, n2.ycoord as n2ycoord, n2.floor as n2floor, n2.building as n2building, n2.nodeType as n2nodeType, n2.longName as n2longName, n2.shortName as n2shortName, n2.isClosed as n2isClosed FROM EDGE e Join NODE n1 on e.NODE1 = n1.NODEID Join NODE n2 on e.NODE2 = n2.NODEID Where (n1.NODEID = ? or n2.NODEID = ?)";
-        return (ArrayList<Edge>) (List<?>) executeGetMultiple(query, Edge.class, nodeId, nodeId);
+        return edgeDatabase.getAllEdgesWithNode(nodeId);
     }
 
     /**
@@ -1162,6 +1085,9 @@ public class DatabaseService {
         return (List<InterpreterRequest>) (List<?>) executeGetMultiple(query, InterpreterRequest.class, false);
     }
 
+    /**
+     * @return A list of interpreter requests
+     */
     public List<InterpreterRequest> getAllCompleteInterpreterRequests() {
         String query = "Select * FROM INTERPRETERREQUEST WHERE (completed = ?)";
         return (List<InterpreterRequest>) (List<?>) executeGetMultiple(query, InterpreterRequest.class, true);
@@ -1576,10 +1502,10 @@ public class DatabaseService {
     /**
      * helper function to close result sets and SQL statments after they've been used.
      *
-     * @param stmt
-     * @param rs
+     * @param stmt The statement to close
+     * @param rs The ResultSet to close
      */
-    private void closeAll(Statement stmt, ResultSet rs) {
+    void closeAll(Statement stmt, ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
@@ -1658,7 +1584,7 @@ public class DatabaseService {
      * @param parameters the parameters for the prepared statement. There must be an equal number of ?s in the query and parameters in here for the query to run properly.
      * @return a list of the given object type, based on the database query
      */
-    private <T> List<Object> executeGetMultiple(String query, Class<T> cls, Object... parameters) {
+    <T> List<Object> executeGetMultiple(String query, Class<T> cls, Object... parameters) {
         ArrayList<Object> reqs = new ArrayList();
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -1687,11 +1613,11 @@ public class DatabaseService {
     /**
      * Run an executeUpdate query - for UPDATE AND DELETE
      *
-     * @param query
-     * @param parameters
+     * @param query the delete or update query to run
+     * @param parameters the parameters for that query, to be inserted into the prepared statement.
      * @return a boolean indicating success
      */
-    private boolean executeUpdate(String query, Object... parameters) {
+    boolean executeUpdate(String query, Object... parameters) {
         boolean modifyResult = false;
         PreparedStatement stmt = null;
         try {
@@ -1715,7 +1641,7 @@ public class DatabaseService {
      * @param values      the values to go into the insert statement
      * @return true if every value went in and false if otherwise
      */
-    private boolean executeInsert(String insertQuery, Object... values) {
+    boolean executeInsert(String insertQuery, Object... values) {
         PreparedStatement insertStatement = null;
 
         // Track the status of the insert
@@ -1742,12 +1668,12 @@ public class DatabaseService {
     /**
      * returns an object from the database based on a given ID
      *
-     * @param query the query to
+     * @param query the query to execute
      * @param cls   the class of object to return
      * @param id    the id that functions as the key to retrieve
      * @return an object of type cls
      */
-    private <T> Object executeGetById(String query, Class<T> cls, Object id) {
+    <T> Object executeGetById(String query, Class<T> cls, Object id) {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         Object result;
@@ -1790,10 +1716,9 @@ public class DatabaseService {
     // either extractGeneric or the specific ExtractType methods can be used.
 
     /**
-     * @param rs
-     * @param cls
-     * @param <T>
-     * @return
+     * @param rs ResultSet to extract objects from
+     * @param cls the class of objec that should be extracted
+     * @return an object of the class specified
      * @throws SQLException when extraction fails.
      */
     private <T> Object extractGeneric(ResultSet rs, Class<T> cls) throws SQLException {
@@ -1822,7 +1747,7 @@ public class DatabaseService {
     private FloristRequest extractFloristRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String bouquetType = rs.getString("bouquetType");
         int quantity = rs.getInt("quantity");
@@ -1836,7 +1761,7 @@ public class DatabaseService {
     private SecurityRequest extractSecurityRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String typeString = rs.getString("urgency");
         int assignedEmployee = rs.getInt("assignedEmployee");
@@ -1849,7 +1774,7 @@ public class DatabaseService {
     private SanitationRequest extractSanitationRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String urgency = rs.getString("urgency");
         String materialState = rs.getString("materialState");
@@ -1864,7 +1789,7 @@ public class DatabaseService {
         // Extract data
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String typeString = rs.getString("gType");
         String patientName = rs.getString("patientName");
@@ -1878,7 +1803,7 @@ public class DatabaseService {
     private ReligiousRequest extractReligiousRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String religion = rs.getString("religion");
         int assignedEmployee = rs.getInt("assignedEmployee");
@@ -1891,7 +1816,7 @@ public class DatabaseService {
     private InterpreterRequest extractInterpreterRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String language = rs.getString("language");
         int assignedEmployee = rs.getInt("assignedEmployee");
@@ -1904,7 +1829,7 @@ public class DatabaseService {
     private PatientInfoRequest extractPatientInfoRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String firstName = rs.getString("firstName");
         String lastName = rs.getString("lastName");
@@ -1921,7 +1846,7 @@ public class DatabaseService {
         // locationNodeID varchar (255), completed boolean, transportType varchar(40)
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String enumVal = rs.getString("transportType");
         String urgency = rs.getString("urgency");
@@ -1935,7 +1860,7 @@ public class DatabaseService {
     private ExternalTransportRequest extractExtTransRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String transType = rs.getString("transportType");
         String descript = rs.getString("description");
@@ -1950,7 +1875,7 @@ public class DatabaseService {
     private AVServiceRequest extractAVServiceRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String typeString = rs.getString("avServiceType");
         int assignedEmployee = rs.getInt("assignedEmployee");
@@ -1963,7 +1888,7 @@ public class DatabaseService {
     private MaintenanceRequest extractMaintenanceRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String typeString = rs.getString("maintenanceType");
         int assignedEmployee = rs.getInt("assignedEmployee");
@@ -1976,7 +1901,7 @@ public class DatabaseService {
     private ToyRequest extractToyRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String toyName = rs.getString("toyName");
         int assignedEmployee = rs.getInt("assignedEmployee");
@@ -2068,7 +1993,7 @@ public class DatabaseService {
     private ITRequest extractITRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String type = rs.getString("type");
         int assignedEmployee = rs.getInt("assignedEmployee");
@@ -2081,7 +2006,7 @@ public class DatabaseService {
     private MedicineRequest extractMedicineRequest(ResultSet rs) throws SQLException {
         int serviceID = rs.getInt("serviceID");
         String notes = rs.getString("notes");
-        Node locationNode = getNode(rs.getString("locationNodeID"));
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
         String medicineType = rs.getString("medicineType");
         double qty = rs.getDouble("quantity");
@@ -2098,7 +2023,7 @@ public class DatabaseService {
     /////////////////////////////////////// CALLBACKS //////////////////////////////////////////////////////////////////
 
 
-    private void executeNodeCallbacks() {
+    void executeNodeCallbacks() {
         for (Function<Void, Void> callback : nodeCallbacks) {
             callback.apply(null);
         }
@@ -2109,7 +2034,7 @@ public class DatabaseService {
     }
 
 
-    private void executeEdgeCallbacks() {
+    void executeEdgeCallbacks() {
         for (Function<Void, Void> callback : edgeCallbacks) {
             callback.apply(null);
         }
@@ -2130,7 +2055,7 @@ public class DatabaseService {
      * @param values            the values to insert
      * @throws SQLException there is a mismatch in number of variables or there is a database access error
      */
-    private void prepareStatement(PreparedStatement preparedStatement, Object... values) throws SQLException {
+    void prepareStatement(PreparedStatement preparedStatement, Object... values) throws SQLException {
         for (int i = 0; i < values.length; i++) {
             preparedStatement.setObject(i + 1, values[i]);
         }
@@ -2141,7 +2066,7 @@ public class DatabaseService {
      *
      * @param statement the statement to close. Null is handled
      */
-    private void closeStatement(Statement statement) {
+    void closeStatement(Statement statement) {
         if (statement != null) {
             try {
                 statement.close();
