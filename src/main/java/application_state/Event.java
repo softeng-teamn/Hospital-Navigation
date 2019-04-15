@@ -8,6 +8,9 @@ import static service.ResourceLoader.dfBundle;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class Event {
 
     Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");

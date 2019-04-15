@@ -1,6 +1,5 @@
 package database;
 
-import controller.Controller;
 import employee.model.Employee;
 import employee.model.JobType;
 import map.Edge;
@@ -15,7 +14,10 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Date;
 
-public class CSVService extends Controller {
+/**
+ * Controls access to external CSV files. Loads CSV files on disk into the database when the application starts.
+ */
+public class CSVService {
 
     public static final String NODE_EXPORT_PATH = "nodes.csv";
     public static final String EDGE_EXPORT_PATH = "edges.csv";
