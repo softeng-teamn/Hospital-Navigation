@@ -43,7 +43,7 @@ public class AdminServiceController extends Controller {
 
     @FXML
     void showSearchResults(ActionEvent e) {
-        event.setEventName("showSearch");
+        event.setEventName("closeDrawer");
         eventBus.post(event);
     }
 

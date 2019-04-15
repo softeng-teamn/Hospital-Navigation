@@ -4,6 +4,8 @@ import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import controller.Controller;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import foodRequest.FoodRequest;
+import foodRequest.ServiceException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -293,5 +295,10 @@ public class RequestController extends Controller implements Initializable {
     public void itSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.itRequest,event.getCurrentBundle()));
+    }
+
+    public void foodSelect(ActionEvent actionEvent) throws ServiceException {
+        FoodRequest req = new FoodRequest();
+        req.run(0, 0, 1920, 1080, null, null, null);
     }
 }

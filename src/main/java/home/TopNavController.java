@@ -75,6 +75,8 @@ public class TopNavController {
         if (event.isAdmin() || event.isLoggedIn()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
+            event.setEventName("logout");
+            eventBus.post(event);
             resetBtn();
             ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
         }
@@ -187,10 +189,12 @@ public class TopNavController {
             case "empLogin":
                 event.setLoggedIn((newEvent.isLoggedIn()));
                 break ;
-            case "showSearch":
-                backArro.setRate(-1);
-                backArro.play();
-                barOpened = false;
+            case "closeDrawer":
+                if(backArro.getRate() == 1) {
+                    backArro.setRate(-1);
+                    backArro.play();
+                    barOpened = false;
+                }
                 break;
             default:
                 break;
@@ -349,8 +353,6 @@ public class TopNavController {
         }
     }
 
-
-
     public void showEditEmployee(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) auth_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
@@ -362,7 +364,7 @@ public class TopNavController {
     public void showPathSetting(MouseEvent mouseEvent) {
         if (barOpened){
             barOpened = false;
-            event.setEventName("showSearch");
+            event.setEventName("closeDrawer");
             eventBus.post(event);
         } else {
             barOpened = true;
