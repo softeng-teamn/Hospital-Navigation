@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -352,7 +353,6 @@ public class ScheduleController {
       */
     @FXML
     public void showRoomSchedule() {
-        System.out.println("showing schedule");
         // Clear the previous schedule
         currentSchedule.clear();
 
@@ -618,16 +618,14 @@ public class ScheduleController {
      *Filters the ListView based on the string
      */
     private void filterList(String findStr) {
-        ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
-        resSpaces.addAll(dbResSpaces);
         if (findStr.equals("")) {
-            reservableList.getItems().clear();
-            reservableList.getItems().addAll(resSpaces);
+            reservableList.setItems(resSpaces);
+            System.out.println(resSpaces);
         }
         else {
             //Get List of all nodes
             ObservableList<ReservableSpace> original = resSpaces;
+            System.out.println(resSpaces);
 
             //Get Sorted list of nodes based on search value
             List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName),75);
@@ -642,8 +640,7 @@ public class ScheduleController {
             ObservableList<ReservableSpace> toShow = FXCollections.observableList(filteredSpaces);
 
             // Add to view
-            reservableList.getItems().clear();
-            reservableList.getItems().addAll(toShow);
+            reservableList.setItems(toShow);
         }
     }
 

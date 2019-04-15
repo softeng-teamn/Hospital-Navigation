@@ -73,7 +73,7 @@ BDEPT00202,2166,1039,2,45 Francis,DEPT,Oral Medicine and Dentistry,DEPT B0202
 BDEPT00302,2385,753,2,45 Francis,DEPT,Lee Bell Breast Center,DEPT B0302
 BDEPT00402,2439,902,2,45 Francis,DEPT,Jen Center for Primary Care,DEPT B0402
 BDEPT00502,2623,1018,2,45 Francis,DEPT,Ear Nose & Throat,DEPT B0502
-BDEPT00602,2782,1303,2,45 Francis,HALL,Hallway Intersection 31 Level 2,Hallway B3102
+BDEPT00602,2782,1303,2,45 Francis,HALL,Hallway Intersection 31,Hallway B3102
 BDEPT00702,2945,775,2,45 Francis,DEPT,Plastic Surgery,DEPT B0702
 BDEPT00802,3155,890,2,45 Francis,DEPT,Outpatient Pharmacy,DEPT B0802
 BDEPT00902,3257,879,2,45 Francis,DEPT,Weiner Center for Preoperative Evaluation,DEPT B0902
@@ -478,7 +478,7 @@ GSERV01603,1580,1858,3,Shapiro,SERV,The Porch,The Porch
 GSERV02301,1600,1895,1,Shapiro,SERV,ATM,ATM Floor 1
 GSTAI00501,1707,1992,1,Shapiro,STAI,Stairway MapNode 5 Floor 1,Northbound Stairs Floor 2
 GSTAI008L1,1720,2131,L1,Shapiro,STAI,Stairs MapNode 8 Floor L1,L1 Stairs
-GSTAI00903,1685,2052,3,Shapiro,STAI,Staircase Node 9 Floor 3,Floor 3 Stairs 
+GSTAI00903,1685,2052,3,Shapiro,STAI,Staircase Node 9 Floor 3,Floor 3 Stairs
 GSTAI01301,1750,2014,1,Shapiro,STAI,Staircase MapNode 13 Floor 1,Southbound Stairs Floor 1
 GSTAI02602,1686,1931,2,Shapiro,STAI,Stairs Node 26 Floor 2,Floor 2 Stairs Upper
 GSTAI02802,1685,2041,2,Shapiro,STAI,Stairs Node 28 Floor 2,Floor 2 Stairs Lower
@@ -488,40 +488,40 @@ HBATH00203,1750,985,3,Tower,BATH,Restroom,Bathroom 0203
 HDEPT00102,2055,1330,2,Tower,DEPT,Endoscopy,Endoscopy
 HDEPT00103,1725,900,3,Tower,DEPT,Dialysis Waiting Room,Dialysis WR
 HDEPT00203,1690,830,3,Tower,DEPT,MICU 3BC Waiting Room,MICU 3BC WR
-HHALL00102,1875,925,2,Tower,HALL,Hallway Connector 1 Floor 2,Hallway H00102
-HHALL00103,1325,655,3,Tower,HALL,Hallway Connector 1 Floor 3,Hallway H00103
-HHALL00202,1955,900,2,Tower,HALL,Hallway Connector 2 Floor 2,Hallway H00202
-HHALL00203,1235,985,3,Tower,HALL,Hallway Connector 2 Floor 3,Hallway H00203
-HHALL00302,2035,900,2,Tower,HALL,Hallway Connector 3 Floor 2,Hallway H00302
-HHALL00303,1325,985,3,Tower,HALL,Hallway Connector 3 Floor 3,Hallway H00303
-HHALL00402,1875,1025,2,Tower,HALL,Hallway Connector 4 Floor 2,Hallway H00402
-HHALL00403,1325,1290,3,Tower,HALL,Hallway Connector 4 Floor 3,Hallway H00403
-HHALL00502,1825,1025,2,Tower,HALL,Hallway Connector 5 Floor 2,Hallway H00502
-HHALL00503,1680,1290,3,Tower,HALL,Hallway Connector 5 Floor 3,Hallway H00502
-HHALL00602,1775,1080,2,Tower,HALL,Hallway Connector 6 Floor 2,Hallway H00602
-HHALL00603,1735,925,3,Tower,HALL,Hallway Connector 6 Floor 3,Hallway H00603
-HHALL00702,1740,1165,2,Tower,HALL,Hallway Connector 7 Floor 2,Hallway H00702
-HHALL00703,1735,900,3,Tower,HALL,Hallway Connector 7 Floor 3,Hallway H00703
-HHALL00802,1740,1230,2,Tower,HALL,Hallway Connector 8 Floor 2,Hallway H00802
-HHALL00803,1735,865,3,Tower,HALL,Hallway Connector 8 Floor 3,Hallway H00803
-HHALL00902,1740,1280,2,Tower,HALL,Hallway Connector 9 Floor 2,Hallway H00902
-HHALL00903,1735,820,3,Tower,HALL,Hallway Connector 9 Floor 3,Hallway H00903
-HHALL01002,2055,1280,2,Tower,HALL,Hallway Connector 10 Floor 2,Hallway H01002
-HHALL01003,1785,820,3,Tower,HALL,Hallway Connector 10 Floor 3,Hallway H01003
-HHALL01103,1690,820,3,Tower,HALL,Hallway Connector 11 Floor 3,Hallway H01103
-HHALL01203,1600,820,3,Tower,HALL,Hallway Connector 12 Floor 3,Hallway H01203
-HHALL01303,1600,1030,3,Tower,HALL,Hallway Connector 13 Floor 3,Hallway H01303
-HHALL01403,1735,1030,3,Tower,HALL,Hallway Connector 14 Floor 3,Hallway H01403
-HHALL01503,1735,985,3,Tower,HALL,Hallway Connector 15 Floor 3,Hallway H01503
+HHALL00102,1875,925,2,Tower,HALL,Hallway Connector 1,Hallway H00102
+HHALL00103,1325,655,3,Tower,HALL,Hallway Connector 1,Hallway H00103
+HHALL00202,1955,900,2,Tower,HALL,Hallway Connector 2,Hallway H00202
+HHALL00203,1235,985,3,Tower,HALL,Hallway Connector 2,Hallway H00203
+HHALL00302,2035,900,2,Tower,HALL,Hallway Connector 3,Hallway H00302
+HHALL00303,1325,985,3,Tower,HALL,Hallway Connector 3,Hallway H00303
+HHALL00402,1875,1025,2,Tower,HALL,Hallway Connector 4,Hallway H00402
+HHALL00403,1325,1290,3,Tower,HALL,Hallway Connector 4,Hallway H00403
+HHALL00502,1825,1025,2,Tower,HALL,Hallway Connector 5,Hallway H00502
+HHALL00503,1680,1290,3,Tower,HALL,Hallway Connector 5,Hallway H00502
+HHALL00602,1775,1080,2,Tower,HALL,Hallway Connector 6,Hallway H00602
+HHALL00603,1735,925,3,Tower,HALL,Hallway Connector 6,Hallway H00603
+HHALL00702,1740,1165,2,Tower,HALL,Hallway Connector 7,Hallway H00702
+HHALL00703,1735,900,3,Tower,HALL,Hallway Connector 7,Hallway H00703
+HHALL00802,1740,1230,2,Tower,HALL,Hallway Connector 8,Hallway H00802
+HHALL00803,1735,865,3,Tower,HALL,Hallway Connector 8,Hallway H00803
+HHALL00902,1740,1280,2,Tower,HALL,Hallway Connector 9,Hallway H00902
+HHALL00903,1735,820,3,Tower,HALL,Hallway Connector 9,Hallway H00903
+HHALL01002,2055,1280,2,Tower,HALL,Hallway Connector 10,Hallway H01002
+HHALL01003,1785,820,3,Tower,HALL,Hallway Connector 10,Hallway H01003
+HHALL01103,1690,820,3,Tower,HALL,Hallway Connector 11,Hallway H01103
+HHALL01203,1600,820,3,Tower,HALL,Hallway Connector 12,Hallway H01203
+HHALL01303,1600,1030,3,Tower,HALL,Hallway Connector 13,Hallway H01303
+HHALL01403,1735,1030,3,Tower,HALL,Hallway Connector 14,Hallway H01403
+HHALL01503,1735,985,3,Tower,HALL,Hallway Connector 15,Hallway H01503
 HLABS00103,1235,865,3,Tower,LABS,Reproductive Endocrine Labs,Reproductive Endocrine Labs
 HRETL00102,1935,860,2,Tower,RETL,Garden Cafe,Garden Cafe
 HRETL00202,1615,1025,2,Tower,RETL,Vending Machine,Vending Machine
 HRETL00302,1825,1080,2,Tower,RETL,Gift Shop Tower,Gift Shop
 HSERV00103,1750,865,3,Tower,SERV,Nursing Room,Nursing Room
-HSTAI00102,2060,880,2,Tower,STAI,Stairwell 1 Floor 2,Stairwell 0102
-HSTAI00103,1680,1275,3,Tower,STAI,Stairwell 1 Floor 3,Stairwell
-HSTAI00202,1695,1165,2,Tower,STAI,Stairwell 2 Tower Floor 2,Stairwell 0202
-HSTAI00302,1790,1230,2,Tower,STAI,Escalator 1 Floor 2,Escalator 1 Floor 2
+HSTAI00102,2060,880,2,Tower,STAI,Stairwell 1,Stairwell 0102
+HSTAI00103,1680,1275,3,Tower,STAI,Stairwell 1,Stairwell
+HSTAI00202,1695,1165,2,Tower,STAI,Stairwell 2 Tower,Stairwell 0202
+HSTAI00302,1790,1230,2,Tower,STAI,Escalator 1,Escalator 1
 IDEPT00103,2323,1328,3,45 Francis,DEPT,Center for Infertility and Reproductive Surgery,D1
 IDEPT00203,2448,1328,3,45 Francis,DEPT,Gynecology Oncology MIGS,D2
 IDEPT00303,2730,1315,3,45 Francis,DEPT,General Surgical Specialties Suite A,D3

@@ -1,20 +1,19 @@
 package home;
 
 import application_state.ApplicationState;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
+import application_state.Observer;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
+import database.DatabaseService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.MaterialIconView;
 import application_state.Event;
-import application_state.EventBusFactory;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -33,21 +32,17 @@ import service.StageManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
-public class TopNavController {
+public class TopNavController implements Observer {
 
     public HBox top_nav;
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event;
 
     @FXML
-    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn, requestBtn;    // TODO: rename fulfillbtn and change icon
+    private JFXButton navigate_btn, fulfillBtn, auth_btn, bookBtn, startNode_btn, requestBtn;
     @FXML
     private JFXTextField search_bar ;
     @FXML
@@ -67,16 +62,18 @@ public class TopNavController {
 
     JFXTextField startSearch = new JFXTextField();
     HamburgerBackArrowBasicTransition backArro;
+    private HashMap<String, Node> nodeLongNames = new HashMap<>();
 
 
     @FXML
     void showAdminLogin(ActionEvent e) throws Exception {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         // when admin or employee logs out
         if (event.isAdmin() || event.isLoggedIn()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
             event.setEventName("logout");
-            eventBus.post(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
             resetBtn();
             ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
         }
@@ -91,8 +88,9 @@ public class TopNavController {
     @FXML
     // switches window to map editor screen.
     public void showAdminScene() throws Exception {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("showAdmin");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     @FXML
@@ -113,12 +111,13 @@ public class TopNavController {
 
     @FXML
     void initialize() {
-        eventBus.register(this);
+        ApplicationState.getApplicationState().getObservableBus().register("topNavController", this);
 
         // Turn off editing
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("editing");
         event.setEditing(false);
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
         navigate_btn.setVisible(false);
 
@@ -135,6 +134,11 @@ public class TopNavController {
         });
 
         backArro = backArrow;
+
+        ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
+        for (Node n: allNodes) {
+            nodeLongNames.put(n.getLongName(), n);
+        }
     }
 
     private void timeWatcher() {
@@ -164,37 +168,82 @@ public class TopNavController {
         new Thread(task).start();
     }
 
-
-
     // events I care about: am "subscribed" to
-    @Subscribe
-    private void eventListener(Event newEvent) {
-
-        switch (newEvent.getEventName()) {
-            case "node-select":
-                event.setNodeSelected(newEvent.getNodeSelected());
-                // show navigation button
-                // navigate_btn.setVisible(true);
-                //showNavigationBtn(event);
-                if (event.isEndNode()){
-                    nodeSelectedHandler(newEvent.getNodeSelected());        // will make nav btn visible, fill search with node
-                } else {
-                    nodeSelectedHandler(newEvent.getNodeStart());
-                }
+    @Override
+    public void notify(Object newEvent) {
+        event = (Event) newEvent;
+        ApplicationState currState = ApplicationState.getApplicationState();
+        switch (event.getEventName()) {
+            case "node-select-end":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println(" \nSTART: " + currState.getStartNode() + "end: " + currState.getEndNode() + "\nselected: " + event.getNodeSelected());
+                        currState.setEndNode(event.getNodeSelected());
+                        search_bar.setText(currState.getEndNode().getLongName());
+                        if (currState.getEndNode() != null && currState.getStartNode() != null) {
+                            navigate_btn.setVisible(true);
+                        }
+                        else {
+                            navigate_btn.setVisible(false);
+                        }
+                        System.out.println(" \nSTART: " + currState.getStartNode() + "end: " + currState.getEndNode() + "\nselected: " + event.getNodeSelected());
+                    }
+                });
+                break;
+            case "node-select-start":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println(" \nSTART: " + currState.getStartNode() + "end: " + currState.getEndNode() + "\nselected: " + event.getNodeSelected());
+                        currState.setStartNode(event.getNodeSelected());
+                        startSearch.setText(currState.getStartNode().getLongName());
+                        if (currState.getEndNode() != null && currState.getStartNode() != null) {
+                            navigate_btn.setVisible(true);
+                        }
+                        else {
+                            navigate_btn.setVisible(false);
+                        }
+                        System.out.println(" \nSTART: " + currState.getStartNode() + "end: " + currState.getEndNode() + "\nselected: " + event.getNodeSelected());
+                    }
+                });
                 break;
             case "login":     // receives from AdminLoginContoller?
-                event.setAdmin(newEvent.isAdmin());
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        event.setAdmin(event.isAdmin());
+                    }
+                });
                 break;
-                // remove if way off base
+            // remove if way off base
             case "empLogin":
-                event.setLoggedIn((newEvent.isLoggedIn()));
+               // event.setLoggedIn((newEvent.isLoggedIn())); todo: what's the point of this code?
                 break ;
+            case "showDestination":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        startSearch.setText(currState.getStartNode().getLongName());
+                        search_bar.setText(currState.getEndNode().getLongName());
+                        if(backArro.getRate() == 1) {
+                            backArro.setRate(backArro.getRate() * -1);
+                            backArro.play();
+                            barOpened = false;
+                        }
+
+                    }
+                });
+                break;
             case "closeDrawer":
-                if(backArro.getRate() == 1) {
-                    backArro.setRate(-1);
-                    backArro.play();
-                    barOpened = false;
-                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        backArro.setRate(-1);
+                        backArro.play();
+                        barOpened = false;
+                    }
+                });
                 break;
             default:
                 break;
@@ -211,7 +260,6 @@ public class TopNavController {
 
         // if admin is logged in
         if(event.isAdmin()){
-            System.out.println("USER IS AN ADMIN");
             fulfillBtn.setVisible(true);
             edit_btn.setVisible(true);
             lock_icon.setIcon(FontAwesomeIcon.SIGN_OUT);
@@ -234,16 +282,16 @@ public class TopNavController {
             lock_icon.setIcon(FontAwesomeIcon.SIGN_IN);
             bookBtn.setVisible(false);
             requestBtn.setVisible(false);
-
         }
     }
 
     @FXML
     public void editButtonAction(ActionEvent e) throws Exception {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("editing");
         event.setEditing(!event.isEditing());
         System.out.println("Editing: " + event.isEditing());
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     /**
@@ -251,63 +299,60 @@ public class TopNavController {
      * @param e
      */
     @FXML
-    public void startNodeEnter(ActionEvent e) {
+    public void startNodeEnter(javafx.event.Event e) {
         String search = startSearch.getText();
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        ApplicationState currState = ApplicationState.getApplicationState();
+
+        if (nodeLongNames.get(search) == null) {
+            currState.setStartNode(null);
+            navigate_btn.setVisible(false);
+        }
 
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
-        event.setEndNode(false);
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     /**
      * searches for room
-     * @param e
      */
     @FXML
-    public void searchBarEnter(ActionEvent e) {
+    public void searchBarEnter() {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        ApplicationState currState = ApplicationState.getApplicationState();
         String search = search_bar.getText();
 
+        if (nodeLongNames.get(search) == null) {
+            currState.setEndNode(null);
+            navigate_btn.setVisible(false);
+        }
+
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
-        event.setEndNode(true);
-        eventBus.post(event);
-    }
-
-    // when event comes in with a node-selected:
-    //      show navigation button
-    //      show node-selected in search
-    @FXML
-    void nodeSelectedHandler(Node selected) {
-        // make change
-        navigate_btn.setVisible(true);
-
-
-        // show node-selected in search
-        String fillNodeinSearch = selected.getLongName();
-
-        if(event.isEndNode()){
-            search_bar.setText(fillNodeinSearch);
-        } else {
-            startSearch.setText(fillNodeinSearch);
-        }
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
     public void startNavigation(ActionEvent actionEvent) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        ApplicationState currState = ApplicationState.getApplicationState();
         //if(callElev.isSelected()){
             event.setCallElev(true);
         //}
 
         event.setEventName("navigation");
-        eventBus.post(event);
+        startSearch.setText(currState.getStartNode().getLongName());
+        search_bar.setText(currState.getEndNode().getLongName());
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
 
     public void setEventEndNode(MouseEvent mouseEvent){
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
-        event.setEndNode(false);
-        event.setEventName("showSearch");
-        eventBus.post(event);
+        event.setEventName("showSearch-end");
+
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
         if(backArro.getRate() == 1) {
             backArro.setRate(backArro.getRate() * -1);
@@ -318,10 +363,11 @@ public class TopNavController {
 
 
     public void setEventStartNode(MouseEvent mouseEvent) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
-        event.setEndNode(true);
-        event.setEventName("showSearch");
-        eventBus.post(event);
+        event.setEventName("showSearch-start");
+
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
         if(backArro.getRate() == 1) {
             backArro.setRate(backArro.getRate() * -1);
@@ -332,22 +378,28 @@ public class TopNavController {
 
     @FXML
     public void showStartSearch(ActionEvent actionEvent) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        ApplicationState currState = ApplicationState.getApplicationState();
         if (startNode_btn.getText().equals("Start Node")){
+            event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             startSearch.setPromptText("Start Node");
-            startSearch.setOnAction(this::startNodeEnter);
-            startSearch.setOnMouseClicked(this::setEventEndNode);
+            startSearch.setOnInputMethodTextChanged(this::startNodeEnter);
+            startSearch.setOnKeyReleased(this::startNodeEnter);
+            startSearch.setOnMouseClicked(this::setEventStartNode);
             startSearch.getStyleClass().add("header-text-field");
             top_nav.getChildren().add(2, startSearch);
-            event.setEndNode(false);
+            currState.setStartNode(null);
             startNode_btn.setText("Use default");
             home_icon.setIcon(MaterialIcon.ARROW_BACK);
         }
         else {
+            startSearch.clear();
             top_nav.getChildren().remove(startSearch);
-            event.setEndNode(true);
-            event.setDefaultStartNode();
+            currState.setDefaultStartNode();
             event.setEventName("refresh");
-            eventBus.post(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
+            event.setEventName("showSearch");    // Repopulate list
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
             startNode_btn.setText("Start Node");
             home_icon.setIcon(MaterialIcon.LOCATION_ON);
         }
@@ -362,14 +414,15 @@ public class TopNavController {
     }
 
     public void showPathSetting(MouseEvent mouseEvent) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         if (barOpened){
             barOpened = false;
             event.setEventName("closeDrawer");
-            eventBus.post(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         } else {
             barOpened = true;
             event.setEventName("showPathSetting");
-            eventBus.post(event);
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         }
     }
 }
