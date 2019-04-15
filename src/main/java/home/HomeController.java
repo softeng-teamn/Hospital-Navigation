@@ -2,9 +2,6 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,7 +30,8 @@ public class HomeController implements Observer {
         ApplicationState.getApplicationState().getFeb().register("homeContoller", this);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         event.setDefaultStartNode();
-        event.setEndNode(true);
+        event.setNodeEnd(null);
+        event.setIsEndNode(true);
 
         MapController.initConnections();
 

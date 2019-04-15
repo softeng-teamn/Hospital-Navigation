@@ -65,7 +65,7 @@ public class SearchResultsController implements Observer {
         // set new event
         switch (event.getEventName()) {
             case "node-select":
-                //list_view.scrollTo(event.getNodeSelected());
+                //list_view.scrollTo(event.getNodeSelected());   // todo nothing?
                 break;
             case "login":
                 //for functions that have threading issue, use this and it will be solved
@@ -99,14 +99,17 @@ public class SearchResultsController implements Observer {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         HBox selectedNode = list_view.getSelectionModel().getSelectedItem();
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
-        System.out.println("You clicked on: " + ID);
+        String Name = DatabaseService.getDatabaseService().getNode(ID).getLongName();
+        System.out.println("You clicked on: " + ID + Name);
 
         // set destination node
         destNode = DatabaseService.getDatabaseService().getNode(ID);
 
         if (event.isEndNode()){
             event.setNodeSelected(destNode);
+            event.setNodeEnd(destNode);
         } else {
+            event.setNodeSelected(destNode);
             event.setNodeStart(destNode);
         }
         event.setEventName("node-select");
@@ -158,6 +161,7 @@ public class SearchResultsController implements Observer {
             list_view.getItems().clear();
             ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable);
             list_view.getItems().addAll(observeHboxes);
+
         }
         else {
             //Get List of all nodes

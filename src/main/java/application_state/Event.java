@@ -15,7 +15,6 @@ public class Event {
     String eventName = "";      // one of the event names below
                                 // signifies field change
 
-
     String searchBarQuery = ""; // search-query
     Node nodeStart = DEFAULT_NODE; // node-start
     Node nodeSelected = null;   // node-select
@@ -28,7 +27,8 @@ public class Event {
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
     boolean callElev = false;
-    boolean endNode = true; //true for end node, false for start node
+    boolean endNode = true; //true for end node, false for start node.
+    Node nodeEnd = null;
    // floor
     ArrayList<Node> path = null;
 
@@ -57,7 +57,7 @@ public class Event {
 
     public boolean isEndNode() { return endNode; }
 
-    public void setEndNode(boolean startEnd) { this.endNode = startEnd; }
+    public void setIsEndNode(boolean startEnd) { this.endNode = startEnd; }
 
     public void setDefaultStartNode (){this.nodeStart = DEFAULT_NODE;}
 
@@ -140,4 +140,12 @@ public class Event {
     public String getSearchMethod() { return searchMethod; }
 
     public void setSearchMethod(String searchMethod) { this.searchMethod = searchMethod; }
+
+    public Node getNodeEnd() {
+        return nodeEnd;
+    }
+
+    public void setNodeEnd(Node nodeEnd) {
+        this.nodeEnd = nodeEnd;
+    }
 }

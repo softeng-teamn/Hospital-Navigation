@@ -137,6 +137,8 @@ public class MapViewController implements Observer {
 
 
         scrollTo(event.getDefaultNode());
+        event.setNodeEnd(null);
+        event.setNodeStart(event.getDefaultNode());
     }
 
     void pingTiming() {
@@ -416,8 +418,9 @@ public class MapViewController implements Observer {
         currentMethod = event.getSearchMethod();
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> newpath;
+        System.out.println("navigating: " + event.getNodeStart() + "\n      " + event.getNodeEnd());
         MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
-        MapNode dest = new MapNode(event.getNodeSelected().getXcoord(), event.getNodeSelected().getYcoord(), event.getNodeSelected());
+        MapNode dest = new MapNode(event.getNodeEnd().getXcoord(), event.getNodeEnd().getYcoord(), event.getNodeEnd());
         // check if the path need to be 'accessible'
         if (event.isAccessiblePath()) {
             // do something special
@@ -446,7 +449,7 @@ public class MapViewController implements Observer {
 
         System.out.println(newpath);
         path = newpath;
-        if (path.size() > 1) {
+        if (path != null && path.size() > 1) {
             drawPath();
             event = ApplicationState.getApplicationState().getFeb().getEvent();
             event.setPath(path);

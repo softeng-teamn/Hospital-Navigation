@@ -2,14 +2,13 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleNode;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
+import database.DatabaseService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
@@ -22,7 +21,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -32,12 +30,10 @@ import map.Node;
 import service.ResourceLoader;
 import service.StageManager;
 
+import javax.xml.crypto.Data;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -67,6 +63,7 @@ public class TopNavController implements Observer {
 
     JFXTextField startSearch = new JFXTextField();
     HamburgerBackArrowBasicTransition backArro;
+    private HashMap<String, Node> nodeLongNames = new HashMap<>();
 
 
     @FXML
@@ -76,7 +73,7 @@ public class TopNavController implements Observer {
         if (event.isAdmin() || event.isLoggedIn()) {
             event.setAdmin(false);
             event.setLoggedIn(false);
-            event.setEventName("logout");   // todo: trying logging out
+            event.setEventName("logout");
             ApplicationState.getApplicationState().getFeb().updateEvent(event);
             resetBtn();
             ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
@@ -138,6 +135,11 @@ public class TopNavController implements Observer {
         });
 
         backArro = backArrow;
+
+        ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
+        for (Node n: allNodes) {
+            nodeLongNames.put(n.getLongName(), n);
+        }
     }
 
     private void timeWatcher() {
@@ -178,15 +180,22 @@ public class TopNavController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        event.setNodeSelected(event.getNodeSelected());
-                        // show navigation button
-                        // navigate_btn.setVisible(true);
-                        //showNavigationBtn(event);
-                        if (event.isEndNode()){
-                            nodeSelectedHandler(event.getNodeSelected());        // will make nav btn visible, fill search with node
-                        } else {
-                            nodeSelectedHandler(event.getNodeStart());
+                        System.out.println("end: " + event.getNodeEnd() + " \nstart: " + event.getNodeStart() + "\nselected: " + event.getNodeSelected());
+                        if (event.isEndNode()) {
+                            event.setNodeEnd(event.getNodeSelected());
+                            search_bar.setText(event.getNodeEnd().getLongName());
                         }
+                        else {
+                            event.setNodeStart(event.getNodeSelected());
+                            startSearch.setText(event.getNodeStart().getLongName());
+                        }
+                        if (event.getNodeEnd() != null && event.getNodeStart() != null) {
+                            navigate_btn.setVisible(true);
+                        }
+                        else {
+                            navigate_btn.setVisible(false);
+                        }
+                        System.out.println("        end: " + event.getNodeEnd() + " \n      start: " + event.getNodeStart() + "\n       selected: " + event.getNodeSelected());
                     }
                 });
                 break;
@@ -266,13 +275,18 @@ public class TopNavController implements Observer {
      * @param e
      */
     @FXML
-    public void startNodeEnter(javafx.event.Event e) {
+    public void startNodeEnter(javafx.event.Event e) {   // todo: here, when they clear the start node set it to null. also, make the navigationbut invisible
         String search = startSearch.getText();
         event = ApplicationState.getApplicationState().getFeb().getEvent();
 
+        if (nodeLongNames.get(search) == null) {
+            event.setNodeStart(null);    // todo here - probably an if statement
+            navigate_btn.setVisible(false);
+        }
+
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
-        event.setEndNode(false);
+        event.setIsEndNode(false);
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
@@ -280,33 +294,19 @@ public class TopNavController implements Observer {
      * searches for room
      */
     @FXML
-    public void searchBarEnter() {
+    public void searchBarEnter() {   // todo: here, when they clear the end node set it to null. also, make the navigationbut invisible
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         String search = search_bar.getText();
 
+        if (nodeLongNames.get(search) == null) {
+            event.setNodeEnd(null);    // todo here - probably an if statement
+            navigate_btn.setVisible(false);
+        }
+
         event.setSearchBarQuery(search);
         event.setEventName("search-query");
-        event.setEndNode(true);    // todo: should this really happen here? they haven't selected a node. or is this only called by the end search bar?
+        event.setIsEndNode(true);    // todo hmm when do I reset start and end nodes
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
-    }
-
-    // when event comes in with a node-selected:
-    //      show navigation button
-    //      show node-selected in search
-    @FXML
-    void nodeSelectedHandler(Node selected) {
-        // make change
-        navigate_btn.setVisible(true);
-
-
-        // show node-selected in search
-        String fillNodeinSearch = selected.getLongName();
-
-        if(event.isEndNode()){
-            search_bar.setText(fillNodeinSearch);
-        } else {
-            startSearch.setText(fillNodeinSearch);
-        }
     }
 
     public void startNavigation(ActionEvent actionEvent) {
@@ -316,6 +316,10 @@ public class TopNavController implements Observer {
         //}
 
         event.setEventName("navigation");
+
+        startSearch.setText(event.getNodeStart().getLongName());
+        search_bar.setText(event.getNodeSelected().getLongName());
+
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
@@ -323,7 +327,7 @@ public class TopNavController implements Observer {
     public void setEventEndNode(MouseEvent mouseEvent){
         event = ApplicationState.getApplicationState().getFeb().getEvent();
 
-        event.setEndNode(false);
+        event.setIsEndNode(false);
         event.setEventName("showSearch");
 
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
@@ -339,7 +343,7 @@ public class TopNavController implements Observer {
     public void setEventStartNode(MouseEvent mouseEvent) {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
 
-        event.setEndNode(true);
+        event.setIsEndNode(true);
         event.setEventName("showSearch");
 
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
@@ -355,24 +359,25 @@ public class TopNavController implements Observer {
     public void showStartSearch(ActionEvent actionEvent) {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         if (startNode_btn.getText().equals("Start Node")){
+            event = ApplicationState.getApplicationState().getFeb().getEvent();
             startSearch.setPromptText("Start Node");
             startSearch.setOnInputMethodTextChanged(this::startNodeEnter);
             startSearch.setOnKeyReleased(this::startNodeEnter);
             startSearch.setOnMouseClicked(this::setEventEndNode);
             startSearch.getStyleClass().add("header-text-field");
             top_nav.getChildren().add(2, startSearch);
-            event.setEndNode(false);
+            event.setIsEndNode(false);
             startNode_btn.setText("Use default");
             home_icon.setIcon(MaterialIcon.ARROW_BACK);
         }
         else {
             startSearch.clear();
-            top_nav.getChildren().remove(startSearch);    // todo: repopulate list
-            event.setEndNode(true);
+            top_nav.getChildren().remove(startSearch);
+            event.setIsEndNode(true);
             event.setDefaultStartNode();
             event.setEventName("refresh");
             ApplicationState.getApplicationState().getFeb().updateEvent(event);
-            event.setEventName("showSearch");
+            event.setEventName("showSearch");    // Repopulate list
             ApplicationState.getApplicationState().getFeb().updateEvent(event);
             startNode_btn.setText("Start Node");
             home_icon.setIcon(MaterialIcon.LOCATION_ON);
