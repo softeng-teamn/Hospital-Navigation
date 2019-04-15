@@ -1,10 +1,13 @@
 package map.create_node;
 
+import application_state.ApplicationState;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXTextField;
 import controller.Controller;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -17,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -24,11 +28,13 @@ import javafx.stage.Stage;
 import map.Edge;
 import map.Node;
 import database.DatabaseService;
+import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
 import service.StageManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CreateNodeController extends Controller {
 
@@ -37,19 +43,20 @@ public class CreateNodeController extends Controller {
     @FXML
     JFXButton cancel_btn, next_btn;
     @FXML
-    ScrollPane map_scrollpane;
+    GesturePane gPane;
     @FXML
-    Slider zoom_slider;
+    JFXSlider zoom_slider;
     @FXML
     Label instruction_label;
     @FXML
     VBox node_info_vbox, floor_change_vbox;
     @FXML
-    JFXTextField floor_field, type_field, short_field, long_field, building_field;
+    JFXTextField type_field, short_field, long_field, building_field;
     @FXML
     JFXListView<String> time_view;
     @FXML
-    Pane image_pane;
+    StackPane map_stack_pane;
+
 
     private final Color DEFAULT_NODE_COLOR = Color.BLACK;
     private final Color SELECTED_NODE_COLOR = Color.RED;
@@ -78,31 +85,53 @@ public class CreateNodeController extends Controller {
     ArrayList<Node> chosenEdgeNodes;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
+    // Scroll & Zoom
+    private static HashMap<String, ImageView> imageCache;
+    private ImageView floorImg;
+    private static final double MIN_ZOOM = 0.4;
+    private static final double MAX_ZOOM = 1.2;
 
     @FXML
     void initialize() {
+
+        zoomSliderInit();
+        zoomGroupInit();
+        imagesInit();
+
         // start state at 0
         stateIterator = 0;
 
         // remove texfields to SHOW MAP
         hideTextFields();
 
-        // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
-        Group contentGroup = new Group();
-        zoomGroup = new Group();
-        contentGroup.getChildren().add(zoomGroup);
-        zoomGroup.getChildren().add(map_scrollpane.getContent());
-        map_scrollpane.setContent(contentGroup);
-
-        // Setting View Scrolling
-        zoom_slider.setMin(0.5);
-        zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.5);
-        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
-        zoom(0.5);
-
         // render the state
         renderState();
+    }
+
+    void zoomGroupInit() {
+        zoomGroup = new Group();
+        zoomGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                mapClickedHandler(t);
+            }
+        });
+        gPane.setContent(zoomGroup);
+    }
+
+    void zoomSliderInit() {
+        gPane.currentScaleProperty().setValue(MIN_ZOOM+0.1);
+        zoom_slider.setMin(MIN_ZOOM);
+        zoom_slider.setMax(MAX_ZOOM);
+        zoom_slider.setIndicatorPosition(JFXSlider.IndicatorPosition.RIGHT);
+        zoom_slider.setValue(gPane.getCurrentScale());
+        gPane.currentScaleProperty().bindBidirectional(zoom_slider.valueProperty());
+    }
+
+    void imagesInit() {
+        imageCache = ApplicationState.getApplicationState().getImageCache();
+        this.floorImg = imageCache.get("1");
+        setFloor("1"); // DEFAULT
     }
 
     @FXML
@@ -117,7 +146,6 @@ public class CreateNodeController extends Controller {
         renderState();
     }
 
-    @FXML
     void mapClickedHandler(MouseEvent e) {
         // only need this for the first state
         // (selecting initial node location)
@@ -148,37 +176,45 @@ public class CreateNodeController extends Controller {
         }
     }
 
+    // switch floor to new map image
+    public void setFloor(String floor) {
+        ImageView newImg;
+        if (imageCache.containsKey(floor)) {
+            newImg = imageCache.get(floor);
+        } else {
+            // unknown floor change | SETTING TO DEFAULT
+            newImg = imageCache.get("1");
+        }
+        zoomGroup.getChildren().remove(this.floorImg);
+        zoomGroup.getChildren().add(0,newImg);
+        this.floorImg = newImg;
+    }
+
     @FXML
     void floorChangeAction(ActionEvent e) throws IOException {
         JFXButton clickedBtn = (JFXButton) e.getSource();
         switch (clickedBtn.getText()) {
             case "3":
-                setMapFloor("3");
                 if(stateIterator == 0) {node_floor = "3";}
                 else if(stateIterator == 2) {showAllNodes("3");}
                 break;
             case "2":
-                setMapFloor("2");
                 if(stateIterator == 0) {node_floor = "2";}
                 else if(stateIterator == 2) {showAllNodes("2");}
                 break;
             case "1":
-                setMapFloor("1");
                 if(stateIterator == 0) {node_floor = "1";}
                 else if(stateIterator == 2) {showAllNodes("1");}
                 break;
             case "L1":
-                setMapFloor("L1");
                 if(stateIterator == 0) {node_floor = "L1";}
                 else if(stateIterator == 2) {showAllNodes("L1");}
                 break;
             case "L2":
-                setMapFloor("L2");
                 if(stateIterator == 0) {node_floor = "L2";}
                 else if(stateIterator == 2) {showAllNodes("L2");}
                 break;
             case "G":
-                setMapFloor("G");
                 if(stateIterator == 0) {node_floor = "G";}
                 else if(stateIterator == 2) {showAllNodes("G");}
                 break;
@@ -186,6 +222,7 @@ public class CreateNodeController extends Controller {
                 System.out.println("WHAT BUTTON WAS PRESSED?????");
                 break;
         }
+        setFloor(clickedBtn.getText());
     }
 
     // This function is bound to the generated node circles
@@ -209,42 +246,6 @@ public class CreateNodeController extends Controller {
         checkEnoughEdges();
     }
 
-    private void setMapFloor(String floor) throws IOException {
-        ImageView imageView;
-        switch (floor) {
-            case "3":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.thirdFloor.openStream()));
-                break;
-            case "2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondFloor.openStream()));
-                break;
-            case "1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstFloor.openStream()));
-                break;
-            case "L1":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.firstLowerFloor.openStream()));
-                break;
-            case "L2":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.secondLowerFloor.openStream()));
-                break;
-            case "G":
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
-                break;
-            default:
-                System.out.println("We should not have default here!!!");
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
-                break;
-        }
-        image_pane.getChildren().clear();
-        image_pane.getChildren().add(imageView);
-    }
 
     void checkEnoughEdges() {
         if (chosenEdgeNodes.size() > 0) {
@@ -339,26 +340,20 @@ public class CreateNodeController extends Controller {
         next_btn.setDisable(false);
         next_btn.setText("Finish");
         // remove map
-        anchor_pane.getChildren().remove(map_scrollpane);
-        anchor_pane.getChildren().remove(zoom_slider);
-        anchor_pane.getChildren().remove(floor_change_vbox);
+        anchor_pane.getChildren().remove(map_stack_pane);
     }
 
     // remove textfields from screen
     void hideTextFields() {
         anchor_pane.getChildren().remove(node_info_vbox);
-        if (!anchor_pane.getChildren().contains(map_scrollpane)) {
-            anchor_pane.getChildren().add(map_scrollpane);
-            anchor_pane.getChildren().add(zoom_slider);
-            anchor_pane.getChildren().add(floor_change_vbox);
+        if (!anchor_pane.getChildren().contains(map_stack_pane)) {
+            anchor_pane.getChildren().add(map_stack_pane);
         }
     }
 
     // shows textfields on screen
     void showTextFields() {
-        anchor_pane.getChildren().remove(map_scrollpane);
-        anchor_pane.getChildren().remove(zoom_slider);
-        anchor_pane.getChildren().remove(floor_change_vbox);
+        anchor_pane.getChildren().remove(map_stack_pane);
         if (!anchor_pane.getChildren().contains(node_info_vbox)) {
             anchor_pane.getChildren().add(node_info_vbox);
         }
@@ -446,16 +441,6 @@ public class CreateNodeController extends Controller {
             zoomGroup.getChildren().add(nodeCircle);
             circleCollection.add(nodeCircle);
         }
-    }
-
-    // handle zoom map functionality
-    private void zoom(double scaleValue) {
-        double scrollH = map_scrollpane.getHvalue();
-        double scrollV = map_scrollpane.getVvalue();
-        zoomGroup.setScaleX(scaleValue);
-        zoomGroup.setScaleY(scaleValue);
-        map_scrollpane.setHvalue(scrollH);
-        map_scrollpane.setVvalue(scrollV);
     }
 
     // Change window back to home screen
