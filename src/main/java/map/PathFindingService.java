@@ -27,13 +27,11 @@ public class PathFindingService {
         ArrayList<Node> target;
         AlgorithmContext current;
 
-        System.out.println("generating path " + start + dest);
-
         switch (filter) {
             case "astar":
                 current = new Astar();
                 target = current.findDest(start, dest, accessibility, null);
-                System.out.println("    TARGET: " + target);
+                System.out.println("    TARGET: " + target);    // todo : cur
                 estimatedTimeOfArrival = current.getEstimatedTime();
                 elevTimes = current.getElevTimes();
                 break;
@@ -91,7 +89,6 @@ public class PathFindingService {
         }
 
         if (target != null){
-            System.out.println(target);
             return target;
         } else {
             return null;

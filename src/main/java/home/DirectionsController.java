@@ -175,6 +175,7 @@ public class DirectionsController implements Observer {
 
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
+        ApplicationState.getApplicationState().setEndNode(path.get(path.size() - 1));
         System.out.println(directions); // TODO cut
         return directions;
     }
@@ -335,6 +336,9 @@ public class DirectionsController implements Observer {
         }
         String total = buf.toString();
         System.out.println(total);
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event.setEventName("showDestination");
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
         return total;
     }
 

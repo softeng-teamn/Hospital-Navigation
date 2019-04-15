@@ -384,10 +384,6 @@ public class MapViewController implements Observer {
         ApplicationState currState = ApplicationState.getApplicationState();
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> newpath;
-        System.out.println("navigating: " + currState.getStartNode() + "\n      " + currState.getEndNode());
-        System.out.println("database:" + DatabaseService.getDatabaseService().getNode(currState.getStartNode().getNodeID()));
-        System.out.println(DatabaseService.getDatabaseService().getNode(currState.getEndNode().getNodeID()));
-        System.out.println(" " + MapController.getNodesConnectedTo(currState.getStartNode()) + MapController.getNodesConnectedTo(currState.getEndNode()));
         MapNode start = new MapNode(currState.getStartNode().getXcoord(), currState.getStartNode().getYcoord(), currState.getStartNode());
         MapNode dest = new MapNode(currState.getEndNode().getXcoord(),currState.getEndNode().getYcoord(), currState.getEndNode());
         // check if the path need to be 'accessible'
@@ -416,7 +412,6 @@ public class MapViewController implements Observer {
             }
         } // todo
 
-        System.out.println(newpath);
         path = newpath;
         if (path != null && path.size() > 1) {
             drawPath();
@@ -465,7 +460,13 @@ public class MapViewController implements Observer {
         }
 
         path = newpath;
-        drawPath();
+        if (path != null && path.size() > 1) {
+            drawPath();
+            event = ApplicationState.getApplicationState().getFeb().getEvent();
+            event.setPath(path);
+            event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
+            ApplicationState.getApplicationState().getFeb().updateEvent(event);
+        }
     }
 
     // draw path on the screen

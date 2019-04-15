@@ -221,6 +221,21 @@ public class TopNavController implements Observer {
             case "empLogin":
                // event.setLoggedIn((newEvent.isLoggedIn())); todo: what's the point of this code?
                 break ;
+            case "showDestination":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        startSearch.setText(currState.getStartNode().getLongName());
+                        search_bar.setText(currState.getEndNode().getLongName());
+                        if(backArro.getRate() == 1) {
+                            backArro.setRate(backArro.getRate() * -1);
+                            backArro.play();
+                            barOpened = false;
+                        }
+
+                    }
+                });
+                break;
             case "closeDrawer":
                 Platform.runLater(new Runnable() {
                     @Override
@@ -327,10 +342,8 @@ public class TopNavController implements Observer {
         //}
 
         event.setEventName("navigation");
-
         startSearch.setText(currState.getStartNode().getLongName());
         search_bar.setText(currState.getEndNode().getLongName());
-
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
