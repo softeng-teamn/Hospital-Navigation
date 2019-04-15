@@ -344,8 +344,6 @@ public class ScheduleController {
      */
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
-        Scene sc = homeBtn.getScene();
-        System.out.println("    " + sc.getUserData());
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
