@@ -9,6 +9,7 @@ import application_state.EventBusFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -90,9 +91,23 @@ public class SearchResultsController {
                     }
                 });
                 break;
+            case "logout":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        repopulateList(event.isAdmin());
+                    }
+                });
+                break;
             default:
                 break;
         }
+    }
+
+    @FXML
+    void closeDrawer(ActionEvent e) {
+        event.setEventName("closeDrawer");
+        eventBus.post(event);
     }
 
     /**
