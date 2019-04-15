@@ -49,8 +49,11 @@ public class SearchResultsController {
     ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
 
+    DatabaseService myDBS;
+
     @FXML
     void initialize() {
+        myDBS = DatabaseService.getDatabaseService();
         buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
         buildingAbbrev.put("BTM", "BTM");
         buildingAbbrev.put("Tower", "Tow");
@@ -87,6 +90,14 @@ public class SearchResultsController {
                     }
                 });
                 break;
+            case "logout":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        repopulateList(event.isAdmin());
+                    }
+                });
+                break;
             default:
                 break;
         }
@@ -119,6 +130,9 @@ public class SearchResultsController {
     void repopulateList(boolean isAdmin) {
 
         System.out.println("Repopulation of listView" + isAdmin);
+
+        allNodes = myDBS.getAllNodes();
+        filteredNodes = (ArrayList<Node>) myDBS.getNodesFilteredByType("STAI", "HALL").stream().filter((n) -> !n.isClosed()).collect(Collectors.toList());
 
         // wipe old observable
         allNodesObservable = new ArrayList<>();

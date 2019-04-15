@@ -23,6 +23,8 @@ import application_state.ApplicationState;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static application_state.ApplicationState.getApplicationState;
+
 public class EmployeeLoginController extends Controller implements Initializable {
 
     @FXML
