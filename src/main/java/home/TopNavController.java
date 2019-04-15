@@ -169,8 +169,6 @@ public class TopNavController implements Observer {
         new Thread(task).start();
     }
 
-
-
     // events I care about: am "subscribed" to
     @Override
     public void notify(Object newEvent) {
@@ -318,7 +316,7 @@ public class TopNavController implements Observer {
         event.setEventName("navigation");
 
         startSearch.setText(event.getNodeStart().getLongName());
-        search_bar.setText(event.getNodeSelected().getLongName());
+        search_bar.setText(event.getNodeEnd().getLongName());
 
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }

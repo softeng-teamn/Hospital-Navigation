@@ -24,7 +24,7 @@ public class PathFindingService {
      * @return Returns null on fail
      * */
     public ArrayList<Node> genPath(MapNode start, MapNode dest, Boolean accessibility, String filter) {
-        System.out.println("generating path");
+        System.out.println("generating path " + start + dest);
 
         AlgorithmContext ctx = new AlgorithmContext(new Astar());
         ArrayList<Node> target;
