@@ -246,6 +246,9 @@ public class MapViewController {
                     case "editing":
                         editNodeHandler(event.isEditing());
                         break;
+                    case "logout":
+                        zoomGroup.getChildren().removeAll(circleCollection);
+                        circleCollection.clear();
                     default:
 //                        System.out.println("I don'");
                         break;
