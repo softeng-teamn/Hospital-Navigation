@@ -434,7 +434,10 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                sunday.setStyle("-fx-background-color: #98FB98");
+                //sunday.setStyle("-fx-background-color: #98FB98");
+
+
+
                 return new ReadOnlyStringWrapper(p.getValue().sunAvailability);
 
             }
@@ -443,7 +446,9 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                monday.setStyle("-fx-background-color: #98FB98");
+               // monday.setStyle("-fx-background-color: #98FB98");
+                monday.setStyle("-fx-table-cell-border-color: black;");
+
                 return new ReadOnlyStringWrapper(p.getValue().monAvailability);
 
             }
@@ -452,7 +457,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                tuesday.setStyle("-fx-background-color: #98FB98");
+                //tuesday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().tuesAvailability);
 
             }
@@ -461,7 +466,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                wednesday.setStyle("-fx-background-color: #98FB98");
+                //wednesday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().wedAvailability);
 
             }
@@ -470,7 +475,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                thursday.setStyle("-fx-background-color: #98FB98");
+                //thursday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().thursAvailability);
 
             }
@@ -479,7 +484,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                friday.setStyle("-fx-background-color: #98FB98");
+                //friday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().friAvailability);
 
             }
@@ -488,7 +493,7 @@ public class ScheduleController {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                saturday.setStyle("-fx-background-color: #98FB98");
+                //saturday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().satAvailability);
 
             }
@@ -498,6 +503,10 @@ public class ScheduleController {
         scheduleTable.getColumns().addAll(timeCol, sunday, monday, tuesday, wednesday, thursday, friday, saturday);
 //        scheduleTable.setPrefHeight(900);
         showRoomSchedule();
+
+        scheduleTable.setStyle("-fx-table-cell-border-color: black;");
+
+
 
         // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
