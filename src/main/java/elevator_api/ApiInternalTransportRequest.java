@@ -90,7 +90,7 @@ public class ApiInternalTransportRequest {
         ElevatorConnnection eCon = new ElevatorConnnection();
         try {
             System.out.println("elevator = L, Floor = " + location.substring(8));
-            eCon.postFloor("L", location.substring(8)); // post elevator, floornum
+            eCon.postFloor("L", location.substring(location.length() - 2)); // post elevator, floornum
         } catch (IOException e) {
             System.out.println("error posting elevator check WIFI from Internal Transport API");
             e.printStackTrace();

@@ -59,8 +59,13 @@ public class ElevatorConnnection {
             case "L2":
                 floorNum = "-2";
                 break;
+            case "0G":
+                floorNum = "0";
+            case " G":
+                floorNum = "0";
+
             default:
-                floorNum = floorNum.trim();
+                floorNum = floorNum.substring(floorNum.length() - 1);//last num will be floor
                 break;
         }
 
@@ -70,7 +75,7 @@ public class ElevatorConnnection {
 
         String urlParameters = "elevator=" + elevator + "&floor=" + floorNum +
                 "&time=" + t + "&team=" + this.teamName;
-        System.out.println("Posting " + urlParameters);
+        //System.out.println("Posting " + urlParameters);
         post(URL, urlParameters);
     }
 
