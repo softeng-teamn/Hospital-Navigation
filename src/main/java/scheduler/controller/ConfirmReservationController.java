@@ -3,6 +3,7 @@ package scheduler.controller;
 import application_state.ApplicationState;
 import application_state.Event;
 import application_state.EventBusFactory;
+import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
@@ -38,6 +39,7 @@ public class ConfirmReservationController {
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
+    // event bus for passing date/time for reservation
     private Event event = EventBusFactory.getEvent();
     private EventBus eventBus = EventBusFactory.getEventBus();
 
@@ -47,17 +49,18 @@ public class ConfirmReservationController {
 
 
     /**
-     * Set up scheduler page.
+     * Set up page.
      */
     @FXML
     public void initialize() {
 
+        // register event bus
         eventBus.register(this);
-
 
         // sets ID to logged in employee
         setID();
 
+        // keep error message hidden
         inputErrorLbl.setVisible(false);
 
         // Set event privacy options
@@ -66,9 +69,24 @@ public class ConfirmReservationController {
                         "Public",
                         "Private"
                 );
-
         privacyLvlBox.setItems(options);
+    }
 
+
+    // events I care about: am "subscribed" to
+    @Subscribe
+    public void eventListener(Event newEvent) {
+        event = newEvent;
+        switch (event.getEventName()) {
+            case "times":
+                cals = event.getStartAndEndTimes();
+                break;
+            case "room":
+                roomID = event.getRoomId();
+                break;
+            default:
+                break;
+        }
     }
 
 
@@ -77,11 +95,9 @@ public class ConfirmReservationController {
      */
     @FXML
     public void setID() {
-
         int idNum = ApplicationState.getApplicationState().getEmployeeLoggedIn().getID();
         String id = Integer.toString(idNum);
         employeeID.setText(id);
-
     }
 
 
@@ -98,7 +114,7 @@ public class ConfirmReservationController {
 
 
     /**
-     * switches window to home screen
+     * switches window to back to scheduler screen
      *
      * @throws Exception
      */
@@ -111,17 +127,18 @@ public class ConfirmReservationController {
 
     /**
      * Called by the Make Reservation button.
-     * Checks whether location, date, and time are valid.
+     * Checks if event information is correct
      */
     @FXML
     public void makeReservation() {
 
-        // CHECK FOR IF TIMES ARE VALID ELSEWHERE - BEFORE THIS PAGE!!!!!
-        boolean valid = validTimes(true);
+        // initially set variable to true
+        boolean valid = true;
 
-        // Check user input for valid ID
+        // set/reset error message to hidden
         inputErrorLbl.setVisible(false);
 
+        // check employee id
         String id = employeeID.getId();
         boolean badId = false;
 
@@ -153,7 +170,6 @@ public class ConfirmReservationController {
             valid = false;
         }
 
-        System.out.println("VALID?? -> " + valid);
         // If evreything is okay, create the reservation
         if (valid) {
             System.out.println("IS VALID - CREATING RESERVATION");
@@ -163,47 +179,10 @@ public class ConfirmReservationController {
 
 
     /**
-     * confirmation that selected times are valid - hold over from other screen
-     */
-    private boolean validTimes(boolean forRes) {
-        // ONLY FOR NOW
-        // CHANGE BASED ON EVENT BUS MAYBE??
-        return true;
-    }
-
-
-    // events I care about: am "subscribed" to
-    @Subscribe
-    private void eventListener(Event newEvent) {
-        System.out.println("INSIDE EVENT LISTENER");
-
-        switch (newEvent.getEventName()) {
-            case "times":
-                System.out.println("INSIDE TIMES - VERY GOOD!");
-                cals = event.getStartAndEndTimes();
-                break;
-            case "room":
-                System.out.println("INSIDE ROOM - VERY GOOD!");
-                roomID = event.getRoomId();
-                break;
-            default:
-                System.out.println("HIT DEFAULT - VERY BAD");
-                break;
-        }
-
-    }
-
-
-    /**
      * Create the reservation and send it to the database.
      */
     @FXML
     public void createReservation() {
-
-
-        // Get the times and dates and turn them into gregorian calendars
-        // GET TIMES FROM SCHEDULE CONTROLLER
-        // ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
 
         // Get the privacy level
         int privacy = 0;
@@ -211,18 +190,15 @@ public class ConfirmReservationController {
             privacy = 1;
         }
 
-        // Create the new reservation
-        System.out.println("TIME TO PLAY..... WHERE IS THE NULL POINTER!?!??!?!?");
-        System.out.println("privacy: " + privacy);
-        System.out.println("employeeID: " + Integer.parseInt(employeeID.getText()));
-        System.out.println("eventName: " + eventName.getText());
-        System.out.println("roomID: " + roomID);
-        System.out.println(("cals(0): " + cals.get(0))) ;
-        System.out.println(("cals(1): " + cals.get(1))) ;
+        // set event bussed info from other page
+        cals = event.getStartAndEndTimes();
+        roomID = event.getRoomId();
 
+        // create new reservation and add to database
         Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
         myDBS.insertReservation(newRes);
         System.out.println("NEW RESRVATION INSERTED INTO DATABASE");
+
         // Reset the screen
         resetView();
     }
@@ -233,12 +209,8 @@ public class ConfirmReservationController {
      */
     private void resetView() {
         inputErrorLbl.setVisible(false);
-//        timeErrorLbl.setVisible(false);
         eventName.setText("");
-        employeeID.setText("");
         privacyLvlBox.setValue(null);
-        // resInfoLbl.setText("");
-        System.out.println("ALL FIELDS HAVE BEEN CLEARED");
     }
 
 

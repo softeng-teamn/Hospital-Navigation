@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import application_state.ApplicationState;
 import application_state.Event;
 import application_state.EventBusFactory;
+import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.*;
@@ -160,6 +161,10 @@ public class ScheduleController extends Controller {
         this.timeStep = timeStep;
     }
 
+
+
+
+
     /**
      * Set up scheduler page.
      */
@@ -168,10 +173,6 @@ public class ScheduleController extends Controller {
 
         // add event bus to pass info to the final 'make reservation' screen
         eventBus.register(this);
-
-        // Turn off editing
-        //event.setEventName("times");
-        //eventBus.post(event);
 
 
         // Map Initialization
@@ -192,7 +193,7 @@ public class ScheduleController extends Controller {
 
 
 //        resInfoLbl.setText("");
-        timeErrorText = "Please enter valid start and end times.";
+        timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
         availRoomsText = "Show Available Spaces";
         bookedRoomsText = "Show Booked Spaces";
         clearFilterText = "Clear Filter";
@@ -206,11 +207,6 @@ public class ScheduleController extends Controller {
 //        timeErrorLbl.setVisible(false);
         inputErrorLbl.setVisible(false);
 
-
-
-
-        // *************** MOVE
-        // privacyLvlBox.setItems(options);
 
         // Set default date to today's date
         LocalDate date = LocalDate.now();
@@ -361,7 +357,6 @@ public class ScheduleController extends Controller {
     }
 
 
-
     /**
      * switches final window of scheduler
      *
@@ -372,9 +367,6 @@ public class ScheduleController extends Controller {
         Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
         StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
     }
-
-
-
 
 
     /**
@@ -405,6 +397,7 @@ public class ScheduleController extends Controller {
             if (((int) i / 12) == 1) {    // If in the afternoon, use PM
                 amPm = "PM";
             }
+            inputErrorLbl.setVisible(true);
 
             int time = i % 12;    // The hour, from 24 hours
             if (time == 0) {    // If the hour was 12, make it display as 12
@@ -470,7 +463,7 @@ public class ScheduleController extends Controller {
      * Checks whether location, date, and time are valid.
      */
     @FXML
-    public void makeReservation() throws Exception{
+    public void makeReservation() throws Exception {
 
         boolean valid = validTimes(true);
 
@@ -496,30 +489,18 @@ public class ScheduleController extends Controller {
             System.out.println("Room id being passed: " + event.getRoomId());
             eventBus.post(event);
 
-
-
+            // switch screen to final stage of scheduler
             Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
             StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
 
         }
 
-        // if date/time is valid
-        // convert to proper calendar stuff
-        // pass times and stuff to next screen - event bus?
-
-
-        // Reset the screen
-        resetView();
-        populateMap();
+        else {
+            populateMap();
+        }
 
     }
-
-
-
-
-
-
 
 
     /**
@@ -549,6 +530,7 @@ public class ScheduleController extends Controller {
 //        resInfoLbl.setText("");
     }
 
+
     /**
      * Check whether the selected times are valid. If not, return false.
      * Valid times must: be within the chosen location's start and end times.
@@ -559,7 +541,11 @@ public class ScheduleController extends Controller {
      * @return true if the selected times are valid, false otherwise
      */
     private boolean validTimes(boolean forRes) {
-//        timeErrorLbl.setVisible(false);
+
+        // reset label
+        inputErrorLbl.setText("");
+
+
         makeMinutesValid();
         // Get the selected times
         int start = startTimePicker.getValue().getHour();
@@ -573,6 +559,8 @@ public class ScheduleController extends Controller {
         if (forRes && datePicker.getValue().atStartOfDay().isBefore(LocalDate.now().atStartOfDay())) {
 //            timeErrorLbl.setText(pastDateErrorText);
 //            timeErrorLbl.setVisible(true);
+            inputErrorLbl.setVisible(true);
+            inputErrorLbl.setText(pastDateErrorText);
             return false;
         }
 
@@ -581,6 +569,8 @@ public class ScheduleController extends Controller {
         if (endIndex <= index || start < openTime || closeTime < end) {
 //            timeErrorLbl.setText(timeErrorText);
 //            timeErrorLbl.setVisible(true);
+            inputErrorLbl.setVisible(true);
+            inputErrorLbl.setText(timeErrorText);
             return false;
         }
 
@@ -590,6 +580,8 @@ public class ScheduleController extends Controller {
                 if (currentSchedule.get(i) == 1) {    // If so, show an error
 //                    timeErrorLbl.setText(conflictErrorText);
 //                    timeErrorLbl.setVisible(true);
+                    inputErrorLbl.setVisible(true);
+                    inputErrorLbl.setText(conflictErrorText);
                     return false;
                 }
             }

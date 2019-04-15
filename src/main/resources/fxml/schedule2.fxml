@@ -108,7 +108,7 @@
                         </HBox>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Label fx:id="inputErrorLbl" styleClass="small-label" text="confError" wrapText="true" />
+                              <Label fx:id="inputErrorLbl" styleClass="small-label" wrapText="true" />
                            </children>
                         </HBox>
                      </children>
