@@ -84,8 +84,9 @@ public class HomeController {
     }
 
     private void showEmployee() throws IOException {
-        leftPane.getChildren().clear();
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawerPane.getChildren().clear();
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawer.open();
     }
 
     private void showSearch() throws IOException {

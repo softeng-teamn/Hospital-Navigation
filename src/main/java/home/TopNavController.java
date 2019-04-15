@@ -187,15 +187,12 @@ public class TopNavController {
             case "empLogin":
                 event.setLoggedIn((newEvent.isLoggedIn()));
                 break ;
-            case "showSearch":
-                backArro.setRate(-1);
-                backArro.play();
-                barOpened = false;
-                break;
             case "closeDrawer":
-                backArro.setRate(-1);
-                backArro.play();
-                barOpened = false;
+                if(backArro.getRate() == 1) {
+                    backArro.setRate(-1);
+                    backArro.play();
+                    barOpened = false;
+                }
                 break;
             default:
                 break;
@@ -353,8 +350,6 @@ public class TopNavController {
             home_icon.setIcon(MaterialIcon.LOCATION_ON);
         }
     }
-
-
 
     public void showEditEmployee(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) auth_btn.getScene().getWindow();
