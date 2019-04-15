@@ -61,9 +61,10 @@ public class ElevatorConnnection {
                 break;
             case "0G":
                 floorNum = "0";
+                break;
             case " G":
                 floorNum = "0";
-
+                break;
             default:
                 floorNum = floorNum.substring(floorNum.length() - 1);//last num will be floor
                 break;
