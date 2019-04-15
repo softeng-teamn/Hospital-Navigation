@@ -7,8 +7,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import application_state.ApplicationState;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -34,7 +34,7 @@ import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
-public class ScheduleController extends Controller {
+public class ScheduleController {
 
     private static class ScheduleWrapper {
         private String time;
@@ -66,7 +66,7 @@ public class ScheduleController extends Controller {
     public JFXButton submitBtn;
 
     @FXML
-    public JFXTextField eventName, employeeID, searchBar;
+    public JFXTextField eventName, searchBar, employeeID;
 
     @FXML
     private TableView<ScheduleWrapper> scheduleTable;
@@ -85,6 +85,9 @@ public class ScheduleController extends Controller {
 
     @FXML
     public JFXComboBox<String> privacyLvlBox;
+
+
+
 
     // Map Stuff
     static final Color AVAILIBLE_COLOR = Color.rgb(87,255,132,0.8);
@@ -143,6 +146,8 @@ public class ScheduleController extends Controller {
      */
     @FXML
     public void initialize() {
+
+        setID();
 
         // Map Initialization
 
@@ -277,10 +282,23 @@ public class ScheduleController extends Controller {
         });
     }
 
+
     /**
-     * Listener to update listview of rooms and info label
-     * @param value
+     * pre-fill employee id field with id of logged in employee
      */
+    @FXML
+    public void setID() {
+
+        int idNum = ApplicationState.getApplicationState().getEmployeeLoggedIn().getID();
+        String id = Integer.toString(idNum);
+        employeeID.setText(id);
+
+    }
+
+        /**
+         * Listener to update listview of rooms and info label
+         * @param value
+         */
     private void focusState(boolean value) {
         if (!value && validTimes(false)) {
             if (availRoomsBtn.getText().contains("ear")) {
@@ -428,7 +446,8 @@ public class ScheduleController extends Controller {
 
         // Check user input for valid ID
         inputErrorLbl.setVisible(false);
-        String id = employeeID.getText();
+
+        String id = employeeID.getId() ;
         boolean badId = false;
 
         // Check whether the ID is a number
@@ -440,7 +459,7 @@ public class ScheduleController extends Controller {
 
         // If the user has not entered an event name, has entered an invalid ID,
         // or has not chosen a privacy level, display an error message
-        if (eventName.getText().length() < 1 || employeeID.getText().length() < 1 || privacyLvlBox.getValue() == null) {
+        if (eventName.getText().length() < 1 || id.length() < 1 || privacyLvlBox.getValue() == null) {
             inputErrorLbl.setText("Error: Please complete all fields to make a reservation.");
             inputErrorLbl.setVisible(true);
             valid = false;

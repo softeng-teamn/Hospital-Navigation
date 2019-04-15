@@ -1,54 +1,45 @@
 package map.pathfinding;
 
 import elevator.ElevatorFloor;
+import map.MapController;
 import map.MapNode;
 import map.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DepthFS implements Algorithm {
+public class DepthFS extends AlgorithmContext implements Algorithm{
 
-    @Override
-    public ArrayList<Node> findDest(MapNode start, MapNode dest, boolean accessibility, String filter) {
-        MapNode target = depth(start, dest, accessibility, null);
-        if (target != null) {
-            ArrayList<Node> path = new ArrayList<Node>();
-            while (target != null) { // INFINITE LOOP
-                //System.out.println("im still in the loop");
-                //System.out.println(target.getData().getNodeID());
-                // add every item to beginning of list
-                path.add(0, target.getData());
-                target = target.getParent();
-            }
-            return path;
-        }
-        return null;
-    }
+
+    private MapNode start;
+    private MapNode dest;
+    private boolean accessibility;
+    private String filter;
+    private MapNode current;
 
 
     @Override
-    public int getEstimatedTime() {
-        return 0;
+    void initial(MapNode start, MapNode dest, boolean accessibility, String filter) {
+
+        this.start = start;
+        this.dest = dest;
+        this.accessibility = accessibility;
+        this.filter = filter;
     }
 
     @Override
-    public HashMap<String, ElevatorFloor> getElevTimes() {return new HashMap<>(); }
-
-    /**
-     *  Will either return the last MapNode with a parent chain back to the start
-     *  or returns null if we CANT get to the dest node
-     * @param start
-     * @param dest
-     * @return
-     */
-    public MapNode depth(MapNode start, MapNode dest, boolean accessibility, String filter) {
-        //System.out.println("Created open PriorityQueue");
+    MapNode throughMap() {
         HashMap<MapNode, String> visited = new HashMap<MapNode, String>();
+
 
         MapNode path = depthUtil(start, visited, dest, accessibility);
 
         return path;
+    }
+
+    @Override
+    int getET() {
+        return 0;
     }
 
     private MapNode depthUtil(MapNode current, HashMap<MapNode, String> visited, MapNode dest, boolean accessibility) {
@@ -65,7 +56,14 @@ public class DepthFS implements Algorithm {
             if(child.getData().getNodeType().equals("STAI") && accessibility) {
                 //System.out.println("skipping this node because the cost is to big");
                 continue;
-            } else if (!visited.containsKey(child)){
+            }
+
+            if(child.getData().isClosed()) {
+                //System.out.println("skipping this node because the cost is to big");
+                continue;
+            }
+            
+            else if (!visited.containsKey(child)){
                 child.setParent(current, 0);
                 MapNode path = depthUtil(child, visited, dest, accessibility);
                 if (path != null){

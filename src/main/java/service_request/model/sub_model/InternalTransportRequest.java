@@ -1,14 +1,18 @@
 package service_request.model.sub_model;
 
 //import com.sun.xml.internal.bind.v2.TODO;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import elevator.ElevatorConnnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import employee.model.Employee;
 import employee.model.JobType;
 import map.Node;
 import database.DatabaseService;
+import map.PathFindingService;
 import service_request.model.Request;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static employee.model.JobType.*;
@@ -21,16 +25,41 @@ public class InternalTransportRequest extends Request {
         Stretcher
     }
 
+    public enum Urgency {
+        NOT,
+        SOMEWHAT,
+        VERY
+    }
+
+    private Urgency urgency;
+
     private TransportType transport;
 
-    public InternalTransportRequest(int id, String notes, Node location, boolean completed, TransportType transportType) {
+    public InternalTransportRequest(int id, String notes, Node location, boolean completed, TransportType transportType, Urgency urgency) {
         super(id, notes, location, completed);
         this.transport = transportType;
+        this.urgency = urgency;
+    }
+
+    public InternalTransportRequest(int id, String notes, Node location, boolean completed, TransportType transport) {
+        super(id, notes, location, completed);
+        this.transport = transport;
+        this.urgency = Urgency.NOT;
     }
 
     public InternalTransportRequest(int id, String notes, Node location, boolean completed) {
         super(id, notes, location, completed);
         this.transport = TransportType.Wheelchair;
+        this.urgency = Urgency.NOT;
+    }
+
+
+    public Urgency getUrgency() {
+        return urgency;
+    }
+
+    public void setUrgency(Urgency urgency) {
+        this.urgency = urgency;
     }
 
     @Override
@@ -40,8 +69,21 @@ public class InternalTransportRequest extends Request {
 
     @Override
     public void fillRequest() {
-        this.setCompleted(true);
+        if(this.urgency == Urgency.VERY && !isCompleted()){
+           callElev();
+        }
+        setCompleted(true);
         DatabaseService.getDatabaseService().updateInternalTransportRequest(this);
+    }
+
+    private void callElev(){
+        ElevatorConnnection eCon = new ElevatorConnnection();
+        try {
+            eCon.postFloor("L", getLocation().getFloor()); // post elevator, floornum
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("error posting elevator from internal transport req");
+        }
     }
 
     public TransportType getTransport() {
@@ -109,8 +151,8 @@ public class InternalTransportRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Internal Transport Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getTransport().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Internal Transport Request %d, Description: %s, Type: %s, Urgency: %s Assigned To: %s, Fulfilled: %s",
+                this.getId(), this.getNotes(), this.getTransport().name(), this.getUrgency(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
     }
 
     @Override

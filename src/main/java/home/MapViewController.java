@@ -5,9 +5,11 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXSlider;
 import elevator.ElevatorConnnection;
 import application_state.Event;
 import application_state.EventBusFactory;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -19,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -41,6 +44,7 @@ import map.MapNode;
 import map.Node;
 import database.DatabaseService;
 import map.PathFindingService;
+import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -69,27 +73,29 @@ public class MapViewController {
     private ArrayList<Circle> circleCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
-    private String units = "Ft";    // Feet or meters conversion
+    private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
+    // Scroll & Zoom
+    private ImageView floorImg;
+    private static HashMap<String, ImageView> imageCache;
+    private static final double MIN_ZOOM = 0.4;
+    private static final double MAX_ZOOM = 1.2;
 
 
     @FXML
     private ScrollPane map_scrollpane;
     @FXML
-    private Slider zoom_slider;
+    private JFXSlider zoom_slider;
     @FXML
     private JFXButton f1_btn, f2_btn, f3_btn, l1_btn, l2_btn, ground_btn, about_btn;
     @FXML
-    private Pane image_pane;
+    private GesturePane gPane;
     @FXML
     private JFXButton call_el1_btn, call_el2_btn, call_el3_btn, call_el4_btn;
     @FXML
-    private Label cur_el_floor;
+    private Label cur_el_floor, FloorInfo;
     @FXML
     public JFXListView directionsView;
-
-    private static HashMap<String, ImageView> imageCache = new HashMap<>();
-    private static boolean imagesCached = false;
 
 
     // switch to about page
@@ -99,7 +105,6 @@ public class MapViewController {
         Parent root = FXMLLoader.load(ResourceLoader.about,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage,root,"About Page");
     }
-
 
     // ELEVATOR CALL BUTTONS
     @FXML
@@ -120,15 +125,11 @@ public class MapViewController {
     void initialize() {
         pingTiming();
 
+        zoomSliderInit();
+        zoomGroupInit();
+        imagesInit();
         // listen to changes
         eventBus.register(this);
-
-        // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
-        Group contentGroup = new Group();
-        zoomGroup = new Group();
-        contentGroup.getChildren().add(zoomGroup);
-        zoomGroup.getChildren().add(map_scrollpane.getContent());
-        map_scrollpane.setContent(contentGroup);
 
         // Setup collection of lines
         lineCollection = new ArrayList<Line>();
@@ -146,30 +147,27 @@ public class MapViewController {
         startCircle.setFill(Color.rgb(67, 70, 76));
         zoomGroup.getChildren().add(startCircle);
 
-
-        // Setting View Scrolling
-        zoom_slider.setMin(0.4);
-        zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.4);
-        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
-        zoom(0.4);
-
         directionsView.setVisible(false);
+    }
 
-        // Cache imageViews so they can be reused, but only if they haven't already been cached
-        if(!imagesCached) {
-            try {
-                imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
-                imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
-                imageCache.put("1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
-                imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
-                imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
-                imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
-                imagesCached = true;
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
+    void zoomGroupInit() {
+        zoomGroup = new Group();
+        gPane.setContent(zoomGroup);
+    }
+
+    void zoomSliderInit() {
+        gPane.currentScaleProperty().setValue(MIN_ZOOM+0.1);
+        zoom_slider.setMin(MIN_ZOOM);
+        zoom_slider.setMax(MAX_ZOOM);
+        zoom_slider.setIndicatorPosition(JFXSlider.IndicatorPosition.RIGHT);
+        zoom_slider.setValue(gPane.getCurrentScale());
+        gPane.currentScaleProperty().bindBidirectional(zoom_slider.valueProperty());
+    }
+
+    void imagesInit() {
+        imageCache = ApplicationState.getApplicationState().getImageCache();
+        this.floorImg = imageCache.get("1");
+        setFloor("1"); // DEFAULT
     }
 
     void pingTiming() {
@@ -199,54 +197,28 @@ public class MapViewController {
 
     }
 
-    @FXML
-    void floorChangeAction(ActionEvent e) throws IOException {
-        JFXButton btn = (JFXButton)e.getSource();
-        ImageView imageView;
-        event.setEventName("floor");
-        String floorName = "";
-        event.setFloor(btn.getText());
-        switch (btn.getText()) {
-            case "3":
-                imageView = imageCache.get("3");
-                floorName = "3";
-                break;
-            case "2":
-                imageView = imageCache.get("2");
-                floorName = "2";
-                break;
-            case "1":
-                imageView = imageCache.get("1");
-                floorName = "1";
-                break;
-            case "L1":
-                imageView = imageCache.get("L1");
-                floorName = "L1";
-                break;
-            case "L2":
-                imageView = imageCache.get("L2");
-                floorName = "L2";
-                break;
-            case "G":
-                imageView = imageCache.get("G");
-                floorName = "G";
-                break;
-            default:
-                System.out.println("We should not have default here!!!");
-                imageView = new ImageView(new Image(
-                        ResourceLoader.groundFloor.openStream()));
-                break;
+    // switch floor to new map image
+    public void setFloor(String floor) {
+        ImageView newImg;
+        if (imageCache.containsKey(floor)) {
+            newImg = imageCache.get(floor);
+            event.setFloor(floor);
+        } else {
+            // unknown floor change | SETTING TO DEFAULT
+            newImg = imageCache.get("1");
+            event.setFloor("1");
         }
-        image_pane.getChildren().clear();
-        image_pane.getChildren().add(imageView);
-        event.setFloor(floorName);
-        eventBus.post(event);
-        if (hasPath){
-            drawPath();
-        }
-        // Handle Floor changes
-        editNodeHandler(event.isEditing());
+        zoomGroup.getChildren().remove(this.floorImg);
+        zoomGroup.getChildren().add(newImg);
+        this.floorImg = newImg;
     }
+
+    @FXML
+    void floorChangeAction(ActionEvent e){
+        JFXButton btn = (JFXButton)e.getSource();
+        setFloor(btn.getText());
+    }
+
 
     @Subscribe
     void eventListener(Event event) {
@@ -259,7 +231,8 @@ public class MapViewController {
                             navigationHandler();
                         }
                         catch(Exception ex){
-                            System.out.println("error posting floor");
+                            ex.printStackTrace();
+                            System.out.println(ex);
                         }
                         break;
                     case "node-select":
@@ -282,7 +255,13 @@ public class MapViewController {
                         currentMethod = event.getSearchMethod();
                         break;
                     case "editing":
+                        deletePath();
                         editNodeHandler(event.isEditing());
+                        break;
+                    case "logout":
+                        zoomGroup.getChildren().removeAll(circleCollection);
+                        circleCollection.clear();
+                        drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
                         break;
                     default:
 //                        System.out.println("I don'");
@@ -314,7 +293,7 @@ public class MapViewController {
                 nodeCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        Stage stage = (Stage) image_pane.getScene().getWindow();
+                        Stage stage = (Stage) gPane.getScene().getWindow();
                         Circle c = (Circle)event.getSource();
                         tp.show(c, stage.getX()+event.getSceneX()+15, stage.getY()+event.getSceneY());
                     }
@@ -333,7 +312,7 @@ public class MapViewController {
 
                         System.out.println("WE CLICKED THE CIRCLE");
                         try {
-                            Stage stage = (Stage) image_pane.getScene().getWindow();
+                            Stage stage = (Stage) gPane.getScene().getWindow();
                             Parent root = FXMLLoader.load(ResourceLoader.editNode);
                             StageManager.changeExistingWindow(stage, root, "Node Editor");
                         } catch (Exception e) {
@@ -364,15 +343,10 @@ public class MapViewController {
 
     private void drawPoint(Node node, Circle circle, Color color, boolean start) {
         // remove points
-        for (Line line : lineCollection) {
-            if (zoomGroup.getChildren().contains(line)) {
-                zoomGroup.getChildren().remove(line);
-                hasPath = false;
-            }
-        }
+        deletePath();
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
-            System.out.println("we found new Selected Circles");
+            //System.out.println("we found new Selected Circles");
             zoomGroup.getChildren().remove(circle);
         }
         // create new Circle
@@ -381,6 +355,13 @@ public class MapViewController {
         circle.setCenterY(node.getYcoord());
         circle.setRadius(20);
         circle.setFill(color);
+
+        if(!node.getFloor().equals(event.getFloor())){
+            //switch the map
+            //System.out.println(node + node.getFloor());
+            setFloor(node.getFloor());
+        }
+
         zoomGroup.getChildren().add(circle);
         // set circle to selected
         if (start){
@@ -388,10 +369,15 @@ public class MapViewController {
         } else {
             selectCircle = circle;
         }
+
+
+
         // Scroll to new point
         scrollTo(node);
 
-
+        //display node info
+        FloorInfo.setText("Building: " + node.getBuilding() + " Floor " + node.getFloor());
+        System.out.println("done drawing point");
     }
 
     // generate path on the screen
@@ -476,11 +462,7 @@ public class MapViewController {
     // draw path on the screen
     private void drawPath() {
         // remove points
-        for (Line line : lineCollection) {
-            if (zoomGroup.getChildren().contains(line)) {
-                zoomGroup.getChildren().remove(line);
-            }
-        }
+        deletePath();
         if (path != null && path.size() > 1) {
             Node last = path.get(0);
             Node current;
@@ -517,52 +499,22 @@ public class MapViewController {
 
     }
 
-    /**
-     * zooms in the map
-     * @param event
-     */
-    @FXML
-    void zoomIn(ActionEvent event) {
-        zoom_slider.setValue(zoom_slider.getValue() + 0.05);
-        zoom_slider.setValue(zoom_slider.getValue());
-    }
-
-    /**
-     * zooms out the map
-     * @param event
-     */
-    @FXML
-    void zoomOut(ActionEvent event) {
-        zoom_slider.setValue(zoom_slider.getValue() - 0.05);
-        zoom_slider.setValue(zoom_slider.getValue());
-    }
-
-    /**
-     * scales zoom grouping based on given value
-     * @param scaleValue
-     */
-    private void zoom(double scaleValue) {
-//    System.out.println("airportapp.Controller.zoom, scaleValue: " + scaleValue);
-        double scrollH = map_scrollpane.getHvalue();
-        double scrollV = map_scrollpane.getVvalue();
-        zoomGroup.setScaleX(scaleValue);
-        zoomGroup.setScaleY(scaleValue);
-        map_scrollpane.setHvalue(scrollH);
-        map_scrollpane.setVvalue(scrollV);
+    private void deletePath(){
+        for (Line line : lineCollection) {
+            if (zoomGroup.getChildren().contains(line)) {
+                zoomGroup.getChildren().remove(line);
+                hasPath = false;
+            }
+        }
     }
 
     private void scrollTo(Node node) {
         // animation scroll to new position
-        double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
-        double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
-        double scrollH = (Double) (node.getXcoord() / mapWidth);
-        double scrollV = (Double) (node.getYcoord() / mapHeight);
-        final Timeline timeline = new Timeline();
-        final KeyValue kv1 = new KeyValue(map_scrollpane.hvalueProperty(), scrollH);
-        final KeyValue kv2 = new KeyValue(map_scrollpane.vvalueProperty(), scrollV);
-        final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
-        timeline.getKeyFrames().add(kf);
-        timeline.play();
+        gPane.animate(Duration.millis(200))
+                .interpolateWith(Interpolator.EASE_BOTH)
+                .beforeStart(() -> System.out.println("Starting..."))
+                .afterFinished(() -> System.out.println("Done!"))
+                .centreOn(new Point2D(node.getXcoord(), node.getYcoord()));
     }
 
     /**

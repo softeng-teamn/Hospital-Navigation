@@ -14,9 +14,31 @@ import java.util.GregorianCalendar;
 
 public class ElevatorConnnection {
     private static HttpURLConnection con;
+    private String teamName;
 
-    //default constructor
-    public ElevatorConnnection() {
+    //for other teams
+    public ElevatorConnnection(String teamName) {
+        this.teamName = teamName;
+    }
+
+    //for our team
+    public ElevatorConnnection(){
+        this.teamName = "N";
+    }
+
+
+    /**
+     * seee post floor, where emargency is false
+     * @param elevator
+     * @param floorNum
+     * @throws MalformedURLException
+     * @throws ProtocolException
+     * @throws IOException
+     */
+    public void postFloor(String elevator, String floorNum)throws MalformedURLException,
+            ProtocolException, IOException{
+        GregorianCalendar time = new GregorianCalendar();
+        postFloor(elevator, floorNum, time);
     }
 
     /**
@@ -37,23 +59,14 @@ public class ElevatorConnnection {
             case "L2":
                 floorNum = "-2";
                 break;
-            case "00":
+            case "0G":
                 floorNum = "0";
                 break;
-            case "01":
-                floorNum = "1";
-                break;
-            case "02":
-                floorNum = "2";
-                break;
-            case "03":
-                floorNum = "3";
-                break;
-            case"04":
-                floorNum = "4";
+            case " G":
+                floorNum = "0";
                 break;
             default:
-                floorNum = "-4";
+                floorNum = floorNum.substring(floorNum.length() - 1);//last num will be floor
                 break;
         }
 
@@ -61,8 +74,9 @@ public class ElevatorConnnection {
         //change into time since 12
         String t = "" + time.getTimeInMillis() / 1000;
 
-        String urlParameters = "elevator=" + elevator + "&floor=" + floorNum + "&time=" + t + "&isESP=false";
-        System.out.println("Posting " + urlParameters);
+        String urlParameters = "elevator=" + elevator + "&floor=" + floorNum +
+                "&time=" + t + "&team=" + this.teamName;
+        //System.out.println("Posting " + urlParameters);
         post(URL, urlParameters);
     }
 

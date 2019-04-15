@@ -282,10 +282,15 @@ public class DatabaseServiceTest {
         assertThat(connectedNodes.get(1).getNodeID(), is(testNode3.getNodeID()));
         assertThat(connectedNodes.get(2).getNodeID(), is(testNode4.getNodeID()));
 
-        assertTrue(connectedNodes.get(0).equals(testNode2));
-        assertTrue(connectedNodes.get(1).equals(testNode3));
-        assertTrue(connectedNodes.get(2).equals(testNode4));
-        assertTrue(connectedNodes.get(3).equals(testNode5));
+        assertEquals(connectedNodes.get(0), testNode2);
+        assertEquals(connectedNodes.get(1), testNode3);
+        assertEquals(connectedNodes.get(2), testNode4);
+        assertEquals(connectedNodes.get(3), testNode5);
+
+        testNode2.setClosed(true);
+        myDBS.updateNode(testNode2);
+
+        assertThat(myDBS.getNodesConnectedTo(testNode1), hasSize(3));
     }
 
     @Test
