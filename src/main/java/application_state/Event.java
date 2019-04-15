@@ -14,16 +14,12 @@ import java.util.ArrayList;
  */
 public class Event {
 
-    Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
-
     String eventName = "";      // one of the event names below
                                 // signifies field change
 
-
     String searchBarQuery = ""; // search-query
-    Node nodeStart = DEFAULT_NODE; // node-start
-    Node nodeSelected = null;   // node-select
-    boolean isLoggedIn = false; // login
+    Node nodeSelected = null;   // node-select    todo get rid of
+    boolean isLoggedIn = false; // login, logout
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
@@ -34,7 +30,6 @@ public class Event {
     boolean callElev = false;
    // floor
     ArrayList<Node> path = null;
-
     ResourceBundle currentBundle = dfBundle;
 
 
@@ -52,25 +47,17 @@ public class Event {
         this.currentBundle = currentBundle;
     }
 
-
     public boolean isCallElev() {
         return callElev;
     }
 
     public void setCallElev(boolean callElev) {this.callElev = callElev;}
 
-    boolean endNode = true; //true for end node, false for start node
 
 
     public ArrayList<Node> getPath() { return path; }
 
     public void setPath(ArrayList<Node> path) { this.path = path; }
-
-    public boolean isEndNode() { return endNode; }
-
-    public void setEndNode(boolean startEnd) { this.endNode = startEnd; }
-
-    public void setDefaultStartNode (){this.nodeStart = DEFAULT_NODE;}
 
     public String getFloor() { return floor; }
 
@@ -91,16 +78,6 @@ public class Event {
     public void setChangingStart(boolean changingStart) {
         isChangingStart = changingStart;
     }
-
-    public Node getDefaultNode() {
-        return DEFAULT_NODE;
-    }
-
-    public Node getNodeStart() {
-        return nodeStart;
-    }
-
-    public void setNodeStart(Node nodeStart) { this.nodeStart = nodeStart; }
 
     public String getEventName() {
         return eventName;

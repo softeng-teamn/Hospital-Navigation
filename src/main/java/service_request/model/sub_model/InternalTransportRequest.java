@@ -2,7 +2,7 @@ package service_request.model.sub_model;
 
 //import com.sun.xml.internal.bind.v2.TODO;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-import elevator.ElevatorConnnection;
+import elevator.ElevatorConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import employee.model.Employee;
@@ -77,7 +77,7 @@ public class InternalTransportRequest extends Request {
     }
 
     private void callElev(){
-        ElevatorConnnection eCon = new ElevatorConnnection();
+        ElevatorConnection eCon = new ElevatorConnection();
         try {
             eCon.postFloor("L", getLocation().getFloor()); // post elevator, floornum
         } catch (IOException e) {

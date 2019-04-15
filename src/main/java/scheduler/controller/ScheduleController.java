@@ -24,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -561,15 +562,11 @@ public class ScheduleController {
      */
     @FXML
     public void showRoomSchedule() {
-
-        // set label based on room
-        ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
-
-
-        System.out.println("showing schedule");
         // Clear the previous schedule
         currentSchedule.clear();
 
+        // Get the selected location
+        ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
         currentSelection = curr;
 
         // Get that date and turn it into gregorian calendars to pass to the database
@@ -970,15 +967,14 @@ public class ScheduleController {
      * Filters the ListView based on the string
      */
     private void filterList(String findStr) {
-        ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
-        resSpaces.addAll(dbResSpaces);
         if (findStr.equals("")) {
-            reservableList.getItems().clear();
-            reservableList.getItems().addAll(resSpaces);
-        } else {
+            reservableList.setItems(resSpaces);
+            System.out.println(resSpaces);
+        }
+        else {
             //Get List of all nodes
             ObservableList<ReservableSpace> original = resSpaces;
+            System.out.println(resSpaces);
 
             //Get Sorted list of nodes based on search value
             List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName), 75);
@@ -993,8 +989,7 @@ public class ScheduleController {
             ObservableList<ReservableSpace> toShow = FXCollections.observableList(filteredSpaces);
 
             // Add to view
-            reservableList.getItems().clear();
-            reservableList.getItems().addAll(toShow);
+            reservableList.setItems(toShow);
         }
     }
 
