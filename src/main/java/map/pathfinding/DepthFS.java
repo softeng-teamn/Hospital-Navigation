@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DepthFS extends AlgorithmContext implements Algorithm{
-    HashMap<MapNode, String> visited;
+
 
     private MapNode start;
     private MapNode dest;
@@ -20,7 +20,7 @@ public class DepthFS extends AlgorithmContext implements Algorithm{
 
     @Override
     void initial(MapNode start, MapNode dest, boolean accessibility, String filter) {
-        visited = new HashMap<MapNode, String>();
+
         this.start = start;
         this.dest = dest;
         this.accessibility = accessibility;
@@ -29,9 +29,10 @@ public class DepthFS extends AlgorithmContext implements Algorithm{
 
     @Override
     MapNode throughMap() {
-        current = start;
+        HashMap<MapNode, String> visited = new HashMap<MapNode, String>();
 
-        MapNode path = depthUtil();
+
+        MapNode path = depthUtil(start, visited, dest, accessibility);
 
         return path;
     }
@@ -41,7 +42,7 @@ public class DepthFS extends AlgorithmContext implements Algorithm{
         return 0;
     }
 
-    private MapNode depthUtil() {
+    private MapNode depthUtil(MapNode current, HashMap<MapNode, String> visited, MapNode dest, boolean accessibility) {
         visited.put(current, "true");
 
         ArrayList<MapNode> children = getChildren(current);
@@ -64,8 +65,7 @@ public class DepthFS extends AlgorithmContext implements Algorithm{
             
             else if (!visited.containsKey(child)){
                 child.setParent(current, 0);
-                current = child;
-                MapNode path = depthUtil();
+                MapNode path = depthUtil(child, visited, dest, accessibility);
                 if (path != null){
                     return path;
                 }

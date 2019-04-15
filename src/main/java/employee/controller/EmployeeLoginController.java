@@ -5,7 +5,6 @@ import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import controller.Controller;
 import employee.model.Employee;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,10 +23,9 @@ import service.StageManager;
 import application_state.ApplicationState;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import static application_state.ApplicationState.getApplicationState;
 
-public class EmployeeLoginController extends Controller implements Initializable {
+public class EmployeeLoginController implements Initializable {
 
     @FXML
     private JFXButton cancelBtn;
@@ -67,7 +65,6 @@ public class EmployeeLoginController extends Controller implements Initializable
             } else if (user.isAdmin()){
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
-                Controller.setCurrentJob(user.getJob());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
@@ -78,7 +75,6 @@ public class EmployeeLoginController extends Controller implements Initializable
             } else {
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin() == false);
-                Controller.setCurrentJob(user.getJob());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
