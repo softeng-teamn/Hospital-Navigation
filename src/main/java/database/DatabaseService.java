@@ -532,9 +532,9 @@ public class DatabaseService {
      *
      * @return a list of all reservations in the database
      */
-    public List<Reservation> getAllReservations() {
+    public ArrayList<Reservation> getAllReservations() {
         String query = "Select * FROM RESERVATION";
-        return (List<Reservation>) (List<?>) executeGetMultiple(query, Reservation.class, new Object[]{});
+        return (ArrayList<Reservation>) (List<?>) executeGetMultiple(query, Reservation.class, new Object[]{});
     }
 
     /**
