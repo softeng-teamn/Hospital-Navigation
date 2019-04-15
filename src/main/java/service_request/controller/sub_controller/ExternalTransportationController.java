@@ -1,6 +1,7 @@
 package service_request.controller.sub_controller;
 
 import com.jfoenix.controls.*;
+import javafx.scene.control.Label;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -29,6 +30,9 @@ public class ExternalTransportationController  extends RequestController {
     @FXML
     private JFXButton submit;
 
+    @FXML
+    private Label errorMsg;
+
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
 
@@ -43,6 +47,10 @@ public class ExternalTransportationController  extends RequestController {
     @FXML
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
+            if(description.getText().equals("")){
+                errorMsg.setText("Please Enter a Description");
+            }
+            else{
             GregorianCalendar g = new GregorianCalendar(datePicker.getValue().getYear(),
                     datePicker.getValue().getMonthValue(), datePicker.getValue().getDayOfYear(),
                     timePicker.getValue().getHour(), timePicker.getValue().getMinute());
@@ -53,6 +61,11 @@ public class ExternalTransportationController  extends RequestController {
             description.setText("");
             datePicker.setValue(LocalDate.now());
             timePicker.setValue(LocalTime.now());
+            errorMsg.setText("");
+        }
+        }
+        else{
+            errorMsg.setText("Please Select a Location");
         }
     }
 }

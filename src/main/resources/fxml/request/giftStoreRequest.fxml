@@ -43,6 +43,7 @@
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXButton>
+      <Label fx:id="errorMsg" />
    </children>
    <padding>
       <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />

@@ -3,6 +3,7 @@ package service_request.controller.sub_controller;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import javafx.scene.control.Label;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -23,6 +24,9 @@ public class FloristController extends RequestController {
     @FXML
     private JFXComboBox<Integer> quantity;
 
+    @FXML
+    private Label errorMsg;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -37,6 +41,10 @@ public class FloristController extends RequestController {
             description.setText("");
             bouquetType.setText("");
             quantity.getSelectionModel().select(0);
+            errorMsg.setText("");
+        }
+        else{
+            errorMsg.setText("Please Select a Location");
         }
     }
 

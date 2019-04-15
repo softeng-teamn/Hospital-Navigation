@@ -3,6 +3,7 @@ package service_request.controller.sub_controller;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXToggleNode;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
@@ -20,9 +21,11 @@ public class InternalTransportController extends RequestController{
     private JFXTextArea text_area;
     @FXML
     private ToggleGroup urgency;
-
+    @FXML
+    private Label errorMsg;
     @FXML
     private JFXToggleNode low;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,6 +62,10 @@ public class InternalTransportController extends RequestController{
             request.makeRequest();
             dropdown.getSelectionModel().select(0);
             text_area.setText("");
+            errorMsg.setText("");
+        }
+        else{
+            errorMsg.setText("Please Select a Location");
         }
     }
 }

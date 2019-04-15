@@ -2,6 +2,7 @@ package service_request.controller.sub_controller;
 
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import javafx.scene.control.Label;
 import service_request.controller.RequestController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +14,9 @@ public class MedicineRequestController extends RequestController {
 
     @FXML
     private JFXTextField medicineType, quantity;
+
+    @FXML
+    private Label errorMsg;
 
     @FXML
     void submitRequest(ActionEvent event) {
@@ -29,6 +33,10 @@ public class MedicineRequestController extends RequestController {
             } catch (NumberFormatException e) {
                 quantity.getStyleClass().add("wrong-credentials");
             }
+            errorMsg.setText("");
+        }
+        else{
+            errorMsg.setText("Please Select a Location");
         }
     }
 }
