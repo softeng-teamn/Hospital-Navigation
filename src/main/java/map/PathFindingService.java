@@ -25,7 +25,6 @@ public class PathFindingService {
      * */
     public ArrayList<Node> genPath(MapNode start, MapNode dest, Boolean accessibility, String filter) {
         System.out.println("generating path " + start + dest);
-
         AlgorithmContext ctx = new AlgorithmContext(new Astar());
         ArrayList<Node> target;
 
