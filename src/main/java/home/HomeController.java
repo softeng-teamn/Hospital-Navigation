@@ -2,10 +2,15 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import com.jfoenix.controls.JFXDrawer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import map.MapController;
 import application_state.Event;
 import service.ResourceLoader;
@@ -17,13 +22,15 @@ public class HomeController implements Observer {
     private Event event;
 
     @FXML
+    private JFXDrawer drawer;
+    @FXML
     private MapViewController mapViewController;
     @FXML
     private SearchResultsController searchResultsController;
     @FXML
     private TopNavController topNavController;
-    @FXML
-    private Pane leftPane;
+
+    StackPane drawerPane = new StackPane();
 
     @FXML
     void initialize() throws IOException {
@@ -35,7 +42,10 @@ public class HomeController implements Observer {
 
         MapController.initConnections();
 
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults));
+        drawer.setSidePane(drawerPane);
+        drawer.setDefaultDrawerSize(480);
+        drawer.setResizeContent(true);
+        drawer.setOverLayVisible(false);
     }
 
     @Override
@@ -100,6 +110,18 @@ public class HomeController implements Observer {
                             e.printStackTrace();
                         }
                     }
+                  });
+                  break ;
+            case "showPathSetting":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            drawer.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 });
                 break;
             case "logout":
@@ -120,39 +142,34 @@ public class HomeController implements Observer {
     }
 
     private void showAdmin() throws IOException {
-        leftPane.getChildren().clear();
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawerPane.getChildren().clear();
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawer.open();
     }
 
     private void showEmployee() throws IOException {
-        leftPane.getChildren().clear();
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawerPane.getChildren().clear();
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawer.open();
     }
 
     private void showSearch() throws IOException {
-        leftPane.getChildren().clear();
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults));
+        drawerPane.getChildren().clear();
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults));
+        drawer.open();
     }
 
     private void showText() throws IOException {
-        leftPane.getChildren().clear();
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.directionMessage));
-
+        drawerPane.getChildren().clear();
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.directionMessage));
+        drawer.open();
         //event.setEventName("printText");
-       // eventBus.post(event); todo here
+        //eventBus.post(event);TODO
     }
 
-    private void showPathSetting() throws IOException {
-        leftPane.getChildren().clear();
-        leftPane.getChildren().add(FXMLLoader.load(ResourceLoader.pathFindingSettings));
+    private void showPathSettings() throws IOException {
+        drawerPane.getChildren().clear();
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.pathFindingSettings));
+        drawer.open();
     }
-
-    /*
-
-    pane switching
-
-
-
-    */
-
 }

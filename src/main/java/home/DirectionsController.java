@@ -54,7 +54,7 @@ public class DirectionsController implements Observer {
     @FXML
     void showSearchList(ActionEvent e) {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
-        event.setEventName("showSearch");
+        event.setEventName("closeDrawer");
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
