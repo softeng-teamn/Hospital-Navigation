@@ -4,7 +4,6 @@ import application_state.ApplicationState;
 import application_state.Event;
 import application_state.Observer;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXSlider;
 import database.DatabaseService;
 import elevator.ElevatorConnection;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -79,8 +78,6 @@ public class MapViewController implements Observer {
     @FXML
     private ScrollPane map_scrollpane;
     @FXML
-    private JFXSlider zoom_slider;
-    @FXML
     private JFXButton about_btn;
     @FXML
     private GesturePane gPane;
@@ -113,8 +110,7 @@ public class MapViewController implements Observer {
     @FXML
     void initialize() {
         //pingTiming();
-
-        zoomSliderInit();
+        gPane.currentScaleProperty().setValue(MIN_ZOOM+0.1);
         zoomGroupInit();
         imagesInit();
         // listen to changes
@@ -143,15 +139,6 @@ public class MapViewController implements Observer {
     void zoomGroupInit() {
         zoomGroup = new Group();
         gPane.setContent(zoomGroup);
-    }
-
-    void zoomSliderInit() {
-        gPane.currentScaleProperty().setValue(MIN_ZOOM+0.1);
-        zoom_slider.setMin(MIN_ZOOM);
-        zoom_slider.setMax(MAX_ZOOM);
-        zoom_slider.setIndicatorPosition(JFXSlider.IndicatorPosition.RIGHT);
-        zoom_slider.setValue(gPane.getCurrentScale());
-        gPane.currentScaleProperty().bindBidirectional(zoom_slider.valueProperty());
     }
 
     void imagesInit() {
