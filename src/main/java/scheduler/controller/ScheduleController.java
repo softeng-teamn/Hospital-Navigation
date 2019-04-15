@@ -57,61 +57,102 @@ public class ScheduleController {
         public String satAvailability;
 
 
-
-
         // color
-       public String color ;
-
-
+        public String color;
 
 
         public ScheduleWrapper(String time) {
             this.time = time;
             //this.availability = "Available";
             // me fucking around
-            this.sunAvailability = "-" ;
-            this.monAvailability = "-" ;
-            this.tuesAvailability = "-" ;
-            this.wedAvailability = "-" ;
-            this.thursAvailability = "-" ;
-            this.friAvailability = "-" ;
-            this.satAvailability = "-" ;
+            this.sunAvailability = "-";
+            this.monAvailability = "-";
+            this.tuesAvailability = "-";
+            this.wedAvailability = "-";
+            this.thursAvailability = "-";
+            this.friAvailability = "-";
+            this.satAvailability = "-";
 
         }
 
-        public void setTime(String value) { this.time = value; }
-        public String getTime() { return time; }
+        public void setTime(String value) {
+            this.time = value;
+        }
+
+        public String getTime() {
+            return time;
+        }
 
         /*
         public void setAvailability(String value) { this.availability = value; }
         public String getAvailability() { return availability; }
         */
 
-        public String getSunAvailability() { return sunAvailability; }
-        public void setSunAvailability(String value) {this.sunAvailability = value ; }
+        public String getSunAvailability() {
+            return sunAvailability;
+        }
+
+        public void setSunAvailability(String value) {
+            this.sunAvailability = value;
+        }
 
 
-        public String getMonAvailability() { return monAvailability; }
-        public void setMonAvailability(String monAvailability) { this.monAvailability = monAvailability; }
+        public String getMonAvailability() {
+            return monAvailability;
+        }
 
-        public String getTuesAvailability() { return tuesAvailability; }
-        public void setTuesAvailability(String tuesAvailability) { this.tuesAvailability = tuesAvailability; }
+        public void setMonAvailability(String monAvailability) {
+            this.monAvailability = monAvailability;
+        }
 
-        public String getWedAvailability() { return wedAvailability; }
-        public void setWedAvailability(String wedAvailability) { this.wedAvailability = wedAvailability; }
+        public String getTuesAvailability() {
+            return tuesAvailability;
+        }
 
-        public String getThursAvailability() { return thursAvailability; }
-        public void setThursAvailability(String thursAvailability) { this.thursAvailability = thursAvailability; }
+        public void setTuesAvailability(String tuesAvailability) {
+            this.tuesAvailability = tuesAvailability;
+        }
 
-        public String getFriAvailability() { return friAvailability; }
-        public void setFriAvailability(String friAvailability) { this.friAvailability = friAvailability; }
+        public String getWedAvailability() {
+            return wedAvailability;
+        }
 
-        public String getSatAvailability() { return satAvailability; }
-        public void setSatAvailability(String satAvailability) { this.satAvailability = satAvailability; }
+        public void setWedAvailability(String wedAvailability) {
+            this.wedAvailability = wedAvailability;
+        }
 
-        public String getColor() { return color; }
-        public void setColor(String color) { this.color = color /*this.setStyle("-fx-background-color: #98FB98")*/;
-            ; }
+        public String getThursAvailability() {
+            return thursAvailability;
+        }
+
+        public void setThursAvailability(String thursAvailability) {
+            this.thursAvailability = thursAvailability;
+        }
+
+        public String getFriAvailability() {
+            return friAvailability;
+        }
+
+        public void setFriAvailability(String friAvailability) {
+            this.friAvailability = friAvailability;
+        }
+
+        public String getSatAvailability() {
+            return satAvailability;
+        }
+
+        public void setSatAvailability(String satAvailability) {
+            this.satAvailability = satAvailability;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public void setColor(String color) {
+            this.color = color /*this.setStyle("-fx-background-color: #98FB98")*/;
+            ;
+        }
 
 
         /*
@@ -124,7 +165,6 @@ public class ScheduleController {
         }
         */
     }
-
 
 
     @FXML
@@ -152,14 +192,13 @@ public class ScheduleController {
     public Label resInfoLbl, inputErrorLbl, schedLbl;
 
 
-
     private Event event = EventBusFactory.getEvent();
     private EventBus eventBus = EventBusFactory.getEventBus();
 
 
     // Map Stuff
-    static final Color AVAILIBLE_COLOR = Color.rgb(87,255,132,0.8);
-    static final Color UNAVAILABLE_COLOR = Color.rgb(255,82,59, 0.8);
+    static final Color AVAILIBLE_COLOR = Color.rgb(87, 255, 132, 0.8);
+    static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
     Group zoomGroup;
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
     ArrayList<Circle> circleCollection = new ArrayList<Circle>();
@@ -172,7 +211,7 @@ public class ScheduleController {
     private int openTime = 9;   // hour to start schedule dislay
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private int timeStep = 2;    // Fractions of an hour
-    private int timeStepMinutes = 60/timeStep;    // In Minutes
+    private int timeStepMinutes = 60 / timeStep;    // In Minutes
 
     // Currently selected location
     public ReservableSpace currentSelection;
@@ -210,9 +249,6 @@ public class ScheduleController {
     }
 
 
-
-
-
     /**
      * Set up scheduler page.
      */
@@ -240,8 +276,6 @@ public class ScheduleController {
         zoom(0.2);
 
 
-
-
         //resInfoLbl.setText("");
         timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
         availRoomsText = "Show Available Spaces";
@@ -258,9 +292,8 @@ public class ScheduleController {
         inputErrorLbl.setVisible(false);
 
 
-
         // Set default date to today's date
-        LocalDate date =  LocalDate.now();
+        LocalDate date = LocalDate.now();
         datePicker.setValue(date);
 
         // Set default start time to current time, or the closest open hour
@@ -305,13 +338,12 @@ public class ScheduleController {
                     setText(null);
                 } else {
                     setText(item.getSpaceName());
-                    setOnMouseClicked(EventHandler -> {showRoomSchedule();} );
+                    setOnMouseClicked(EventHandler -> {
+                        showRoomSchedule();
+                    });
                 }
             }
         });
-
-
-
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,7 +351,6 @@ public class ScheduleController {
         // Select the first item and display its schedule
         reservableList.getSelectionModel().select(0);
         reservableList.getFocusModel().focus(0);
-
 
 
         // Create table columns, set what they display, and add to the table
@@ -357,7 +388,6 @@ public class ScheduleController {
 
         // cannot edit!
         scheduleTable.setEditable(false);
-
 
 
         // HERE!! IMPORTANT!! MAYBE!!
@@ -453,22 +483,19 @@ public class ScheduleController {
     }
 
 
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-        /**
-         * Listener to update listview of rooms and info label
-         * @param value
-         */
+    /**
+     * Listener to update listview of rooms and info label
+     *
+     * @param value
+     */
     private void focusState(boolean value) {
         if (!value && validTimes(false)) {
             if (availRoomsBtn.getText().contains("ear")) {
                 availRooms();
-            }
-            else if (bookedRoomsBtn.getText().contains("ear")) {
+            } else if (bookedRoomsBtn.getText().contains("ear")) {
                 bookedRooms();
             }
             showRoomSchedule();
@@ -526,13 +553,7 @@ public class ScheduleController {
     }
 
 
-
-
-
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
     /**
@@ -558,14 +579,13 @@ public class ScheduleController {
         GregorianCalendar gcalEnd = GregorianCalendar.from(endDate.atStartOfDay(ZoneId.systemDefault()));
 
 
-        // set label based on date
-        String date = chosenDate.toString() ;
-        //date = date.substring(0, 9) ;
+        // set label of weekly scheduler based on date
+        String date = chosenDate.toString();
+        String name = curr.getSpaceName();
+        schedLbl.setText("Schedule for " + name + ": Week of " + date);
 
-        String name = curr.getSpaceName() ;
-        schedLbl.setText("Schedule for " + name + ": Week of " + date) ;
 
-                // Make a list of time and activity labels for the schedule
+        // Make a list of time and activity labels for the schedule
         ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
 
         // For every hour between the time the room closes and the time it opens
@@ -600,176 +620,57 @@ public class ScheduleController {
         ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd);
 
 
-
-
         ///////// WORK IN PROGRESS FOR WEEKLY CALENDAR DISPLAY ///////////////////////////
 
 
-
         // list of reservations for this space for the week of the selected time
-        ArrayList<Reservation> reservationsForWeek = reservations ;
+        ArrayList<Reservation> reservationsForWeek = reservations;
 
         System.out.println("gCalStart1 = " + gcalStart.toInstant());
         // new gcal to reset time
-        GregorianCalendar gcalStart2 = gcalStart ;
+        GregorianCalendar gcalStart2 = gcalStart;
         System.out.println("gcalStart2 = " + gcalStart2.toInstant());
-        GregorianCalendar gcalEnd2 = gcalEnd ;
+        GregorianCalendar gcalEnd2 = gcalEnd;
         System.out.println("gcalEnd2 = " + gcalEnd2.toInstant());
 
         // get reservations for surrounding days
-        int day = gcalStart.get(Calendar.DAY_OF_WEEK) ;
+        int day = gcalStart.get(Calendar.DAY_OF_WEEK);
         System.out.println("DAY OF WEEK = " + gcalStart.get(Calendar.DAY_OF_WEEK));
         // always want to get full week
         int newStartDay = 1;
-        int newEndDay = 7 ;
+        int newEndDay = 7;
 
         // set correct start week (so it doesnt switch)
 
         // set corect start day of week
-        gcalStart2.set(Calendar.DAY_OF_WEEK, newStartDay) ;
+        gcalStart2.set(Calendar.DAY_OF_WEEK, newStartDay);
 
         System.out.println("DAY OF WEEK = " + gcalStart.get(Calendar.DAY_OF_WEEK));
         // if sunday do not subtract 1
-        if(day == 1 ) {
-            gcalStart2.set(Calendar.WEEK_OF_MONTH, gcalStart2.get(Calendar.WEEK_OF_MONTH) ) ;
+        if (day == 1) {
+            gcalStart2.set(Calendar.WEEK_OF_MONTH, gcalStart2.get(Calendar.WEEK_OF_MONTH));
 
-        } else if(day != 1 ) {
+        } else if (day != 1) {
             System.out.println("Has entered else - noice");
-            gcalStart2.set(Calendar.WEEK_OF_MONTH, gcalStart2.get(Calendar.WEEK_OF_MONTH) - 1 ) ;
+            gcalStart2.set(Calendar.WEEK_OF_MONTH, gcalStart2.get(Calendar.WEEK_OF_MONTH) - 1);
 
         }
 
         // else (any other week) subtract 1 to keep the correct week number
 
-       // System.out.println("GCALSTART2 WEEK OF MONTH = " + gcalStart2.get(Calendar.WEEK_OF_MONTH));
-        //gcalStart2.set(Calendar.WEEK_OF_MONTH, gcalStart2.get(Calendar.WEEK_OF_MONTH) - 1 ) ;
         System.out.println("GCALSTART2 NEW WEEK OF MONTH = " + gcalStart2.get(Calendar.WEEK_OF_MONTH));
 
-        gcalEnd2.set(Calendar.DAY_OF_WEEK, newEndDay) ;
+        gcalEnd2.set(Calendar.DAY_OF_WEEK, newEndDay);
 
         System.out.println("new gCalStart2 = " + gcalStart2.toInstant());
         System.out.println("new gCalEnd2 = " + gcalEnd2.toInstant());
 
-        ArrayList<Reservation> databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart2, gcalEnd2) ;
 
-        // addall?
-        //reservationsForWeek = databaseRes ;
-        reservationsForWeek.addAll(databaseRes) ;
+        // get all reservations from the database for the week of the selected time
+        ArrayList<Reservation> databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart2, gcalEnd2);
+        reservationsForWeek.addAll(databaseRes);
 
-
-        //ArrayList<Reservation> databaseRes = reservations;
-        // switch case based on day of week
-        /*
-        switch(day) {
-            // if day is a sunday
-
-            case 1:
-                // get reservations for following mon - sat
-                // for sunday - week start on that day
-                //day = gcalStart.get(Calendar.DAY_OF_WEEK) ;
-                //newStartDay = day ;
-                newStartDay = 1 ;
-                // week ends 6 days after
-                //newEndDay = day + 6 ;
-                newEndDay = 7 ;
-                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
-                System.out.println("end day of week: " + gcalEnd.get(Calendar.DAY_OF_WEEK));
-               // databaseRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd) ;
-
-                databaseRes.addAll((ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd)) ;
-                System.out.println("SUNDAY BLOCK");
-                reservationsForWeek.addAll(databaseRes );
-                System.out.println("RESERVATIONS FOR WEEK: " + reservationsForWeek);
-
-                break ;
-            case 2:
-                day = gcalStart.get(Calendar.DAY_OF_WEEK) ;
-                // get reservations for following mon - sat
-                System.out.println("MONDAY BLOCK");
-                // week starts on sunday (monday - 1)
-
-                //newStartDay = day - 1 ;
-                //newEndDay = day + 5 ;
-
-                newStartDay = 1 ;
-                // week ends 6 days after
-                //newEndDay = day + 6 ;
-                newEndDay = 7 ;
-                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
-                System.out.println("end day of week: " + gcalEnd.get(Calendar.DAY_OF_WEEK));
-                databaseRes.addAll((ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd)) ;
-                // reservationsForWeek = databaseRes ;
-                reservationsForWeek.addAll(databaseRes );
-
-                System.out.println("RESERVATIONS FOR WEEK: " + reservationsForWeek);
-
-                break ;
-            case 3:
-                day = gcalStart.get(Calendar.DAY_OF_WEEK) ;
-                System.out.println("TUESDAY BLOCK");
-
-                //newStartDay = day - 2 ;
-                //newEndDay = day + 4 ;
-                newStartDay = 1 ;
-                // week ends 6 days after
-                //newEndDay = day + 6 ;
-                newEndDay = 7 ;
-                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
-                System.out.println("end day of week: " + gcalEnd.get(Calendar.DAY_OF_WEEK));
-                databaseRes.addAll((ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd)) ;
-                // reservationsForWeek = databaseRes ;
-                reservationsForWeek.addAll(databaseRes );
-
-                System.out.println("RESERVATIONS FOR WEEK: " + reservationsForWeek);
-                break ;
-            case 4:
-                day = gcalStart.get(Calendar.DAY_OF_WEEK) ;
-                newStartDay = day - 3 ;
-                newEndDay = day + 3 ;
-                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
-                System.out.println("end day of week: " + gcalEnd.get(Calendar.DAY_OF_WEEK));
-                databaseRes.addAll((ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd)) ;
-                // reservationsForWeek = databaseRes ;
-                reservationsForWeek.addAll(databaseRes );
-                break ;
-            case 5:
-                day = gcalStart.get(Calendar.DAY_OF_WEEK) ;
-                newStartDay = day - 4 ;
-                newEndDay = day + 2 ;
-                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
-                System.out.println("end day of week: " + gcalEnd.get(Calendar.DAY_OF_WEEK));
-                databaseRes.addAll((ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd)) ;
-                // reservationsForWeek = databaseRes ;
-                reservationsForWeek.addAll(databaseRes );
-               break ;
-            case 6:
-                day = gcalStart.get(Calendar.DAY_OF_WEEK) ;
-                newStartDay = day - 5 ;
-                newEndDay = day + 1 ;
-                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
-                System.out.println("end day of week: " + gcalEnd.get(Calendar.DAY_OF_WEEK));
-                databaseRes.addAll((ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd)) ;
-                // reservationsForWeek = databaseRes ;
-                reservationsForWeek.addAll(databaseRes );
-                break ;
-            case 7:
-                day = gcalStart.get(Calendar.DAY_OF_WEEK) ;
-                newStartDay = day - 6 ;
-                newEndDay = day ;
-                gcalEnd.set(Calendar.DAY_OF_WEEK, newEndDay) ;
-                System.out.println("end day of week: " + gcalEnd.get(Calendar.DAY_OF_WEEK));
-                databaseRes.addAll((ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStart, gcalEnd)) ;
-                // reservationsForWeek = databaseRes ;
-                reservationsForWeek.addAll(databaseRes );
-                break ;
-            default:
-                System.out.println("should never get here");
-                break ;
-        }
-        */
-
-        System.out.println("reservation for week of selected time: " + reservationsForWeek) ;
-
+        System.out.println("reservation for week of selected time: " + reservationsForWeek);
 
 
         /**
@@ -800,72 +701,67 @@ public class ScheduleController {
                         case 1:
                             System.out.println("inside sun avail switch");
                             time.setSunAvailability(res.getEventName());
-                            break ;
+                            break;
                         case 2:
                             System.out.println("inside mon avail switch");
-
                             time.setMonAvailability(res.getEventName());
-                            break ;
+                            break;
                         case 3:
                             System.out.println("inside tues avail switch");
-
                             time.setTuesAvailability(res.getEventName());
-                            break ;
+                            break;
                         case 4:
                             time.setWedAvailability(res.getEventName());
-                            break ;
+                            break;
                         case 5:
                             time.setThursAvailability(res.getEventName());
-                            break ;
+                            break;
                         case 6:
                             time.setFriAvailability(res.getEventName());
-                            break ;
+                            break;
                         case 7:
                             time.setSatAvailability(res.getEventName());
-                            break ;
+                            break;
                         default:
                             System.out.println("should never reach here - panic if you see this message");
-                            break ;
+                            break;
                     }
 
-
+                    // if private event
                 } else {
+                    //System.out.println("day of reservation = " + res.getStartTime().get(Calendar.DAY_OF_WEEK));
                     switch (res.getStartTime().get(Calendar.DAY_OF_WEEK)) {
                         case 1:
                             time.setSunAvailability("Booked");
-                            //time.setSunAvailability("");
-                            // set to red
-                            //TableCell cell = new TableCell()
-
-                            break ;
+                            break;
                         case 2:
                             time.setMonAvailability("Booked");
-                            time.setColor("red") ;
-                            break ;
+                            // time.setColor("red");
+                            break;
                         case 3:
                             time.setTuesAvailability("Booked");
-                            break ;
+                            break;
                         case 4:
                             time.setWedAvailability("Booked");
-                            break ;
+                            break;
                         case 5:
                             time.setThursAvailability("Booked");
-                            break ;
+                            break;
                         case 6:
                             time.setFriAvailability("Booked");
-                            break ;
+                            break;
                         case 7:
                             time.setSatAvailability("Booked");
-                            break ;
+                            break;
                         default:
                             System.out.println("should never reach here - panic if you see this message");
-                            break ;
+                            break;
                     }
-                    //time.setAvailability("Booked");
-                    // time.setSunAvailability("Booked");
 
 
-/////////////////
+///////////////////////////////////     TRYYING TO SET COLOR CHANGE BASED ON BOOKED ROOM - VERY WRONG
+
+
                     /*
                     // Set the cell to display only the name of the reservableSpace
                     scheduleTable.cellFactoryProperty(param -> new ListCell<ReservableSpace>() {
@@ -882,6 +778,8 @@ public class ScheduleController {
                         }
                     });
                     */
+
+
 ///////////////////////////////////////
 
 
@@ -894,23 +792,16 @@ public class ScheduleController {
         ObservableList<ScheduleWrapper> wrap = FXCollections.observableArrayList();
         // schedToAdd = and array list of ScheduleWrapper
         wrap.addAll(schedToAdd);
-        // where??? what columns and how can i change that???
         scheduleTable.setItems(wrap);
         for (int i = 0; i < schedToAdd.size(); i++) {
             System.out.println(scheduleTable.getItems().get(i));
         }
 
 
-
     }
 
 
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 
     /**
@@ -950,9 +841,7 @@ public class ScheduleController {
             Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
             StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
 
-        }
-
-        else {
+        } else {
             populateMap();
         }
 
@@ -987,7 +876,6 @@ public class ScheduleController {
     }
 
 
-
     /**
      * Check whether the selected times are valid. If not, return false.
      * Valid times must: be within the chosen location's start and end times.
@@ -1006,10 +894,10 @@ public class ScheduleController {
         makeMinutesValid();
         // Get the selected times
         int start = startTimePicker.getValue().getHour();
-        int mins = startTimePicker.getValue().getMinute()/(timeStepMinutes);
+        int mins = startTimePicker.getValue().getMinute() / (timeStepMinutes);
         int index = (start - openTime) * timeStep + mins;
         int end = endTimePicker.getValue().getHour();
-        int endMins = endTimePicker.getValue().getMinute()/(timeStepMinutes);
+        int endMins = endTimePicker.getValue().getMinute() / (timeStepMinutes);
         int endIndex = (end - openTime) * timeStep + endMins;
 
         // If the chosen date is in the past, show an error
@@ -1049,20 +937,20 @@ public class ScheduleController {
     /**
      * If the minutes selected are not an available time step
      * (ex. if timeStep is 2, so you can only select half-hour time incremenets,
-     *  then :30 and :00 are valid but :04 and :15, etc. are not),
-     *  round them down to the closest time step.
+     * then :30 and :00 are valid but :04 and :15, etc. are not),
+     * round them down to the closest time step.
      */
     private void makeMinutesValid() {
         // If the start minutes selected are not divisible by the timeStep (ex. 30 minutes)
-        if (startTimePicker.getValue().getMinute()%(timeStepMinutes)!= 0) {
+        if (startTimePicker.getValue().getMinute() % (timeStepMinutes) != 0) {
             // Then round them down to the nearest timeStep
-            int minutes = ((int) startTimePicker.getValue().getMinute()/(timeStepMinutes))*(timeStepMinutes);
+            int minutes = ((int) startTimePicker.getValue().getMinute() / (timeStepMinutes)) * (timeStepMinutes);
             startTimePicker.setValue(LocalTime.of(startTimePicker.getValue().getHour(), minutes));
         }
         // If the end minutes selected are not divisible by the timeStep (ex. 30 minutes)
-        if (endTimePicker.getValue().getMinute()%(timeStepMinutes)!= 0) {
+        if (endTimePicker.getValue().getMinute() % (timeStepMinutes) != 0) {
             // Rund them down to the nearest timeStep
-            int minutes = ((int) endTimePicker.getValue().getMinute()/(timeStepMinutes))*(timeStepMinutes);
+            int minutes = ((int) endTimePicker.getValue().getMinute() / (timeStepMinutes)) * (timeStepMinutes);
             endTimePicker.setValue(LocalTime.of(endTimePicker.getValue().getHour(), minutes));
         }
     }
@@ -1079,7 +967,7 @@ public class ScheduleController {
     }
 
     /**
-     *Filters the ListView based on the string
+     * Filters the ListView based on the string
      */
     private void filterList(String findStr) {
         ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
@@ -1088,13 +976,12 @@ public class ScheduleController {
         if (findStr.equals("")) {
             reservableList.getItems().clear();
             reservableList.getItems().addAll(resSpaces);
-        }
-        else {
+        } else {
             //Get List of all nodes
             ObservableList<ReservableSpace> original = resSpaces;
 
             //Get Sorted list of nodes based on search value
-            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName),75);
+            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName), 75);
 
             // Map to nodes based on index
             Stream<ReservableSpace> stream = filtered.stream().map(er -> {
@@ -1112,7 +999,7 @@ public class ScheduleController {
     }
 
     /**
-     *for lists
+     * for lists
      */
     private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
         return from.stream().map(func).collect(Collectors.toList());
@@ -1136,7 +1023,9 @@ public class ScheduleController {
             });
             availRoomsBtn.setText(clearFilterText);
             bookedRoomsBtn.setText(bookedRoomsText);
-            bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
+            bookedRoomsBtn.setOnAction(EventHandler -> {
+                bookedRooms();
+            });
 
             Collections.sort(availBetween);
             resSpaces.clear();
@@ -1173,7 +1062,9 @@ public class ScheduleController {
             });
             bookedRoomsBtn.setText(clearFilterText);
             availRoomsBtn.setText(availRoomsText);
-            availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
+            availRoomsBtn.setOnAction(EventHandler -> {
+                availRooms();
+            });
 
             reservableList.setItems(resSpaces);
 
@@ -1200,8 +1091,12 @@ public class ScheduleController {
         reservableList.getFocusModel().focus(0);
         showRoomSchedule();
 
-        availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
-        bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
+        availRoomsBtn.setOnAction(EventHandler -> {
+            availRooms();
+        });
+        bookedRoomsBtn.setOnAction(EventHandler -> {
+            bookedRooms();
+        });
         availRoomsBtn.setText(availRoomsText);
         bookedRoomsBtn.setText(bookedRoomsText);
         availRoomsBtn.setDisable(false);
@@ -1212,14 +1107,14 @@ public class ScheduleController {
     /**
      * Currently unused:
      * returns a list of roomIDs which have a max capacity of less than nPeople
+     *
      * @param nPeople
      * @return
      */
-    ArrayList<String> getMaxPeople(int nPeople){
+    ArrayList<String> getMaxPeople(int nPeople) {
         ArrayList<String> a = new ArrayList<>();
         return a;
     }
-
 
 
     // MAP STUFF DOWN HERE ****************
@@ -1256,7 +1151,7 @@ public class ScheduleController {
         zoomGroup.getChildren().removeAll(circleCollection);
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
         circleCollection = new ArrayList<Circle>();
-        for(Node node : nodeCollection) {
+        for (Node node : nodeCollection) {
             Circle circle = new Circle();
             circle.setRadius(80);
             if (isNodeInReservableSpace(bookedRS, node)) {
