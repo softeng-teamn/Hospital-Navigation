@@ -242,6 +242,7 @@ public class SearchResultsController {
             inner.setAlignment(Pos.CENTER_RIGHT);
             Label longName = new Label(currRes.getEventName());    // Make a label for the long name
             String buildFlStr = "";
+            //String buildFlStr = buildingAbbrev.get(myDBS.getNode(currRes.getLocationID()).getBuilding()) + " " + myDBS.getNode(currRes.getLocationID()).getFloor();
             Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
             Label nodeId = new Label(currRes.getLocationID());    // Save the nodeID for pathfinding but make it invisible
             nodeId.setPrefWidth(0);
