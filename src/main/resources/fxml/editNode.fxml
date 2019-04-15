@@ -3,23 +3,23 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXSlider?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import com.jfoenix.controls.JFXTogglePane?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import net.kurobako.gesturefx.GesturePane?>
 
-<HBox prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="map.edit_node.EditNodeController">
+<HBox prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="map.edit_node.EditNodeController">
    <children>
       <VBox prefWidth="384.0" spacing="32.0">
          <children>
@@ -46,6 +46,11 @@
             <JFXComboBox fx:id="floor_combo" maxWidth="1.7976931348623157E308" onAction="#comboAction" promptText="Select Floor" />
             <JFXTextField fx:id="short_field" labelFloat="true" promptText="Enter Short Name" />
             <JFXTextField fx:id="long_field" labelFloat="true" promptText="Enter Long Name" />
+            <JFXTogglePane>
+               <children>
+                  <JFXToggleButton fx:id="closedToggle" text="Temporarily Closed" />
+               </children>
+            </JFXTogglePane>
             <VBox fx:id="edges_container" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <HBox prefHeight="30.0" prefWidth="258.0">
@@ -92,50 +97,31 @@
       </VBox>
       <StackPane prefHeight="335.0" prefWidth="579.0" HBox.hgrow="ALWAYS">
          <children>
-            <ScrollPane fx:id="map_scrollpane" prefHeight="200.0" prefWidth="200.0">
-               <content>
-                  <Pane fx:id="image_pane" onMouseClicked="#mapClickedHandler">
-                     <children>
-                        <ImageView>
-                           <image>
-                              <Image url="@../images/L1.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </Pane>
-               </content>
-            </ScrollPane>
-            <Pane maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="40.0" stylesheets="@../theme.css" StackPane.alignment="TOP_RIGHT">
+            <GesturePane fx:id="gPane" />
+            <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="420.0" prefWidth="137.0" stylesheets="@/theme.css" StackPane.alignment="BOTTOM_LEFT">
                <children>
-                  <VBox fx:id="controlls_vbox" prefHeight="333.0" prefWidth="97.0">
+                  <HBox fx:id="floor_change_hbox" alignment="BOTTOM_LEFT" prefWidth="98.0" spacing="24.0">
                      <children>
-                        <Pane prefHeight="200.0" prefWidth="200.0">
+                        <VBox fx:id="floor_change_vbox" alignment="TOP_CENTER" spacing="12.0">
                            <children>
-                              <Slider fx:id="zoom_slider" orientation="VERTICAL" prefHeight="127.0" prefWidth="16.0" />
-                           </children>
-                           <padding>
-                              <Insets right="50.0" />
-                           </padding>
-                        </Pane>
-                        <VBox fx:id="floor_change_vbox">
-                           <children>
-                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="53.0" prefWidth="98.0" text="Floor 3" />
-                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="Floor 2" />
-                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="Floor 1" />
-                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="L1" />
-                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="L2" />
-                              <JFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#floorChangeAction" text="Ground" />
+                              <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="3" />
+                              <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="2" />
+                              <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="1" />
+                              <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="G" />
+                              <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="L1" />
+                              <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="L2" />
                            </children>
                         </VBox>
+                        <JFXSlider fx:id="zoom_slider" maxHeight="-Infinity" minHeight="-Infinity" orientation="VERTICAL" prefHeight="420.0" />
                      </children>
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </VBox>
+                  </HBox>
                </children>
                <StackPane.margin>
-                  <Insets right="25.0" top="10.0" />
+                  <Insets bottom="24.0" left="24.0" />
                </StackPane.margin>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
             </Pane>
          </children>
       </StackPane>

@@ -28,6 +28,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
 apply plugin: 'jacoco'
+apply plugin: 'java-library'
 
 jacocoTestReport {
     reports {
@@ -153,6 +154,11 @@ repositories {
     }
 }
 
+configurations {
+    compileApi
+}
+
+
 dependencies {
     testCompile(
             [group: 'junit', name: 'junit', version: '4.12'],
@@ -178,6 +184,7 @@ dependencies {
             [group: 'edu.wpi.cs3733.b17.teamG', name: 'FoodRequest', version:'1.0.0']
     )
     compile(
+            [group: 'net.kurobako', name: 'gesturefx', version: '0.3.0'],
             [group: 'com.google.guava', name: 'guava', version: '23.0'],
             [group: 'com.jfoenix', name: 'jfoenix', version: '8.0.3'],
             [group: 'org.apache.derby', name: 'derby', version: '10.11.1.1'],
@@ -194,6 +201,17 @@ dependencies {
             [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4'],
             [group: 'edu.wpi.cs3733.b17.teamG', name: 'FoodRequest', version:'1.0.0']
     )
+
+    compileApi (
+            [group: 'org.apache.derby', name: 'derby', version: '10.11.1.1'],
+            [group: 'org.apache.derby', name: 'derbyclient', version: '10.11.1.1'],
+            [group: 'org.apache.derby', name: 'derbytools', version: '10.11.1.1'],
+            [group: 'com.jfoenix', name: 'jfoenix', version: '8.0.3'],
+            [group: 'de.jensd', name:'fontawesomefx-fontawesome', version: '4.7.0-5'],
+            [group: 'de.jensd', name:'fontawesomefx-materialicons', version: '2.2.0-5'],
+            [group: 'de.jensd', name:'fontawesomefx-emojione', version: '2.2.7-2'],
+            [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4']
+    )
 }
 
 // This allows the jar to be created, it appears in the build/libs folder
@@ -204,3 +222,22 @@ jar {
     from configurations.runtime.collect { zipTree(it) }
 }
 
+// api.jar
+//noinspection GroovyAssignabilityCheck
+task apiJar(type: Jar) {
+    from(sourceSets.main.output) {
+        include "/elevator_api/**"
+        include "/elevator/**"
+        include "/employee/model/**"
+        include "/service_request/model/*"
+    }
+    from {
+        configurations.compileApi.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    from(sourceSets.main.resources) {
+        include "/fxml/api/api.fxml"
+        include "theme.css"
+        include "strings.properties"
+    }
+    baseName 'TeamN-InternalTransportAPI'
+}
