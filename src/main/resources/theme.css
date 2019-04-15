@@ -191,6 +191,17 @@
     -fx-fill: -fx-primary;
 }
 
+.floor-map-button {
+    -fx-background-color: -fx-complementary;
+    -fx-background-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-font-size: 15pt;
+}
+
+.floor-map-button:hover .glyph-icon {
+    -fx-fill: -fx-primary;
+}
+
 .request-toggle-node {
     -fx-font-family: Roboto;
     -fx-background-color: -fx-complementary;
