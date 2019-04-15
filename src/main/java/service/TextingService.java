@@ -52,13 +52,13 @@ public class TextingService {
         }
     }
 
-    public void textMap(String phone, String mapUrl){
+    public void textMap(String phone, String toSend){
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
         Message message = Message
                 .creator(new com.twilio.type.PhoneNumber(phone), // to
                         new com.twilio.type.PhoneNumber("+19783961788"), // from
-                        mapUrl)
+                        toSend)
                 .create();
 
         System.out.println(message.getSid());
@@ -67,7 +67,7 @@ public class TextingService {
 
     public static void main(String[] args) {
         TextingService potato = new TextingService();
-        potato.textMap("+19787298044","Test");
+        potato.textMap("","");
     }
 
 }

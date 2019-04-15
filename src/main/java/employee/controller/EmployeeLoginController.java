@@ -23,6 +23,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class EmployeeLoginController implements Initializable {
+import static application_state.ApplicationState.getApplicationState;
+
+public class EmployeeLoginController extends Controller implements Initializable {
 
     @FXML
     private JFXButton cancelBtn;

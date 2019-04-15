@@ -9,6 +9,7 @@ import application_state.EventBusFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -49,8 +50,11 @@ public class SearchResultsController {
     ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
 
+    DatabaseService myDBS;
+
     @FXML
     void initialize() {
+        myDBS = DatabaseService.getDatabaseService();
         buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
         buildingAbbrev.put("BTM", "BTM");
         buildingAbbrev.put("Tower", "Tow");
@@ -87,9 +91,23 @@ public class SearchResultsController {
                     }
                 });
                 break;
+            case "logout":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        repopulateList(event.isAdmin());
+                    }
+                });
+                break;
             default:
                 break;
         }
+    }
+
+    @FXML
+    void closeDrawer(ActionEvent e) {
+        event.setEventName("closeDrawer");
+        eventBus.post(event);
     }
 
     /**
@@ -119,6 +137,9 @@ public class SearchResultsController {
     void repopulateList(boolean isAdmin) {
 
         System.out.println("Repopulation of listView" + isAdmin);
+
+        allNodes = myDBS.getAllNodes();
+        filteredNodes = (ArrayList<Node>) myDBS.getNodesFilteredByType("STAI", "HALL").stream().filter((n) -> !n.isClosed()).collect(Collectors.toList());
 
         // wipe old observable
         allNodesObservable = new ArrayList<>();

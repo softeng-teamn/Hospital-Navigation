@@ -1,5 +1,6 @@
 package service;
 
+import map.pathfinding.AlgorithmContext;
 import map.pathfinding.Astar;
 import map.MapNode;
 import map.Node;
@@ -61,7 +62,7 @@ public class AstarAccessibilityTest {
         mn5 = new MapNode(1,2,n5);
     }
 
-    final Astar mockPF = spy(new Astar());
+    final AlgorithmContext mockPF = spy(new Astar());
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();

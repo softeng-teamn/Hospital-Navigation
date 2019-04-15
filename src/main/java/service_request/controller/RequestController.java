@@ -4,6 +4,8 @@ import application_state.ApplicationState;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import foodRequest.FoodRequest;
+import foodRequest.ServiceException;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +22,7 @@ import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import application_state.Event;
 import application_state.EventBusFactory;
 import map.Node;
+import service_request.controller.sub_controller.InternalTransportController;
 import service_request.model.Request;
 import database.DatabaseService;
 import service.ResourceLoader;
@@ -223,7 +226,9 @@ public class RequestController implements Initializable {
     @FXML
     public void internalTransportSelect(ActionEvent e) throws IOException {
         subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.internalTransportRequest,event.getCurrentBundle()));
+        FXMLLoader subscene = new FXMLLoader(ResourceLoader.internalTransportRequest,event.getCurrentBundle());
+        subscene.setController(new InternalTransportController());
+        subSceneHolder.getChildren().add(subscene.load());
     }
 
     @FXML
@@ -297,5 +302,10 @@ public class RequestController implements Initializable {
     public void itSelect(ActionEvent actionEvent) throws IOException {
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.itRequest,event.getCurrentBundle()));
+    }
+
+    public void foodSelect(ActionEvent actionEvent) throws ServiceException {
+        FoodRequest req = new FoodRequest();
+        req.run(0, 0, 1920, 1080, null, null, null);
     }
 }
