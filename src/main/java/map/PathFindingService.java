@@ -33,6 +33,7 @@ public class PathFindingService {
             case "astar":
                 ctx.setStrategy(new Astar());
                 target = ctx.findPathCTX(start, dest, accessibility, null);
+                System.out.println("    TARGET: " + target);
                 estimatedTimeOfArrival = ctx.getEstimatedTime();
                 elevTimes = ctx.getElevTimes();
                 break;
