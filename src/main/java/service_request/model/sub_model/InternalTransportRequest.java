@@ -1,6 +1,7 @@
 package service_request.model.sub_model;
 
 //import com.sun.xml.internal.bind.v2.TODO;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import elevator.ElevatorConnnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -68,16 +69,21 @@ public class InternalTransportRequest extends Request {
 
     @Override
     public void fillRequest() {
-        if(this.urgency == Urgency.VERY){
-           ElevatorConnnection eCon = new ElevatorConnnection();
-            try {
-                eCon.postFloor("" + getLocation().getNodeID().charAt(7), getLocation().getFloor()); // post elevator, floornum
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("error posting elevator from internal transport req");
-            }
+        if(this.urgency == Urgency.VERY && !isCompleted()){
+           callElev();
         }
+        setCompleted(true);
         DatabaseService.getDatabaseService().updateInternalTransportRequest(this);
+    }
+
+    private void callElev(){
+        ElevatorConnnection eCon = new ElevatorConnnection();
+        try {
+            eCon.postFloor("L", getLocation().getFloor()); // post elevator, floornum
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("error posting elevator from internal transport req");
+        }
     }
 
     public TransportType getTransport() {

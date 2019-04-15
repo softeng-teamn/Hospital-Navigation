@@ -70,7 +70,7 @@ public class ElevatorConnnection {
 
         String urlParameters = "elevator=" + elevator + "&floor=" + floorNum +
                 "&time=" + t + "&team=" + this.teamName;
-        //System.out.println("Posting " + urlParameters);
+        System.out.println("Posting " + urlParameters);
         post(URL, urlParameters);
     }
 
@@ -99,7 +99,6 @@ public class ElevatorConnnection {
      */
     private String post(String URL, String urlParameters) throws MalformedURLException,
             ProtocolException, IOException {
-        System.out.println("Posting");
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
         String floor = "-";
         try {
