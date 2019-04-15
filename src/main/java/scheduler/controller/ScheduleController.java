@@ -951,6 +951,7 @@ public class ScheduleController extends Controller {
     }
 
 
+
     /**
      * Check whether the selected times are valid. If not, return false.
      * Valid times must: be within the chosen location's start and end times.
