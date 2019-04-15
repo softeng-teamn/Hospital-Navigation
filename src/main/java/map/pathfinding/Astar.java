@@ -14,6 +14,7 @@ public class Astar implements Algorithm {
 
     @Override
     public ArrayList<Node> findDest(MapNode start, MapNode dest, boolean accessibility, String filter) {
+        System.out.println("    in Astar class " + start + dest);
         MapNode target = aStar(start, dest, accessibility, null);
         elevTimes = new HashMap<>();
         if (target != null) {
@@ -58,6 +59,7 @@ public class Astar implements Algorithm {
      * @return
      */
     public MapNode aStar(MapNode start, MapNode dest, boolean accessibility, String filter) {
+        System.out.println("in other astar function: " + start + dest);
         //1.  Initialize queue and set
         PriorityQueue<MapNode> open = new PriorityQueue<>();
         //System.out.println("Created open PriorityQueue");
@@ -87,6 +89,7 @@ public class Astar implements Algorithm {
                     //System.out.println("This child is our destination node!");
                     child.setParent(current, child.getG());
                     estimatedTime = child.getG()/734;
+                    System.out.println("    returning child: " + start + dest + child);
                     return child;
                 }
 
@@ -121,6 +124,7 @@ public class Astar implements Algorithm {
                 }
             }
         }
+        System.out.println("    retrning null: " + start + dest);
         return null;
     }
 
