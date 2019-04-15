@@ -7,24 +7,33 @@ public enum JobType {
     // and add to showProperRequest in FulfillRequestController
 
 
-    ADMINISTRATOR,
-    DOCTOR,
-    NURSE,
-    JANITOR,
-    SECURITY_PERSONNEL,
-    MAINTENANCE_WORKER,
-    IT,
-    GUEST,
-    RELIGIOUS_OFFICIAL,
-    GIFT_SERVICES,
-    MISCELLANEOUS,
-    AV,
-    INTERPRETER,
-    TOY,
-    PATIENT_INFO,
-    FLORIST,
-    INTERNAL_TRANSPORT,
-    EXTERNAL_TRANSPORT
+    ADMINISTRATOR("Administrator"),
+    DOCTOR("Doctor"),
+    NURSE("Nurse"),
+    JANITOR("Janitor"),
+    SECURITY_PERSONNEL("Security Personnel"),
+    MAINTENANCE_WORKER("Maintenance Worker"),
+    IT("IT"),
+    GUEST("Guest"),
+    RELIGIOUS_OFFICIAL("Religious Official"),
+    GIFT_SERVICES("Gift Services"),
+    MISCELLANEOUS("Miscellaneous"),
+    AV("AV"),
+    INTERPRETER("Interpreter"),
+    TOY("Toy"),
+    PATIENT_INFO("Patient Info"),
+    FLORIST("Florist"),
+    INTERNAL_TRANSPORT("Internal Transport"),
+    EXTERNAL_TRANSPORT("External Transport");
+
+    private String string;
+
+    JobType(String name){string = name;}
+
+    @Override
+    public String toString() {
+        return string;
+    }
 
 
 }
