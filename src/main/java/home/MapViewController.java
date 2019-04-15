@@ -249,6 +249,7 @@ public class MapViewController {
                     case "logout":
                         zoomGroup.getChildren().removeAll(circleCollection);
                         circleCollection.clear();
+                        drawPoint(event.getNodeStart(), startCircle, Color.rgb(67,70,76), true);
                     default:
 //                        System.out.println("I don'");
                         break;
