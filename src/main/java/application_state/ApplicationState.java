@@ -12,11 +12,15 @@ public class ApplicationState {
     //******************************************
 
     private Node nodeToEdit;
+    private Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
+    private Node startNode = DEFAULT_NODE;
+    private Node endNode = null;
     private ArrayList<Edge> edgesToEdit;
     private FakeEventBus feb = new FakeEventBus();
     private static HashMap<String, ImageView> imageCache;
     private int employeeID;
     private Employee employeeLoggedIn;
+    private String startEnd = "end";
 
 
     //******************************************
@@ -70,4 +74,31 @@ public class ApplicationState {
     public void setEmployeeLoggedIn(Employee employeeLoggedIn) {
         this.employeeLoggedIn = employeeLoggedIn;
     }
+
+    public Node getStartNode() {
+        return startNode;
+    }
+
+    public void setStartNode(Node startNode) {
+        this.startNode = startNode;
+    }
+
+    public Node getEndNode() {
+        return endNode;
+    }
+
+    public void setEndNode(Node endNode) {
+        this.endNode = endNode;
+    }
+
+    public void setDefaultStartNode (){this.startNode = DEFAULT_NODE;}
+
+    public String getStartEnd() {
+        return startEnd;
+    }
+
+    public void setStartEnd(String startEnd) {
+        this.startEnd = startEnd;
+    }
+
 }

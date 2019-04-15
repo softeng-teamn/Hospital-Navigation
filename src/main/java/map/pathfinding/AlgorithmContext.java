@@ -15,12 +15,10 @@ public abstract class AlgorithmContext{
 
     private HashMap<String, ElevatorFloor> elevTimes;
 
-
-
     public ArrayList<Node> findDest(MapNode start, MapNode dest, boolean accessibility, String filter) {
         MapNode target = returnMapNode(start, dest, accessibility, filter);
 
-        System.out.println(target);
+        System.out.println("FIND DEST: " + target + start + dest);
         elevTimes = new HashMap<>();
         if (target != null) {
             ArrayList<Node> path = new ArrayList<Node>();
@@ -51,6 +49,7 @@ public abstract class AlgorithmContext{
         initial(start, dest, accessibility, filter);
 
         MapNode target = throughMap();
+        System.out.println("RETURN MAP NODE" + target + start + dest);
         return target;
     }
 

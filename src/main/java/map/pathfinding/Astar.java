@@ -38,6 +38,7 @@ public class Astar extends AlgorithmContext implements Algorithm{
 
     @Override
     MapNode throughMap() {
+        System.out.println("THROUGH MAP: " + start + dest);
         while(!open.isEmpty()){
             //System.out.println(open.toString());
             MapNode current = open.poll();
@@ -94,6 +95,7 @@ public class Astar extends AlgorithmContext implements Algorithm{
                     open.add(child);
                 }
             }
+            System.out.println(open);
         }
         System.out.println("    retrning null: " + start + dest);
         return null;

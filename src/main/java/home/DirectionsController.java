@@ -491,12 +491,14 @@ public class DirectionsController implements Observer {
         // TODO: landmarks
         String landmark = "";
         ArrayList<Node> closeNodes = MapController.getNodesConnectedTo(next);
-        closeNodes.remove(curr);
         for (Node n: closeNodes) {
-            if (!landmark.contains("towards") && n.getNodeType().equals("HALL")) {
+            if (n.equals(curr)) {
+                // do nothing
+            }
+            else if (!landmark.contains("towards") && n.getNodeType().equals("HALL")) {
                 landmark = " down the hall";
             }
-            if (!n.getNodeType().equals("HALL") && !n.getNodeType().equals("ELEV") && !n.getNodeType().equals("STAI")) {
+           else if (!n.getNodeType().equals("HALL") && !n.getNodeType().equals("ELEV") && !n.getNodeType().equals("STAI")) {
                 landmark = " towards " + n.getLongName();
             }
         }

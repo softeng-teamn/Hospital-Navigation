@@ -23,22 +23,16 @@ public class HomeController implements Observer {
 
     @FXML
     private JFXDrawer drawer;
-    @FXML
-    private MapViewController mapViewController;
-    @FXML
-    private SearchResultsController searchResultsController;
-    @FXML
-    private TopNavController topNavController;
 
     StackPane drawerPane = new StackPane();
 
     @FXML
     void initialize() throws IOException {
         ApplicationState.getApplicationState().getFeb().register("homeContoller", this);
+        ApplicationState currState = ApplicationState.getApplicationState();
         event = ApplicationState.getApplicationState().getFeb().getEvent();
-        event.setDefaultStartNode();
-        event.setNodeEnd(null);
-        event.setIsEndNode(true);
+        currState.setDefaultStartNode();
+        currState.setEndNode(null);
 
         MapController.initConnections();
 
@@ -64,10 +58,24 @@ public class HomeController implements Observer {
                     }
                 });
                 break;
-            case "showSearch":
+            case "showSearch-start":
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        ApplicationState.getApplicationState().setStartEnd("start");
+                        try {
+                            showSearch();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                break;
+            case "showSearch-end":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        ApplicationState.getApplicationState().setStartEnd("end");
                         try {
                             showSearch();
                         } catch (IOException e) {

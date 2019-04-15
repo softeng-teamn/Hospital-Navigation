@@ -46,6 +46,7 @@ public class SearchResultsController implements Observer {
     ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
 
+
     DatabaseService myDBS;
 
     @FXML
@@ -116,6 +117,7 @@ public class SearchResultsController implements Observer {
     @FXML
     public void listViewClicked(MouseEvent e) {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
+        ApplicationState currState = ApplicationState.getApplicationState();
         HBox selectedNode = list_view.getSelectionModel().getSelectedItem();
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
         String Name = DatabaseService.getDatabaseService().getNode(ID).getLongName();
@@ -124,14 +126,15 @@ public class SearchResultsController implements Observer {
         // set destination node
         destNode = DatabaseService.getDatabaseService().getNode(ID);
 
-        if (event.isEndNode()){
+        if (ApplicationState.getApplicationState().getStartEnd().equals("end")){
             event.setNodeSelected(destNode);
-            event.setNodeEnd(destNode);
+            currState.setEndNode(destNode);
+            event.setEventName("node-select-end");
         } else {
             event.setNodeSelected(destNode);
-            event.setNodeStart(destNode);
+            currState.setStartNode(destNode);
+            event.setEventName("node-select-start");
         }
-        event.setEventName("node-select");
         ApplicationState.getApplicationState().getFeb().updateEvent(event);
 
     }
@@ -165,7 +168,6 @@ public class SearchResultsController implements Observer {
             return;
         }
 
-        // TODO: can change to full building name. or CAPS. or change alignment or coloring.
         ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable);
 
         list_view.getItems().clear();

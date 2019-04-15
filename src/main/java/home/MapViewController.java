@@ -28,6 +28,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import map.MapController;
 import map.MapNode;
 import map.Node;
 import map.PathFindingService;
@@ -36,10 +37,7 @@ import service.ResourceLoader;
 import service.StageManager;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -107,6 +105,7 @@ public class MapViewController implements Observer {
         // listen to changes
         ApplicationState.getApplicationState().getFeb().register("mapViewContoller", this);
         event = ApplicationState.getApplicationState().getFeb().getEvent();
+        ApplicationState currState = ApplicationState.getApplicationState();
 
         // Setup collection of lines
         lineCollection = new ArrayList<Line>();
@@ -118,8 +117,8 @@ public class MapViewController implements Observer {
         circleCollection = new ArrayList<Circle>();
 
         // Setting Up Circle Destination Point
-        startCircle.setCenterX(event.getDefaultNode().getXcoord());
-        startCircle.setCenterY(event.getDefaultNode().getYcoord());
+        startCircle.setCenterX(currState.getStartNode().getXcoord());
+        startCircle.setCenterY(currState.getStartNode().getYcoord());
         startCircle.setRadius(20);
         startCircle.setFill(Color.rgb(67, 70, 76));
         zoomGroup.getChildren().add(startCircle);
@@ -198,6 +197,7 @@ public class MapViewController implements Observer {
     @Override
     public void notify(Object e) {
         System.out.println("    mapView notified " + event.getEventName() + " " + this);   // todo cut
+        ApplicationState currState = ApplicationState.getApplicationState();
         event = (Event) e;
         switch (event.getEventName()) {
             case "navigation":
@@ -213,15 +213,19 @@ public class MapViewController implements Observer {
                     }
                 });
                 break;
-            case "node-select":
+            case "node-select-end":
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        if (event.isEndNode()) {
-                            drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
-                        } else {
-                            drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
-                        }
+                        drawPoint(currState.getEndNode(), selectCircle, Color.rgb(72, 87, 125), false);
+                    }
+                });
+                break;
+            case "node-select-start":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76), true);
                     }
                 });
                 break;
@@ -229,7 +233,7 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        drawPoint(event.getNodeStart(), startCircle, Color.rgb(67, 70, 76), true);
+                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76), true);
                         drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
                     }
                 });
@@ -377,11 +381,15 @@ public class MapViewController implements Observer {
     // generate path on the screen
     private void navigationHandler() throws Exception {
         currentMethod = event.getSearchMethod();
+        ApplicationState currState = ApplicationState.getApplicationState();
         PathFindingService pathFinder = new PathFindingService();
         ArrayList<Node> newpath;
-        System.out.println("navigating: " + event.getNodeStart() + "\n      " + event.getNodeEnd());
-        MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
-        MapNode dest = new MapNode(event.getNodeEnd().getXcoord(), event.getNodeEnd().getYcoord(), event.getNodeEnd());
+        System.out.println("navigating: " + currState.getStartNode() + "\n      " + currState.getEndNode());
+        System.out.println("database:" + DatabaseService.getDatabaseService().getNode(currState.getStartNode().getNodeID()));
+        System.out.println(DatabaseService.getDatabaseService().getNode(currState.getEndNode().getNodeID()));
+        System.out.println(" " + MapController.getNodesConnectedTo(currState.getStartNode()) + MapController.getNodesConnectedTo(currState.getEndNode()));
+        MapNode start = new MapNode(currState.getStartNode().getXcoord(), currState.getStartNode().getYcoord(), currState.getStartNode());
+        MapNode dest = new MapNode(currState.getEndNode().getXcoord(),currState.getEndNode().getYcoord(), currState.getEndNode());
         // check if the path need to be 'accessible'
         if (event.isAccessiblePath()) {
             // do something special
@@ -421,8 +429,9 @@ public class MapViewController implements Observer {
 
     private void filteredHandler() {
         PathFindingService pathFinder = new PathFindingService();
+        ApplicationState currState = ApplicationState.getApplicationState();
         ArrayList<Node> newpath;
-        MapNode start = new MapNode(event.getNodeStart().getXcoord(), event.getNodeStart().getYcoord(), event.getNodeStart());
+        MapNode start = new MapNode(currState.getStartNode().getXcoord(), currState.getStartNode().getYcoord(), currState.getStartNode());
         Boolean accessibility = event.isAccessiblePath();
 
         switch (event.getFilterSearch()) {
