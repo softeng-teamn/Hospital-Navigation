@@ -193,9 +193,11 @@ public class MapViewController {
         ImageView newImg;
         if (imageCache.containsKey(floor)) {
             newImg = imageCache.get(floor);
+            event.setFloor(floor);
         } else {
             // unknown floor change | SETTING TO DEFAULT
             newImg = imageCache.get("1");
+            event.setFloor("1");
         }
         zoomGroup.getChildren().remove(this.floorImg);
         zoomGroup.getChildren().add(newImg);
@@ -347,6 +349,13 @@ public class MapViewController {
         circle.setCenterY(node.getYcoord());
         circle.setRadius(20);
         circle.setFill(color);
+
+        if(!node.getFloor().equals(event.getFloor())){
+            //switch the map
+            //System.out.println(node + node.getFloor());
+            setFloor(node.getFloor());
+        }
+
         zoomGroup.getChildren().add(circle);
         // set circle to selected
         if (start){
@@ -355,11 +364,7 @@ public class MapViewController {
             selectCircle = circle;
         }
 
-        if(!node.getFloor().equals(event.getFloor())){
-            //switch the map
-            //System.out.println(node + node.getFloor());
-                setFloor(node.getFloor());
-        }
+
 
         // Scroll to new point
         scrollTo(node);
