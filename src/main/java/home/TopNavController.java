@@ -209,7 +209,7 @@ public class TopNavController implements Observer {
             case "empLogin":
                // event.setLoggedIn((newEvent.isLoggedIn())); todo: what's the point of this code?
                 break ;
-            case "showSearch":
+            case "closeDrawer":
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -382,8 +382,6 @@ public class TopNavController implements Observer {
         }
     }
 
-
-
     public void showEditEmployee(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) auth_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
@@ -396,7 +394,7 @@ public class TopNavController implements Observer {
         event = ApplicationState.getApplicationState().getFeb().getEvent();
         if (barOpened){
             barOpened = false;
-            event.setEventName("showSearch");
+            event.setEventName("closeDrawer");
             ApplicationState.getApplicationState().getFeb().updateEvent(event);
         } else {
             barOpened = true;

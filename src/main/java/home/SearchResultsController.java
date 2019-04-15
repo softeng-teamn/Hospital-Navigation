@@ -10,6 +10,7 @@ import application_state.Event;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -88,9 +89,24 @@ public class SearchResultsController implements Observer {
                     }
                 });
                 break;
+            case "logout":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        repopulateList(event.isAdmin());
+                    }
+                });
+                break;
             default:
                 break;
         }
+    }
+
+    @FXML
+    void closeDrawer(ActionEvent e) {
+        event = ApplicationState.getApplicationState().getFeb().getEvent();
+        event.setEventName("closeDrawer");
+        ApplicationState.getApplicationState().getFeb().updateEvent(event);
     }
 
     /**
