@@ -8,6 +8,9 @@ import static service.ResourceLoader.dfBundle;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class Event {
 
     String eventName = "";      // one of the event names below

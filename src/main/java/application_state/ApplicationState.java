@@ -7,6 +7,9 @@ import map.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Singleton that holds information related to the state of the application
+ */
 public class ApplicationState {
 
     //******************************************
@@ -29,6 +32,9 @@ public class ApplicationState {
         private static final ApplicationState appState = new ApplicationState();
     }
 
+    /** Allow other classes to access the application state.
+     * @return the ApplicationState object
+     */
     public static ApplicationState getApplicationState() {
         return SingletonHelper.appState;
     }

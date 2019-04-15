@@ -6,7 +6,6 @@ import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import controller.Controller;
 import employee.model.Employee;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -14,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import application_state.Event;
 import database.DatabaseService;
@@ -23,10 +24,9 @@ import service.StageManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import static application_state.ApplicationState.getApplicationState;
 
-public class EmployeeLoginController extends Controller implements Initializable {
+public class EmployeeLoginController implements Initializable {
 
     @FXML
     private JFXButton cancelBtn;
@@ -63,7 +63,6 @@ public class EmployeeLoginController extends Controller implements Initializable
                 event = ApplicationState.getApplicationState().getFeb().getEvent();
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
-                Controller.setCurrentJob(user.getJob());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
@@ -74,7 +73,6 @@ public class EmployeeLoginController extends Controller implements Initializable
             } else {
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin() == false);
-                Controller.setCurrentJob(user.getJob());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
@@ -90,5 +88,18 @@ public class EmployeeLoginController extends Controller implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // todo?
+    }
+
+
+    public void ifEnterLogin(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER))
+        {
+            try {
+                login();
+            } catch (Exception e) {
+                System.out.println("Error logging in");
+                e.printStackTrace();
+            }
+        }
     }
 }

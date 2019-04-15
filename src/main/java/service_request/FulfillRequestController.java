@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
-import controller.Controller;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -29,7 +28,7 @@ import java.util.ResourceBundle;
 
 import static employee.model.JobType.*;
 
-public class FulfillRequestController extends Controller implements Initializable {
+public class FulfillRequestController implements Initializable {
 
     @FXML
     public JFXRadioButton completedRadio;

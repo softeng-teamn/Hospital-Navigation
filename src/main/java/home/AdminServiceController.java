@@ -4,7 +4,6 @@ import application_state.ApplicationState;
 import application_state.Observer;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +18,7 @@ import service.StageManager;
 
 import java.io.IOException;
 
-public class AdminServiceController extends Controller {
+public class AdminServiceController {
 
     private Event event = ApplicationState.getApplicationState().getFeb().getEvent();
 
