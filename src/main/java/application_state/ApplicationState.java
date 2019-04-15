@@ -44,8 +44,6 @@ public class ApplicationState {
         this.edgesToEdit = edgesToEdit;
     }
 
-    public Employee getCurrentEmployee() { return employeeLoggedIn ; }
-
     public Employee getEmployeeLoggedIn() {
         return employeeLoggedIn;
     }
