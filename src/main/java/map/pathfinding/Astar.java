@@ -67,6 +67,7 @@ public class Astar implements Algorithm {
         //2. Set up default values
         start.setG(0);
         open.add(start);
+        System.out.println(open);
         while(!open.isEmpty()){
             //System.out.println(open.toString());
             MapNode current = open.poll();
@@ -119,7 +120,7 @@ public class Astar implements Algorithm {
                     if(open.contains(child)){
                         open.remove(child);
                     }
-                    //System.out.println("adding child to open list");
+                    System.out.println("adding child to open list");
                     open.add(child);
                 }
             }
