@@ -15,7 +15,6 @@ import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -41,8 +40,7 @@ import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
-
-public class ScheduleController extends Controller {
+public class ScheduleController {
 
 
     private static class ScheduleWrapper {
@@ -86,6 +84,7 @@ public class ScheduleController extends Controller {
         public String getSunAvailability() { return sunAvailability; }
         public void setSunAvailability(String value) {this.sunAvailability = value ; }
 
+
         public String getMonAvailability() { return monAvailability; }
         public void setMonAvailability(String monAvailability) { this.monAvailability = monAvailability; }
 
@@ -127,7 +126,7 @@ public class ScheduleController extends Controller {
     public JFXButton submitBtn;
 
     @FXML
-    public JFXTextField searchBar;
+    public JFXTextField eventName, searchBar, employeeID;
 
     @FXML
     private TableView<ScheduleWrapper> scheduleTable;
@@ -150,8 +149,8 @@ public class ScheduleController extends Controller {
 
 
     // Map Stuff
-    static final Color AVAILIBLE_COLOR = Color.rgb(87, 255, 132, 0.8);
-    static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
+    static final Color AVAILIBLE_COLOR = Color.rgb(87,255,132,0.8);
+    static final Color UNAVAILABLE_COLOR = Color.rgb(255,82,59, 0.8);
     Group zoomGroup;
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
     ArrayList<Circle> circleCollection = new ArrayList<Circle>();
@@ -164,7 +163,7 @@ public class ScheduleController extends Controller {
     private int openTime = 9;   // hour to start schedule dislay
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private int timeStep = 2;    // Fractions of an hour
-    private int timeStepMinutes = 60 / timeStep;    // In Minutes
+    private int timeStepMinutes = 60/timeStep;    // In Minutes
 
     // Currently selected location
     public ReservableSpace currentSelection;
@@ -232,7 +231,9 @@ public class ScheduleController extends Controller {
         zoom(0.2);
 
 
-//        resInfoLbl.setText("");
+
+
+        resInfoLbl.setText("");
         timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
         availRoomsText = "Show Available Spaces";
         bookedRoomsText = "Show Booked Spaces";
@@ -248,8 +249,9 @@ public class ScheduleController extends Controller {
         inputErrorLbl.setVisible(false);
 
 
+
         // Set default date to today's date
-        LocalDate date = LocalDate.now();
+        LocalDate date =  LocalDate.now();
         datePicker.setValue(date);
 
         // Set default start time to current time, or the closest open hour
@@ -294,9 +296,7 @@ public class ScheduleController extends Controller {
                     setText(null);
                 } else {
                     setText(item.getSpaceName());
-                    setOnMouseClicked(EventHandler -> {
-                        showRoomSchedule();
-                    });
+                    setOnMouseClicked(EventHandler -> {showRoomSchedule();} );
                 }
             }
         });
@@ -447,17 +447,16 @@ public class ScheduleController extends Controller {
 
 
 
-
-    /**
-     * Listener to update listview of rooms and info label
-     *
-     * @param value
-     */
+        /**
+         * Listener to update listview of rooms and info label
+         * @param value
+         */
     private void focusState(boolean value) {
         if (!value && validTimes(false)) {
             if (availRoomsBtn.getText().contains("ear")) {
                 availRooms();
-            } else if (bookedRoomsBtn.getText().contains("ear")) {
+            }
+            else if (bookedRoomsBtn.getText().contains("ear")) {
                 bookedRooms();
             }
             showRoomSchedule();
@@ -847,20 +846,6 @@ public class ScheduleController extends Controller {
         wrap.addAll(schedToAdd);
         // where??? what columns and how can i change that???
         scheduleTable.setItems(wrap);
-
-
-        /*
-        // me
-        //sunday.setCellValueFactory();
-        sunday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-            }
-        });
-*/
-
-
         for (int i = 0; i < schedToAdd.size(); i++) {
             System.out.println(scheduleTable.getItems().get(i));
         }
@@ -886,6 +871,7 @@ public class ScheduleController extends Controller {
     public void makeReservation() throws Exception {
 
         boolean valid = validTimes(true);
+
 
         // If evreything is okay, create the reservation
         if (valid) {
@@ -970,10 +956,10 @@ public class ScheduleController extends Controller {
         makeMinutesValid();
         // Get the selected times
         int start = startTimePicker.getValue().getHour();
-        int mins = startTimePicker.getValue().getMinute() / (timeStepMinutes);
+        int mins = startTimePicker.getValue().getMinute()/(timeStepMinutes);
         int index = (start - openTime) * timeStep + mins;
         int end = endTimePicker.getValue().getHour();
-        int endMins = endTimePicker.getValue().getMinute() / (timeStepMinutes);
+        int endMins = endTimePicker.getValue().getMinute()/(timeStepMinutes);
         int endIndex = (end - openTime) * timeStep + endMins;
 
         // If the chosen date is in the past, show an error
@@ -1013,20 +999,20 @@ public class ScheduleController extends Controller {
     /**
      * If the minutes selected are not an available time step
      * (ex. if timeStep is 2, so you can only select half-hour time incremenets,
-     * then :30 and :00 are valid but :04 and :15, etc. are not),
-     * round them down to the closest time step.
+     *  then :30 and :00 are valid but :04 and :15, etc. are not),
+     *  round them down to the closest time step.
      */
     private void makeMinutesValid() {
         // If the start minutes selected are not divisible by the timeStep (ex. 30 minutes)
-        if (startTimePicker.getValue().getMinute() % (timeStepMinutes) != 0) {
+        if (startTimePicker.getValue().getMinute()%(timeStepMinutes)!= 0) {
             // Then round them down to the nearest timeStep
-            int minutes = ((int) startTimePicker.getValue().getMinute() / (timeStepMinutes)) * (timeStepMinutes);
+            int minutes = ((int) startTimePicker.getValue().getMinute()/(timeStepMinutes))*(timeStepMinutes);
             startTimePicker.setValue(LocalTime.of(startTimePicker.getValue().getHour(), minutes));
         }
         // If the end minutes selected are not divisible by the timeStep (ex. 30 minutes)
-        if (endTimePicker.getValue().getMinute() % (timeStepMinutes) != 0) {
+        if (endTimePicker.getValue().getMinute()%(timeStepMinutes)!= 0) {
             // Rund them down to the nearest timeStep
-            int minutes = ((int) endTimePicker.getValue().getMinute() / (timeStepMinutes)) * (timeStepMinutes);
+            int minutes = ((int) endTimePicker.getValue().getMinute()/(timeStepMinutes))*(timeStepMinutes);
             endTimePicker.setValue(LocalTime.of(endTimePicker.getValue().getHour(), minutes));
         }
     }
@@ -1043,7 +1029,7 @@ public class ScheduleController extends Controller {
     }
 
     /**
-     * Filters the ListView based on the string
+     *Filters the ListView based on the string
      */
     private void filterList(String findStr) {
         ObservableList<ReservableSpace> resSpaces = FXCollections.observableArrayList();
@@ -1052,12 +1038,13 @@ public class ScheduleController extends Controller {
         if (findStr.equals("")) {
             reservableList.getItems().clear();
             reservableList.getItems().addAll(resSpaces);
-        } else {
+        }
+        else {
             //Get List of all nodes
             ObservableList<ReservableSpace> original = resSpaces;
 
             //Get Sorted list of nodes based on search value
-            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName), 75);
+            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName),75);
 
             // Map to nodes based on index
             Stream<ReservableSpace> stream = filtered.stream().map(er -> {
@@ -1075,7 +1062,7 @@ public class ScheduleController extends Controller {
     }
 
     /**
-     * for lists
+     *for lists
      */
     private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
         return from.stream().map(func).collect(Collectors.toList());
@@ -1099,9 +1086,7 @@ public class ScheduleController extends Controller {
             });
             availRoomsBtn.setText(clearFilterText);
             bookedRoomsBtn.setText(bookedRoomsText);
-            bookedRoomsBtn.setOnAction(EventHandler -> {
-                bookedRooms();
-            });
+            bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
 
             Collections.sort(availBetween);
             resSpaces.clear();
@@ -1138,9 +1123,7 @@ public class ScheduleController extends Controller {
             });
             bookedRoomsBtn.setText(clearFilterText);
             availRoomsBtn.setText(availRoomsText);
-            availRoomsBtn.setOnAction(EventHandler -> {
-                availRooms();
-            });
+            availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
 
             reservableList.setItems(resSpaces);
 
@@ -1167,12 +1150,8 @@ public class ScheduleController extends Controller {
         reservableList.getFocusModel().focus(0);
         showRoomSchedule();
 
-        availRoomsBtn.setOnAction(EventHandler -> {
-            availRooms();
-        });
-        bookedRoomsBtn.setOnAction(EventHandler -> {
-            bookedRooms();
-        });
+        availRoomsBtn.setOnAction(EventHandler -> {availRooms();});
+        bookedRoomsBtn.setOnAction(EventHandler -> {bookedRooms();});
         availRoomsBtn.setText(availRoomsText);
         bookedRoomsBtn.setText(bookedRoomsText);
         availRoomsBtn.setDisable(false);
@@ -1183,14 +1162,14 @@ public class ScheduleController extends Controller {
     /**
      * Currently unused:
      * returns a list of roomIDs which have a max capacity of less than nPeople
-     *
      * @param nPeople
      * @return
      */
-    ArrayList<String> getMaxPeople(int nPeople) {
+    ArrayList<String> getMaxPeople(int nPeople){
         ArrayList<String> a = new ArrayList<>();
         return a;
     }
+
 
 
     // MAP STUFF DOWN HERE ****************
@@ -1227,7 +1206,7 @@ public class ScheduleController extends Controller {
         zoomGroup.getChildren().removeAll(circleCollection);
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
         circleCollection = new ArrayList<Circle>();
-        for (Node node : nodeCollection) {
+        for(Node node : nodeCollection) {
             Circle circle = new Circle();
             circle.setRadius(80);
             if (isNodeInReservableSpace(bookedRS, node)) {

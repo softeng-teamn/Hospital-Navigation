@@ -9,6 +9,9 @@ import static service.ResourceLoader.dfBundle;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class Event {
 
     Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
@@ -25,7 +28,7 @@ public class Event {
     boolean isAccessiblePath = false; // accessible
     boolean isChangingStart = false;  // start-change
     String filterSearch = ""; // filtered search
-    String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar
+    String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar, dijsktra, best for bestFS
     boolean isEditing = false;      // editing
     String floor = "1";      // floor
     boolean callElev = false;

@@ -2,7 +2,6 @@ package home;
 
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +15,7 @@ import service.StageManager;
 
 import java.io.IOException;
 
-public class AdminServiceController extends Controller {
+public class AdminServiceController {
 
     private EventBus eventBus = EventBusFactory.getEventBus();
     private Event event = EventBusFactory.getEvent();
@@ -43,7 +42,7 @@ public class AdminServiceController extends Controller {
 
     @FXML
     void showSearchResults(ActionEvent e) {
-        event.setEventName("showSearch");
+        event.setEventName("closeDrawer");
         eventBus.post(event);
     }
 
