@@ -67,7 +67,6 @@ public class InternalTransportRequest extends Request {
 
     @Override
     public void fillRequest() {
-        this.setCompleted(true);
         if(this.urgency == Urgency.VERY){
             //change stuff here for api
            // ElevatorConnnection eCon = new ElevatorConnnection(<TEAM NUM>);

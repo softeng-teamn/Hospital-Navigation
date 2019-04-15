@@ -1,7 +1,8 @@
 package elevator_api;
 
-import service_request.model.sub_model.InternalTransportRequest;
+import elevator.ElevatorConnnection;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class ApiInternalTransportRequest {
@@ -21,6 +22,7 @@ public class ApiInternalTransportRequest {
 
     private int id, assignedTo;
     private String notes, location;
+    private boolean completed;
 
     private Urgency urgency;
     private TransportType transport;
@@ -64,8 +66,17 @@ public class ApiInternalTransportRequest {
         this.transport = transportType;
         this.assignedTo = -1;
         this.urgency = urgency;
+        this.completed = false;
     }
 
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
 
     public Urgency getUrgency() {
         return urgency;
@@ -78,6 +89,22 @@ public class ApiInternalTransportRequest {
     public void makeRequest() {
         ApiDatabaseService.getDatabaseService().insertInternalTransportRequest(this);
     }
+
+    public void fillRequest() {
+        this.setCompleted(true);
+        if(this.urgency == Urgency.VERY){
+            ElevatorConnnection eCon = new ElevatorConnnection();
+            try {
+                System.out.println("elevator = " + location.charAt(7) + "Floor = " + location.substring(8));
+                eCon.postFloor("" + location.charAt(7), location.substring(8)); // post elevator, floornum
+            } catch (IOException e) {
+                System.out.println("error posting elevator check WIFI from Internal Transport API");
+                e.printStackTrace();
+            }
+        }
+        ApiDatabaseService.getDatabaseService().insertInternalTransportRequest(this);
+    }
+
 
     public TransportType getTransport() {
         return transport;

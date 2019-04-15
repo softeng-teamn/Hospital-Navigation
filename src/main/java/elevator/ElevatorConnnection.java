@@ -59,23 +59,8 @@ public class ElevatorConnnection {
             case "L2":
                 floorNum = "-2";
                 break;
-            case " 0":
-                floorNum = "0";
-                break;
-            case " 1":
-                floorNum = "1";
-                break;
-            case " 2":
-                floorNum = "2";
-                break;
-            case " 3":
-                floorNum = "3";
-                break;
-            case" 4":
-                floorNum = "4";
-                break;
             default:
-                floorNum = "-4";
+                floorNum = floorNum.trim();
                 break;
         }
 
@@ -114,6 +99,7 @@ public class ElevatorConnnection {
      */
     private String post(String URL, String urlParameters) throws MalformedURLException,
             ProtocolException, IOException {
+        System.out.println("Posting");
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
         String floor = "-";
         try {
