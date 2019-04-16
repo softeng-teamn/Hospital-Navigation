@@ -51,6 +51,9 @@ public class DirectionsController implements Observer {
         printDirections(makeDirections(path));
         if (getApplicationState().getEmployeeLoggedIn() != null) {
             textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+            if (!getApplicationState().getEmployeeLoggedIn().getPhone().equals("")) {
+                phoneNumber.setText(getApplicationState().getEmployeeLoggedIn().getPhone());
+            }
         }
         else {
             textingButton.setDisable(true);
