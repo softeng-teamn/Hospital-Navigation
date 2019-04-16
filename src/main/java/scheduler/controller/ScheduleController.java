@@ -221,11 +221,8 @@ public class ScheduleController {
     // Map Stuff
     static final Color AVAILABLE_COLOR = Color.rgb(87, 255, 132, 0.8);
     static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
-    Group zoomGroup;
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
     ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
-    @FXML
-    private ScrollPane map_scrollpane;
 
     // Table display information
     private int openTime = 9;   // hour to start schedule display
@@ -256,7 +253,6 @@ public class ScheduleController {
      */
     @FXML
     public void initialize() {
-        setUpMap();
         setDefaultTimes();
         setUpArrayLists();
 
@@ -353,22 +349,7 @@ public class ScheduleController {
         });
     }
 
-    /**
-     * Set zoom groups for map.
-     */
-    private void setUpMap() {
-        // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
-        Group contentGroup = new Group();
-        zoomGroup = new Group();
-        contentGroup.getChildren().add(zoomGroup);
-        zoomGroup.getChildren().add(map_scrollpane.getContent());
-        map_scrollpane.setContent(contentGroup);
-
-        // Setting View Scrolling
-        zoom(0.3);
-    }
-
-    /**
+       /**
      * Set default times and date.
      */
     private void setDefaultTimes() {
@@ -949,16 +930,6 @@ public class ScheduleController {
 
     // MAP STUFF DOWN HERE ****************
 
-
-    private void zoom(double scaleValue) {
-        double scrollH = map_scrollpane.getHvalue();
-        double scrollV = map_scrollpane.getVvalue();
-        zoomGroup.setScaleX(scaleValue);
-        zoomGroup.setScaleY(scaleValue);
-        map_scrollpane.setHvalue(scrollH);
-        map_scrollpane.setVvalue(scrollV);
-    }
-
     ArrayList<ReservableSpace> getBookedNodes() {
         // Get selected times
         ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes(); // ******* GETS TWO GREG CALENDERS
@@ -978,7 +949,6 @@ public class ScheduleController {
 
     private void populateMap() {
         System.out.println("**************** POPULATE MAP");
-        zoomGroup.getChildren().removeAll(shapeCollection);
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
         shapeCollection = new ArrayList<SVGPath>();
         for (Node node : nodeCollection) {
@@ -1011,7 +981,6 @@ public class ScheduleController {
             }
             shapeCollection.add(svg);
         }
-        zoomGroup.getChildren().addAll(shapeCollection);
     }
 
     /**
