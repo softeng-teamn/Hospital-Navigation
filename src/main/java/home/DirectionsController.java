@@ -659,5 +659,4 @@ public class DirectionsController implements Observer {
             qrView.setVisible(false);
         }
     }
-
 }
