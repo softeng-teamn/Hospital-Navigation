@@ -3,6 +3,9 @@ package scheduler.model;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
+/**
+ * reservable space object
+ */
 public class ReservableSpace implements Comparable<ReservableSpace>{
     String spaceID, spaceName, spaceType, locationNodeID;
     GregorianCalendar timeOpen, timeClosed;
@@ -66,8 +69,8 @@ public class ReservableSpace implements Comparable<ReservableSpace>{
 
     /**
      * checks if two ReservableSpaces are the same space
-     * @param o
-     * @return
+     * @param o the reservable space to compare
+     * @return true if the objects are equal and false if otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -84,7 +87,7 @@ public class ReservableSpace implements Comparable<ReservableSpace>{
 
     /**
      * hash code
-     * @return
+     * @return a hashcode based on the given objects
      */
     @Override
     public int hashCode() {

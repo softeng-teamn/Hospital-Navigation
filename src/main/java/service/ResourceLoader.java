@@ -4,6 +4,9 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * FXML loader
+ */
 public class  ResourceLoader {
 
     public static final URL home = service.ResourceLoader.class.getResource("/fxml/home.fxml");

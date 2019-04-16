@@ -39,7 +39,7 @@ public class Main extends Application {
     /**
      * initializes the UI
      * @param primaryStage parameter to start the UI
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @Override
     public void start(Stage primaryStage) throws Exception {

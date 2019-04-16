@@ -2,6 +2,9 @@ package map;
 
 import java.util.Objects;
 
+/**
+ * Processed Node object used for pathfinding
+ */
 public class MapNode implements Comparable<MapNode>{
 
     int g, x, y;
@@ -20,8 +23,8 @@ public class MapNode implements Comparable<MapNode>{
 
     /**
      * checks if two MapNodes are equal to each other
-     * @param o
-     * @return
+     * @param o a node to compare to another
+     * @return true if the nodes are equal and false if otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -59,7 +62,7 @@ public class MapNode implements Comparable<MapNode>{
 
     /**
      * calculates the heuristic
-     * @param destination
+     * @param destination the desired final destination
      */
     public void calculateHeuristic(MapNode destination) {
         double dx = (double) destination.x - this.x;
@@ -70,7 +73,7 @@ public class MapNode implements Comparable<MapNode>{
 
     /**
      * calculates G
-     * @param nextNode
+     * @param nextNode the next node in sequence to calculate G for
      */
     public void calculateG(MapNode nextNode) {
         int dx = nextNode.x - this.x;
@@ -103,8 +106,8 @@ public class MapNode implements Comparable<MapNode>{
 
     /**
      * compares two nodes
-     * @param node
-     * @return
+     * @param node the node to compare with this one
+     * @return 1, -1, or 0, depending on whether the first node or second node is greater, or if they are equal.
      */
     @Override
     public int compareTo(MapNode node) {

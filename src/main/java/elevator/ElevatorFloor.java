@@ -1,5 +1,8 @@
 package elevator;
 
+/**
+ * Stores the current state of the elevator
+ */
 public class ElevatorFloor {
     private String floor;
     private int eta;
