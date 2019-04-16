@@ -26,13 +26,12 @@ public class SanitationRequestController extends RequestController {
     private JFXButton submitBtn;
 
     @FXML
-    private Label errorLbl;
+    private Label errorMsg;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        errorLbl.setVisible(false);
         // Set urgency options
         ObservableList<String> options =
                 FXCollections.observableArrayList(
@@ -57,18 +56,23 @@ public class SanitationRequestController extends RequestController {
 
     @FXML
     void submitRequest(ActionEvent event) {
-        errorLbl.setVisible(false);
         System.out.println("clicked");
         if(selectedNode != null) {
-            System.out.println("making service_request");
-            SanitationRequest sanitationRequest = new SanitationRequest(-1, notes.getText(), selectedNode, false, urgencyBox.getValue(), materialBox.getValue());
-            sanitationRequest.makeRequest();
-            notes.setText("");
-            urgencyBox.getSelectionModel().select(0);
-            materialBox.getSelectionModel().select(0);
+            if(notes.getText().equals("")){
+                errorMsg.setText("Please Enter Details");
+            }
+            else {
+                System.out.println("making service_request");
+                SanitationRequest sanitationRequest = new SanitationRequest(-1, notes.getText(), selectedNode, false, urgencyBox.getValue(), materialBox.getValue());
+                sanitationRequest.makeRequest();
+                notes.setText("");
+                urgencyBox.getSelectionModel().select(0);
+                materialBox.getSelectionModel().select(0);
+                errorMsg.setText("");
+            }
         }
         else {
-            errorLbl.setVisible(true);
+            errorMsg.setText("Please Select a Location");
         }
     }
 

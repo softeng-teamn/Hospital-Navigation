@@ -3,6 +3,7 @@ package service_request.controller.sub_controller;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXToggleNode;
+import javafx.scene.control.Label;
 import service_request.controller.RequestController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,6 +26,10 @@ public class AVServiceRequestController extends RequestController {
 
     @FXML
     private JFXToggleNode audioToggle;
+
+    @FXML
+    private Label errorMsg;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -55,10 +60,18 @@ public class AVServiceRequestController extends RequestController {
         }
 
         if(selectedNode != null) {
-            AVServiceRequest avServiceRequest = new AVServiceRequest(-1, description.getText(), selectedNode, false, AVTypeSelected);
-            avServiceRequest.makeRequest();
-            description.setText("");
-            AVType.selectToggle(audioToggle);
+            if (description.getText().equals("")) {
+                errorMsg.setText("Please Enter Details");
+            } else {
+                AVServiceRequest avServiceRequest = new AVServiceRequest(-1, description.getText(), selectedNode, false, AVTypeSelected);
+                avServiceRequest.makeRequest();
+                description.setText("");
+                AVType.selectToggle(audioToggle);
+                errorMsg.setText("");
+            }
+        }
+        else{
+            errorMsg.setText("Please Select a Location");
         }
     }
 

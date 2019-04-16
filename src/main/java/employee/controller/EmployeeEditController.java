@@ -20,6 +20,9 @@ import service.StageManager;
 
 import java.util.List;
 
+/**
+ * controller for the employee editor FXML
+ */
 public class EmployeeEditController {
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 

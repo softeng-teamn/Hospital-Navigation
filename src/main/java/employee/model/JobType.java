@@ -1,5 +1,8 @@
 package employee.model;
 
+/**
+ * job types for employees
+ */
 public enum JobType {
 
     // REMEMBER: if you add a job type, add it to the constraint for the employee table in DatabaseService
