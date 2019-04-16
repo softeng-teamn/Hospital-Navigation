@@ -406,6 +406,9 @@ public class TopNavController implements Observer {
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
             startNode_btn.setText("Start Node");
             home_icon.setIcon(MaterialIcon.LOCATION_ON);
+            if (ApplicationState.getApplicationState().getEndNode() != null) {
+                navigate_btn.setVisible(true);
+            }
         }
     }
 
