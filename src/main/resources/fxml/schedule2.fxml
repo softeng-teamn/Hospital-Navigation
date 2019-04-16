@@ -4,15 +4,17 @@
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXSlider?>
-<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTimePicker?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
@@ -24,7 +26,6 @@
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" styleClass="header">
          <children>
-            <JFXTextField fx:id="searchBar" labelFloat="true" onAction="#searchBarEnter" promptText="Search Room" stylesheets="@../theme.css" />
             <Region prefHeight="100.0" prefWidth="724.0" />
             <Label text="Reserve a Room" textFill="WHITE">
                <font>
@@ -43,71 +44,20 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" VBox.vgrow="ALWAYS">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
          <children>
-            <VBox maxWidth="-Infinity" prefHeight="200.0" prefWidth="500.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <HBox maxHeight="-Infinity" prefHeight="400.0" prefWidth="200.0">
-                     <children>
-                        <JFXListView fx:id="reservableList" prefWidth="400.0" HBox.hgrow="ALWAYS" />
-                     </children>
-                  </HBox>
-                  <Label styleClass="big-label" text="Map View" VBox.vgrow="NEVER">
-                     <VBox.margin>
-                        <Insets top="20.0" />
-                     </VBox.margin>
-                  </Label>
-                  <StackPane maxHeight="-Infinity" prefHeight="550.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                     <children>
-                        <ScrollPane fx:id="map_scrollpane" prefHeight="200.0" prefWidth="200.0">
-                           <content>
-                              <Pane fx:id="image_pane" onMouseClicked="#mapClickedHandler">
-                                 <children>
-                                    <ImageView pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/flex.jpg" />
-                                       </image>
-                                    </ImageView>
-                                 </children>
-                              </Pane>
-                           </content>
-                        </ScrollPane>
-                        <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="335.0" prefWidth="120.0" StackPane.alignment="TOP_RIGHT">
-                           <children>
-                              <VBox prefHeight="343.0" prefWidth="100.0">
-                                 <children>
-                                    <Pane nodeOrientation="RIGHT_TO_LEFT" prefHeight="165.0" prefWidth="100.0">
-                                       <children>
-                                          <JFXSlider fx:id="zoom_slider" orientation="VERTICAL" />
-                                       </children>
-                                    </Pane>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </Pane>
-                     </children>
-                  </StackPane>
-               </children>
-            </VBox>
-            <Region prefHeight="970.0" prefWidth="50.0" />
             <VBox alignment="CENTER" minWidth="10.0" prefHeight="200.0" prefWidth="200.0" spacing="20.0" HBox.hgrow="ALWAYS">
                <children>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                  <VBox alignment="CENTER" prefHeight="150.0" prefWidth="100.0">
                      <children>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="60.0">
                            <children>
                               <JFXDatePicker fx:id="datePicker" maxWidth="1.7976931348623157E308" promptText="Choose a Date" />
                               <JFXTimePicker fx:id="startTimePicker" maxWidth="1.7976931348623157E308" promptText="Start Time" />
                               <JFXTimePicker fx:id="endTimePicker" maxWidth="1.7976931348623157E308" promptText="End Time" />
-                              <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" spacing="20.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <JFXButton fx:id="availRoomsBtn" onAction="#availRooms" text="Show Available Rooms" />
-                                    <JFXButton fx:id="bookedRoomsBtn" onAction="#bookedRooms" text="Show Booked Rooms" />
-                                 </children>
-                              </VBox>
                            </children>
                         </HBox>
-                        <HBox prefHeight="100.0" prefWidth="200.0">
+                        <HBox prefHeight="50.0" prefWidth="200.0">
                            <children>
                               <Label fx:id="inputErrorLbl" styleClass="small-label" wrapText="true" />
                            </children>
@@ -115,8 +65,79 @@
                      </children>
                   </VBox>
                   <Label fx:id="schedLbl" styleClass="big-label" text="Weekly Schedule for " />
-                  <TableView fx:id="scheduleTable" prefHeight="600.0" prefWidth="200.0" />
-                  <Pane fx:id="image_pane1" onMouseClicked="#mapClickedHandler" />
+                  <JFXTabPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="700.0" prefWidth="1800.0" stylesheets="@../theme.css">
+                     <tabs>
+                        <Tab text="Map">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <StackPane maxHeight="-Infinity" prefHeight="900.0" prefWidth="1800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <ScrollPane fx:id="map_scrollpane" prefHeight="200.0" prefWidth="200.0">
+                                             <content>
+                                                <Pane fx:id="image_pane" onMouseClicked="#mapClickedHandler">
+                                                   <children>
+                                                      <ImageView pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../images/flex.jpg" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </children>
+                                                </Pane>
+                                             </content>
+                                          </ScrollPane>
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="335.0" prefWidth="120.0" StackPane.alignment="TOP_RIGHT">
+                                             <children>
+                                                <VBox prefHeight="343.0" prefWidth="100.0">
+                                                   <children>
+                                                      <Pane nodeOrientation="RIGHT_TO_LEFT" prefHeight="165.0" prefWidth="100.0">
+                                                         <children>
+                                                            <JFXSlider fx:id="zoom_slider" orientation="VERTICAL" />
+                                                         </children>
+                                                      </Pane>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </StackPane>
+                                 </children></AnchorPane>
+                          </content>
+                        </Tab>
+                        <Tab text="Scheduler">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="scheduleTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1800.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </Tab>
+                        <Tab text="Available Rooms (List View)">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="700.0" prefWidth="1800.0">
+                                       <children>
+                                          <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="700.0" prefWidth="1600.0" HBox.hgrow="NEVER">
+                                             <children>
+                                                <JFXListView fx:id="reservableList" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="700.0" prefWidth="1600.0" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="200.0" prefWidth="500.0" spacing="20.0" HBox.hgrow="NEVER">
+                                             <children>
+                                                <JFXButton fx:id="availRoomsBtn" onAction="#availRooms" text="Show Available Rooms" />
+                                                <JFXButton fx:id="bookedRoomsBtn" onAction="#bookedRooms" text="Show Booked Rooms" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </Tab>
+                     </tabs>
+                  </JFXTabPane>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <JFXButton fx:id="makeReservationBtn" maxWidth="1.7976931348623157E308" onAction="#makeReservation" styleClass="confirm-button" text="Make Reservation" HBox.hgrow="ALWAYS" />
@@ -127,7 +148,6 @@
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
             </VBox>
-            <Region prefHeight="970.0" prefWidth="50.0" />
          </children>
       </HBox>
    </children>

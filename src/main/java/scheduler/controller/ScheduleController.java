@@ -397,14 +397,14 @@ public class ScheduleController {
 
         // not doing anything??
         // set max width for each col
-        timeCol.setPrefWidth(124);
-        sunday.setPrefWidth(126);
-        monday.setPrefWidth(126);
-        tuesday.setPrefWidth(126);
-        wednesday.setPrefWidth(126);
-        thursday.setPrefWidth(126);
-        friday.setPrefWidth(126);
-        saturday.setPrefWidth(126);
+        timeCol.setPrefWidth(205);
+        sunday.setPrefWidth(205);
+        monday.setPrefWidth(205);
+        tuesday.setPrefWidth(205);
+        wednesday.setPrefWidth(205);
+        thursday.setPrefWidth(205);
+        friday.setPrefWidth(205);
+        saturday.setPrefWidth(205);
 
 
         // make sure each column is uneditable
@@ -432,12 +432,13 @@ public class ScheduleController {
         });
         sunday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                //sunday.setStyle("-fx-background-color: #98FB98");
-
-
-
+                sunday.setStyle("-fx-table-cell-border-color: black;");
+                if (p.getValue().sunAvailability.equals("-")) {
+                    sunday.setStyle("-fx-background-color: #98FB98");
+                }
+                else {
+                    sunday.setStyle("-fx-background-color: #ff6347");
+                }
                 return new ReadOnlyStringWrapper(p.getValue().sunAvailability);
 
             }
@@ -447,7 +448,13 @@ public class ScheduleController {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
                // monday.setStyle("-fx-background-color: #98FB98");
-                monday.setStyle("-fx-table-cell-border-color: black;");
+                //monday.setStyle("-fx-table-cell-border-color: black;");
+                if (p.getValue().monAvailability.equals("-")) {
+                    monday.setStyle("-fx-background-color: #98FB98");
+                }
+                else {
+                    monday.setStyle("-fx-background-color: #ff6347");
+                }
 
                 return new ReadOnlyStringWrapper(p.getValue().monAvailability);
 
@@ -458,6 +465,12 @@ public class ScheduleController {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
                 //tuesday.setStyle("-fx-background-color: #98FB98");
+                if (p.getValue().tuesAvailability.equals("-")) {
+                    tuesday.setStyle("-fx-background-color: #98FB98");
+                }
+                else {
+                    tuesday.setStyle("-fx-background-color: #ff6347");
+                }
                 return new ReadOnlyStringWrapper(p.getValue().tuesAvailability);
 
             }
@@ -467,6 +480,12 @@ public class ScheduleController {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
                 //wednesday.setStyle("-fx-background-color: #98FB98");
+                if (p.getValue().wedAvailability.equals("-")) {
+                    wednesday.setStyle("-fx-background-color: #98FB98");
+                }
+                else {
+                    wednesday.setStyle("-fx-background-color: #ff6347");
+                }
                 return new ReadOnlyStringWrapper(p.getValue().wedAvailability);
 
             }
@@ -476,6 +495,12 @@ public class ScheduleController {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
                 //thursday.setStyle("-fx-background-color: #98FB98");
+                if (p.getValue().thursAvailability.equals("-")) {
+                    thursday.setStyle("-fx-background-color: #98FB98");
+                }
+                else {
+                    thursday.setStyle("-fx-background-color: #ff6347");
+                }
                 return new ReadOnlyStringWrapper(p.getValue().thursAvailability);
 
             }
@@ -485,6 +510,14 @@ public class ScheduleController {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
                 //friday.setStyle("-fx-background-color: #98FB98");
+
+                if (p.getValue().friAvailability.equals("-")) {
+                    friday.setStyle("-fx-background-color: #98FB98");
+                }
+                else {
+                    friday.setStyle("-fx-background-color: #ff6347");
+                }
+
                 return new ReadOnlyStringWrapper(p.getValue().friAvailability);
 
             }
@@ -494,6 +527,15 @@ public class ScheduleController {
                 // p.getValue() returns the Person instance for a particular TableView row
                 //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
                 //saturday.setStyle("-fx-background-color: #98FB98");
+                saturday.setStyle("-fx-table-cell-border-color: black;");
+
+                if (p.getValue().satAvailability.equals("-")) {
+                    saturday.setStyle("-fx-background-color: #98FB98");
+                }
+                else {
+                    saturday.setStyle("-fx-background-color: #ff6347");
+                }
+
                 return new ReadOnlyStringWrapper(p.getValue().satAvailability);
 
             }
@@ -504,7 +546,12 @@ public class ScheduleController {
 //        scheduleTable.setPrefHeight(900);
         showRoomSchedule();
 
-        scheduleTable.setStyle("-fx-table-cell-border-color: black;");
+       scheduleTable.setStyle("-fx-table-cell-border-color: black;");
+       scheduleTable.setStyle("-fx-table-column-rule-color: black;");
+       //scheduleTable.setStyle("-fx-table-column-rule-style: ;");
+        //scheduleTable.setStyle("-fx-table-view-column-header ;");
+
+
 
 
 
@@ -654,13 +701,14 @@ public class ScheduleController {
             }
         }
 
-
+        LocalDate selectedDate = datePicker.getValue();
+        int selectedDayOfWeek = datePicker.getValue().getDayOfWeek().getValue();    // 1 is Monday, 7 is Sunday
+        if (selectedDayOfWeek != 7) {
+            selectedDate = selectedDate.plus(-selectedDayOfWeek, ChronoUnit.DAYS);
+        }
+        LocalDate startDate = selectedDate;
         // Populate each day's availability in the weekly schedule
         for (int dailySchedule = 0; dailySchedule < 7; dailySchedule++) {
-
-            LocalDate selectedDate = datePicker.getValue();
-            int selectedDayOfWeek = datePicker.getValue().getDayOfWeek().getValue();
-            LocalDate startDate = selectedDate.plus(dailySchedule - selectedDayOfWeek, ChronoUnit.DAYS);
             LocalDate secondDate = startDate.plus(1, ChronoUnit.DAYS);
             GregorianCalendar gcalStartDay = GregorianCalendar.from(startDate.atStartOfDay(ZoneId.systemDefault()));
             GregorianCalendar gcalEndDay = GregorianCalendar.from(secondDate.atStartOfDay(ZoneId.systemDefault()));
@@ -698,6 +746,7 @@ public class ScheduleController {
                     weeklySchedule.get(dailySchedule).set(box, 1);
                 }
             }
+            startDate = startDate.plus(1, ChronoUnit.DAYS);
 
         }
 
