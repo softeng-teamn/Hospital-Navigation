@@ -95,7 +95,7 @@ public class AdminServiceController {
     }
 
     @FXML
-    void initialize() {    // Added so that search method toggle is already selected
+    void initialize() {    // Select the current method
         if (event.getSearchMethod().equals("astar")) {
             algorithm.selectToggle(aStarToggle);
         }

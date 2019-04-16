@@ -24,10 +24,11 @@ public class HomeController implements Observer {
 
     @FXML
     void initialize() throws IOException {
-        ApplicationState.getApplicationState().getObservableBus().register("homeContoller", this);
+        // Get the current info and register this as observer
+        ApplicationState.getApplicationState().getObservableBus().register("homeController", this);
         ApplicationState currState = ApplicationState.getApplicationState();
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
-        currState.setDefaultStartNode();
+        currState.setDefaultStartNode();    // Set the default start
         currState.setEndNode(null);
 
         MapController.initConnections();
@@ -128,11 +129,7 @@ public class HomeController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            showSearch();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                            drawer.close();
                     }
                 });
                 break;

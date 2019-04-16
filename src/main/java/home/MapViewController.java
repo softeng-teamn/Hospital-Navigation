@@ -48,7 +48,7 @@ public class MapViewController implements Observer {
     public VBox showDirVbox;
     @FXML
     public JFXButton showDirectionsBtn;
-    private Event event;
+    private Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
     private String currentMethod;
 
