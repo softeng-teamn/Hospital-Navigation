@@ -184,7 +184,7 @@ public class ApiController implements Initializable {
                 ElevatorConnection e = new ElevatorConnection();
                 try {
                     System.out.println("Calling Elev");
-                    e.postFloor("L", selectedReq.getLocation().substring(selectedReq.getLocation().length() - 2));
+                    e.postFloor(myDBS.getTeam() + "L", selectedReq.getLocation().substring(selectedReq.getLocation().length() - 2));
                 } catch (IOException e1) {
                     System.out.println("error posting in onAssignedTo in DBS");
                     e1.printStackTrace();
