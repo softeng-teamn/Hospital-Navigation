@@ -96,17 +96,17 @@
                     <content>
                       <AnchorPane>
                            <children>
-                              <HBox prefHeight="915.0" prefWidth="1485.0">
+                              <VBox prefHeight="915.0" prefWidth="1485.0">
                                  <children>
-                                    <JFXListView fx:id="reservableList" prefHeight="915.0" prefWidth="1278.0" styleClass="list-view-requests" HBox.hgrow="ALWAYS" />
-                                    <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="200.0" prefWidth="500.0" spacing="96.0">
+                                    <JFXListView fx:id="reservableList" prefHeight="915.0" prefWidth="1278.0" styleClass="list-view-requests" />
+                                    <HBox alignment="CENTER" prefHeight="270.0" prefWidth="200.0" spacing="300.0">
                                        <children>
-                                          <JFXButton fx:id="availRoomsBtn" onAction="#availRooms" prefWidth="268.0" styleClass="confirm-button" text="Show Available Rooms" />
-                                          <JFXButton fx:id="bookedRoomsBtn" onAction="#bookedRooms" prefWidth="268.0" styleClass="confirm-button" text="Show Booked Rooms" />
+                                          <JFXButton fx:id="availRoomsBtn" maxWidth="-Infinity" onAction="#availRooms" prefWidth="368.0" styleClass="confirm-button" text="Show Available Rooms" />
+                                          <JFXButton fx:id="bookedRoomsBtn" maxWidth="-Infinity" onAction="#bookedRooms" prefWidth="368.0" styleClass="confirm-button" text="Show Booked Rooms" />
                                        </children>
-                                    </VBox>
+                                    </HBox>
                                  </children>
-                              </HBox>
+                              </VBox>
                            </children>
                         </AnchorPane>
                     </content>
