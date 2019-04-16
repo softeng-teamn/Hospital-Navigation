@@ -222,8 +222,8 @@ public class ScheduleController {
     private Event event ;    // The current event
 
     // Map Stuff
-    static final Color AVAILABLE_COLOR = Color.rgb(87, 255, 132, 0.8);
-    static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
+    static final Color AVAILABLE_COLOR = Color.rgb(67, 160, 71, 0.6);
+    static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.6);
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
     ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
 
