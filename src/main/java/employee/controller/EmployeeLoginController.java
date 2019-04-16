@@ -66,12 +66,12 @@ public class EmployeeLoginController implements Initializable {
                 // else user is an employee
             } else {
                 event.setLoggedIn(true);
-                event.setAdmin(user.isAdmin() == false);
+                event.setAdmin(user.isAdmin());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
 
-                event.setEventName("login");
+                event.setEventName("employee-login");
                 ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
                 showHome();
             }
