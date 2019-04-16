@@ -818,8 +818,8 @@ public class DirectionsController implements Observer {
     @FXML
     public void showQRCode() {
         if (qrCodeVbox.getMaxHeight() == 0) {
-            qrCodeVbox.setPrefHeight(350);
-            qrCodeVbox.setMaxHeight(350);
+            qrCodeVbox.setPrefHeight(750);
+            qrCodeVbox.setMaxHeight(750);
             qrView.setVisible(true);
         }
         else {
