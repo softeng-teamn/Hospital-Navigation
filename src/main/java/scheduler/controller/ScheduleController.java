@@ -298,6 +298,9 @@ public class ScheduleController {
     @FXML
     private SVGPath classroom1, classroom2, classroom3, classroom4, classroom5, classroom6, classroom7, classroom8, classroom9, auditorium;
 
+    @FXML
+    private Tab weeklyScheduleTab, dailyScheduleTab;
+
     private Event event ;    // The current event
 
     // Map Stuff
@@ -780,6 +783,7 @@ public class ScheduleController {
         // schedToAdd = an array list of ScheduleWrapper
         wrap.addAll(schedToAdd);
         scheduleTable.setItems(wrap);
+        weeklyScheduleTab.setText("Weekly Schedule for " + currentSelection.getSpaceName());
     }
 
     private void showDailySchedule() {
@@ -866,6 +870,7 @@ public class ScheduleController {
         // schedToAdd = an array list of ScheduleWrapper
         wrap.addAll(schedToAdd);
         dailyScheduleAllRooms.setItems(wrap);
+        dailyScheduleTab.setText("Daily Schedule All Rooms on " + datePicker.getValue().getMonth() + " " + datePicker.getValue().getDayOfMonth() + ", " + datePicker.getValue().getYear());
     }
 
 
