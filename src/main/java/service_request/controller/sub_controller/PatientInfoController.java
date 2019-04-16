@@ -29,15 +29,29 @@ public class PatientInfoController extends RequestController {
         description = descriptionArea.getText();
 
         if (selectedNode != null) {
-            PatientInfoRequest newPatientInfoRequest = new PatientInfoRequest(-1, description, selectedNode, false, firstName, lastName, birthDay, description);
-            newPatientInfoRequest.makeRequest();
-            descriptionArea.setText("");
-            firstNameField.setText("");
-            lastNameField.setText("");
-            birthDField.setText("");
-            birthMField.setText("");
-            birthYField.setText("");
-            errorMsg.setText("");
+            if(descriptionArea.getText().equals("")){
+                errorMsg.setText("Please enter a Description");
+            }
+            else if(firstNameField.getText().equals("")){
+                errorMsg.setText("Please enter a First Name");
+            }
+            else if(lastNameField.getText().equals("")){
+                errorMsg.setText("Please enter a Last Name");
+            }
+            else if(birthDField.getText().equals("") || birthMField.getText().equals("") || birthYField.getText().equals("")){
+                errorMsg.setText("Please enter a Birthday");
+            }
+            else {
+                PatientInfoRequest newPatientInfoRequest = new PatientInfoRequest(-1, description, selectedNode, false, firstName, lastName, birthDay, description);
+                newPatientInfoRequest.makeRequest();
+                descriptionArea.setText("");
+                firstNameField.setText("");
+                lastNameField.setText("");
+                birthDField.setText("");
+                birthMField.setText("");
+                birthYField.setText("");
+                errorMsg.setText("");
+            }
         }
         else{
             errorMsg.setText("Please Select a Location");

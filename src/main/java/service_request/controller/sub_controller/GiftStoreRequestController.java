@@ -41,12 +41,20 @@ public class GiftStoreRequestController extends RequestController {
     @FXML
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
-            GiftStoreRequest giftStoreRequest = new GiftStoreRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem(), patientName.getText());
-            giftStoreRequest.makeRequest();
-            description.setText("");
-            type.getSelectionModel().select(0);
-            patientName.setText("");
-            errorMsg.setText("");
+            if(description.getText().equals("")){
+                errorMsg.setText("Please Enter a Description");
+            }
+            else if(patientName.getText().equals("")){
+                errorMsg.setText("Please Enter a Patient Name");
+            }
+            else {
+                GiftStoreRequest giftStoreRequest = new GiftStoreRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem(), patientName.getText());
+                giftStoreRequest.makeRequest();
+                description.setText("");
+                type.getSelectionModel().select(0);
+                patientName.setText("");
+                errorMsg.setText("");
+            }
         }
         else{
             errorMsg.setText("Please Select a Location");

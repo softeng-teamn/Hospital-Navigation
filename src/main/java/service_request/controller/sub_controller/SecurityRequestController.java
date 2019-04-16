@@ -55,11 +55,16 @@ public class SecurityRequestController extends RequestController {
         }
 
         if(selectedNode != null) {
-            SecurityRequest securityRequest = new SecurityRequest(-1, description.getText(), selectedNode, false, urgencyLevel);
-            securityRequest.makeRequest();
-            description.setText("");
-            urgency.selectToggle(urgency_low);
-            errorMsg.setText("");
+            if(description.getText().equals("")){
+                errorMsg.setText("Please enter a Description");
+            }
+            else {
+                SecurityRequest securityRequest = new SecurityRequest(-1, description.getText(), selectedNode, false, urgencyLevel);
+                securityRequest.makeRequest();
+                description.setText("");
+                urgency.selectToggle(urgency_low);
+                errorMsg.setText("");
+            }
         }
         else{
             errorMsg.setText("Please Select a Location");

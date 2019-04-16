@@ -22,18 +22,26 @@ public class MedicineRequestController extends RequestController {
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
             try {
+                if(description.getText().equals("")){
+                    errorMsg.setText("Please Enter a Description");
+                }
+                else if(medicineType.getText().equals("")){
+                    errorMsg.setText("Please Enter a Medicine Type");
+                }
+                else {
+                    MedicineRequest medicineRequest = new MedicineRequest(-1, description.getText(), selectedNode, false, medicineType.getText(), Double.parseDouble(quantity.getText()));
+                    medicineRequest.makeRequest();
 
-                MedicineRequest medicineRequest = new MedicineRequest(-1, description.getText(), selectedNode, false, medicineType.getText(), Double.parseDouble(quantity.getText()));
-                medicineRequest.makeRequest();
-
-                description.setText("");
-                medicineType.setText("");
-                quantity.setText("");
-                quantity.getStyleClass().remove("wrong-credentials");
+                    description.setText("");
+                    medicineType.setText("");
+                    quantity.setText("");
+                    quantity.getStyleClass().remove("wrong-credentials");
+                    errorMsg.setText("");
+                }
             } catch (NumberFormatException e) {
-                quantity.getStyleClass().add("wrong-credentials");
+                //quantity.getStyleClass().add("wrong-credentials");  //commented out because inconsistant with other reqs
+                errorMsg.setText("Please Enter a Valid Quantity of Medicine");
             }
-            errorMsg.setText("");
         }
         else{
             errorMsg.setText("Please Select a Location");

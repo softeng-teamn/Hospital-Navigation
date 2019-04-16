@@ -1,12 +1,14 @@
 package elevator_api;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import elevator.ElevatorConnnection;
 import employee.model.Employee;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -39,6 +41,21 @@ public class InternalTransportRequestApi {
         primaryStage.setScene(scene);
         scene.getStylesheets().add(this.getClass().getResource(cssPath).toExternalForm());
         primaryStage.show();
+    }
+
+    /**
+     *
+     * @return a string containing elevator L's current floor. empty string if error
+     */
+    public String getCurrentElevFloor(){
+        ElevatorConnnection e = new ElevatorConnnection();
+        try {
+           return e.getFloor("L");
+        } catch (IOException e1) {
+            System.out.println("Error Connecting to Elevator getCurrentElev in internal Transport Req API");
+            e1.printStackTrace();
+        }
+        return "";
     }
 
     public boolean insertEmployee(Employee e) {

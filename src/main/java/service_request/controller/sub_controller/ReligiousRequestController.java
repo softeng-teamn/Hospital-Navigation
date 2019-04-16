@@ -31,11 +31,16 @@ public class ReligiousRequestController extends RequestController {
     @FXML
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
-            ReligiousRequest religiousRequest = new ReligiousRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
-            religiousRequest.makeRequest();
-            description.setText("");
-            type.getSelectionModel().select(4);
-            errorMsg.setText("");
+            if(description.getText().equals("")){
+                errorMsg.setText("Please enter a Description");
+            }
+            else {
+                ReligiousRequest religiousRequest = new ReligiousRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
+                religiousRequest.makeRequest();
+                description.setText("");
+                type.getSelectionModel().select(4);
+                errorMsg.setText("");
+            }
         }
         else{
             errorMsg.setText("Please Select a Location");

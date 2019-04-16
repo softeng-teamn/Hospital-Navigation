@@ -32,11 +32,16 @@ public class MaintenanceRequestController extends RequestController {
     @FXML
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
-            MaintenanceRequest maintenanceRequest = new MaintenanceRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
-            maintenanceRequest.makeRequest();
-            description.setText("");
-            type.getSelectionModel().select(0);
-            errorMsg.setText("");
+            if(errorMsg.getText().equals("")){
+                errorMsg.setText("Please Enter a Description");
+            }
+            else {
+                MaintenanceRequest maintenanceRequest = new MaintenanceRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
+                maintenanceRequest.makeRequest();
+                description.setText("");
+                type.getSelectionModel().select(0);
+                errorMsg.setText("");
+            }
         }
         else{
             errorMsg.setText("Please Select a Location");

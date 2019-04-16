@@ -31,11 +31,16 @@ public class InterpreterController extends RequestController {
     @FXML
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
-            InterpreterRequest interpRequest = new InterpreterRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
-            interpRequest.makeRequest();
-            description.setText("");
-            type.getSelectionModel().select(0);
-            errorMsg.setText("");
+            if(description.getText().equals("")){
+                errorMsg.setText("Please Enter a Description");
+            }
+            else {
+                InterpreterRequest interpRequest = new InterpreterRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
+                interpRequest.makeRequest();
+                description.setText("");
+                type.getSelectionModel().select(0);
+                errorMsg.setText("");
+            }
         }
         else{
             errorMsg.setText("Please Select a Location");

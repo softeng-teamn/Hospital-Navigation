@@ -31,12 +31,17 @@ public class ITRequestController extends RequestController {
     @FXML
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
-            ITRequest itRequest = new ITRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
-            itRequest.makeRequest();
+            if(description.getText().equals("")){
+                errorMsg.setText("Please Enter a Description");
+            }
+            else {
+                ITRequest itRequest = new ITRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
+                itRequest.makeRequest();
 
-            description.setText("");
-            type.getSelectionModel().select(0);
-            errorMsg.setText("");
+                description.setText("");
+                type.getSelectionModel().select(0);
+                errorMsg.setText("");
+            }
         }
         else{
             errorMsg.setText("Please Select a Location");

@@ -58,13 +58,18 @@ public class SanitationRequestController extends RequestController {
     void submitRequest(ActionEvent event) {
         System.out.println("clicked");
         if(selectedNode != null) {
-            System.out.println("making service_request");
-            SanitationRequest sanitationRequest = new SanitationRequest(-1, notes.getText(), selectedNode, false, urgencyBox.getValue(), materialBox.getValue());
-            sanitationRequest.makeRequest();
-            notes.setText("");
-            urgencyBox.getSelectionModel().select(0);
-            materialBox.getSelectionModel().select(0);
-            errorMsg.setText("");
+            if(notes.getText().equals("")){
+                errorMsg.setText("Please enter a Description");
+            }
+            else {
+                System.out.println("making service_request");
+                SanitationRequest sanitationRequest = new SanitationRequest(-1, notes.getText(), selectedNode, false, urgencyBox.getValue(), materialBox.getValue());
+                sanitationRequest.makeRequest();
+                notes.setText("");
+                urgencyBox.getSelectionModel().select(0);
+                materialBox.getSelectionModel().select(0);
+                errorMsg.setText("");
+            }
         }
         else {
             errorMsg.setText("Please Select a Location");

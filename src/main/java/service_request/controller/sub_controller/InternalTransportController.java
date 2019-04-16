@@ -58,11 +58,16 @@ public class InternalTransportController extends RequestController{
 
 
         if (selectedNode != null) {
-            InternalTransportRequest request = new InternalTransportRequest(-1, text_area.getText(), RequestController.selectedNode, false, dropdown.getSelectionModel().getSelectedItem(), urgencyLevel);
-            request.makeRequest();
-            dropdown.getSelectionModel().select(0);
-            text_area.setText("");
-            errorMsg.setText("");
+            if(text_area.getText().equals("")){
+               errorMsg.setText("Please Enter a Description");
+            }
+            else {
+                InternalTransportRequest request = new InternalTransportRequest(-1, text_area.getText(), RequestController.selectedNode, false, dropdown.getSelectionModel().getSelectedItem(), urgencyLevel);
+                request.makeRequest();
+                dropdown.getSelectionModel().select(0);
+                text_area.setText("");
+                errorMsg.setText("");
+            }
         }
         else{
             errorMsg.setText("Please Select a Location");
