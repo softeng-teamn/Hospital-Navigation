@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
@@ -40,6 +41,7 @@
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXListView>
+      <JFXTextField fx:id="phoneNumber" onInputMethodTextChanged="#validPhone" onKeyReleased="#validPhone" promptText="Phone Number (format ##########)" stylesheets="@../../theme.css" />
       <JFXButton fx:id="viewQRCodeBtn" minHeight="50.0" onAction="#showQRCode" prefHeight="50.0" styleClass="confirm-button" stylesheets="@../../theme.css" text="View Directions on Your Phone" />
       <VBox fx:id="qrCodeVbox" alignment="TOP_CENTER" maxHeight="0.0" minHeight="0.0" prefHeight="350.0" prefWidth="100.0">
          <children>
