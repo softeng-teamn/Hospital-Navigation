@@ -62,6 +62,7 @@ public class ScheduleController {
         private String thursAvailability;
         private String friAvailability;
         private String satAvailability;
+        private String cla1Availability, cla2Availability, cla3Availability, comp1Availability, comp2Availability, comp3Availability, comp4Availability, comp5Availability, comp6Availability, auditoriumAvailability;
 
         public ScheduleWrapper(String time) {
             this.time = time;
@@ -72,6 +73,16 @@ public class ScheduleController {
             this.thursAvailability = "-";
             this.friAvailability = "-";
             this.satAvailability = "-";
+            this.auditoriumAvailability = "-";
+            this.cla1Availability = "-";
+            this.cla2Availability = "-";
+            this.cla3Availability = "-";
+            this.comp1Availability = "-";
+            this.comp2Availability = "-";
+            this.comp3Availability = "-";
+            this.comp4Availability = "-";
+            this.comp5Availability = "-";
+            this.comp6Availability = "-";
         }
 
         public void setTime(String value) {
@@ -116,6 +127,44 @@ public class ScheduleController {
             }
         }
 
+        public void setRoomAvailability(int day, String value) {
+            switch(day) {
+                case 0:
+                    auditoriumAvailability = value;
+                    break;
+                case 1:
+                    cla1Availability = value;
+                    break;
+                case 2:
+                    cla2Availability = value;
+                    break;
+                case 3:
+                    cla3Availability = value;
+                    break;
+                case 4:
+                    comp1Availability = value;
+                    break;
+                case 5:
+                    comp2Availability = value;
+                    break;
+                case 6:
+                    comp3Availability = value;
+                    break;
+                case 7:
+                    comp4Availability = value;
+                    break;
+                case 8:
+                    comp5Availability = value;
+                    break;
+                case 9:
+                    comp6Availability = value;
+                    break;
+                default:
+                    System.out.println("You passed an invalid room while setting availability");
+                    break;
+            }
+        }
+
         public String getDayAvailability(int day) {
             switch(day) {
                 case 1:
@@ -134,6 +183,33 @@ public class ScheduleController {
                     return satAvailability;
                 default:
                     return "You passed an invalid day while setting availability";
+            }
+        }
+
+        public String getRoomAvailability(int day) {
+            switch(day) {
+                case 1:
+                    return auditoriumAvailability;
+                case 2:
+                    return cla1Availability;
+                case 3:
+                    return cla2Availability;
+                case 4:
+                    return cla3Availability;
+                case 5:
+                    return comp1Availability;
+                case 6:
+                    return comp2Availability;
+                case 7:
+                    return comp3Availability;
+                case 8:
+                    return comp4Availability;
+                case 9:
+                    return comp5Availability;
+                case 10:
+                    return comp6Availability;
+                default:
+                    return "You passed an invalid room while setting availability";
             }
         }
 
@@ -205,7 +281,7 @@ public class ScheduleController {
     public JFXTextField eventName, searchBar, employeeID;
 
     @FXML
-    private TableView<ScheduleWrapper> scheduleTable;
+    private TableView<ScheduleWrapper> scheduleTable, dailyScheduleAllRooms;
 
     @FXML
     public JFXListView reservableList;
@@ -237,14 +313,17 @@ public class ScheduleController {
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private int timeStep = 2;    // Fractions of an hour
     private int timeStepMinutes = 60 / timeStep;    // In Minutes
+    private final int NUM_ROOMS = 10;
+    private final int NUM_DAYS_IN_WEEK = 7;
 
     // Currently selected location
     public ReservableSpace currentSelection;
     private HashMap<Node, ReservableSpace> nodeToResSpace = new HashMap<>();
     // List of ints representing time blocks, where 0 is available and 1 is booked
-    private ArrayList<ArrayList<Integer>> weeklySchedule;
+    private ArrayList<ArrayList<Integer>> weeklySchedule, dailyScheduleAllRoomsInts;
     // LIst of spaces to display
     private ObservableList<ReservableSpace> resSpaces;
+    private ObservableList<ReservableSpace> allResSpaces;
     // Error messages
     private String timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
     private String availRoomsText = "Show Available Spaces";
@@ -270,7 +349,7 @@ public class ScheduleController {
         inputErrorLbl.setVisible(false);
         inputErrorLbl.setWrapText(true);
 
-
+        // todo: throw these into separate functions
         // Create table columns, set what they display, and add to the table
         TableColumn<ScheduleWrapper, String> timeCol = new TableColumn<>("Time");
         TableColumn<ScheduleWrapper, String> sunday = new TableColumn<>("Sunday");
@@ -306,6 +385,75 @@ public class ScheduleController {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                         // p.getValue() returns the Person instance for a particular TableView row
                         return new ReadOnlyStringWrapper(p.getValue().getDayAvailability(finInt));
+
+                    }
+                });
+                col.setCellFactory(column -> {
+                    return new TableCell<ScheduleWrapper, String>() {
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+
+                            if (item == null || empty) {
+                                setText(null);
+                                setStyle("");
+                            } else {
+                                // Format date.
+                                setText(item);
+
+                                // Style all dates in March with a different color.
+                                if (item.equals("-")) {
+                                    setStyle("-fx-background-color: #98FB98");
+                                } else {
+                                    setTextFill(Color.BLACK);
+                                    setStyle("-fx-background-color: #ff6347");
+                                }
+                            }
+                        }
+                    };
+                });
+            }
+            col.setResizable(false);
+        }
+
+        // Daily schedule all rooms table
+        TableColumn<ScheduleWrapper, String> daytimeCol = new TableColumn<>("Time");
+        TableColumn<ScheduleWrapper, String> audit = new TableColumn<>("Auditorium");
+        TableColumn<ScheduleWrapper, String> cla1 = new TableColumn<>("Classroom 1");
+        TableColumn<ScheduleWrapper, String> cla2 = new TableColumn<>("Classroom 2");
+        TableColumn<ScheduleWrapper, String> cla3 = new TableColumn<>("Classroom 3");
+        TableColumn<ScheduleWrapper, String> comp1 = new TableColumn<>("Computer Room 1");
+        TableColumn<ScheduleWrapper, String> comp2 = new TableColumn<>("Computer Room 2");
+        TableColumn<ScheduleWrapper, String> comp3 = new TableColumn<>("Computer Room 3");
+        TableColumn<ScheduleWrapper, String> comp4 = new TableColumn<>("Computer Room 4");
+        TableColumn<ScheduleWrapper, String> comp5 = new TableColumn<>("Computer Room 5");
+        TableColumn<ScheduleWrapper, String> comp6 = new TableColumn<>("Computer Room 6");
+
+        // Set up table
+        dailyScheduleAllRooms.getColumns().addAll(daytimeCol, audit, cla1, cla2, cla3, comp1, comp2, comp3, comp4, comp5, comp6);
+        dailyScheduleAllRooms.setEditable(false);   // Schedule is not editable
+        dailyScheduleAllRooms.setStyle("-fx-table-cell-border-color: black;");
+        dailyScheduleAllRooms.setStyle("-fx-table-column-rule-color: black;");
+
+        // Set up each column's value and color scheme
+        for (int i = 0; i < dailyScheduleAllRooms.getColumns().size(); i++) {
+            final int finInt = i;
+            TableColumn<ScheduleWrapper, String> col = (TableColumn<ScheduleWrapper, String>) dailyScheduleAllRooms.getColumns().get(i);
+            if (i == 0) {
+                col.setPrefWidth(177);
+                col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                        // p.getValue() returns the Person instance for a particular TableView row
+                        return new ReadOnlyStringWrapper(p.getValue().getTime());
+                    }
+                });
+            }
+            else {
+                col.setPrefWidth(185);
+                col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                        // p.getValue() returns the Person instance for a particular TableView row
+                        return new ReadOnlyStringWrapper(p.getValue().getRoomAvailability(finInt));
 
                     }
                 });
@@ -388,10 +536,17 @@ public class ScheduleController {
     private void setUpArrayLists() {
         // Create arraylists
         weeklySchedule = new ArrayList<ArrayList<Integer>>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < NUM_DAYS_IN_WEEK; i++) {
             weeklySchedule.add(new ArrayList<Integer>());
         }
+
+        dailyScheduleAllRoomsInts = new ArrayList<ArrayList<Integer>>();
+        for (int i = 0; i < NUM_ROOMS; i++) {
+            dailyScheduleAllRoomsInts.add(new ArrayList<Integer>());
+        }
+
         resSpaces = FXCollections.observableArrayList();
+        allResSpaces = FXCollections.observableArrayList();
 
         //  Pull spaces from database, sort, add to list and listview
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
@@ -403,6 +558,7 @@ public class ScheduleController {
         }
 
         resSpaces.addAll(dbResSpaces);
+        allResSpaces.addAll(dbResSpaces);
         reservableList.setItems(resSpaces);
         reservableList.setEditable(false);
 
@@ -445,9 +601,6 @@ public class ScheduleController {
             }
             showRoomSchedule(false);
             repopulateMap();
-
-            // Display the current information
-            changeResInfo();
         }
         repopulateMap();
     }
@@ -456,10 +609,10 @@ public class ScheduleController {
      * Display the current reservation information for the user
      */
     private void changeResInfo() {
-//        resInfoLbl.setText("Location:      " + currentSelection.getSpaceName()
-//            + "\n\nDate:            " + datePicker.getValue()
-//            + "\n\nStart Time:   " + startTimePicker.getValue()
-//            + "\n\nEnd Time:    " + endTimePicker.getValue());
+        resInfoLbl.setText("Location:      " + currentSelection.getSpaceName()
+            + "\n\nDate:            " + datePicker.getValue()
+            + "\n\nStart Time:   " + startTimePicker.getValue()
+            + "\n\nEnd Time:    " + endTimePicker.getValue());
     }
 
     /**
@@ -498,25 +651,27 @@ public class ScheduleController {
         StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
     /**
      * On room button click, show the schedule for that room and date.
      */
     @FXML
     public void showRoomSchedule(boolean alreadySelected) {
-        // Clear the previous schedule
-        for (int i = 0; i < 7; i++) {
-            weeklySchedule.get(i).clear();
-        }
-
         // Get the selected location
         if (!alreadySelected) {
             ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
             currentSelection = curr;
         }
 
+        // todo: collaborate the same functionality between these two
+        showWeeklySchedule();
+        showDailySchedule();
+    }
+
+    private void showWeeklySchedule() {
+        // Clear the previous schedule
+        for (int i = 0; i < NUM_DAYS_IN_WEEK; i++) {
+            weeklySchedule.get(i).clear();
+        }
         // Get that date and turn it into gregorian calendars to pass to the database
         LocalDate chosenDate = datePicker.getValue();
 
@@ -540,7 +695,6 @@ public class ScheduleController {
         schedLbl.setText("Book " + name + "\nfor the Week of\n" + date);
         schedLbl.setTextAlignment(TextAlignment.CENTER);
 
-
         // Make a list of time and activity labels for the schedule
         ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
 
@@ -550,7 +704,7 @@ public class ScheduleController {
             if (((int) i / 12) == 1) {    // If in the afternoon, use PM
                 amPm = "PM";
             }
-            inputErrorLbl.setVisible(true);
+            //inputErrorLbl.setVisible(true); // todo what does this do?
 
             int time = i % 12;    // The hour, from 24 hours
             if (time == 0) {    // If the hour was 12, make it display as 12
@@ -568,7 +722,7 @@ public class ScheduleController {
                 // Add the labels to the lists
                 ScheduleWrapper toAdd = new ScheduleWrapper(timeInc);
                 schedToAdd.add(toAdd);
-                for (int day = 0; day < 7; day++) {
+                for (int day = 0; day < NUM_DAYS_IN_WEEK; day++) {
                     weeklySchedule.get(day).add(0);    // Default is 0, available
                 }
             }
@@ -581,12 +735,11 @@ public class ScheduleController {
         }
         LocalDate startDate = selectedDate;
         // Populate each day's availability in the weekly schedule
-        for (int dailySchedule = 0; dailySchedule < 7; dailySchedule++) {
+        for (int dailySchedule = 0; dailySchedule < NUM_DAYS_IN_WEEK; dailySchedule++) {
             LocalDate secondDate = startDate.plus(1, ChronoUnit.DAYS);
             GregorianCalendar gcalStartDay = GregorianCalendar.from(startDate.atStartOfDay(ZoneId.systemDefault()));
             GregorianCalendar gcalEndDay = GregorianCalendar.from(secondDate.atStartOfDay(ZoneId.systemDefault()));
 
-            System.out.println("Res start and end dates: " + gcalStartDay.toInstant() + gcalEndDay.toInstant());
             // Get reservations for this day
             ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(currentSelection.getSpaceID(), gcalStartDay, gcalEndDay);
 
@@ -629,8 +782,91 @@ public class ScheduleController {
         scheduleTable.setItems(wrap);
     }
 
+    private void showDailySchedule() {
+        // Clear the previous schedule
+        for (int i = 0; i < NUM_ROOMS; i++) {
+            dailyScheduleAllRoomsInts.get(i).clear();
+        }
+        // Get that date and turn it into gregorian calendars to pass to the database
+        LocalDate chosenDate = datePicker.getValue();
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Make a list of time and activity labels for the schedule
+        ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
+
+        // For every hour between the time the room closes and the time it opens
+        for (int i = openTime; i < closeTime; i++) {
+            String amPm = "AM";    // Half of the day
+            if (((int) i / 12) == 1) {    // If in the afternoon, use PM
+                amPm = "PM";
+            }
+
+            int time = i % 12;    // The hour, from 24 hours
+            if (time == 0) {    // If the hour was 12, make it display as 12
+                time = 12;
+            }
+
+            // For each time step in that hour, create a time label and activity label
+            for (int j = 0; j < timeStep; j++) {
+                String minutes = String.format("%d", timeStepMinutes * j);
+                if (Integer.parseInt(minutes) == 0) {
+                    minutes = "00";
+                }
+                String timeInc = time + ":" + minutes + " " + amPm;
+
+                // Add the labels to the lists
+                ScheduleWrapper toAdd = new ScheduleWrapper(timeInc);
+                schedToAdd.add(toAdd);
+                for (int day = 0; day < NUM_ROOMS; day++) {
+                    dailyScheduleAllRoomsInts.get(day).add(0);    // Default is 0, available
+                }
+            }
+        }
+
+        GregorianCalendar gcalStartDay = GregorianCalendar.from(datePicker.getValue().atStartOfDay(ZoneId.systemDefault()));
+        GregorianCalendar gcalEndDay = GregorianCalendar.from((datePicker.getValue().plus(1, ChronoUnit.DAYS)).atStartOfDay(ZoneId.systemDefault()));
+
+        // Populate each day's availability in the weekly schedule
+        for (int roomSchedule = 0; roomSchedule < NUM_ROOMS; roomSchedule++) {
+
+            // Get reservations for this day
+            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(allResSpaces.get(roomSchedule).getSpaceID(), gcalStartDay, gcalEndDay);
+
+            for (Reservation res : reservations) {
+                // Get the start time
+                int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+                int startMinutes = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60;
+                int startFrac = startMinutes / (int) (timeStepMinutes);
+
+                // Get the end time
+                int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+                int endMinutes = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60;
+                int endFrac = endMinutes / (int) (timeStepMinutes);
+
+                // For every time between the start and end of the reservation,
+                // Mark it as booked, color it red, and display the event name
+                // or "Booked" depending on its privacy level
+                for (int box = (startHour - openTime) * timeStep + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
+                    // gets the time slot?
+                    ScheduleWrapper time = schedToAdd.get(box);
+                    if (res.getPrivacyLevel() == 0) {
+                        //time.setAvailability(res.getEventName());
+                        //if (res.getStartTime().get(Calendar.DAY_OF_WEEK)
+                        time.setRoomAvailability(roomSchedule, res.getEventName());
+                        // if private event
+                    } else {
+                        time.setRoomAvailability(roomSchedule, "Booked");
+                    }
+                    // what does this do (set to booked?)
+                    dailyScheduleAllRoomsInts.get(roomSchedule).set(box, 1);
+                }
+            }
+        }
+
+        ObservableList<ScheduleWrapper> wrap = FXCollections.observableArrayList();
+        // schedToAdd = an array list of ScheduleWrapper
+        wrap.addAll(schedToAdd);
+        dailyScheduleAllRooms.setItems(wrap);
+    }
 
 
     /**
@@ -710,7 +946,7 @@ public class ScheduleController {
      *
      * @return true if the selected times are valid, false otherwise
      */
-    private boolean validTimes(boolean forRes) {    // todo: broken. or something is broken.
+    private boolean validTimes(boolean forRes) {
 
         // reset label
         inputErrorLbl.setText("");
@@ -745,7 +981,7 @@ public class ScheduleController {
 
         if (forRes) {
             // For each time in the reservation, check whether it is already booked
-            ArrayList<Integer> thisDay = weeklySchedule.get(datePicker.getValue().getDayOfWeek().getValue()-1);
+            ArrayList<Integer> thisDay = weeklySchedule.get(datePicker.getValue().getDayOfWeek().getValue());
             for (int i = index; i < endIndex; i++) {
                 if (thisDay.get(i) == 1) {    // If so, show an error
 //                    timeErrorLbl.setText(conflictErrorText);

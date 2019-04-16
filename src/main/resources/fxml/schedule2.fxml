@@ -119,6 +119,15 @@
                         </AnchorPane>
                     </content>
                   </Tab>
+                  <Tab text="Daily Schedule All Rooms">
+                     <content>
+                        <AnchorPane prefHeight="915.0" prefWidth="1485.0">
+                           <children>
+                              <TableView fx:id="dailyScheduleAllRooms" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="915.0" prefWidth="1485.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
                </tabs>
             </JFXTabPane>
          </children>
