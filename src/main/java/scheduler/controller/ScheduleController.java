@@ -528,8 +528,10 @@ public class ScheduleController {
 
         String month = chosenDate.getMonth().toString();
         String curTime = String.format(formattedDate + "\n" + day1 + ", the %02dth of " + month, date1);
+        //String curTime = String.format(formattedDate + "\n" + month + " " + day1 + "%02dth" + month, date1);
 
-        schedLbl.setText("Book " + name + "\nfor the Week of\n" + date);
+
+        schedLbl.setText("Book " + name + "\nfor the Week of\n" + curTime);
         schedLbl.setTextAlignment(TextAlignment.CENTER);
 
 
