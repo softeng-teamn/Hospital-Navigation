@@ -122,7 +122,6 @@ public class RequestController implements Initializable {
     @FXML
     public void searchBarEnter(ActionEvent e) {
         String search = search_bar.getText();
-        System.out.println(search);
         filterList(search);
     }
 

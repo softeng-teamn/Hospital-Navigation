@@ -129,7 +129,7 @@ public class HomeController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                            drawer.close();
+                        drawer.close();
                     }
                 });
                 break;
@@ -160,8 +160,6 @@ public class HomeController implements Observer {
         drawerPane.getChildren().clear();
         drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.directionMessage));
         drawer.open();
-        //event.setEventName("printText");
-        //eventBus.post(event);TODO
     }
 
     private void showPathSettings() throws IOException {

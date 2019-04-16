@@ -211,7 +211,7 @@ public class DirectionsController implements Observer {
             }
         }
 
-        System.out.println("before simplifying: " + directions);
+        //System.out.println("before simplifying: " + directions);
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
@@ -221,7 +221,6 @@ public class DirectionsController implements Observer {
             String newDir = "";
             boolean changed = false;
             if (currOne.equals("A") && !"IJNOPQ".contains(prevOne)) {
-                System.out.println(prevDir + currDir);
                 int prevDist = Integer.parseInt(prevDir.substring(1,6));
                 int currDist = Integer.parseInt(currDir.substring(1,6));
                 double totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
@@ -244,7 +243,7 @@ public class DirectionsController implements Observer {
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
         ApplicationState.getApplicationState().setEndNode(path.get(path.size() - 1));
-        System.out.println(directions); // TODO cut
+        //System.out.println(directions); // todo cut
         return directions;
     }
 
@@ -526,7 +525,7 @@ public class DirectionsController implements Observer {
             buf.append(directions.get(i));
         }
         String total = buf.toString();
-        System.out.println(total);
+        System.out.println(total); // todo cut
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("showDestination");
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
