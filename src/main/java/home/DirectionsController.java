@@ -88,13 +88,16 @@ public class DirectionsController implements Observer {
         else {
             textingButton.setDisable(true);
         }
-        try {
-            generateQRCode(makeDirections(path));
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        ((Runnable) () -> {
+            try {
+                generateQRCode(makeDirections(path));
+            } catch (WriterException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).run();
         qrView.setVisible(false);
     }
 
@@ -116,13 +119,16 @@ public class DirectionsController implements Observer {
                         path = event.getPath();
                         ArrayList<String> dirs = makeDirections(path);
                         printDirections(dirs);
-                        try {
-                            generateQRCode(dirs);
-                        } catch (WriterException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+
+                        ((Runnable) () -> {
+                            try {
+                                generateQRCode(dirs);
+                            } catch (WriterException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }).run();
                     }
                 });
                 break;
