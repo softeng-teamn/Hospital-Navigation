@@ -342,7 +342,7 @@ public class ScheduleController {
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                         // p.getValue() returns the Person instance for a particular TableView row
-                        return new ReadOnlyStringWrapper(p.getValue().getDayAvailability(finInt));    // todo: need to be separate for each column
+                        return new ReadOnlyStringWrapper(p.getValue().getDayAvailability(finInt));
 
                     }
                 });
@@ -983,7 +983,7 @@ public class ScheduleController {
         System.out.println("**************** POPULATE MAP");
         zoomGroup.getChildren().removeAll(shapeCollection);
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
-        shapeCollection = new ArrayList<SVGPath>();   // todo: I wouldn't recreate these every time
+        shapeCollection = new ArrayList<SVGPath>();
         for (Node node : nodeCollection) {
             SVGPath svg = new SVGPath();
             svg.setContent("m 81.966917,110.50737 h 6.602378 v 1.60143 h 2.640952 v -1.62953 H 110.4028 v 29.70017 H 88.621974 c 0,0 0.01053,0.68131 0,0.68131 -0.01053,0 -4.077319,0 -4.077319,0 v -0.17911 h -2.549642 z");
