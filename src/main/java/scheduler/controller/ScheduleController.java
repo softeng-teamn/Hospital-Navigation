@@ -1,9 +1,12 @@
 package scheduler.controller;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,10 +15,13 @@ import application_state.ApplicationState;
 import application_state.Event;
 
 import com.jfoenix.controls.*;
+import com.twilio.rest.api.v2010.account.incomingphonenumber.Local;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,6 +32,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
@@ -231,8 +239,6 @@ public class ScheduleController {
     ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
     @FXML
     private ScrollPane map_scrollpane;
-    @FXML
-    private JFXSlider zoom_slider;
 
 
     private int openTime = 9;   // hour to start schedule display
@@ -290,11 +296,7 @@ public class ScheduleController {
         map_scrollpane.setContent(contentGroup);
 
         // Setting View Scrolling
-        zoom_slider.setMin(0.2);
-        zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.2);
-        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
-        zoom(0.2);
+        zoom(0.3);
 
         //resInfoLbl.setText("");
         timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
@@ -387,15 +389,14 @@ public class ScheduleController {
         TableColumn<ScheduleWrapper, String> saturday = new TableColumn<>("Saturday");
 
         // set max width for each col
-        timeCol.setPrefWidth(205);
-        sunday.setPrefWidth(205);
-        monday.setPrefWidth(205);
-        tuesday.setPrefWidth(205);
-        wednesday.setPrefWidth(205);
-        thursday.setPrefWidth(205);
-        friday.setPrefWidth(205);
-        saturday.setPrefWidth(205);
-
+        timeCol.setPrefWidth(177);
+        sunday.setPrefWidth(185);
+        monday.setPrefWidth(185);
+        tuesday.setPrefWidth(185);
+        wednesday.setPrefWidth(185);
+        thursday.setPrefWidth(185);
+        friday.setPrefWidth(185);
+        saturday.setPrefWidth(185);
 
         // make sure each column is uneditable
         timeCol.setResizable(false);
@@ -762,6 +763,24 @@ public class ScheduleController {
         String date = chosenDate.toString();
         String name = currentSelection.getSpaceName();
         schedLbl.setText("Schedule for " + name + ": Week of " + date);
+        String name = curr.getSpaceName();
+
+
+        // TODO: 2019-04-16 fix date print out
+        // format date
+        //schedLbl.setTextFill(Color.WHITE);
+        GregorianCalendar calendar = new GregorianCalendar();
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+
+        String formattedDate = dateFormat.format(new Date());
+        int date1 = chosenDate.getDayOfMonth();
+        String day1 = chosenDate.getDayOfWeek().toString();
+
+        String month = chosenDate.getMonth().toString();
+        String curTime = String.format(formattedDate + "\n" + day1 + ", the %02dth of " + month, date1);
+
+        schedLbl.setText("Book " + name + "\nfor the Week of\n" + date);
+        schedLbl.setTextAlignment(TextAlignment.CENTER);
 
 
         // Make a list of time and activity labels for the schedule
