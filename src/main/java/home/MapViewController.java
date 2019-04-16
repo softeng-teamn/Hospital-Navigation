@@ -438,6 +438,7 @@ public class MapViewController implements Observer {
             // not accessible
             newpath = pathFinder.genPath(start, dest, false, currentMethod);
         }
+        /*   uncomment for auto elev call on path find, do breadth and depth things
         if (event.isCallElev()) {//if we are supposed to call elevator
             ElevatorConnection e = new ElevatorConnection();
             if (pathFinder.getElevTimes() != null) {    // TODO: do breadth and depth set elevTimes? I'm getting null pointer exceptions here when I use them
@@ -455,7 +456,7 @@ public class MapViewController implements Observer {
                 }
             }
         } // todo
-
+        */
         path = newpath;
         hasPath = false;
         if (path != null && path.size() > 1) {
