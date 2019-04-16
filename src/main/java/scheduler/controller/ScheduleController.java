@@ -239,7 +239,7 @@ public class ScheduleController {
     private JFXSlider zoom_slider;
 
 
-    private int openTime = 9;   // hour to start schedule dislay
+    private int openTime = 9;   // hour to start schedule display
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private int timeStep = 2;    // Fractions of an hour
     private int timeStepMinutes = 60 / timeStep;    // In Minutes

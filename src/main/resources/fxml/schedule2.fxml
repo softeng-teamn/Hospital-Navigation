@@ -108,7 +108,7 @@
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <TableView fx:id="scheduleTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1800.0" />
+                                    <TableView fx:id="scheduleTable" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="624.0" prefWidth="1800.0" />
                                  </children>
                               </AnchorPane>
                           </content>
