@@ -216,6 +216,9 @@ public class ScheduleController {
     @FXML
     public Label resInfoLbl, inputErrorLbl, schedLbl;
 
+    @FXML
+    private SVGPath classroom1, classroom2, classroom3, classroom4, classroom5, classroom6, classroom7, classroom8, classroom9, auditorium;
+
     private Event event ;    // The current event
 
     // Map Stuff
