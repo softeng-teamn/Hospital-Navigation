@@ -283,6 +283,16 @@ public class MapViewController implements Observer {
                     }
                 });
                 break;
+            case "scroll-to-direction" :
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Node n = ApplicationState.getApplicationState().getObservableBus().getEvent().getDirectionsNode();
+                        setFloor(n.getFloor());
+                        scrollTo(n);
+                    }
+                });
+                break;
             default:
 //                        System.out.println("I don'");
                 break;

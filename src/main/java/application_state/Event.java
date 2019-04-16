@@ -18,7 +18,8 @@ public class Event {
                                 // signifies field change
 
     String searchBarQuery = ""; // search-query
-    Node nodeSelected = null;   // node-select    todo get rid of
+    Node nodeSelected = null;   // node-select
+    Node directionsNode = null;    // scroll-to-direction
     boolean isLoggedIn = false; // login, logout
     boolean isAdmin = false;    // admin
     boolean isAccessiblePath = false; // accessible
@@ -137,4 +138,11 @@ public class Event {
 
     public void setRoomId(String roomId) { this.roomId = roomId; }
 
+    public Node getDirectionsNode() {
+        return directionsNode;
+    }
+
+    public void setDirectionsNode(Node directionsNode) {
+        this.directionsNode = directionsNode;
+    }
 }

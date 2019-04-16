@@ -37,6 +37,7 @@ public class DirectionsController implements Observer {
     private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
     private ArrayList<Node> path;
+    private ArrayList<Node> startNodes = new ArrayList<>();
 
 
     @FXML
@@ -114,6 +115,12 @@ public class DirectionsController implements Observer {
             directions.add(convertToCardinal(csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0), path.get(1))));
         }
 
+        // Make startNodes correspond to directions
+        for (int i = 0; i < path.size(); i++) {
+            startNodes.add(path.get(i));
+        }
+        startNodes.add(path.get(path.size()-1));
+
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
             String oldFl = (path.get(i+1).getFloor());
@@ -165,6 +172,7 @@ public class DirectionsController implements Observer {
                 directions.remove(i);
                 directions.remove(i-1);
                 directions.add(i-1, newDir);
+                startNodes.remove(i-1);    // todo: may need to change
                 i--;
             }
         }
@@ -561,6 +569,14 @@ public class DirectionsController implements Observer {
 
     public void setPath(ArrayList<Node> thePath) {
         this.path = thePath;
+    }
+
+    public void directionClicked() {
+        Node directionStart = startNodes.get(directionsView.getSelectionModel().getSelectedIndex());
+        Event e = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        e.setEventName("scroll-to-direction");
+        e.setDirectionsNode(directionStart);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(e);
     }
 
     /**
