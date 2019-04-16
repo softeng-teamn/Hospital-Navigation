@@ -191,7 +191,7 @@ public class SearchResultsController implements Observer {
 
             //Get Sorted list of nodes based on search value
             List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, Node::getLongName),75);
-            List<ExtractedResult> filteredRes = FuzzySearch.extractSorted(findStr, convertList(orginalRes, Reservation::getEventName), 75);
+            List<ExtractedResult> filteredRes = FuzzySearch.extractSorted(findStr, convertList(orginalRes,  Reservation::getEventName), 75);
 
             // Map to nodes based on index
             Stream<Node> stream = filtered.stream().map(er -> {
@@ -254,8 +254,8 @@ public class SearchResultsController implements Observer {
                 HBox hb = new HBox();
                 HBox inner = new HBox();    // So the building can be right-aligned
                 inner.setAlignment(Pos.CENTER_RIGHT);
-                Label longName = new Label(currRes.getEventName());    // Make a label for the long name
-                String buildFlStr = "";
+                Label longName = new Label("Event: " + currRes.getEventName());    // Make a label for the long name
+                String buildFlStr = "FlWk, 4";
                 //String buildFlStr = buildingAbbrev.get(myDBS.getNode(currRes.getLocationID()).getBuilding()) + ", " + myDBS.getNode(currRes.getLocationID()).getFloor();
                 Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
                 Label nodeId = new Label(currRes.getLocationID());    // Save the nodeID for pathfinding but make it invisible
