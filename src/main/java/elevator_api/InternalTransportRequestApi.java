@@ -17,6 +17,7 @@ public class InternalTransportRequestApi {
     ApiDatabaseService myDBS = ApiDatabaseService.getDatabaseService();
 
     static String originNodeID;
+    private String team;
     private boolean useElev;
 
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
@@ -43,14 +44,27 @@ public class InternalTransportRequestApi {
         scene.getStylesheets().add(this.getClass().getResource(cssPath).toExternalForm());
         primaryStage.show();
 
+        this.team = team;
         useElev = false;
-
         myDBS.setCallElev(useElev);
     }
 
 
+    /**
+     *
+     * @param xcoord
+     * @param ycoord
+     * @param windowWidth
+     * @param windowLength
+     * @param cssPath
+     * @param destination
+     * @param origin
+     * @param useElev true if you want to use the elevator
+     * @param team the team letter in upper case
+     * @throws ServiceException
+     */
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
-    public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin, boolean useElev) throws ServiceException {
+    public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin, boolean useElev, String team) throws ServiceException {
         Stage primaryStage = new Stage();
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/api/api.fxml"), ResourceBundle.getBundle("strings", Locale.getDefault()));
 
@@ -75,6 +89,7 @@ public class InternalTransportRequestApi {
 
         this.useElev = useElev;
         myDBS.setCallElev(useElev);
+        myDBS.setTeam(team);
     }
 
     /**
@@ -82,9 +97,9 @@ public class InternalTransportRequestApi {
      * @return a string containing elevator L's current floor. empty string if error
      */
     public String getCurrentElevFloor(){
-        ElevatorConnnection e = new ElevatorConnnection();
+        ElevatorConnection e = new ElevatorConnection();
         try {
-           return e.getFloor("L");
+           return e.getFloor(team + "L");
         } catch (IOException e1) {
             System.out.println("Error Connecting to Elevator getCurrentElev in internal Transport Req API");
             e1.printStackTrace();
