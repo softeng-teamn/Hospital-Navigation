@@ -26,12 +26,12 @@
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" styleClass="header">
          <children>
-            <Region prefHeight="100.0" prefWidth="724.0" />
+            <Region prefHeight="78.0" prefWidth="803.0" />
             <Label text="Reserve a Room" textFill="WHITE">
                <font>
                   <Font size="36.0" />
                </font></Label>
-            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Region HBox.hgrow="ALWAYS" />
             <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
                <graphic>
                   <FontAwesomeIconView glyphName="HOME" size="60" />
