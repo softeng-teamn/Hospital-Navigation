@@ -323,7 +323,7 @@
 
 .list-view-requests .list-cell {
     -fx-background-color: -fx-primary;
-    -fx-font-size: 16pt;
+    -fx-font-size: 24pt;
     -fx-border-radius: 0px;
 }
 /*******************************************************************************

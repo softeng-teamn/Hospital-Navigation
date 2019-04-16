@@ -1,9 +1,12 @@
 package scheduler.controller;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,10 +19,12 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.*;
 import com.twilio.rest.api.v2010.account.incomingphonenumber.Local;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -759,8 +764,31 @@ public class ScheduleController {
         // set label of weekly scheduler based on date
         String date = chosenDate.toString();
         String name = curr.getSpaceName();
+
+
+        // TODO: 2019-04-16 fix date print out  
+        // format date
+        //schedLbl.setTextFill(Color.WHITE);
+        GregorianCalendar calendar = new GregorianCalendar();
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+
+        String formattedDate = dateFormat.format(new Date());
+        int date1 = chosenDate.getDayOfMonth();
+        String day1 = chosenDate.getDayOfWeek().toString();
+
+        String month = chosenDate.getMonth().toString();
+        String curTime = String.format(formattedDate + "\n" + day1 + ", the %02dth of " + month, date1);
+
         schedLbl.setText("Book " + name + "\nfor the Week of\n" + date);
         schedLbl.setTextAlignment(TextAlignment.CENTER);
+
+
+
+
+
+
+
+
 
 
         // Make a list of time and activity labels for the schedule
