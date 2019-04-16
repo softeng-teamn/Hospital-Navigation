@@ -305,7 +305,7 @@ public class ScheduleController {
 
     // Map Stuff
     static final Color AVAILABLE_COLOR = Color.rgb(67, 160, 71,0.6);
-    static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.6);
+    static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
     static final Color SELECT_AVAILABLE_COLOR = Color.rgb(67, 160, 71,0.9);
     static final Color SELECT_UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.9);
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
@@ -694,8 +694,10 @@ public class ScheduleController {
 
         String month = chosenDate.getMonth().toString();
         String curTime = String.format(formattedDate + "\n" + day1 + ", the %02dth of " + month, date1);
+        //String curTime = String.format(formattedDate + "\n" + month + " " + day1 + "%02dth" + month, date1);
 
-        schedLbl.setText("Book " + name + "\nfor the Week of\n" + date);
+
+        schedLbl.setText("Book " + name + "\nfor the Week of\n" + curTime);
         schedLbl.setTextAlignment(TextAlignment.CENTER);
 
         // Make a list of time and activity labels for the schedule
