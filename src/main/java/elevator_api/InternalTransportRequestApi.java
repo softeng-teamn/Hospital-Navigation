@@ -51,13 +51,13 @@ public class InternalTransportRequestApi {
 
     /**
      *
-     * @param xcoord
-     * @param ycoord
-     * @param windowWidth
-     * @param windowLength
-     * @param cssPath
-     * @param destination
-     * @param origin
+     * @param xcoord of node
+     * @param ycoord of node
+     * @param windowWidth of window
+     * @param windowLength of window
+     * @param cssPath make it pretty
+     * @param destination where do i go
+     * @param origin where did i start
      * @param useElev true if you want to use the elevator
      * @param team the team letter in upper case
      * @throws ServiceException
