@@ -292,7 +292,6 @@ public class MapViewController implements Observer {
                 });
                 break;
             default:
-//                        System.out.println("I don'");
                 break;
         }
     }
