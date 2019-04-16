@@ -94,13 +94,16 @@ public class DirectionsController implements Observer {
         else {
             textingButton.setDisable(true);
         }
-        try {
-            generateQRCode(makeDirections(path));
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        ((Runnable) () -> {
+            try {
+                generateQRCode(makeDirections(path));
+            } catch (WriterException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).run();
         qrView.setVisible(false);
     }
 
@@ -128,13 +131,16 @@ public class DirectionsController implements Observer {
                         path = event.getPath();
                         ArrayList<String> dirs = makeDirections(path);
                         printDirections(dirs);
-                        try {
-                            generateQRCode(dirs);
-                        } catch (WriterException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+
+                        ((Runnable) () -> {
+                            try {
+                                generateQRCode(dirs);
+                            } catch (WriterException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }).run();
                     }
                 });
                 break;
@@ -775,7 +781,9 @@ public class DirectionsController implements Observer {
         TextingService textSender = new TextingService();
         //this grabs the employee ID from the Application state and uses that to get the employee from the database, whose phone we want to use. and sends them the directions.
         if(!(phoneNumber.getText().equals(""))){
-            textSender.textMap(phoneNumber.getText(),printDirections(makeDirections(path)));
+            String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(makeDirections(path));
+            url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
+            textSender.textMap(phoneNumber.getText(), url);
         }
         else if(!(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""))) {
             textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(), printDirections(makeDirections(path)));
