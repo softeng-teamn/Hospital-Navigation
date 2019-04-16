@@ -284,7 +284,7 @@ public class MapViewController implements Observer {
                 });
                 break;
             case "scroll-to-direction" :
-                Platform.runLater(new Runnable() {    // TODO: this erases the path. undo that.
+                Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         Node n = ApplicationState.getApplicationState().getObservableBus().getEvent().getDirectionsNode();
