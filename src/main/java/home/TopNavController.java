@@ -289,6 +289,10 @@ public class TopNavController implements Observer {
         }
     }
 
+    /** editor control button
+     * @param e FXML event that calls this method
+     * @throws Exception under a condition
+     */
     @FXML
     public void editButtonAction(ActionEvent e) throws Exception {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -300,7 +304,7 @@ public class TopNavController implements Observer {
 
     /**
      * searches for room
-     * @param e
+     * @param e FXML event that calls this method
      */
     @FXML
     public void startNodeEnter(javafx.event.Event e) {
@@ -409,13 +413,6 @@ public class TopNavController implements Observer {
         }
     }
 
-    public void showEditEmployee(ActionEvent actionEvent) throws Exception {
-        Stage stage = (Stage) auth_btn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
-        StageManager.changeExistingWindow(stage, root, "Edit Employees");
-        stage.setFullScreen(true);
-
-    }
 
     public void showPathSetting(MouseEvent mouseEvent) {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
