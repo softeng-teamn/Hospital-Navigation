@@ -443,7 +443,7 @@ public class ScheduleController {
             final int finInt = i;
             TableColumn<ScheduleWrapper, String> col = (TableColumn<ScheduleWrapper, String>) dailyScheduleAllRooms.getColumns().get(i);
             if (i == 0) {
-                col.setPrefWidth(177);
+                col.setPrefWidth(100);
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                         // p.getValue() returns the Person instance for a particular TableView row
@@ -452,7 +452,7 @@ public class ScheduleController {
                 });
             }
             else {
-                col.setPrefWidth(185);
+                col.setPrefWidth(150);
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                         // p.getValue() returns the Person instance for a particular TableView row
@@ -1206,7 +1206,7 @@ public class ScheduleController {
         for (int i = 0; i < nodeCollection.size(); i++) {
             Node node = nodeCollection.get(i);
             SVGPath svg = shapeCollection.get(i);
-            svg.setStroke(Color.BLACK);    // todo: change colors
+            svg.setStroke(Color.BLACK);
             svg.setFill(AVAILABLE_COLOR);
             svg.setStrokeWidth(0);
             svg.setStrokeType(StrokeType.INSIDE);
