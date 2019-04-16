@@ -9,6 +9,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,6 +48,10 @@ public class DirectionsController implements Observer {
     private JFXListView<Label> directionsView;
 
     @FXML
+  
+    private JFXTextField phoneNumber;
+
+    @FXML
     private JFXButton textingButton, viewQRCodeBtn;
 
     @FXML
@@ -67,6 +72,15 @@ public class DirectionsController implements Observer {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         path = event.getPath();
         printDirections(makeDirections(path));
+        if (getApplicationState().getEmployeeLoggedIn() != null) {
+            textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+            if (!getApplicationState().getEmployeeLoggedIn().getPhone().equals("")) {
+                phoneNumber.setText(getApplicationState().getEmployeeLoggedIn().getPhone());
+            }
+        }
+        else {
+            textingButton.setDisable(true);
+        }
         try {
             generateQRCode(makeDirections(path));
         } catch (WriterException e) {
@@ -595,13 +609,38 @@ public class DirectionsController implements Observer {
         this.path = thePath;
     }
 
+    public void validPhone(){
+        if (getApplicationState().getEmployeeLoggedIn() != null) {
+            textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+        }
+        for (char c: phoneNumber.getText().toCharArray()) {
+            if (!Character.isDigit(c)) {
+                textingButton.setDisable(true);
+            }
+        }
+        if (phoneNumber.getText().length() != 10) {
+            textingButton.setDisable(true);
+        }
+        else {
+            textingButton.setDisable(false);
+        }
+    }
+
     /**
      * Send a text message with the URL of the map
      */
     public void sendMapToPhone(){
         TextingService textSender = new TextingService();
         //this grabs the employee ID from the Application state and uses that to get the employee from the database, whose phone we want to use. and sends them the directions.
-        textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(),printDirections(makeDirections(path)));
+        if(!(phoneNumber.getText().equals(""))){
+            textSender.textMap(phoneNumber.getText(),printDirections(makeDirections(path)));
+        }
+        else if(!(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""))) {
+            textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(), printDirections(makeDirections(path)));
+        }
+        else{
+            System.out.println("NO PHONE NUMBER");
+        }
     }
 
     /**
