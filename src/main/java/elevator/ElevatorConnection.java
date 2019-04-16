@@ -35,7 +35,7 @@ public class ElevatorConnection {
      * @throws ProtocolException
      * @throws IOException
      */
-    public void postFloor(String elevator, String floorNum)throws MalformedURLException, IOException{
+    public void postFloor(String elevator, String floorNum)throws IOException{
         GregorianCalendar time = new GregorianCalendar();
         postFloor(elevator, floorNum, time);
     }
@@ -44,8 +44,6 @@ public class ElevatorConnection {
      * @param elevator name of elevator to tell
      * @param floorNum the floor the specified elevator should go to
      * @param time     what time is should get to the elevator at
-     * @throws MalformedURLException
-     * @throws ProtocolException
      * @throws IOException
      */
     //tell the elevator to go to this floor at this time, will hold for 30s
@@ -81,8 +79,6 @@ public class ElevatorConnection {
     /**
      * @param elevator the name of the elevator to get the position of
      * @return returns a  string containing the floor the elevator is on
-     * @throws MalformedURLException
-     * @throws ProtocolException
      * @throws IOException
      */
     public String getFloor(String elevator) throws IOException {
@@ -96,8 +92,6 @@ public class ElevatorConnection {
      * @param URL           the url to post to
      * @param urlParameters the parameters of the post service_request
      * @return returns a string containing the current floor is on
-     * @throws MalformedURLException
-     * @throws ProtocolException
      * @throws IOException
      */
     private String post(String URL, String urlParameters) throws IOException {
