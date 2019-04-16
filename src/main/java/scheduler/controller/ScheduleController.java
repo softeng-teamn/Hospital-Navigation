@@ -25,7 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
@@ -228,7 +228,7 @@ public class ScheduleController {
     static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
     Group zoomGroup;
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
-    ArrayList<Circle> circleCollection = new ArrayList<Circle>();
+    ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
     @FXML
     private ScrollPane map_scrollpane;
     @FXML
@@ -1199,34 +1199,37 @@ public class ScheduleController {
 
     void populateMap() {
         System.out.println("**************** REPOPULAT MAP");
-        zoomGroup.getChildren().removeAll(circleCollection);
+        zoomGroup.getChildren().removeAll(shapeCollection);
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
-        circleCollection = new ArrayList<Circle>();
+        shapeCollection = new ArrayList<SVGPath>();   // todo: I wouldn't recreate these every time
         for (Node node : nodeCollection) {
-            Circle circle = new Circle();
-            circle.setRadius(80);
+            SVGPath svg = new SVGPath();
+            svg.setContent("M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2\n" +
+                    "c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z");
+//            Circle circle = new Circle();
+//            circle.setRadius(80);
             if (isNodeInReservableSpace(bookedRS, node)) {
-                circle.setFill(UNAVAILABLE_COLOR);
+                svg.setFill(UNAVAILABLE_COLOR);
             } else {
-                circle.setFill(AVAILABLE_COLOR);
+                svg.setFill(AVAILABLE_COLOR);
             }
-            circle.setCenterX(node.getXcoord());
-            circle.setCenterY(node.getYcoord());
-            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            svg.setLayoutX(node.getXcoord());
+            svg.setLayoutY(node.getYcoord());
+            svg.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override public void handle(MouseEvent e) {
                     currentSelection = nodeToResSpace.get(node);
                     System.out.println(currentSelection);
                     showRoomSchedule(true);
-                    for (Circle c: circleCollection) {
+                    for (SVGPath c: shapeCollection) {
                         c.setStrokeWidth(0);
                     }
-                    circle.setStroke(Color.RED);
-                    circle.setStrokeWidth(5);
+                    svg.setStroke(Color.RED);
+                    svg.setStrokeWidth(5);
                 }
             });
-            circleCollection.add(circle);
+            shapeCollection.add(svg);
         }
-        zoomGroup.getChildren().addAll(circleCollection);
+        zoomGroup.getChildren().addAll(shapeCollection);
     }
 
     @FXML
