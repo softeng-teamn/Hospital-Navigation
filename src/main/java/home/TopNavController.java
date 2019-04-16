@@ -408,13 +408,6 @@ public class TopNavController implements Observer {
         }
     }
 
-    public void showEditEmployee(ActionEvent actionEvent) throws Exception {
-        Stage stage = (Stage) auth_btn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
-        StageManager.changeExistingWindow(stage, root, "Edit Employees");
-        stage.setFullScreen(true);
-
-    }
 
     public void showPathSetting(MouseEvent mouseEvent) {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
