@@ -14,6 +14,7 @@
 
 <?import com.jfoenix.controls.JFXToggleNode?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.text.Font?>
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <FontAwesomeIconView glyphName="WHEELCHAIR" size="240" styleClass="request-glyph">
@@ -63,11 +64,14 @@
       </HBox>
       <JFXComboBox fx:id="dropdown" promptText="%InternalSelect" />
       <Region prefHeight="367.0" prefWidth="534.0" />
+      <Label fx:id="errorMsg" stylesheets="@../../theme.css" textFill="#f44336">
+         <font>
+            <Font size="32.0" />
+         </font></Label>
       <JFXButton onAction="#submitAction" styleClass="confirm-button" text="%Submit">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXButton>
-      <Label fx:id="errorMsg" />
    </children>
    <padding>
       <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />

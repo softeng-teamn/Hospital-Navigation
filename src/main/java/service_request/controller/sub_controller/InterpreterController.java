@@ -32,7 +32,7 @@ public class InterpreterController extends RequestController {
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
             if(description.getText().equals("")){
-                errorMsg.setText("Please Enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else {
                 InterpreterRequest interpRequest = new InterpreterRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());

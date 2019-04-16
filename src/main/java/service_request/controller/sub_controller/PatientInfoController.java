@@ -30,16 +30,16 @@ public class PatientInfoController extends RequestController {
 
         if (selectedNode != null) {
             if(descriptionArea.getText().equals("")){
-                errorMsg.setText("Please enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else if(firstNameField.getText().equals("")){
-                errorMsg.setText("Please enter a First Name");
+                errorMsg.setText("Please Enter a First Name");
             }
             else if(lastNameField.getText().equals("")){
-                errorMsg.setText("Please enter a Last Name");
+                errorMsg.setText("Please Enter a Last Name");
             }
             else if(birthDField.getText().equals("") || birthMField.getText().equals("") || birthYField.getText().equals("")){
-                errorMsg.setText("Please enter a Birthday");
+                errorMsg.setText("Please Enter a Birthday");
             }
             else {
                 PatientInfoRequest newPatientInfoRequest = new PatientInfoRequest(-1, description, selectedNode, false, firstName, lastName, birthDay, description);

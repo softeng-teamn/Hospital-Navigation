@@ -56,7 +56,7 @@ public class SecurityRequestController extends RequestController {
 
         if(selectedNode != null) {
             if(description.getText().equals("")){
-                errorMsg.setText("Please enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else {
                 SecurityRequest securityRequest = new SecurityRequest(-1, description.getText(), selectedNode, false, urgencyLevel);

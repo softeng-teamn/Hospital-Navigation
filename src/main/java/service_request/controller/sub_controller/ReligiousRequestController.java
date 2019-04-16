@@ -32,7 +32,7 @@ public class ReligiousRequestController extends RequestController {
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
             if(description.getText().equals("")){
-                errorMsg.setText("Please enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else {
                 ReligiousRequest religiousRequest = new ReligiousRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());

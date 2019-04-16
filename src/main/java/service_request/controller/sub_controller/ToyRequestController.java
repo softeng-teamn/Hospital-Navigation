@@ -26,7 +26,7 @@ public class ToyRequestController extends RequestController {
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
             if (description.getText().equals("")) {
-                errorMsg.setText("Please Write a Description");
+                errorMsg.setText("Please Enter Details");
             } else {
                 if (toy.getText().equals("")) {
                     errorMsg.setText("Please Describe the Toy");

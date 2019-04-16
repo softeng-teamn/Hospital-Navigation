@@ -59,7 +59,7 @@ public class InternalTransportController extends RequestController{
 
         if (selectedNode != null) {
             if(text_area.getText().equals("")){
-               errorMsg.setText("Please Enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else {
                 InternalTransportRequest request = new InternalTransportRequest(-1, text_area.getText(), RequestController.selectedNode, false, dropdown.getSelectionModel().getSelectedItem(), urgencyLevel);

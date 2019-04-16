@@ -61,7 +61,7 @@ public class AVServiceRequestController extends RequestController {
 
         if(selectedNode != null) {
             if (description.getText().equals("")) {
-                errorMsg.setText("Please Enter a Description");
+                errorMsg.setText("Please Enter Details");
             } else {
                 AVServiceRequest avServiceRequest = new AVServiceRequest(-1, description.getText(), selectedNode, false, AVTypeSelected);
                 avServiceRequest.makeRequest();

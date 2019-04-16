@@ -42,7 +42,7 @@ public class GiftStoreRequestController extends RequestController {
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
             if(description.getText().equals("")){
-                errorMsg.setText("Please Enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else if(patientName.getText().equals("")){
                 errorMsg.setText("Please Enter a Patient Name");

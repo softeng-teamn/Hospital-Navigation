@@ -32,7 +32,7 @@ public class ITRequestController extends RequestController {
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
             if(description.getText().equals("")){
-                errorMsg.setText("Please Enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else {
                 ITRequest itRequest = new ITRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());

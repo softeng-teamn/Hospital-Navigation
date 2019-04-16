@@ -33,7 +33,7 @@ public class MaintenanceRequestController extends RequestController {
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
             if(errorMsg.getText().equals("")){
-                errorMsg.setText("Please Enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else {
                 MaintenanceRequest maintenanceRequest = new MaintenanceRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());

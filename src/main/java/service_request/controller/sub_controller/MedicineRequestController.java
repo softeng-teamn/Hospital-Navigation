@@ -23,7 +23,7 @@ public class MedicineRequestController extends RequestController {
         if(selectedNode != null) {
             try {
                 if(description.getText().equals("")){
-                    errorMsg.setText("Please Enter a Description");
+                    errorMsg.setText("Please Enter Details");
                 }
                 else if(medicineType.getText().equals("")){
                     errorMsg.setText("Please Enter a Medicine Type");
@@ -40,7 +40,7 @@ public class MedicineRequestController extends RequestController {
                 }
             } catch (NumberFormatException e) {
                 //quantity.getStyleClass().add("wrong-credentials");  //commented out because inconsistant with other reqs
-                errorMsg.setText("Please Enter a Valid Quantity of Medicine");
+                errorMsg.setText("Please Enter a Valid Quantity");
             }
         }
         else{

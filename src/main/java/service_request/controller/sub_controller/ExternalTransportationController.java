@@ -48,7 +48,7 @@ public class ExternalTransportationController  extends RequestController {
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
             if(description.getText().equals("")){
-                errorMsg.setText("Please Enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else{
             GregorianCalendar g = new GregorianCalendar(datePicker.getValue().getYear(),

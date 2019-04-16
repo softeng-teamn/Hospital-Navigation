@@ -38,7 +38,7 @@ public class FloristController extends RequestController {
     void submitRequest(ActionEvent event) {
         if (selectedNode != null) {
             if (description.getText().equals("")) {
-                errorMsg.setText("Please Enter a Description");
+                errorMsg.setText("Please Enter Details");
             } else if (bouquetType.getText().equals("")) {
                 errorMsg.setText("Please Enter a Bouquet Type");
             } else {

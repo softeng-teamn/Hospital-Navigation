@@ -59,7 +59,7 @@ public class SanitationRequestController extends RequestController {
         System.out.println("clicked");
         if(selectedNode != null) {
             if(notes.getText().equals("")){
-                errorMsg.setText("Please enter a Description");
+                errorMsg.setText("Please Enter Details");
             }
             else {
                 System.out.println("making service_request");
