@@ -5,6 +5,9 @@ import elevator.ElevatorConnection;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * API's internal transport request controller
+ */
 public class ApiInternalTransportRequest {
 
     public enum TransportType {

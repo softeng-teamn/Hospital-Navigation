@@ -45,6 +45,9 @@ import java.util.HashMap;
 
 import static application_state.ApplicationState.getApplicationState;
 
+/**
+ * Textual directions controller
+ */
 public class DirectionsController implements Observer {
     private Event event;
 
@@ -73,6 +76,9 @@ public class DirectionsController implements Observer {
     private ArrayList<Node> path;
 
 
+    /**
+     * Initializes the directions controller
+     */
     @FXML
     void initialize() {
         ApplicationState.getApplicationState().getObservableBus().register("directionsContoller",this);
@@ -101,6 +107,9 @@ public class DirectionsController implements Observer {
         qrView.setVisible(false);
     }
 
+    /** shows the list of searched ????
+     * @param e FXML event that calls this method
+     */
     @FXML
     void showSearchList(ActionEvent e) {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -108,6 +117,9 @@ public class DirectionsController implements Observer {
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
+    /** recieve a notification from the observed object
+     * @param o event recieved
+     */
     @Override
     public void notify(Object o) {
         event = (Event) o;
@@ -532,7 +544,7 @@ public class DirectionsController implements Observer {
      * @param cardinal the direction with the first vector going south
      * @return the direction as a cardinal direction
      */
-    public String convertToCardinal(String cardinal) {
+    String convertToCardinal(String cardinal) {
         if (cardinal.contains("C")) {
             cardinal = "X" + cardinal.substring(1);
         }
@@ -563,7 +575,7 @@ public class DirectionsController implements Observer {
         return cardinal;
     }
 
-    public String csDirPrint(int x, int y, Node curr, Node next) {
+    private String csDirPrint(int x, int y, Node curr, Node next) {
         Node n1 = new Node("ID", x, y, "HALL");
         return csDirPrint(n1, curr, next);
     }
@@ -576,7 +588,7 @@ public class DirectionsController implements Observer {
      * @return the direction for someone walking from points 1 to 3 with the turn direction and distance
      *      *          between the middle and last point
      */
-    public String csDirPrint(Node prev, Node curr, Node next) {
+    private String csDirPrint(Node prev, Node curr, Node next) {
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
         prevXd = prev.getXcoord();
         prevYd = prev.getYcoord();
@@ -800,9 +812,9 @@ public class DirectionsController implements Observer {
 
     /**
      * Given a set of directions, generate and place a QR code on the list of directions
-     * @param directions
-     * @throws WriterException
-     * @throws IOException
+     * @param directions the textual directions to generate a QR code from
+     * @throws WriterException if the output fails
+     * @throws IOException if the file is not found or cannot be written
      */
     public void generateQRCode(ArrayList<String> directions) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();

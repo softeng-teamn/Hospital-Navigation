@@ -289,6 +289,10 @@ public class TopNavController implements Observer {
         }
     }
 
+    /** editor control button
+     * @param e FXML event that calls this method
+     * @throws Exception under a condition
+     */
     @FXML
     public void editButtonAction(ActionEvent e) throws Exception {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -300,7 +304,7 @@ public class TopNavController implements Observer {
 
     /**
      * searches for room
-     * @param e
+     * @param e FXML event that calls this method
      */
     @FXML
     public void startNodeEnter(javafx.event.Event e) {

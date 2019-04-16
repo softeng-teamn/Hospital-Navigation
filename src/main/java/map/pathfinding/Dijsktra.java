@@ -7,6 +7,9 @@ import map.NodeFacade;
 
 import java.util.*;
 
+/**
+ * Dijkstra's algorithm implementation
+ */
 public class Dijsktra extends AlgorithmContext implements Algorithm{
     public int estimatedTime;
     PriorityQueue<MapNode> open;
