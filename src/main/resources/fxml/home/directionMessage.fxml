@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
@@ -11,11 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Polygon?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="5.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.DirectionsController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="5.0" stylesheets="@../../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.DirectionsController">
     <children>
         <HBox alignment="TOP_CENTER">
             <children>
-                <JFXButton fx:id="unitSwitch_btn" minWidth="-Infinity" onAction="#setUnits" prefHeight="56.0" prefWidth="106.0" styleClass="confirm-button" text="Meters" />
+                <JFXButton fx:id="unitSwitch_btn" minWidth="-Infinity" onAction="#setUnits" prefHeight="56.0" prefWidth="56.0" styleClass="confirm-button" text="M" />
             <Region prefHeight="56.0" prefWidth="159.0" />
                 <Pane prefHeight="20.0">
                     <children>
@@ -40,7 +41,6 @@
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXListView>
-      <JFXButton fx:id="viewQRCodeBtn" minHeight="50.0" onAction="#showQRCode" prefHeight="50.0" styleClass="confirm-button" stylesheets="@../../theme.css" text="View Directions on Your Phone" />
       <VBox fx:id="qrCodeVbox" alignment="TOP_CENTER" maxHeight="0.0" minHeight="0.0" prefHeight="350.0" prefWidth="100.0">
          <children>
             <ImageView fx:id="qrView" fitHeight="350.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" />
@@ -49,9 +49,19 @@
             <Insets />
          </VBox.margin>
       </VBox>
-        <JFXButton fx:id="textingButton" onAction="#sendMapToPhone" styleClass="confirm-button" text="Send Path as Text Message">
+      <JFXTextField fx:id="phoneNumber" labelFloat="true" onInputMethodTextChanged="#validPhone" onKeyReleased="#validPhone" promptText="Enter Phone Number" stylesheets="@../../theme.css">
          <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin></JFXButton>
+            <Insets bottom="12.0" left="48.0" right="48.0" />
+         </VBox.margin>
+      </JFXTextField>
+      <HBox alignment="CENTER" spacing="48.0">
+         <VBox.margin>
+            <Insets bottom="16.0" />
+         </VBox.margin>
+         <children>
+              <JFXButton fx:id="textingButton" onAction="#sendMapToPhone" prefHeight="50.0" styleClass="confirm-button" text="Send via Text " />
+            <JFXButton fx:id="viewQRCodeBtn" minHeight="50.0" onAction="#showQRCode" prefHeight="50.0" styleClass="confirm-button" stylesheets="@../../theme.css" text="Scan QR Code" />
+         </children>
+      </HBox>
     </children>
 </VBox>

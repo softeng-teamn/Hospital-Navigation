@@ -1,7 +1,6 @@
 package elevator_api;
 
 import employee.model.Employee;
-import map.Node;
 
 import java.sql.*;
 import java.util.*;
@@ -14,6 +13,8 @@ class ApiDatabaseService {
 
     private Connection connection;
     public boolean createFlag;
+
+    public static boolean callElev;
 
     private static class SingletonHelper {
         private static final ApiDatabaseService dbs = new ApiDatabaseService();
@@ -117,6 +118,15 @@ class ApiDatabaseService {
     ArrayList<Employee> getAllEmployees() {
         String query = "Select * FROM EMPLOYEE";
         return (ArrayList<Employee>) (List<?>) executeGetMultiple(query, Employee.class, new Object[]{});
+    }
+
+
+    public static boolean isCallElev() {
+        return callElev;
+    }
+
+    public static void setCallElev(boolean callElev) {
+        ApiDatabaseService.callElev = callElev;
     }
 
     /**

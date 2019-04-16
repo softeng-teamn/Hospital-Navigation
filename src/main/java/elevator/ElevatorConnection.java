@@ -38,8 +38,7 @@ public class ElevatorConnection {
      * @throws ProtocolException if there is no WiFi connection
      * @throws IOException if the file is invalid
      */
-    public void postFloor(String elevator, String floorNum)throws MalformedURLException,
-            ProtocolException, IOException{
+    public void postFloor(String elevator, String floorNum)throws IOException{
         GregorianCalendar time = new GregorianCalendar();
         postFloor(elevator, floorNum, time);
     }
@@ -48,12 +47,9 @@ public class ElevatorConnection {
      * @param elevator name of elevator to tell
      * @param floorNum the floor the specified elevator should go to
      * @param time     what time is should get to the elevator at
-     * @throws MalformedURLException if the url is invalid
-     * @throws ProtocolException if there is no internet connection
      * @throws IOException if the file is invalid
      */
-    public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws MalformedURLException,
-            ProtocolException, IOException {
+    public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws IOException {
         switch (floorNum) {
             case "L1":
                 floorNum = "-1";
@@ -85,12 +81,9 @@ public class ElevatorConnection {
     /**
      * @param elevator the name of the elevator to get the position of
      * @return returns a  string containing the floor the elevator is on
-     * @throws MalformedURLException if the url is invalid
-     * @throws ProtocolException if there is no internet connection
      * @throws IOException if the file is invalid
      */
-    public String getFloor(String elevator) throws MalformedURLException,
-            ProtocolException, IOException {
+    public String getFloor(String elevator) throws IOException {
         String URL = "https://aldenhallpianos.com/softEngGet.php";
         String urlParameters = "elevator=" + elevator + "&isESP=false";
         return post(URL, urlParameters);
@@ -101,12 +94,9 @@ public class ElevatorConnection {
      * @param URL           the url to post to
      * @param urlParameters the parameters of the post service_request
      * @return returns a string containing the current floor is on
-     * @throws MalformedURLException if the url is invalid
-     * @throws ProtocolException if there is no internet connection
      * @throws IOException if the file is invalid
      */
-    private String post(String URL, String urlParameters) throws MalformedURLException,
-            ProtocolException, IOException {
+    private String post(String URL, String urlParameters) throws IOException {
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
         String floor = "-";
         try {
