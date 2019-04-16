@@ -15,7 +15,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -23,10 +27,13 @@ import javafx.scene.paint.Color;
 import application_state.Event;
 import map.MapController;
 import map.Node;
+import service.ResourceLoader;
 import net.swisstech.bitly.BitlyClient;
 import net.swisstech.bitly.model.Response;
 import net.swisstech.bitly.model.v3.ShortenResponse;
 import service.TextingService;
+
+import java.io.IOException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,10 +52,10 @@ public class DirectionsController implements Observer {
     private JFXButton home_btn, unitSwitch_btn;
 
     @FXML
-    private JFXListView<Label> directionsView;
+    private JFXListView<HBox> directionsView;
 
     @FXML
-  
+
     private JFXTextField phoneNumber;
 
     @FXML
@@ -278,100 +285,223 @@ public class DirectionsController implements Observer {
         backToFloors.put("F", "3");
         ArrayList<String> directions = new ArrayList<>();
         directions.add(ds.get(0));
-        ObservableList<Label> dirs = FXCollections.observableArrayList();
-        ArrayList<Label> labels = new ArrayList<>();
+        ObservableList<HBox> dirs = FXCollections.observableArrayList();
+        ArrayList<HBox> labels = new ArrayList<>();
 
+        HBox firstBox = new HBox();
         Label first = new Label(ds.get(0));
         first.setWrapText(true);
         first.setTextFill(Color.WHITE);
-        labels.add(first);
+        firstBox.getChildren().add(first);
+        labels.add(firstBox);
 
         for (int i = 1; i < ds.size() - 1; i++) {
             String direct = ds.get(i);
+            Image image = null;
             switch(direct.substring(0,1)) {
                 case "A":
                     direct = "Walk straight for " + Integer.parseInt(direct.substring(1,6)) + " " + units + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.continue_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "B":
                     direct = "Turn left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_left_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "C":
                     direct = "Turn slightly left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_slight_left_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "D":
                     direct = "Turn sharply left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_sharp_left_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "E":
                     direct = "Turn right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_right_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "F":
                     direct = "Turn slightly right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_slight_right_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "G":
                     direct = "Turn sharply right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_sharp_right_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "H":
                     direct = "Turn around and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.uturn_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "I":
                     direct = "Walk to the elevator.\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "J":
                     direct = "Walk to the stairs.\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "N":
                     direct = "Take the elevator up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.elevator_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "O":
                     direct = "Take the elevator down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.elevator_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "P":
                     direct = "Take the stairs up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.stairs_up_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "Q":
                     direct = "Take the stairs down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.stairs_down_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "S":
                     direct = "Walk north for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "T":
                     direct = "Walk north west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "U":
                     direct = "Walk west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "V":
                     direct = "Walk south west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "W":
                     direct = "Walk south for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "X":
                     direct = "Walk south east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "Y":
                     direct = "Walk east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "Z":
                     direct = "Walk north east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 default:
                     direct = "Houston we have a problem";
                     break;
             }
-
+            HBox box = new HBox();
+            box.setAlignment(Pos.CENTER_LEFT);
+            if(image != null) {
+                ImageView iv = new ImageView(image);
+                iv.setFitHeight(30);
+                iv.setFitWidth(30);
+                box.getChildren().add(iv);
+            }
             Label l = new Label(direct);
             l.setWrapText(true);
             l.setTextFill(Color.WHITE);
-            labels.add(l);
+            box.getChildren().add(l);
+            labels.add(box);
             directions.add(direct);
         }
         directions.add(ds.get(ds.size() -1));
 
+        HBox lastBox = new HBox();
         Label last = new Label(ds.get(ds.size() - 1));
         last.setWrapText(true);
         last.setTextFill(Color.WHITE);
-        labels.add(last);
+        lastBox.getChildren().add(last);
+        labels.add(lastBox);
 
         dirs.addAll(labels);
         directionsView.setItems(dirs);
