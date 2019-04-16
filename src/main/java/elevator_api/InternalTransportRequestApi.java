@@ -44,7 +44,6 @@ public class InternalTransportRequestApi {
         scene.getStylesheets().add(this.getClass().getResource(cssPath).toExternalForm());
         primaryStage.show();
 
-        this.team = team;
         useElev = false;
         myDBS.setCallElev(useElev);
     }
@@ -88,6 +87,8 @@ public class InternalTransportRequestApi {
         primaryStage.show();
 
         this.useElev = useElev;
+        this.team = team;
+        myDBS.setTeam(team);
         myDBS.setCallElev(useElev);
         myDBS.setTeam(team);
     }
