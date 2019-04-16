@@ -1,6 +1,7 @@
 package scheduler.controller;
 
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -31,8 +32,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -222,8 +225,10 @@ public class ScheduleController {
     private Event event ;    // The current event
 
     // Map Stuff
-    static final Color AVAILABLE_COLOR = Color.rgb(67, 160, 71, 0.6);
-    static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.6);
+    static final Color AVAILABLE_COLOR = Color.rgb(67, 160, 71,0.6);
+    static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
+    static final Color SELECT_AVAILABLE_COLOR = Color.rgb(67, 160, 71,0.9);
+    static final Color SELECT_UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.9);
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
     ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
 
@@ -336,6 +341,7 @@ public class ScheduleController {
         showRoomSchedule(false);
         // Show map nodes
         populateMap();
+        repopulateMap();
 
         // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -389,13 +395,13 @@ public class ScheduleController {
 
         //  Pull spaces from database, sort, add to list and listview
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
+        Collections.sort(dbResSpaces);
         for (ReservableSpace rs : dbResSpaces) {
             Node n = DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID());
             nodeCollection.add(n);
             nodeToResSpace.put(n, rs);
         }
 
-        Collections.sort(dbResSpaces);
         resSpaces.addAll(dbResSpaces);
         reservableList.setItems(resSpaces);
         reservableList.setEditable(false);
@@ -412,6 +418,7 @@ public class ScheduleController {
                     setText(item.getSpaceName());
                     setOnMouseClicked(EventHandler -> {
                         showRoomSchedule(false);
+                        repopulateMap();
                     });
                 }
             }
@@ -437,6 +444,7 @@ public class ScheduleController {
                 bookedRooms();
             }
             showRoomSchedule(false);
+            repopulateMap();
 
             // Display the current information
             changeResInfo();
@@ -688,6 +696,7 @@ public class ScheduleController {
      */
     private void resetView() {
         showRoomSchedule(false);
+        repopulateMap();
         inputErrorLbl.setVisible(false);
 //        timeErrorLbl.setVisible(false);
 //        resInfoLbl.setText("");
@@ -906,6 +915,7 @@ public class ScheduleController {
         reservableList.getSelectionModel().select(0);
         reservableList.getFocusModel().focus(0);
         showRoomSchedule(false);
+        repopulateMap();
 
         availRoomsBtn.setOnAction(EventHandler -> {
             availRooms();
@@ -932,13 +942,11 @@ public class ScheduleController {
         return a;
     }
 
-
     // MAP STUFF DOWN HERE ****************
 
     ArrayList<ReservableSpace> getBookedNodes() {
         // Get selected times
         ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes(); // ******* GETS TWO GREG CALENDERS
-
         // Get reservations between selected times                          ****** shows all rooms that are booked based on selected times
         return (ArrayList<ReservableSpace>) myDBS.getBookedReservableSpacesBetween(cals.get(0), cals.get(1));
     }
@@ -956,34 +964,21 @@ public class ScheduleController {
         System.out.println("**************** POPULATE MAP");
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
         shapeCollection = new ArrayList<SVGPath>();
-        for (Node node : nodeCollection) {
-            SVGPath svg = new SVGPath();
-            svg.setContent("m 81.966917,110.50737 h 6.602378 v 1.60143 h 2.640952 v -1.62953 H 110.4028 v 29.70017 H 88.621974 c 0,0 0.01053,0.68131 0,0.68131 -0.01053,0 -4.077319,0 -4.077319,0 v -0.17911 h -2.549642 z");
-            svg.setScaleX(5);
-            svg.setScaleY(5);
-            if (isNodeInReservableSpace(bookedRS, node)) {
-                svg.setFill(UNAVAILABLE_COLOR);
-            } else {
-                svg.setFill(AVAILABLE_COLOR);
-            }
-            svg.setLayoutX(node.getXcoord());
-            svg.setLayoutY(node.getYcoord());
-            svg.setStroke(Color.RED);    // todo: change color
+        shapeCollection.addAll(Arrays.asList(auditorium, classroom4, classroom6, classroom8, classroom1, classroom2, classroom3, classroom5, classroom7, classroom9));
+        for (int i = 0; i < nodeCollection.size(); i++) {
+            Node node = nodeCollection.get(i);
+            SVGPath svg = shapeCollection.get(i);
+            svg.setStroke(Color.BLACK);    // todo: change colors
+            svg.setFill(AVAILABLE_COLOR);
             svg.setStrokeWidth(0);
+            svg.setStrokeType(StrokeType.INSIDE);
             svg.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override public void handle(MouseEvent e) {
                     currentSelection = nodeToResSpace.get(node);
-                    System.out.println(currentSelection);
                     showRoomSchedule(true);
-                    for (SVGPath c: shapeCollection) {
-                        c.setStrokeWidth(0);
-                    }
-                    svg.setStrokeWidth(5);
+                    repopulateMap();
                 }
             });
-            if (nodeToResSpace.get(node).equals(currentSelection)) {
-                svg.setStrokeWidth(5);
-            }
             shapeCollection.add(svg);
         }
     }
@@ -996,10 +991,21 @@ public class ScheduleController {
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
         for (int i = 0; i < nodeCollection.size(); i++) {
             Node node = nodeCollection.get(i);
+            SVGPath svg = shapeCollection.get(i);
+            svg.setStrokeWidth(0);
             if (isNodeInReservableSpace(bookedRS, node)) {
-                shapeCollection.get(i).setFill(UNAVAILABLE_COLOR);
+                svg.setFill(UNAVAILABLE_COLOR);
             } else {
-                shapeCollection.get(i).setFill(AVAILABLE_COLOR);
+                svg.setFill(AVAILABLE_COLOR);
+            }
+            if (nodeToResSpace.get(node).equals(currentSelection)) {
+                svg.setStrokeWidth(1);
+                if (svg.getFill().equals(AVAILABLE_COLOR)) {
+                    svg.setFill(SELECT_AVAILABLE_COLOR);
+                }
+                else {
+                    svg.setFill(SELECT_UNAVAILABLE_COLOR);
+                }
             }
         }
     }
