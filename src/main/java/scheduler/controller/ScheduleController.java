@@ -231,12 +231,8 @@ public class ScheduleController {
     // Map Stuff
     static final Color AVAILIBLE_COLOR = Color.rgb(87, 255, 132, 0.8);
     static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
-    Group zoomGroup;
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
     ArrayList<Circle> circleCollection = new ArrayList<Circle>();
-    @FXML
-    private ScrollPane map_scrollpane;
-
 
     private int openTime = 9;   // hour to start schedule dislay
     private int closeTime = 22;    // 24-hours hour to end schedule display
@@ -284,18 +280,6 @@ public class ScheduleController {
      */
     @FXML
     public void initialize() {
-        // Map Initialization
-
-        // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
-        Group contentGroup = new Group();
-        zoomGroup = new Group();
-        contentGroup.getChildren().add(zoomGroup);
-        zoomGroup.getChildren().add(map_scrollpane.getContent());
-        map_scrollpane.setContent(contentGroup);
-
-        // Setting View Scrolling
-        zoom(0.3);
-
         //resInfoLbl.setText("");
         timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
         availRoomsText = "Show Available Spaces";
@@ -1169,16 +1153,6 @@ public class ScheduleController {
 
     // MAP STUFF DOWN HERE ****************
 
-
-    private void zoom(double scaleValue) {
-        double scrollH = map_scrollpane.getHvalue();
-        double scrollV = map_scrollpane.getVvalue();
-        zoomGroup.setScaleX(scaleValue);
-        zoomGroup.setScaleY(scaleValue);
-        map_scrollpane.setHvalue(scrollH);
-        map_scrollpane.setVvalue(scrollV);
-    }
-
     ArrayList<ReservableSpace> getBookedNodes() {
         // Get selected times
         ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes(); // ******* GETS TWO GREG CALENDERS
@@ -1198,7 +1172,6 @@ public class ScheduleController {
 
     void populateMap() {
         System.out.println("**************** REPOPULAT MAP");
-        zoomGroup.getChildren().removeAll(circleCollection);
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
         circleCollection = new ArrayList<Circle>();
         for (Node node : nodeCollection) {
@@ -1213,7 +1186,6 @@ public class ScheduleController {
             circle.setCenterY(node.getYcoord());
             circleCollection.add(circle);
         }
-        zoomGroup.getChildren().addAll(circleCollection);
     }
 
     @FXML
