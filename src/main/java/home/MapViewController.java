@@ -309,7 +309,6 @@ public class MapViewController implements Observer {
         }
     }
 
-
     void editNodeHandler(boolean isEditing) {
         if (isEditing) {
             // remove previous selected circle
