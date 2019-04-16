@@ -393,14 +393,14 @@ public class ScheduleController {
 
         // not doing anything??
         // set max width for each col
-        timeCol.setPrefWidth(124);
-        sunday.setPrefWidth(126);
-        monday.setPrefWidth(126);
-        tuesday.setPrefWidth(126);
-        wednesday.setPrefWidth(126);
-        thursday.setPrefWidth(126);
-        friday.setPrefWidth(126);
-        saturday.setPrefWidth(126);
+        timeCol.setPrefWidth(205);
+        sunday.setPrefWidth(205);
+        monday.setPrefWidth(205);
+        tuesday.setPrefWidth(205);
+        wednesday.setPrefWidth(205);
+        thursday.setPrefWidth(205);
+        friday.setPrefWidth(205);
+        saturday.setPrefWidth(205);
 
 
         // make sure each column is uneditable
@@ -650,6 +650,15 @@ public class ScheduleController {
 //        scheduleTable.setPrefHeight(900);
         showRoomSchedule();
 
+       scheduleTable.setStyle("-fx-table-cell-border-color: black;");
+       scheduleTable.setStyle("-fx-table-column-rule-color: black;");
+       //scheduleTable.setStyle("-fx-table-column-rule-style: ;");
+        //scheduleTable.setStyle("-fx-table-view-column-header ;");
+
+
+
+
+
         // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             listFocus(newValue);
@@ -848,7 +857,6 @@ public class ScheduleController {
         // schedToAdd = an array list of ScheduleWrapper
         wrap.addAll(schedToAdd);
         scheduleTable.setItems(wrap);
-        System.out.println("setting table items" + schedToAdd.get(21).sunAvailability + schedToAdd.get(21).monAvailability + schedToAdd.get(21).tuesAvailability);
     }
 
 
