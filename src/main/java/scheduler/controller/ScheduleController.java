@@ -46,31 +46,22 @@ import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
+// todo: cleanup this class
 public class ScheduleController {
 
-
+    // Wrapper to display times in table
     private static class ScheduleWrapper {
         private String time;
-        //private String availability;
-        // could i change availability to sun - sat avavail?
-        // if works - changed to private and add getters/setters
-        public String sunAvailability;
-        public String monAvailability;
-        public String tuesAvailability;
-        public String wedAvailability;
-        public String thursAvailability;
-        public String friAvailability;
-        public String satAvailability;
-
-
-        // color
-        public String color;
-
+        private String sunAvailability;
+        private String monAvailability;
+        private String tuesAvailability;
+        private String wedAvailability;
+        private String thursAvailability;
+        private String friAvailability;
+        private String satAvailability;
 
         public ScheduleWrapper(String time) {
             this.time = time;
-            //this.availability = "Available";
-            // me fucking around
             this.sunAvailability = "-";
             this.monAvailability = "-";
             this.tuesAvailability = "-";
@@ -78,7 +69,6 @@ public class ScheduleController {
             this.thursAvailability = "-";
             this.friAvailability = "-";
             this.satAvailability = "-";
-
         }
 
         public void setTime(String value) {
@@ -123,6 +113,27 @@ public class ScheduleController {
             }
         }
 
+        public String getDayAvailability(int day) {
+            switch(day) {
+                case 1:
+                    return sunAvailability;
+                case 2:
+                    return monAvailability;
+                case 3:
+                    return tuesAvailability;
+                case 4:
+                    return wedAvailability;
+                case 5:
+                    return thursAvailability;
+                case 6:
+                    return friAvailability;
+                case 7:
+                    return satAvailability;
+                default:
+                    return "You passed an invalid day while setting availability";
+            }
+        }
+
         public String getSunAvailability() {
             return sunAvailability;
         }
@@ -130,7 +141,6 @@ public class ScheduleController {
         public void setSunAvailability(String value) {
             this.sunAvailability = value;
         }
-
 
         public String getMonAvailability() {
             return monAvailability;
@@ -179,26 +189,6 @@ public class ScheduleController {
         public void setSatAvailability(String satAvailability) {
             this.satAvailability = satAvailability;
         }
-
-        public String getColor() {
-            return color;
-        }
-
-        public void setColor(String color) {
-            this.color = color /*this.setStyle("-fx-background-color: #98FB98")*/;
-            ;
-        }
-
-
-        /*
-        @Override
-        public String toString() {
-            return "ScheduleWrapper{" +
-                    "time='" + time + '\'' +
-                    ", availability='" + availability + '\'' +
-                    '}';
-        }
-        */
     }
 
 
@@ -226,10 +216,7 @@ public class ScheduleController {
     @FXML
     public Label resInfoLbl, inputErrorLbl, schedLbl;
 
-
-
-    private Event event ;
-
+    private Event event ;    // The current event
 
     // Map Stuff
     static final Color AVAILABLE_COLOR = Color.rgb(87, 255, 132, 0.8);
@@ -240,7 +227,7 @@ public class ScheduleController {
     @FXML
     private ScrollPane map_scrollpane;
 
-
+    // Table display information
     private int openTime = 9;   // hour to start schedule display
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private int timeStep = 2;    // Fractions of an hour
@@ -254,33 +241,14 @@ public class ScheduleController {
     // LIst of spaces to display
     private ObservableList<ReservableSpace> resSpaces;
     // Error messages
-    private String timeErrorText, availRoomsText, bookedRoomsText, clearFilterText, conflictErrorText, pastDateErrorText;
+    private String timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
+    private String availRoomsText = "Show Available Spaces";
+    private String bookedRoomsText = "Show Booked Spaces";
+    private String clearFilterText = "Clear Filter";
+    private String conflictErrorText = "Please select times that do not conflict with currently scheduled times.";
+    private String pastDateErrorText = "Please select a date that is not in the past.";
     // Database
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
-
-    public int getOpenTime() {
-        return openTime;
-    }
-
-    public void setOpenTime(int openTime) {
-        this.openTime = openTime;
-    }
-
-    public int getCloseTime() {
-        return closeTime;
-    }
-
-    public void setCloseTime(int closeTime) {
-        this.closeTime = closeTime;
-    }
-
-    public int getTimeStep() {
-        return timeStep;
-    }
-
-    public void setTimeStep(int timeStep) {
-        this.timeStep = timeStep;
-    }
 
 
     /**
@@ -288,50 +256,14 @@ public class ScheduleController {
      */
     @FXML
     public void initialize() {
-        // todo: break this into more functions
-        // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
-        Group contentGroup = new Group();
-        zoomGroup = new Group();
-        contentGroup.getChildren().add(zoomGroup);
-        zoomGroup.getChildren().add(map_scrollpane.getContent());
-        map_scrollpane.setContent(contentGroup);
-
-        // Setting View Scrolling
-        zoom(0.3);
+        setUpMap();
 
         //resInfoLbl.setText("");
-        timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
-        availRoomsText = "Show Available Spaces";
-        bookedRoomsText = "Show Booked Spaces";
-        clearFilterText = "Clear Filter";
-        conflictErrorText = "Please select times that do not conflict with currently scheduled times.";
-        pastDateErrorText = "Please select a date that is not in the past.";
-
-        // Read in reservable Spaces
-        CSVService.importReservableSpaces();
-
         // Don't show errors yet
 //        timeErrorLbl.setVisible(false);
         inputErrorLbl.setVisible(false);
 
-        // Set default date to today's date
-        LocalDate date = LocalDate.now();
-        datePicker.setValue(date);
-
-        // Set default start time to current time, or the closest open hour
-        int startHour = LocalTime.now().getHour();
-        if (startHour < openTime) {
-            startHour = openTime;
-        }
-        if (startHour >= closeTime) {
-            startHour = closeTime - 1;
-        }
-        LocalTime startTime = LocalTime.of(startHour, 0);
-        startTimePicker.setValue(startTime);
-
-        // Set default end time to an hour after open time
-        LocalTime endTime = LocalTime.of(startHour + 1, 0);
-        endTimePicker.setValue(endTime);
+        setDefaultTimes();
 
         // Create arraylists
         weeklySchedule = new ArrayList<ArrayList<Integer>>();
@@ -386,268 +318,66 @@ public class ScheduleController {
         TableColumn<ScheduleWrapper, String> friday = new TableColumn<>("Friday");
         TableColumn<ScheduleWrapper, String> saturday = new TableColumn<>("Saturday");
 
-        // set max width for each col
-        timeCol.setPrefWidth(177);
-        sunday.setPrefWidth(185);
-        monday.setPrefWidth(185);
-        tuesday.setPrefWidth(185);
-        wednesday.setPrefWidth(185);
-        thursday.setPrefWidth(185);
-        friday.setPrefWidth(185);
-        saturday.setPrefWidth(185);
-
-        // make sure each column is uneditable
-        timeCol.setResizable(false);
-        sunday.setResizable(false);
-        monday.setResizable(false);
-        tuesday.setResizable(false);
-        wednesday.setResizable(false);
-        thursday.setResizable(false);
-        friday.setResizable(false);
-        saturday.setResizable(false);
-
-        // Schedule is not editable
-        scheduleTable.setEditable(false);
-
-        // todo: collapse into one and set that for all of them
-        timeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyStringWrapper(p.getValue().getTime());
-            }
-        });
-        sunday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                return new ReadOnlyStringWrapper(p.getValue().sunAvailability);
-
-            }
-        });
-        sunday.setCellFactory(column -> {
-            return new TableCell<ScheduleWrapper, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        // Format date.
-                        setText(item);
-
-                        // Style all dates in March with a different color.
-                        if (item.equals("-")) {
-                            setStyle("-fx-background-color: #98FB98");
-                        } else {
-                            setTextFill(Color.BLACK);
-                            setStyle("-fx-background-color: #ff6347");
-                        }
-                    }
-                }
-            };
-        });
-        monday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyStringWrapper(p.getValue().monAvailability);
-
-            }
-        });
-        monday.setCellFactory(column -> {
-            return new TableCell<ScheduleWrapper, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        // Format date.
-                        setText(item);
-
-                        // Style all dates in March with a different color.
-                        if (item.equals("-")) {
-                            setStyle("-fx-background-color: #98FB98");
-                        } else {
-                            setTextFill(Color.BLACK);
-                            setStyle("-fx-background-color: #ff6347");
-                        }
-                    }
-                }
-            };
-        });
-        tuesday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyStringWrapper(p.getValue().tuesAvailability);
-
-            }
-        });
-        tuesday.setCellFactory(column -> {
-            return new TableCell<ScheduleWrapper, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        // Format date.
-                        setText(item);
-
-                        // Style all dates in March with a different color.
-                        if (item.equals("-")) {
-                            setStyle("-fx-background-color: #98FB98");
-                        } else {
-                            setTextFill(Color.BLACK);
-                            setStyle("-fx-background-color: #ff6347");
-                        }
-                    }
-                }
-            };
-        });
-        wednesday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyStringWrapper(p.getValue().wedAvailability);
-
-            }
-        });
-        wednesday.setCellFactory(column -> {
-            return new TableCell<ScheduleWrapper, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        // Format date.
-                        setText(item);
-
-                        // Style all dates in March with a different color.
-                        if (item.equals("-")) {
-                            setStyle("-fx-background-color: #98FB98");
-                        } else {
-                            setTextFill(Color.BLACK);
-                            setStyle("-fx-background-color: #ff6347");
-                        }
-                    }
-                }
-            };
-        });
-        thursday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyStringWrapper(p.getValue().thursAvailability);
-
-            }
-        });
-        thursday.setCellFactory(column -> {
-            return new TableCell<ScheduleWrapper, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        // Format date.
-                        setText(item);
-
-                        // Style all dates in March with a different color.
-                        if (item.equals("-")) {
-                            setStyle("-fx-background-color: #98FB98");
-                        } else {
-                            setTextFill(Color.BLACK);
-                            setStyle("-fx-background-color: #ff6347");
-                        }
-                    }
-                }
-            };
-        });
-        friday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyStringWrapper(p.getValue().friAvailability);
-
-            }
-        });
-        friday.setCellFactory(column -> {
-            return new TableCell<ScheduleWrapper, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        // Format date.
-                        setText(item);
-
-                        // Style all dates in March with a different color.
-                        if (item.equals("-")) {
-                            setStyle("-fx-background-color: #98FB98");
-                        } else {
-                            setTextFill(Color.BLACK);
-                            setStyle("-fx-background-color: #ff6347");
-                        }
-                    }
-                }
-            };
-        });
-        saturday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyStringWrapper(p.getValue().satAvailability);
-
-            }
-        });
-        saturday.setCellFactory(column -> {
-            return new TableCell<ScheduleWrapper, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        // Format date.
-                        setText(item);
-
-                        // Style all dates in March with a different color.
-                        if (item.equals("-")) {
-                            setStyle("-fx-background-color: #98FB98");
-                        } else {
-                            setTextFill(Color.BLACK);
-                            setStyle("-fx-background-color: #ff6347");
-                        }
-                    }
-                }
-            };
-        });
-
-
+        // Set up table
         scheduleTable.getColumns().addAll(timeCol, sunday, monday, tuesday, wednesday, thursday, friday, saturday);
+        scheduleTable.setEditable(false);   // Schedule is not editable
+        scheduleTable.setStyle("-fx-table-cell-border-color: black;");
+        scheduleTable.setStyle("-fx-table-column-rule-color: black;");
+
+        // Set up each column's value and color scheme
+        for (int i = 0; i < scheduleTable.getColumns().size(); i++) {
+            final int finInt = i;
+            TableColumn<ScheduleWrapper, String> col = (TableColumn<ScheduleWrapper, String>) scheduleTable.getColumns().get(i);
+            if (i == 0) {
+                col.setPrefWidth(177);
+                col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                        // p.getValue() returns the Person instance for a particular TableView row
+                        return new ReadOnlyStringWrapper(p.getValue().getTime());
+                    }
+                });
+            }
+            else {
+                col.setPrefWidth(185);
+                col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
+                        // p.getValue() returns the Person instance for a particular TableView row
+                        return new ReadOnlyStringWrapper(p.getValue().getDayAvailability(finInt));    // todo: need to be separate for each column
+
+                    }
+                });
+                col.setCellFactory(column -> {
+                    return new TableCell<ScheduleWrapper, String>() {
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+
+                            if (item == null || empty) {
+                                setText(null);
+                                setStyle("");
+                            } else {
+                                // Format date.
+                                setText(item);
+
+                                // Style all dates in March with a different color.
+                                if (item.equals("-")) {
+                                    setStyle("-fx-background-color: #98FB98");
+                                } else {
+                                    setTextFill(Color.BLACK);
+                                    setStyle("-fx-background-color: #ff6347");
+                                }
+                            }
+                        }
+                    };
+                });
+            }
+            col.setResizable(false);
+        }
+
 //        scheduleTable.setPrefHeight(900);
         showRoomSchedule(false);
-
         // Show map nodes
         populateMap();
-
-       scheduleTable.setStyle("-fx-table-cell-border-color: black;");
-       scheduleTable.setStyle("-fx-table-column-rule-color: black;");
-       //scheduleTable.setStyle("-fx-table-column-rule-style: ;");
-        //scheduleTable.setStyle("-fx-table-view-column-header ;");
-
 
         // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -664,6 +394,44 @@ public class ScheduleController {
         });
     }
 
+    /**
+     * Set zoom groups for map.
+     */
+    private void setUpMap() {
+        // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
+        Group contentGroup = new Group();
+        zoomGroup = new Group();
+        contentGroup.getChildren().add(zoomGroup);
+        zoomGroup.getChildren().add(map_scrollpane.getContent());
+        map_scrollpane.setContent(contentGroup);
+
+        // Setting View Scrolling
+        zoom(0.3);
+    }
+
+    /**
+     * Set default times and date.
+     */
+    private void setDefaultTimes() {
+        // Set default date to today's date
+        LocalDate date = LocalDate.now();
+        datePicker.setValue(date);
+
+        // Set default start time to current time, or the closest open hour
+        int startHour = LocalTime.now().getHour();
+        if (startHour < openTime) {
+            startHour = openTime;
+        }
+        if (startHour >= closeTime) {
+            startHour = closeTime - 1;
+        }
+        LocalTime startTime = LocalTime.of(startHour, 0);
+        startTimePicker.setValue(startTime);
+
+        // Set default end time to an hour after open time
+        LocalTime endTime = LocalTime.of(startHour + 1, 0);
+        endTimePicker.setValue(endTime);
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1270,5 +1038,28 @@ public class ScheduleController {
         System.out.println("x: " + e.getX() + ", y: " + e.getY());
     }
 
+    // Admin functionality, ideally
+    public int getOpenTime() {
+        return openTime;
+    }
 
+    public void setOpenTime(int openTime) {
+        this.openTime = openTime;
+    }
+
+    public int getCloseTime() {
+        return closeTime;
+    }
+
+    public void setCloseTime(int closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public int getTimeStep() {
+        return timeStep;
+    }
+
+    public void setTimeStep(int timeStep) {
+        this.timeStep = timeStep;
+    }
 }
