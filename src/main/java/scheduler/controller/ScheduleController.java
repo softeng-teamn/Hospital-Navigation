@@ -682,7 +682,7 @@ public class ScheduleController {
         String date = chosenDate.toString();
         String name = currentSelection.getSpaceName();
 
-        // TODO: 2019-04-16 fix date print out
+
         // format date
         int date1 = chosenDate.getDayOfMonth();
         String month = chosenDate.getMonth().toString();
