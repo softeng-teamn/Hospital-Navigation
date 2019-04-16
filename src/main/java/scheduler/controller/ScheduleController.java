@@ -285,10 +285,6 @@ public class ScheduleController {
      */
     @FXML
     public void initialize() {
-
-
-
-
         // Map Initialization
 
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
@@ -422,6 +418,7 @@ public class ScheduleController {
         scheduleTable.setEditable(false);
 
 
+        // todo: collapse into one and set that for all of them
         // HERE!! IMPORTANT!! MAYBE!!
         // i have no idea what this means (but im going to apply to all new cols anyways - whoever wrote pls help
         timeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
@@ -432,69 +429,221 @@ public class ScheduleController {
         });
         sunday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                if (p.getValue().sunAvailability.equals("-")) {
-                    sunday.setStyle("-fx-background-color: #98FB98");
-                }
-                else {
-                    sunday.setStyle("-fx-background-color: #ff6347");
-                }
+                // p.getValue() returns the Person instance for a particular TableView row
+                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
                 return new ReadOnlyStringWrapper(p.getValue().sunAvailability);
 
             }
         });
+        sunday.setCellFactory(column -> {
+            return new TableCell<ScheduleWrapper, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        // Format date.
+                        setText(item);
+
+                        // Style all dates in March with a different color.
+                        if (item.equals("-")) {
+                            setStyle("-fx-background-color: #98FB98");
+                        } else {
+                            setTextFill(Color.BLACK);
+                            setStyle("-fx-background-color: #ff6347");
+                        }
+                    }
+                }
+            };
+        });
         monday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
-                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                monday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().monAvailability);
 
             }
         });
+        monday.setCellFactory(column -> {
+            return new TableCell<ScheduleWrapper, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        // Format date.
+                        setText(item);
+
+                        // Style all dates in March with a different color.
+                        if (item.equals("-")) {
+                            setStyle("-fx-background-color: #98FB98");
+                        } else {
+                            setTextFill(Color.BLACK);
+                            setStyle("-fx-background-color: #ff6347");
+                        }
+                    }
+                }
+            };
+        });
         tuesday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
-                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                tuesday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().tuesAvailability);
 
             }
         });
+        tuesday.setCellFactory(column -> {
+            return new TableCell<ScheduleWrapper, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        // Format date.
+                        setText(item);
+
+                        // Style all dates in March with a different color.
+                        if (item.equals("-")) {
+                            setStyle("-fx-background-color: #98FB98");
+                        } else {
+                            setTextFill(Color.BLACK);
+                            setStyle("-fx-background-color: #ff6347");
+                        }
+                    }
+                }
+            };
+        });
         wednesday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
-                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                wednesday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().wedAvailability);
 
             }
         });
+        wednesday.setCellFactory(column -> {
+            return new TableCell<ScheduleWrapper, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        // Format date.
+                        setText(item);
+
+                        // Style all dates in March with a different color.
+                        if (item.equals("-")) {
+                            setStyle("-fx-background-color: #98FB98");
+                        } else {
+                            setTextFill(Color.BLACK);
+                            setStyle("-fx-background-color: #ff6347");
+                        }
+                    }
+                }
+            };
+        });
         thursday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
-                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                thursday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().thursAvailability);
 
             }
         });
+        thursday.setCellFactory(column -> {
+            return new TableCell<ScheduleWrapper, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        // Format date.
+                        setText(item);
+
+                        // Style all dates in March with a different color.
+                        if (item.equals("-")) {
+                            setStyle("-fx-background-color: #98FB98");
+                        } else {
+                            setTextFill(Color.BLACK);
+                            setStyle("-fx-background-color: #ff6347");
+                        }
+                    }
+                }
+            };
+        });
         friday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
-                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                friday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().friAvailability);
 
             }
         });
+        friday.setCellFactory(column -> {
+            return new TableCell<ScheduleWrapper, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        // Format date.
+                        setText(item);
+
+                        // Style all dates in March with a different color.
+                        if (item.equals("-")) {
+                            setStyle("-fx-background-color: #98FB98");
+                        } else {
+                            setTextFill(Color.BLACK);
+                            setStyle("-fx-background-color: #ff6347");
+                        }
+                    }
+                }
+            };
+        });
         saturday.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
-                //return new ReadOnlyStringWrapper(p.getValue().getAvailability());
-                saturday.setStyle("-fx-background-color: #98FB98");
                 return new ReadOnlyStringWrapper(p.getValue().satAvailability);
 
             }
+        });
+        saturday.setCellFactory(column -> {
+            return new TableCell<ScheduleWrapper, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        // Format date.
+                        setText(item);
+
+                        // Style all dates in March with a different color.
+                        if (item.equals("-")) {
+                            setStyle("-fx-background-color: #98FB98");
+                        } else {
+                            setTextFill(Color.BLACK);
+                            setStyle("-fx-background-color: #ff6347");
+                        }
+                    }
+                }
+            };
         });
 
 
@@ -608,7 +757,6 @@ public class ScheduleController {
         // Get that date and turn it into gregorian calendars to pass to the database
         LocalDate chosenDate = datePicker.getValue();
 
-
         // set label of weekly scheduler based on date
         String date = chosenDate.toString();
         String name = curr.getSpaceName();
@@ -698,10 +846,10 @@ public class ScheduleController {
         }
 
         ObservableList<ScheduleWrapper> wrap = FXCollections.observableArrayList();
-        // schedToAdd = and array list of ScheduleWrapper
+        // schedToAdd = an array list of ScheduleWrapper
         wrap.addAll(schedToAdd);
         scheduleTable.setItems(wrap);
-
+        System.out.println("setting table items" + schedToAdd.get(21).sunAvailability + schedToAdd.get(21).monAvailability + schedToAdd.get(21).tuesAvailability);
     }
 
 
