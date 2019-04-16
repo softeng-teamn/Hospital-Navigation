@@ -11,21 +11,17 @@ import java.util.stream.Stream;
 import application_state.ApplicationState;
 import application_state.Event;
 
-import com.google.common.eventbus.DeadEvent;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.*;
-import com.twilio.rest.api.v2010.account.incomingphonenumber.Local;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -228,7 +224,7 @@ public class ScheduleController {
 
 
     // Map Stuff
-    static final Color AVAILIBLE_COLOR = Color.rgb(87, 255, 132, 0.8);
+    static final Color AVAILABLE_COLOR = Color.rgb(87, 255, 132, 0.8);
     static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
     Group zoomGroup;
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
@@ -246,6 +242,7 @@ public class ScheduleController {
 
     // Currently selected location
     public ReservableSpace currentSelection;
+    private HashMap<Node, ReservableSpace> nodeToResSpace = new HashMap<>();
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<ArrayList<Integer>> weeklySchedule;
     // LIst of spaces to display
@@ -285,8 +282,6 @@ public class ScheduleController {
      */
     @FXML
     public void initialize() {
-        // Map Initialization
-
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
         Group contentGroup = new Group();
         zoomGroup = new Group();
@@ -300,7 +295,6 @@ public class ScheduleController {
         zoom_slider.setValue(0.2);
         zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
         zoom(0.2);
-
 
         //resInfoLbl.setText("");
         timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
@@ -316,7 +310,6 @@ public class ScheduleController {
         // Don't show errors yet
 //        timeErrorLbl.setVisible(false);
         inputErrorLbl.setVisible(false);
-
 
         // Set default date to today's date
         LocalDate date = LocalDate.now();
@@ -337,7 +330,6 @@ public class ScheduleController {
         LocalTime endTime = LocalTime.of(startHour + 1, 0);
         endTimePicker.setValue(endTime);
 
-
         // Create arraylists
         weeklySchedule = new ArrayList<ArrayList<Integer>>();
         for (int i = 0; i < 7; i++) {
@@ -348,10 +340,14 @@ public class ScheduleController {
         //  Pull spaces from database, sort, add to list and listview
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
         for (ReservableSpace rs : dbResSpaces) {
-            nodeCollection.add(DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID()));
+            Node n = DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID());
+            nodeCollection.add(n);
+            nodeToResSpace.put(n, rs);
         }
-        // SHOW MAP NODES *****************
+
+        // Show map nodes
         populateMap();
+
         Collections.sort(dbResSpaces);
         resSpaces.addAll(dbResSpaces);
         reservableList.setItems(resSpaces);
@@ -368,7 +364,7 @@ public class ScheduleController {
                 } else {
                     setText(item.getSpaceName());
                     setOnMouseClicked(EventHandler -> {
-                        showRoomSchedule();
+                        showRoomSchedule(false);
                     });
                 }
             }
@@ -643,7 +639,7 @@ public class ScheduleController {
 
         scheduleTable.getColumns().addAll(timeCol, sunday, monday, tuesday, wednesday, thursday, friday, saturday);
 //        scheduleTable.setPrefHeight(900);
-        showRoomSchedule();
+        showRoomSchedule(false);
 
        scheduleTable.setStyle("-fx-table-cell-border-color: black;");
        scheduleTable.setStyle("-fx-table-column-rule-color: black;");
@@ -685,7 +681,7 @@ public class ScheduleController {
             } else if (bookedRoomsBtn.getText().contains("ear")) {
                 bookedRooms();
             }
-            showRoomSchedule();
+            showRoomSchedule(false);
 
             // Display the current information
             changeResInfo();
@@ -747,22 +743,24 @@ public class ScheduleController {
      * On room button click, show the schedule for that room and date.
      */
     @FXML
-    public void showRoomSchedule() {
+    public void showRoomSchedule(boolean alreadySelected) {
         // Clear the previous schedule
         for (int i = 0; i < 7; i++) {
             weeklySchedule.get(i).clear();
         }
 
         // Get the selected location
-        ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
-        currentSelection = curr;
+        if (!alreadySelected) {
+            ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
+            currentSelection = curr;
+        }
 
         // Get that date and turn it into gregorian calendars to pass to the database
         LocalDate chosenDate = datePicker.getValue();
 
         // set label of weekly scheduler based on date
         String date = chosenDate.toString();
-        String name = curr.getSpaceName();
+        String name = currentSelection.getSpaceName();
         schedLbl.setText("Schedule for " + name + ": Week of " + date);
 
 
@@ -813,7 +811,7 @@ public class ScheduleController {
 
             System.out.println("Res start and end dates: " + gcalStartDay.toInstant() + gcalEndDay.toInstant());
             // Get reservations for this day
-            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(curr.getSpaceID(), gcalStartDay, gcalEndDay);
+            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(currentSelection.getSpaceID(), gcalStartDay, gcalEndDay);
 
             for (Reservation res : reservations) {
                 // Get the start time
@@ -923,7 +921,7 @@ public class ScheduleController {
      * Show the current schedule, clear errors, and clear user input.
      */
     private void resetView() {
-        showRoomSchedule();
+        showRoomSchedule(false);
         inputErrorLbl.setVisible(false);
 //        timeErrorLbl.setVisible(false);
 //        resInfoLbl.setText("");
@@ -1088,7 +1086,7 @@ public class ScheduleController {
             // Clear the current schedule
             reservableList.getSelectionModel().select(0);
             reservableList.getFocusModel().focus(0);
-            showRoomSchedule();
+            showRoomSchedule(false);
         }
     }
 
@@ -1124,7 +1122,7 @@ public class ScheduleController {
             // Clear the current schedule
             reservableList.getSelectionModel().select(0);
             reservableList.getFocusModel().focus(0);
-            showRoomSchedule();
+            showRoomSchedule(false);
         }
     }
 
@@ -1142,7 +1140,7 @@ public class ScheduleController {
         // Clear schedule
         reservableList.getSelectionModel().select(0);
         reservableList.getFocusModel().focus(0);
-        showRoomSchedule();
+        showRoomSchedule(false);
 
         availRoomsBtn.setOnAction(EventHandler -> {
             availRooms();
@@ -1210,10 +1208,22 @@ public class ScheduleController {
             if (isNodeInReservableSpace(bookedRS, node)) {
                 circle.setFill(UNAVAILABLE_COLOR);
             } else {
-                circle.setFill(AVAILIBLE_COLOR);
+                circle.setFill(AVAILABLE_COLOR);
             }
             circle.setCenterX(node.getXcoord());
             circle.setCenterY(node.getYcoord());
+            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override public void handle(MouseEvent e) {
+                    currentSelection = nodeToResSpace.get(node);
+                    System.out.println(currentSelection);
+                    showRoomSchedule(true);
+                    for (Circle c: circleCollection) {
+                        c.setStrokeWidth(0);
+                    }
+                    circle.setStroke(Color.RED);
+                    circle.setStrokeWidth(5);
+                }
+            });
             circleCollection.add(circle);
         }
         zoomGroup.getChildren().addAll(circleCollection);
