@@ -288,6 +288,7 @@ public class ScheduleController {
      */
     @FXML
     public void initialize() {
+        // todo: break this into more functions
         // Wrap scroll content in a Group so ScrollPane re-computes scroll bars
         Group contentGroup = new Group();
         zoomGroup = new Group();
@@ -346,9 +347,6 @@ public class ScheduleController {
             nodeCollection.add(n);
             nodeToResSpace.put(n, rs);
         }
-
-        // Show map nodes
-        populateMap();
 
         Collections.sort(dbResSpaces);
         resSpaces.addAll(dbResSpaces);
@@ -642,13 +640,13 @@ public class ScheduleController {
 //        scheduleTable.setPrefHeight(900);
         showRoomSchedule(false);
 
+        // Show map nodes
+        populateMap();
+
        scheduleTable.setStyle("-fx-table-cell-border-color: black;");
        scheduleTable.setStyle("-fx-table-column-rule-color: black;");
        //scheduleTable.setStyle("-fx-table-column-rule-style: ;");
         //scheduleTable.setStyle("-fx-table-view-column-header ;");
-
-
-
 
 
         // Set listeners to update listview and label
@@ -1230,6 +1228,8 @@ public class ScheduleController {
             }
             svg.setLayoutX(node.getXcoord());
             svg.setLayoutY(node.getYcoord());
+            svg.setStroke(Color.RED);    // todo: change color
+            svg.setStrokeWidth(0);
             svg.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override public void handle(MouseEvent e) {
                     currentSelection = nodeToResSpace.get(node);
@@ -1238,15 +1238,20 @@ public class ScheduleController {
                     for (SVGPath c: shapeCollection) {
                         c.setStrokeWidth(0);
                     }
-                    svg.setStroke(Color.RED);
                     svg.setStrokeWidth(5);
                 }
             });
+            if (nodeToResSpace.get(node).equals(currentSelection)) {
+                svg.setStrokeWidth(5);
+            }
             shapeCollection.add(svg);
         }
         zoomGroup.getChildren().addAll(shapeCollection);
     }
 
+    /**
+     * Recolor the shapes on the map for the given time if they are booked.
+     */
     private void repopulateMap() {
         System.out.println("**************** REPOPULATE MAP");
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
