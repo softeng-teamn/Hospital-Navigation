@@ -940,7 +940,6 @@ public class ScheduleController {
         return a;
     }
 
-
     // MAP STUFF DOWN HERE ****************
 
     ArrayList<ReservableSpace> getBookedNodes() {
