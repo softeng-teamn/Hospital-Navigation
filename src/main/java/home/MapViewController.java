@@ -7,14 +7,11 @@ import com.jfoenix.controls.JFXButton;
 import database.DatabaseService;
 import elevator.ElevatorConnection;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import elevator.ElevatorConnection;
-import application_state.Event;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,7 +27,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -41,10 +37,8 @@ import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
 import service.StageManager;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 
 public class MapViewController implements Observer {
@@ -58,10 +52,11 @@ public class MapViewController implements Observer {
 
     private String currentMethod;
 
+    JFXButton startNodeLabel;
+    JFXButton endNodeLabel;
     private Group zoomGroup;
     private Circle startCircle;
     private Circle selectCircle;
-    private ArrayList<Line> lineCollection;
     private ArrayList<Circle> circleCollection;
     private HashMap<String, ArrayList<Polyline>> polylineCollection;
     private boolean hasPath = false;
@@ -119,7 +114,6 @@ public class MapViewController implements Observer {
         ApplicationState currState = ApplicationState.getApplicationState();
 
         // Setup collection of lines
-        lineCollection = new ArrayList<>();
         polylineCollection = new HashMap<>();
 
         // Set start circle
@@ -129,11 +123,12 @@ public class MapViewController implements Observer {
         circleCollection = new ArrayList<>();
 
         // Setting Up Circle Destination Point
-        startCircle.setCenterX(currState.getStartNode().getXcoord());
-        startCircle.setCenterY(currState.getStartNode().getYcoord());
-        startCircle.setRadius(20);
-        startCircle.setFill(Color.rgb(67, 70, 76));
-        zoomGroup.getChildren().add(startCircle);
+//        startCircle.setCenterX(currState.getStartNode().getXcoord());
+//        startCircle.setCenterY(currState.getStartNode().getYcoord());
+//        startCircle.setRadius(20);
+//        startCircle.setFill(Color.rgb(67, 70, 76));
+//        zoomGroup.getChildren().add(startCircle);
+        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76), true);
     }
 
     void zoomGroupInit() {
@@ -228,7 +223,9 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        deletePolyLine();
                         drawPoint(currState.getEndNode(), selectCircle, Color.rgb(72, 87, 125), false);
+
                     }
                 });
                 break;
@@ -236,7 +233,9 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        deletePolyLine();
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76), true);
+
                     }
                 });
                 break;
@@ -244,8 +243,10 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        deletePolyLine();
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76), true);
                         drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
+
                     }
                 });
                 break;
@@ -269,6 +270,13 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        deletePolyLine();
+                        if(zoomGroup.getChildren().contains(startNodeLabel)){
+                            zoomGroup.getChildren().remove(startNodeLabel);
+                        }
+                        if(zoomGroup.getChildren().contains(endNodeLabel)){
+                            zoomGroup.getChildren().remove(endNodeLabel);
+                        }
                         editNodeHandler(event.isEditing());
                     }
                 });
@@ -284,7 +292,6 @@ public class MapViewController implements Observer {
                 });
                 break;
             default:
-//                        System.out.println("I don'");
                 break;
         }
     }
@@ -358,19 +365,38 @@ public class MapViewController implements Observer {
         }
     }
 
-    private void drawPoint(Node node, Circle circle, Color color, boolean start) {
-        // remove points
-        for (Line line : lineCollection) {
-            if (zoomGroup.getChildren().contains(line)) {
-                zoomGroup.getChildren().remove(line);
-                hasPath = false;
+    private void deletePolyLine(){
+        for (ArrayList<Polyline> polylines : polylineCollection.values()) {
+            for(Polyline polyline : polylines){
+                if(zoomGroup.getChildren().contains(polyline)){
+                    zoomGroup.getChildren().remove(polyline);
+                }
             }
         }
+        hasPath = false;
+    }
+
+    private void drawPoint(Node node, Circle circle, Color color, boolean start) {
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
             //System.out.println("we found new Selected Circles");
             zoomGroup.getChildren().remove(circle);
         }
+
+        if(zoomGroup.getChildren().contains(startNodeLabel) && start){
+            zoomGroup.getChildren().remove(startNodeLabel);
+        }
+
+        if(zoomGroup.getChildren().contains(endNodeLabel) && !start){
+            zoomGroup.getChildren().remove(endNodeLabel);
+        }
+
+        if(!node.getFloor().equals(event.getFloor())){
+            //switch the map
+            //System.out.println(node + node.getFloor());
+            setFloor(node.getFloor());
+        }
+
         // create new Circle
         circle = new Circle();
         circle.setCenterX(node.getXcoord());
@@ -385,14 +411,12 @@ public class MapViewController implements Observer {
             selectCircle = circle;
         }
 
-        if(!node.getFloor().equals(event.getFloor())){
-            //switch the map
-            //System.out.println(node + node.getFloor());
-                setFloor(node.getFloor());
-        }
+
 
         // Scroll to new point
         scrollTo(node);
+
+        addLabel(node, start);
 
         //display node info
         System.out.println("done drawing point");
@@ -436,6 +460,7 @@ public class MapViewController implements Observer {
         hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
+            scrollTo(path.get(0));
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
@@ -484,6 +509,7 @@ public class MapViewController implements Observer {
         hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
+            scrollTo(path.get(0));
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
@@ -494,25 +520,21 @@ public class MapViewController implements Observer {
     @SuppressFBWarnings(value = "WMI_WRONG_MAP_ITERATOR")
     private void drawPath() {
 
+        ApplicationState currState = ApplicationState.getApplicationState();
+
         if(!hasPath){
             setFloor(path.get(0).getFloor());
-            scrollTo(path.get(0));
         }
 
-        for (ArrayList<Polyline> polylines : polylineCollection.values()) {
-            for(Polyline polyline : polylines){
-                if(zoomGroup.getChildren().contains(polyline)){
-                    zoomGroup.getChildren().remove(polyline);
-                }
-            }
-        }
-
+        deletePolyLine();
         polylineCollection.clear();
+
 
         Polyline polyline = new Polyline();
 
         Node last = path.get(0);
         polyline.getPoints().addAll((double) last.getXcoord(), (double) last.getYcoord());
+
 
         for(int i = 1; i < path.size(); i++) {
             Node current = path.get(i);
@@ -545,6 +567,18 @@ public class MapViewController implements Observer {
                 }
             }
         }
+
+        if (event.getFloor().equals(path.get(0).getFloor())){
+            drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76), true);
+        }
+
+        if (event.getFloor().equals(path.get(path.size()-1).getFloor())){
+            drawPoint(currState.getEndNode(), selectCircle, Color.rgb(72, 87, 125), false);
+        }
+
+
+
+
         hasPath = true;
     }
 
@@ -561,6 +595,26 @@ public class MapViewController implements Observer {
             }
         });
         zoomGroup.getChildren().add(floorSwitcher);
+    }
+
+    private  void addLabel(Node node, boolean isStart){
+        if (isStart){
+            startNodeLabel = new JFXButton(node.getShortName());
+            startNodeLabel.getStyleClass().add("path-button");
+            startNodeLabel.setTranslateX(node.getXcoord());
+            startNodeLabel.setTranslateY(node.getYcoord());
+            startNodeLabel.setDisable(true);
+            startNodeLabel.setOpacity(0.6);
+            zoomGroup.getChildren().add(startNodeLabel);
+        } else {
+            endNodeLabel = new JFXButton(node.getShortName());
+            endNodeLabel.getStyleClass().add("path-button");
+            endNodeLabel.setTranslateX(node.getXcoord());
+            endNodeLabel.setTranslateY(node.getYcoord());
+            endNodeLabel.setDisable(true);
+            endNodeLabel.setOpacity(0.6);
+            zoomGroup.getChildren().add(endNodeLabel);
+        }
     }
 
     private synchronized void addToList(String mapKey, Polyline polyline) {
