@@ -22,6 +22,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * controller for the API FXML
+ */
 public class ApiController implements Initializable {
     static ApiDatabaseService myDBS = ApiDatabaseService.getDatabaseService();
 

@@ -5,6 +5,9 @@ import employee.model.Employee;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Database controller for the API's internal database
+ */
 class ApiDatabaseService {
     public static final String DATABASE_NAME = "internal-transport-request-db";
 

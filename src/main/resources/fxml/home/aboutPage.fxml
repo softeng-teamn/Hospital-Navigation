@@ -11,14 +11,14 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.AboutPageController">
    <children>
-      <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" styleClass="header" stylesheets="@../../theme.css">
+      <HBox alignment="CENTER_RIGHT" prefHeight="128.0" prefWidth="200.0" spacing="5.0" styleClass="header" stylesheets="@../../theme.css">
          <children>
             <Label styleClass="header-label" text="About" textFill="WHITE">
                <font>
                   <Font size="36.0" />
                </font>
             </Label>
-            <Region prefHeight="116.0" prefWidth="732.0" />
+            <Region prefHeight="92.0" prefWidth="698.0" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <JFXButton fx:id="homeBtn" alignment="CENTER_RIGHT" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
@@ -68,15 +68,15 @@
                      <font>
                         <Font size="18.0" />
                      </font></Label>
-                  <Label text="Nicolas Pingal ">
+                  <Label text="Lauren Hatfield">
                      <font>
                         <Font size="18.0" />
                      </font></Label>
-                  <Label text="Nicole Cotto">
+                  <Label text="Xinzhe Jiang">
                      <font>
                         <Font size="18.0" />
                      </font></Label>
-                  <Label text="Lauren Hatfield ">
+                  <Label text="Nicholas Pingal">
                      <font>
                         <Font size="18.0" />
                      </font></Label>
@@ -88,7 +88,7 @@
                      <font>
                         <Font size="18.0" />
                      </font></Label>
-                  <Label text="Xinzhe Jiang">
+                  <Label text="Nicole Cotto">
                      <font>
                         <Font size="18.0" />
                      </font></Label>

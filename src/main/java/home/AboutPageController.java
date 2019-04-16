@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 import service.ResourceLoader;
 import service.StageManager;
 
+/**
+ * controller for the about page screen
+ */
 public class AboutPageController {
 
     @FXML
@@ -16,7 +19,7 @@ public class AboutPageController {
 
     /**
      * switches window to home screen
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();

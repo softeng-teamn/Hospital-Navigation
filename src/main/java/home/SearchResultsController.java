@@ -107,7 +107,7 @@ public class SearchResultsController implements Observer {
 
     /**
      * Runs when user clicks a location
-     * @param e
+     * @param e FXML event that calls this method
      */
     @FXML
     public void listViewClicked(MouseEvent e) {
@@ -134,7 +134,7 @@ public class SearchResultsController implements Observer {
 
     }
 
-    void repopulateList(boolean isAdmin) {
+    private void repopulateList(boolean isAdmin) {
 
         System.out.println("Repopulation of listView" + isAdmin);
 

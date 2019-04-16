@@ -33,7 +33,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CreateNodeController extends Controller {
+/**
+ * controls the create node FXML
+ */
+public class CreateNodeController {
 
     @FXML
     JFXComboBox<String> nodeType_combo, building_combo;

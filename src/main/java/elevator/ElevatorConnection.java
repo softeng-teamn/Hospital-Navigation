@@ -12,6 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ * Manages the elevator's connection to the online database
+ */
 public class ElevatorConnection {
     private static HttpURLConnection con;
     private String teamName;
@@ -28,25 +31,24 @@ public class ElevatorConnection {
 
 
     /**
-     * seee post floor, where emargency is false
-     * @param elevator
-     * @param floorNum
-     * @throws MalformedURLException
-     * @throws ProtocolException
-     * @throws IOException
+     * Default for postFloor
+     * @param elevator name of elevator to tell
+     * @param floorNum what time the elevator should be called
+     * @throws MalformedURLException if the url is invalid
+     * @throws ProtocolException if there is no WiFi connection
+     * @throws IOException if the file is invalid
      */
     public void postFloor(String elevator, String floorNum)throws IOException{
         GregorianCalendar time = new GregorianCalendar();
         postFloor(elevator, floorNum, time);
     }
 
-    /**
+    /** calls an elevator to go to the specific floor at the given time, will hold for 30 seconds
      * @param elevator name of elevator to tell
      * @param floorNum the floor the specified elevator should go to
      * @param time     what time is should get to the elevator at
-     * @throws IOException
+     * @throws IOException if the file is invalid
      */
-    //tell the elevator to go to this floor at this time, will hold for 30s
     public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws IOException {
         switch (floorNum) {
             case "L1":
@@ -79,7 +81,7 @@ public class ElevatorConnection {
     /**
      * @param elevator the name of the elevator to get the position of
      * @return returns a  string containing the floor the elevator is on
-     * @throws IOException
+     * @throws IOException if the file is invalid
      */
     public String getFloor(String elevator) throws IOException {
         String URL = "https://aldenhallpianos.com/softEngGet.php";
@@ -92,7 +94,7 @@ public class ElevatorConnection {
      * @param URL           the url to post to
      * @param urlParameters the parameters of the post service_request
      * @return returns a string containing the current floor is on
-     * @throws IOException
+     * @throws IOException if the file is invalid
      */
     private String post(String URL, String urlParameters) throws IOException {
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
