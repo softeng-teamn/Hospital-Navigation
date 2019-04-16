@@ -16,12 +16,12 @@
     <children>
         <HBox alignment="TOP_CENTER">
             <children>
-                <JFXButton fx:id="unitSwitch_btn" minWidth="-Infinity" onAction="#setUnits" prefHeight="56.0" prefWidth="56.0" styleClass="confirm-button" text="M" />
-            <Region prefHeight="56.0" prefWidth="159.0" />
+                <JFXButton fx:id="unitSwitch_btn" minWidth="-Infinity" onAction="#setUnits" prefHeight="56.0" prefWidth="105.0" styleClass="confirm-button" text="Meters" />
+            <Region prefHeight="56.0" prefWidth="150.0" />
                 <Pane prefHeight="20.0">
                     <children>
-                        <Polygon fill="RED" layoutX="56.0" layoutY="29.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
-                        <Polygon fill="Grey" layoutX="66.0" layoutY="39.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="Grey" strokeType="INSIDE" />
+                        <Polygon fill="RED" layoutX="56.0" layoutY="35.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
+                        <Polygon fill="Grey" layoutX="66.0" layoutY="45.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="Grey" strokeType="INSIDE" />
                     </children>
                     <HBox.margin>
                         <Insets />
