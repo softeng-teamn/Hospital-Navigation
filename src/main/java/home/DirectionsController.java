@@ -139,7 +139,6 @@ public class DirectionsController implements Observer {
     }
 
 
-    // TODO: why does 1st instruction turn into ... if not scrollable?
     /**
      * Create textual instructions for the given path.
      * @param path the list of nodes in the path
@@ -235,7 +234,7 @@ public class DirectionsController implements Observer {
                 directions.remove(i);
                 directions.remove(i-1);
                 directions.add(i-1, newDir);
-                startNodes.remove(i-1);    // todo: may need to change
+                startNodes.remove(i-1);
                 i--;
             }
         }
@@ -243,7 +242,7 @@ public class DirectionsController implements Observer {
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
         ApplicationState.getApplicationState().setEndNode(path.get(path.size() - 1));
-        //System.out.println(directions); // todo cut
+        //System.out.println(directions);
         return directions;
     }
 
@@ -525,7 +524,7 @@ public class DirectionsController implements Observer {
             buf.append(directions.get(i));
         }
         String total = buf.toString();
-        System.out.println(total); // todo cut
+        System.out.println(total);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("showDestination");
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
@@ -735,8 +734,6 @@ public class DirectionsController implements Observer {
     public String getUnits() {
         return units;
     }
-
-    // TODO:  cut print statements.
 
     /**
      * Set the current units as feet or meters

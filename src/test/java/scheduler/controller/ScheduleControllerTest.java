@@ -193,7 +193,6 @@ public class ScheduleControllerTest extends ApplicationTest {
     public void showHome() throws InterruptedException {
         clickOn(homeBtn);
         Thread.sleep(200);
-        //TODO: need a valid home screen w/ something to ID
         HBox pane = (HBox) GuiTest.find("#top_nav");
         assertTrue(pane.isVisible());
     }
@@ -213,7 +212,7 @@ public class ScheduleControllerTest extends ApplicationTest {
 //        Label l2 = (Label)sc.schedule.getChildren().get(1);
 //        assertTrue(l2 != null);
 //        assertTrue(l2.getText().equals("5:30"));
-        // TODO: rewrite test
+        //  rewrite test
     }
 /*
     @Ignore
@@ -243,13 +242,11 @@ public class ScheduleControllerTest extends ApplicationTest {
 //    @Test
 //    @Category({FastTest.class})
 //    public void validTimes() {
-//        // TODO need database
 //    }
 //
 //    @Test
 //    @Category({FastTest.class})
 //    public void makeTimesValid() {
-//        // TODO need database
 //    }
 
     @After
@@ -261,7 +258,7 @@ public class ScheduleControllerTest extends ApplicationTest {
 
 //    @Test
 //    @Category({FastTest.class})
-//    // TODO: Move to non-UI class
+//    // Move to non-UI class
 //    public void getAvailTimesTest() {
 //        // check returns available times
 //        assertThat(sc.getAvailableTimes(roomID, theDate), equalTo(returnList)) ;

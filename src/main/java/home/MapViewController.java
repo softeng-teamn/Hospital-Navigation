@@ -452,7 +452,7 @@ public class MapViewController implements Observer {
         }
         if (event.isCallElev()) {//if we are supposed to call elevator
             ElevatorConnection e = new ElevatorConnection();
-            if (pathFinder.getElevTimes() != null) {    // TODO: do breadth and depth set elevTimes? I'm getting null pointer exceptions here when I use them
+            if (pathFinder.getElevTimes() != null) {
                 for (String key : pathFinder.getElevTimes().keySet()
                 ) {
                     System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
@@ -466,7 +466,7 @@ public class MapViewController implements Observer {
                     }
                 }
             }
-        } // todo
+        }
 
         path = newpath;
         hasPath = false;
