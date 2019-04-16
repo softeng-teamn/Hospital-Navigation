@@ -631,8 +631,9 @@ public class DirectionsController implements Observer {
 //        Response<ShortenResponse> resp = client.shorten()
 //                .setLongUrl("https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions))
 //                .call();
-
-        BitMatrix bitMatrix = qrCodeWriter.encode("https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions), BarcodeFormat.QR_CODE, 350, 350);
+        String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions);
+        url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
+        BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, 350, 350);
 
         ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
