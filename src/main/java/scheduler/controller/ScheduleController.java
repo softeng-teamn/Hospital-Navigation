@@ -30,6 +30,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
@@ -235,8 +236,6 @@ public class ScheduleController {
     ArrayList<Circle> circleCollection = new ArrayList<Circle>();
     @FXML
     private ScrollPane map_scrollpane;
-    @FXML
-    private JFXSlider zoom_slider;
 
 
     private int openTime = 9;   // hour to start schedule dislay
@@ -295,12 +294,7 @@ public class ScheduleController {
         map_scrollpane.setContent(contentGroup);
 
         // Setting View Scrolling
-        zoom_slider.setMin(0.2);
-        zoom_slider.setMax(0.9);
-        zoom_slider.setValue(0.2);
-        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
-        zoom(0.2);
-
+        zoom(0.3);
 
         //resInfoLbl.setText("");
         timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
@@ -391,17 +385,15 @@ public class ScheduleController {
         TableColumn<ScheduleWrapper, String> friday = new TableColumn<>("Friday");
         TableColumn<ScheduleWrapper, String> saturday = new TableColumn<>("Saturday");
 
-        // not doing anything??
         // set max width for each col
-        timeCol.setPrefWidth(205);
-        sunday.setPrefWidth(205);
-        monday.setPrefWidth(205);
-        tuesday.setPrefWidth(205);
-        wednesday.setPrefWidth(205);
-        thursday.setPrefWidth(205);
-        friday.setPrefWidth(205);
-        saturday.setPrefWidth(205);
-
+        timeCol.setPrefWidth(177);
+        sunday.setPrefWidth(185);
+        monday.setPrefWidth(185);
+        tuesday.setPrefWidth(185);
+        wednesday.setPrefWidth(185);
+        thursday.setPrefWidth(185);
+        friday.setPrefWidth(185);
+        saturday.setPrefWidth(185);
 
         // make sure each column is uneditable
         timeCol.setResizable(false);
@@ -767,7 +759,8 @@ public class ScheduleController {
         // set label of weekly scheduler based on date
         String date = chosenDate.toString();
         String name = curr.getSpaceName();
-        schedLbl.setText("Schedule for " + name + ": Week of " + date);
+        schedLbl.setText("Book " + name + "\nfor the Week of\n" + date);
+        schedLbl.setTextAlignment(TextAlignment.CENTER);
 
 
         // Make a list of time and activity labels for the schedule
