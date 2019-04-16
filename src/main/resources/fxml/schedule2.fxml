@@ -107,7 +107,10 @@
                            <children>
                               <VBox prefHeight="915.0" prefWidth="1485.0">
                                  <children>
-                                    <JFXListView fx:id="reservableList" prefHeight="915.0" prefWidth="1278.0" styleClass="list-view-requests" />
+                                    <JFXListView fx:id="reservableList" prefHeight="915.0" prefWidth="1278.0" styleClass="list-view-requests">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin></JFXListView>
                                     <HBox alignment="CENTER" prefHeight="270.0" prefWidth="200.0" spacing="300.0">
                                        <children>
                                           <JFXButton fx:id="availRoomsBtn" maxWidth="-Infinity" onAction="#availRooms" prefWidth="368.0" styleClass="confirm-button" text="Show Available Rooms" />
