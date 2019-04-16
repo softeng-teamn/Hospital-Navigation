@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import application_state.Event;
 import map.MapController;
@@ -47,7 +48,10 @@ public class DirectionsController implements Observer {
     private JFXListView<Label> directionsView;
 
     @FXML
-    private JFXButton textingButton;
+    private JFXButton textingButton, viewQRCodeBtn;
+
+    @FXML
+    private VBox qrCodeVbox;
 
     @FXML
     private ImageView qrView;
@@ -71,6 +75,7 @@ public class DirectionsController implements Observer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        qrView.setVisible(false);
     }
 
     @FXML
@@ -639,6 +644,20 @@ public class DirectionsController implements Observer {
         byte[] pngData = pngOutputStream.toByteArray();
         Image qr = new Image(new ByteArrayInputStream(pngData));
         qrView.setImage(qr);
+    }
+
+    @FXML
+    public void showQRCode() {
+        if (qrCodeVbox.getMaxHeight() == 0) {
+            qrCodeVbox.setPrefHeight(350);
+            qrCodeVbox.setMaxHeight(350);
+            qrView.setVisible(true);
+        }
+        else {
+            qrCodeVbox.setPrefHeight(0);
+            qrCodeVbox.setMaxHeight(0);
+            qrView.setVisible(false);
+        }
     }
 
 }
