@@ -257,56 +257,15 @@ public class ScheduleController {
     @FXML
     public void initialize() {
         setUpMap();
+        setDefaultTimes();
+        setUpArrayLists();
 
         //resInfoLbl.setText("");
         // Don't show errors yet
 //        timeErrorLbl.setVisible(false);
         inputErrorLbl.setVisible(false);
+        inputErrorLbl.setWrapText(true);
 
-        setDefaultTimes();
-
-        // Create arraylists
-        weeklySchedule = new ArrayList<ArrayList<Integer>>();
-        for (int i = 0; i < 7; i++) {
-            weeklySchedule.add(new ArrayList<Integer>());
-        }
-        resSpaces = FXCollections.observableArrayList();
-
-        //  Pull spaces from database, sort, add to list and listview
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
-        for (ReservableSpace rs : dbResSpaces) {
-            Node n = DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID());
-            nodeCollection.add(n);
-            nodeToResSpace.put(n, rs);
-        }
-
-        Collections.sort(dbResSpaces);
-        resSpaces.addAll(dbResSpaces);
-        reservableList.setItems(resSpaces);
-        reservableList.setEditable(false);
-
-        // Set the cell to display only the name of the reservableSpace
-        reservableList.setCellFactory(param -> new ListCell<ReservableSpace>() {
-            @Override
-            protected void updateItem(ReservableSpace item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty || item == null || item.getSpaceName() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getSpaceName());
-                    setOnMouseClicked(EventHandler -> {
-                        showRoomSchedule(false);
-                    });
-                }
-            }
-        });
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Select the first item and display its schedule
-        reservableList.getSelectionModel().select(0);
-        reservableList.getFocusModel().focus(0);
 
         // Create table columns, set what they display, and add to the table
         TableColumn<ScheduleWrapper, String> timeCol = new TableColumn<>("Time");
@@ -433,6 +392,51 @@ public class ScheduleController {
         endTimePicker.setValue(endTime);
     }
 
+    /**
+     * Set up arrayLists and reservation listview.
+     */
+    private void setUpArrayLists() {
+        // Create arraylists
+        weeklySchedule = new ArrayList<ArrayList<Integer>>();
+        for (int i = 0; i < 7; i++) {
+            weeklySchedule.add(new ArrayList<Integer>());
+        }
+        resSpaces = FXCollections.observableArrayList();
+
+        //  Pull spaces from database, sort, add to list and listview
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
+        for (ReservableSpace rs : dbResSpaces) {
+            Node n = DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID());
+            nodeCollection.add(n);
+            nodeToResSpace.put(n, rs);
+        }
+
+        Collections.sort(dbResSpaces);
+        resSpaces.addAll(dbResSpaces);
+        reservableList.setItems(resSpaces);
+        reservableList.setEditable(false);
+
+        // Set the cell to display only the name of the reservableSpace
+        reservableList.setCellFactory(param -> new ListCell<ReservableSpace>() {
+            @Override
+            protected void updateItem(ReservableSpace item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null || item.getSpaceName() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getSpaceName());
+                    setOnMouseClicked(EventHandler -> {
+                        showRoomSchedule(false);
+                    });
+                }
+            }
+        });
+
+        // Select the first item and display its schedule
+        reservableList.getSelectionModel().select(0);
+        reservableList.getFocusModel().focus(0);
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -496,12 +500,11 @@ public class ScheduleController {
      *
      * @throws Exception
      */
-    public void showConfirmationStage() throws Exception {
+    public void showConfirsmationStage() throws Exception {
         Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
         StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -644,25 +647,21 @@ public class ScheduleController {
      */
     @FXML
     public void makeReservation() throws Exception {
-
         boolean valid = validTimes(true);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
 
         // If evreything is okay, create the reservation
         if (valid) {
-
             // pass relevant info to next screen using event bus
 
             // Get the times and dates and turn them into gregorian calendars
             ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
-
 
             // post event to pass times
             event.setEventName("times");
             event.setStartAndEndTimes(cals);
             System.out.println("Calendars being passed: " + event.getStartAndEndTimes());
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
-
 
             // post event to pass room id
             event.setEventName("room");
@@ -674,7 +673,6 @@ public class ScheduleController {
             Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
             StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
-
         } else {
             repopulateMap();
         }
@@ -719,11 +717,10 @@ public class ScheduleController {
      *
      * @return true if the selected times are valid, false otherwise
      */
-    private boolean validTimes(boolean forRes) {
+    private boolean validTimes(boolean forRes) {    // todo: broken. or something is broken.
 
         // reset label
         inputErrorLbl.setText("");
-
 
         makeMinutesValid();
         // Get the selected times
