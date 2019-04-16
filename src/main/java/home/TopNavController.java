@@ -216,10 +216,14 @@ public class TopNavController implements Observer {
                     }
                 });
                 break;
-            // remove if way off base
-            case "empLogin":
-               // event.setLoggedIn((newEvent.isLoggedIn())); todo: what's the point of this code?
-                break ;
+            case "employee-login":     // receives from AdminLoginContoller
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        fulfillBtn.setVisible(false);
+                    }
+                });
+                break;
             case "showDestination":
                 Platform.runLater(new Runnable() {
                     @Override
