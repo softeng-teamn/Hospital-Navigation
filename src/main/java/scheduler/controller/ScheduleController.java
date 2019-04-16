@@ -417,7 +417,6 @@ public class ScheduleController {
         // cannot edit!
         scheduleTable.setEditable(false);
 
-
         // todo: collapse into one and set that for all of them
         // HERE!! IMPORTANT!! MAYBE!!
         timeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
