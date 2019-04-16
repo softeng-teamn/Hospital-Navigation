@@ -290,6 +290,9 @@ public class MapViewController implements Observer {
                         Node n = ApplicationState.getApplicationState().getObservableBus().getEvent().getDirectionsNode();
                         setFloor(n.getFloor());
                         scrollTo(n);
+                        if (hasPath){
+                            drawPath();
+                        }
                     }
                 });
                 break;
