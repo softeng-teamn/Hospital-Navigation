@@ -31,16 +31,17 @@ import static java.lang.Thread.sleep;
 
 public class SearchResultsController implements Observer {
 
-    private Event event;
+    private Event event;    // The current event
 
     @FXML
     private JFXListView<HBox> list_view;    // Changed to HBox TODO: put in requests pane, too
+
     private HashMap<String, String> buildingAbbrev = new HashMap<>();    // Abbreviate buildings to fit in listview
 
     private Node destNode;
     private ArrayList<Line> drawnLines = new ArrayList<Line>();
-    ArrayList<Node> allNodesObservable;    // Changed to ArrayList
-    ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");
+    ArrayList<Node> allNodesObservable;    // List of nodes for listView
+    ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");    // Non-admin list
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
 
 
@@ -56,19 +57,19 @@ public class SearchResultsController implements Observer {
         buildingAbbrev.put("45 Francis", "45Fr");
         buildingAbbrev.put("15 Francis", "15Fr");
         buildingAbbrev.put("RES", "RES");
-        ApplicationState.getApplicationState().getObservableBus().register("searchResultsContoller",this);
-        repopulateList(event.isAdmin());
+        ApplicationState.getApplicationState().getObservableBus().register("searchResultsContoller",this);    // Register as observer
+        repopulateList(event.isAdmin());    // Populate the list based on whether the current user is admin - can see halls
     }
 
+    /**
+     * Change what's shown based on the event
+     * @param newEvent    the updated event
+     */
     @Override
     public void notify(Object newEvent)  {
         event = (Event) newEvent;
-        // set new event
         switch (event.getEventName()) {
-            case "node-select":
-                //list_view.scrollTo(event.getNodeSelected());   // todo nothing?
-                break;
-            case "login":
+            case "login":   // Add halls if the user is admin
                 //for functions that have threading issue, use this and it will be solved
                 Platform.runLater(new Runnable() {
                     @Override
@@ -77,7 +78,7 @@ public class SearchResultsController implements Observer {
                     }
                 });
                 break;
-            case "search-query":
+            case "search-query":    // Filter list based on user search input
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -85,7 +86,7 @@ public class SearchResultsController implements Observer {
                     }
                 });
                 break;
-            case "logout":
+            case "logout":    // Populate the list without halls
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -111,16 +112,22 @@ public class SearchResultsController implements Observer {
      */
     @FXML
     public void listViewClicked(MouseEvent e) {
+        // Get the current event and ApplicationState
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ApplicationState currState = ApplicationState.getApplicationState();
+
+        // Get the selected/clicked item
         HBox selectedNode = list_view.getSelectionModel().getSelectedItem();
+
+        // Get the nodeID from that item
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
         String Name = DatabaseService.getDatabaseService().getNode(ID).getLongName();
         System.out.println("You clicked on: " + ID + Name);
 
-        // set destination node
+        // Set destination node with the clicked-on item's ID
         destNode = DatabaseService.getDatabaseService().getNode(ID);
 
+        // Tell topNav whether the start or end node was selected
         if (ApplicationState.getApplicationState().getStartEnd().equals("end")){
             event.setNodeSelected(destNode);
             currState.setEndNode(destNode);
@@ -134,6 +141,10 @@ public class SearchResultsController implements Observer {
 
     }
 
+    /**
+     * Repopulate the list based on whether the employee is admin.
+     * @param isAdmin    true if the employee is admin otherwise false
+     */
     void repopulateList(boolean isAdmin) {
 
         System.out.println("Repopulation of listView" + isAdmin);

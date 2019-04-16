@@ -4,7 +4,7 @@ import java.util.Timer;
 
 import static application_state.ApplicationState.getApplicationState;
 
-public class HomeState {
+public class HomeState {    // todo: is this class used for anything?
 
     private boolean isLoggedIn; // 'true or false'
     private String loginType; // ex 'Admin' or 'Employee' or 'Staff'

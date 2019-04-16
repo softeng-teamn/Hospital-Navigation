@@ -76,10 +76,15 @@ public class DirectionsController implements Observer {
 
     @FXML
     void initialize() {
+        // Register as an observer
         ApplicationState.getApplicationState().getObservableBus().register("directionsContoller",this);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+
+        // Get the current path and display it
         path = event.getPath();
         printDirections(makeDirections(path));
+
+        // Set whether the send-text button is enabled
         if (getApplicationState().getEmployeeLoggedIn() != null) {
             textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
             if (!getApplicationState().getEmployeeLoggedIn().getPhone().equals("")) {
@@ -837,6 +842,9 @@ public class DirectionsController implements Observer {
         qrView.setImage(qr);
     }
 
+    /**
+     * Set whether the QR code is visible or not.
+     */
     @FXML
     public void showQRCode() {
         if (qrCodeVbox.getMaxHeight() == 0) {

@@ -63,15 +63,14 @@ public class EmployeeLoginController implements Initializable {
                 event.setEventName("login");
                 ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
                 showHome();
-                // else user is an employee
-            } else {
+            } else {     // else user is an employee
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
 
-                event.setEventName("employee-login");
+                event.setEventName("employee-login");    // Tell topNav not to show the gear/admin services button
                 ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
                 showHome();
             }
