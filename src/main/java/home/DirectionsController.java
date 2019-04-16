@@ -4,6 +4,7 @@ import application_state.ApplicationState;
 import application_state.Observer;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +30,9 @@ public class DirectionsController implements Observer {
 
     @FXML
     private JFXListView<Label> directionsView;
+
+    @FXML
+    private JFXTextField phoneNumber;
 
     @FXML
     private JFXButton textingButton;
@@ -557,13 +561,26 @@ public class DirectionsController implements Observer {
         this.path = thePath;
     }
 
+    public void validPhone(){
+        phoneNumber.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+        phoneNumber.setDisable(Integer.parseInt(phoneNumber.getText()) < 1000000000);
+    }
+
     /**
      * Send a text message with the URL of the map
      */
     public void sendMapToPhone(){
         TextingService textSender = new TextingService();
         //this grabs the employee ID from the Application state and uses that to get the employee from the database, whose phone we want to use. and sends them the directions.
-        textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(),printDirections(makeDirections(path)));
+        if(!(phoneNumber.getText().equals(""))){
+            textSender.textMap(phoneNumber.getText(),printDirections(makeDirections(path)));
+        }
+        else if(!(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""))) {
+            textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(), printDirections(makeDirections(path)));
+        }
+        else{
+            System.out.println("NO PHONE NUMBER");
+        }
     }
 
     /**
