@@ -873,7 +873,6 @@ public class ScheduleController {
         dailyScheduleTab.setText("Daily Schedule All Rooms on " + datePicker.getValue().getMonth() + " " + datePicker.getValue().getDayOfMonth() + ", " + datePicker.getValue().getYear());
     }
 
-
     /**
      * Called by the Make Reservation button.
      * Checks whether location, date, and time are valid.
