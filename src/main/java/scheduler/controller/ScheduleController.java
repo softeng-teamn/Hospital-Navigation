@@ -420,7 +420,6 @@ public class ScheduleController {
 
         // todo: collapse into one and set that for all of them
         // HERE!! IMPORTANT!! MAYBE!!
-        // i have no idea what this means (but im going to apply to all new cols anyways - whoever wrote pls help
         timeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
