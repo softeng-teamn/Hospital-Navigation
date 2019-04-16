@@ -687,7 +687,7 @@ public class ScheduleController {
             // Display the current information
             changeResInfo();
         }
-        populateMap();
+        repopulateMap();
     }
 
     /**
@@ -710,7 +710,7 @@ public class ScheduleController {
             // Display the current information
             changeResInfo();
         }
-        populateMap();
+        repopulateMap();
     }
 
     /**
@@ -762,9 +762,6 @@ public class ScheduleController {
         // set label of weekly scheduler based on date
         String date = chosenDate.toString();
         String name = currentSelection.getSpaceName();
-        schedLbl.setText("Schedule for " + name + ": Week of " + date);
-        String name = curr.getSpaceName();
-
 
         // TODO: 2019-04-16 fix date print out
         // format date
@@ -913,7 +910,7 @@ public class ScheduleController {
             StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
 
         } else {
-            populateMap();
+            repopulateMap();
         }
 
     }
@@ -1115,7 +1112,7 @@ public class ScheduleController {
     public void bookedRooms() {
         boolean valid = validTimes(false);
         if (valid) {
-            populateMap();
+            repopulateMap();
             // Get selected times
             ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes(); // ******* GETS TWO GREG CALENDERS
 
@@ -1216,17 +1213,16 @@ public class ScheduleController {
         return false;
     }
 
-    void populateMap() {
-        System.out.println("**************** REPOPULAT MAP");
+    private void populateMap() {
+        System.out.println("**************** POPULATE MAP");
         zoomGroup.getChildren().removeAll(shapeCollection);
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
         shapeCollection = new ArrayList<SVGPath>();   // todo: I wouldn't recreate these every time
         for (Node node : nodeCollection) {
             SVGPath svg = new SVGPath();
-            svg.setContent("M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2\n" +
-                    "c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z");
-//            Circle circle = new Circle();
-//            circle.setRadius(80);
+            svg.setContent("m 81.966917,110.50737 h 6.602378 v 1.60143 h 2.640952 v -1.62953 H 110.4028 v 29.70017 H 88.621974 c 0,0 0.01053,0.68131 0,0.68131 -0.01053,0 -4.077319,0 -4.077319,0 v -0.17911 h -2.549642 z");
+            svg.setScaleX(5);
+            svg.setScaleY(5);
             if (isNodeInReservableSpace(bookedRS, node)) {
                 svg.setFill(UNAVAILABLE_COLOR);
             } else {
@@ -1249,6 +1245,19 @@ public class ScheduleController {
             shapeCollection.add(svg);
         }
         zoomGroup.getChildren().addAll(shapeCollection);
+    }
+
+    private void repopulateMap() {
+        System.out.println("**************** REPOPULATE MAP");
+        ArrayList<ReservableSpace> bookedRS = getBookedNodes();
+        for (int i = 0; i < nodeCollection.size(); i++) {
+            Node node = nodeCollection.get(i);
+            if (isNodeInReservableSpace(bookedRS, node)) {
+                shapeCollection.get(i).setFill(UNAVAILABLE_COLOR);
+            } else {
+                shapeCollection.get(i).setFill(AVAILABLE_COLOR);
+            }
+        }
     }
 
     @FXML
