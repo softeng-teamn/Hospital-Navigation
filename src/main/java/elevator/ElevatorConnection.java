@@ -35,8 +35,7 @@ public class ElevatorConnection {
      * @throws ProtocolException
      * @throws IOException
      */
-    public void postFloor(String elevator, String floorNum)throws MalformedURLException,
-            ProtocolException, IOException{
+    public void postFloor(String elevator, String floorNum)throws MalformedURLException, IOException{
         GregorianCalendar time = new GregorianCalendar();
         postFloor(elevator, floorNum, time);
     }
@@ -50,8 +49,7 @@ public class ElevatorConnection {
      * @throws IOException
      */
     //tell the elevator to go to this floor at this time, will hold for 30s
-    public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws MalformedURLException,
-            ProtocolException, IOException {
+    public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws IOException {
         switch (floorNum) {
             case "L1":
                 floorNum = "-1";
@@ -87,8 +85,7 @@ public class ElevatorConnection {
      * @throws ProtocolException
      * @throws IOException
      */
-    public String getFloor(String elevator) throws MalformedURLException,
-            ProtocolException, IOException {
+    public String getFloor(String elevator) throws IOException {
         String URL = "https://aldenhallpianos.com/softEngGet.php";
         String urlParameters = "elevator=" + elevator + "&isESP=false";
         return post(URL, urlParameters);
@@ -103,8 +100,7 @@ public class ElevatorConnection {
      * @throws ProtocolException
      * @throws IOException
      */
-    private String post(String URL, String urlParameters) throws MalformedURLException,
-            ProtocolException, IOException {
+    private String post(String URL, String urlParameters) throws IOException {
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
         String floor = "-";
         try {
