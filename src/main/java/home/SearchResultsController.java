@@ -45,7 +45,6 @@ public class SearchResultsController implements Observer {
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
     ArrayList<Reservation> allReservation = DatabaseService.getDatabaseService().getAllReservations();
     DatabaseService myDBS;
-    boolean displayNodes = true;
 
     @FXML
     void initialize() {
@@ -229,7 +228,6 @@ public class SearchResultsController implements Observer {
      */
     private ObservableList<HBox> makeIntoHBoxes(ArrayList<Node> nodes, ArrayList<Reservation> reservations) {
         ArrayList<HBox> hBoxes = new ArrayList<>();
-        if(displayNodes) {
             for (int i = 0; i < nodes.size(); i++) {    // For every node
                 Node currNode = nodes.get(i);
                 HBox hb = new HBox();
@@ -250,8 +248,6 @@ public class SearchResultsController implements Observer {
                 hb.setSpacing(0);
                 hBoxes.add(hb);    // Add it all to the list
             }
-        }
-        else if (!(displayNodes)) {
             for (int i = 0; i < reservations.size(); i++) {    // For every node
                 Reservation currRes = reservations.get(i);
                 HBox hb = new HBox();
@@ -273,7 +269,7 @@ public class SearchResultsController implements Observer {
                 hb.setSpacing(0);
                 hBoxes.add(hb);    // Add it all to the list
             }
-        }
+
         ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
         observeHboxes.addAll(hBoxes);
         return observeHboxes;
