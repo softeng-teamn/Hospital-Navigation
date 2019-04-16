@@ -59,6 +59,10 @@
     -fx-fill: -fx-primary;
 }
 
+.dest-icon{
+    -fx-fill: -fx-complementary;
+}
+
 .request-glyph {
     -fx-fill: -fx-complementary;
 }
