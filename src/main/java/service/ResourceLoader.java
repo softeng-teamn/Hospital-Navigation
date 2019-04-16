@@ -14,6 +14,7 @@ public class  ResourceLoader {
     public static final URL deleteNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/deleteNodeConfirm.fxml");
     public static final URL saveNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/saveNodeConfirm.fxml");
 
+    public static final URL about = service.ResourceLoader.class.getResource("/fxml/home/aboutPage.fxml");
     public static final URL directionMessage = service.ResourceLoader.class.getResource("/fxml/home/directionMessage.fxml");
     public static final URL pathFindingSettings = service.ResourceLoader.class.getResource("/fxml/home/pathfindingSettings.fxml");
     public static final URL searchResults = service.ResourceLoader.class.getResource("/fxml/home/searchResults.fxml");
@@ -56,6 +57,19 @@ public class  ResourceLoader {
     public static final URL secondLowerFloor = service.ResourceLoader.class.getResource("/images/L2.png");
     public static final URL adminLogin = service.ResourceLoader.class.getResource("/fxml/employeeLogin.fxml");
 
+    // direction icons
+    public static final URL continue_icon = service.ResourceLoader.class.getResource("/images/direction_icons/continue.png");
+    public static final URL elevator_icon = service.ResourceLoader.class.getResource("/images/direction_icons/elevator.png");
+    public static final URL walking_icon = service.ResourceLoader.class.getResource("/images/direction_icons/pedestrian-walking.png");
+    public static final URL stairs_down_icon = service.ResourceLoader.class.getResource("/images/direction_icons/stairs-down.png");
+    public static final URL stairs_up_icon = service.ResourceLoader.class.getResource("/images/direction_icons/stairs-up.png");
+    public static final URL turn_left_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_left.png");
+    public static final URL turn_right_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_right.png");
+    public static final URL turn_sharp_left_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_sharp_left.png");
+    public static final URL turn_sharp_right_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_sharp_right.png");
+    public static final URL turn_slight_left_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_slight_left.png");
+    public static final URL turn_slight_right_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_slight_right.png");
+    public static final URL uturn_icon = service.ResourceLoader.class.getResource("/images/direction_icons/uturn.png");
 
     public static final ResourceBundle dfBundle = ResourceBundle.getBundle("strings", Locale.getDefault());
     public static final ResourceBundle enBundle = ResourceBundle.getBundle("strings", new Locale("en"));

@@ -1,7 +1,7 @@
 package elevator_api;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import elevator.ElevatorConnnection;
+import elevator.ElevatorConnection;
 import employee.model.Employee;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,6 +17,7 @@ public class InternalTransportRequestApi {
     ApiDatabaseService myDBS = ApiDatabaseService.getDatabaseService();
 
     static String originNodeID;
+    private boolean useElev;
 
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
     public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin) throws ServiceException {
@@ -41,6 +42,39 @@ public class InternalTransportRequestApi {
         primaryStage.setScene(scene);
         scene.getStylesheets().add(this.getClass().getResource(cssPath).toExternalForm());
         primaryStage.show();
+
+        useElev = false;
+
+        myDBS.setCallElev(useElev);
+    }
+
+
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
+    public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin, boolean useElev) throws ServiceException {
+        Stage primaryStage = new Stage();
+        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/api/api.fxml"), ResourceBundle.getBundle("strings", Locale.getDefault()));
+
+        Parent root;
+        try {
+            root = loader.load();
+        } catch (Exception e) {
+            System.out.println("failed to load the file");
+            e.printStackTrace();
+            return;
+        }
+
+        originNodeID = (origin == null ? "" : origin);
+
+        Scene scene = new Scene(root, (double) windowWidth, (double) windowLength);
+        primaryStage.setX((double) xcoord);
+        primaryStage.setY((double) ycoord);
+        primaryStage.setTitle("Internal Transport Request");
+        primaryStage.setScene(scene);
+        scene.getStylesheets().add(this.getClass().getResource(cssPath).toExternalForm());
+        primaryStage.show();
+
+        this.useElev = useElev;
+        myDBS.setCallElev(useElev);
     }
 
     /**

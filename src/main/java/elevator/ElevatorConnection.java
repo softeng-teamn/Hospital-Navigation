@@ -12,17 +12,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class ElevatorConnnection {
+public class ElevatorConnection {
     private static HttpURLConnection con;
     private String teamName;
 
     //for other teams
-    public ElevatorConnnection(String teamName) {
+    public ElevatorConnection(String teamName) {
         this.teamName = teamName;
     }
 
     //for our team
-    public ElevatorConnnection(){
+    public ElevatorConnection(){
         this.teamName = "N";
     }
 
@@ -35,8 +35,7 @@ public class ElevatorConnnection {
      * @throws ProtocolException
      * @throws IOException
      */
-    public void postFloor(String elevator, String floorNum)throws MalformedURLException,
-            ProtocolException, IOException{
+    public void postFloor(String elevator, String floorNum)throws IOException{
         GregorianCalendar time = new GregorianCalendar();
         postFloor(elevator, floorNum, time);
     }
@@ -45,13 +44,10 @@ public class ElevatorConnnection {
      * @param elevator name of elevator to tell
      * @param floorNum the floor the specified elevator should go to
      * @param time     what time is should get to the elevator at
-     * @throws MalformedURLException
-     * @throws ProtocolException
      * @throws IOException
      */
     //tell the elevator to go to this floor at this time, will hold for 30s
-    public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws MalformedURLException,
-            ProtocolException, IOException {
+    public void postFloor(String elevator, String floorNum, GregorianCalendar time) throws IOException {
         switch (floorNum) {
             case "L1":
                 floorNum = "-1";
@@ -59,23 +55,14 @@ public class ElevatorConnnection {
             case "L2":
                 floorNum = "-2";
                 break;
-            case " 0":
+            case "0G":
                 floorNum = "0";
                 break;
-            case " 1":
-                floorNum = "1";
-                break;
-            case " 2":
-                floorNum = "2";
-                break;
-            case " 3":
-                floorNum = "3";
-                break;
-            case" 4":
-                floorNum = "4";
+            case " G":
+                floorNum = "0";
                 break;
             default:
-                floorNum = "-4";
+                floorNum = floorNum.substring(floorNum.length() - 1);//last num will be floor
                 break;
         }
 
@@ -92,12 +79,9 @@ public class ElevatorConnnection {
     /**
      * @param elevator the name of the elevator to get the position of
      * @return returns a  string containing the floor the elevator is on
-     * @throws MalformedURLException
-     * @throws ProtocolException
      * @throws IOException
      */
-    public String getFloor(String elevator) throws MalformedURLException,
-            ProtocolException, IOException {
+    public String getFloor(String elevator) throws IOException {
         String URL = "https://aldenhallpianos.com/softEngGet.php";
         String urlParameters = "elevator=" + elevator + "&isESP=false";
         return post(URL, urlParameters);
@@ -108,12 +92,9 @@ public class ElevatorConnnection {
      * @param URL           the url to post to
      * @param urlParameters the parameters of the post service_request
      * @return returns a string containing the current floor is on
-     * @throws MalformedURLException
-     * @throws ProtocolException
      * @throws IOException
      */
-    private String post(String URL, String urlParameters) throws MalformedURLException,
-            ProtocolException, IOException {
+    private String post(String URL, String urlParameters) throws IOException {
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
         String floor = "-";
         try {

@@ -12,6 +12,8 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
+<?import com.jfoenix.controls.JFXToggleNode?>
+<?import javafx.scene.control.ToggleGroup?>
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <FontAwesomeIconView glyphName="WHEELCHAIR" size="240" styleClass="request-glyph">
