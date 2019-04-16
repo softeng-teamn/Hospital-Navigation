@@ -49,6 +49,12 @@ public class DirectionsController implements Observer {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         path = event.getPath();
         printDirections(makeDirections(path));
+        if (getApplicationState().getEmployeeLoggedIn() != null) {
+            textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+        }
+        else {
+            textingButton.setDisable(true);
+        }
     }
 
     @FXML
@@ -562,8 +568,20 @@ public class DirectionsController implements Observer {
     }
 
     public void validPhone(){
-        phoneNumber.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
-        phoneNumber.setDisable(Integer.parseInt(phoneNumber.getText()) < 1000000000);
+        if (getApplicationState().getEmployeeLoggedIn() != null) {
+            textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+        }
+        for (char c: phoneNumber.getText().toCharArray()) {
+            if (!Character.isDigit(c)) {
+                textingButton.setDisable(true);
+            }
+        }
+        if (phoneNumber.getText().length() != 10) {
+            textingButton.setDisable(true);
+        }
+        else {
+            textingButton.setDisable(false);
+        }
     }
 
     /**

@@ -40,7 +40,7 @@
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXListView>
-      <JFXTextField fx:id="phoneNumber" onInputMethodTextChanged="#validPhone" onKeyReleased="#validPhone" promptText="Phone Number" stylesheets="@../../theme.css" />
+      <JFXTextField fx:id="phoneNumber" onInputMethodTextChanged="#validPhone" onKeyReleased="#validPhone" promptText="Phone Number (format ##########)" stylesheets="@../../theme.css" />
         <JFXButton fx:id="textingButton" onAction="#sendMapToPhone" styleClass="confirm-button" text="Send Path as Text Message">
          <VBox.margin>
             <Insets bottom="24.0" />
