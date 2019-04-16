@@ -380,7 +380,6 @@ public class ScheduleController {
         reservableList.getSelectionModel().select(0);
         reservableList.getFocusModel().focus(0);
 
-
         // Create table columns, set what they display, and add to the table
         TableColumn<ScheduleWrapper, String> timeCol = new TableColumn<>("Time");
         TableColumn<ScheduleWrapper, String> sunday = new TableColumn<>("Sunday");
@@ -391,7 +390,6 @@ public class ScheduleController {
         TableColumn<ScheduleWrapper, String> friday = new TableColumn<>("Friday");
         TableColumn<ScheduleWrapper, String> saturday = new TableColumn<>("Saturday");
 
-        // not doing anything??
         // set max width for each col
         timeCol.setPrefWidth(205);
         sunday.setPrefWidth(205);
@@ -413,12 +411,10 @@ public class ScheduleController {
         friday.setResizable(false);
         saturday.setResizable(false);
 
-
-        // cannot edit!
+        // Schedule is not editable
         scheduleTable.setEditable(false);
 
         // todo: collapse into one and set that for all of them
-        // HERE!! IMPORTANT!! MAYBE!!
         timeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
