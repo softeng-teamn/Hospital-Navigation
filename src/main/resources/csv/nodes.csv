@@ -614,3 +614,14 @@ BBBBB00111,2175,1305,RES,RES,RES,Reservable 7 Computer 3,Computer 3
 BBBBB00112,3080,1675,RES,RES,RES,Reservable 8 Computer 4,Computer 4
 BBBBB00113,2450,1300,RES,RES,RES,Reservable 9 Computer 5,Computer 5
 BBBBB00114,2490,2180,RES,RES,RES,Reservable 10 Computer 6,Computer 6
+XEXIT  102,3063,1095,2,45 Francis,EXIT,45 Francis Entrance,45 Entrance
+XHALL15702,3281,1134,2,45 Francis,HALL,45 sidewalk,45 sidewalk
+XHALL15802,3372,1219,2,45 Francis,HALL,45 sidewalk,45 sidewalk
+XHALL15902,3378,1573,2,45 Francis,HALL,45 sidewalk,45 sidewalk
+XHALL16002,3871,1573,2,45 Francis,HALL,45 sidewalk,45 sidewalk
+XEXIT  202,3867,1923,2,FLEX,EXIT,Flexible Workspaces Entrance,Flex Entrance
+XHALL16102,3830,1991,2,FLEX,HALL,FLEX Entry Hall,FLEX Entry Hall
+XHALL16202,3830,2316,2,FLEX,HALL,FLEX Hall,FLEX Hall
+XHALL16302,3772,2316,2,FLEX,HALL,FLEX Entry Hall,FLEX Entry Hall
+XELEV 1502,3739,2252,2,FLEX,ELEV,Elevator T,FLEX Elevator
+XHALL16402,3338,1166,2,45 Francis,HALL,45 sidewalk,45 sidewalk
