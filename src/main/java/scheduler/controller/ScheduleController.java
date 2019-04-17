@@ -317,6 +317,33 @@ public class ScheduleController {
     private SVGPath classroom1, classroom2, classroom3, classroom4, classroom5, classroom6, classroom7, classroom8, classroom9, auditorium;
 
     @FXML
+    private SVGPath ws1, ws2, ws3, ws4, ws5, ws6, ws7, ws8, ws9;
+    @FXML
+    private SVGPath ws10, ws11, ws12, ws13, ws14, ws15, ws16, ws17, ws18, ws19;
+    @FXML
+    private SVGPath ws20, ws21, ws22, ws23, ws24, ws25, ws26, ws27, ws28, ws29;
+    @FXML
+    private SVGPath ws30, ws31, ws32, ws33, ws34, ws35, ws36, ws37, ws38, ws39;
+    @FXML
+    private SVGPath ws40, ws41, ws42, ws43, ws44, ws45, ws46, ws47, ws48, ws49;
+    @FXML
+    private SVGPath ws50, ws51, ws52, ws53, ws54, ws55, ws56, ws57, ws58, ws59;
+    @FXML
+    private SVGPath ws60, ws61, ws62, ws63, ws64, ws65, ws66, ws67, ws68, ws69;
+    @FXML
+    private SVGPath ws70, ws71, ws72, ws73, ws74, ws75, ws76, ws77, ws78, ws79;
+    @FXML
+    private SVGPath ws80, ws81, ws82, ws83, ws84, ws85, ws86, ws87, ws88, ws89;
+    @FXML
+    private SVGPath ws90, ws91, ws92, ws93, ws94, ws95, ws96, ws97, ws98, ws99;
+    @FXML
+    private SVGPath ws100, ws101, ws102, ws103, ws104, ws105, ws106, ws107, wsv8, ws109;
+    @FXML
+    private SVGPath ws110, ws111, ws112, ws113, ws114, ws115, ws116, ws117, ws118, ws119;
+    @FXML
+    private SVGPath ws120;
+
+    @FXML
     private Tab weeklyScheduleTab, dailyScheduleTab;
 
     private Event event ;    // The current event
@@ -328,6 +355,7 @@ public class ScheduleController {
     static final Color SELECT_UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.9);
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
     ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
+    ArrayList<SVGPath> workStations = new ArrayList<>();
 
     // Table display information
     private int openTime = 9;   // hour to start schedule display
