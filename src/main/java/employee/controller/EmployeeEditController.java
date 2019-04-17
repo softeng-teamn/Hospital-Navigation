@@ -53,7 +53,7 @@ public class EmployeeEditController {
     private JFXTextField new_username;
 
     @FXML
-    private JFXComboBox<String> new_job;
+    private JFXComboBox<JobType> new_job;
 
     @FXML
     private JFXCheckBox new_is_admin;
@@ -72,24 +72,7 @@ public class EmployeeEditController {
 
     @FXML
     public void initialize() {
-        new_job.getItems().add(JobType.ADMINISTRATOR.toString());
-        new_job.getItems().add(JobType.DOCTOR.toString());
-        new_job.getItems().add(JobType.NURSE.toString());
-        new_job.getItems().add(JobType.JANITOR.toString());
-        new_job.getItems().add(JobType.SECURITY_PERSONNEL.toString());
-        new_job.getItems().add(JobType.MAINTENANCE_WORKER.toString());
-        new_job.getItems().add(JobType.IT.toString());
-        new_job.getItems().add(JobType.GUEST.toString());
-        new_job.getItems().add(JobType.RELIGIOUS_OFFICIAL.toString());
-        new_job.getItems().add(JobType.GIFT_SERVICES.toString());
-        new_job.getItems().add(JobType.MISCELLANEOUS.toString());
-        new_job.getItems().add(JobType.AV.toString());
-        new_job.getItems().add(JobType.INTERPRETER.toString());
-        new_job.getItems().add(JobType.TOY.toString());
-        new_job.getItems().add(JobType.PATIENT_INFO.toString());
-        new_job.getItems().add(JobType.FLORIST.toString());
-        new_job.getItems().add(JobType.INTERNAL_TRANSPORT.toString());
-        new_job.getItems().add(JobType.EXTERNAL_TRANSPORT.toString());
+        new_job.getItems().addAll(JobType.values());
         initCols();
         loadData();
     }
@@ -195,7 +178,7 @@ public class EmployeeEditController {
             max = e.getID() > max ? e.getID() : max;
         }
 
-        Employee employee = new Employee(max+1, new_username.getText(), JobType.valueOf(new_job.getValue()), new_is_admin.isSelected(), new_password.getText());
+        Employee employee = new Employee(max+1, new_username.getText(), new_job.getValue(), new_is_admin.isSelected(), new_password.getText());
         boolean inserted = myDBS.insertEmployee(employee);
         loadData();
 
