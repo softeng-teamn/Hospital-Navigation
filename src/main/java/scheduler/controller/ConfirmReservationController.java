@@ -136,7 +136,7 @@ public class ConfirmReservationController {
 
         // check employee id
         // parse around prompt text
-        String id = employeeID.getId();
+        String id = employeeID.getText();
         boolean badId = false;
 
         // Check whether the ID is a number
