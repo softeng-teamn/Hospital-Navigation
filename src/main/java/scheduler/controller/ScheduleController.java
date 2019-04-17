@@ -49,8 +49,6 @@ import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
-// todo: cleanup this class
-
 /**
  * Controls the schedule page of the application. Allows user to view a map of rooms and
  * their availability at the selected time and date, to view a list of all rooms,
@@ -657,34 +655,26 @@ public class ScheduleController {
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
-
-    /**
-     * switches final window of scheduler
-     *
-     * @throws Exception
-     */
-    public void showConfirsmationStage() throws Exception {
-        Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
-        StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
-    }
-
     /**
      * On room button click, show the schedule for that room and date.
      */
     @FXML
     public void showRoomSchedule(boolean alreadySelected) {
-        // Get the selected location
+        // Get the selected location if not selected on map
         if (!alreadySelected) {
             ReservableSpace curr = (ReservableSpace) reservableList.getSelectionModel().getSelectedItem();
             currentSelection = curr;
         }
+        reservableList.getSelectionModel().select(currentSelection);
 
         // todo: collaborate the same functionality between these two
         showWeeklySchedule();
         showDailySchedule();
     }
 
+    /**
+     * Set the display for the weekly schedule table.
+     */
     private void showWeeklySchedule() {
         // Clear the previous schedule
         for (int i = 0; i < NUM_DAYS_IN_WEEK; i++) {
@@ -696,7 +686,6 @@ public class ScheduleController {
         // set label of weekly scheduler based on date
         String name = currentSelection.getSpaceName();
 
-
         // format date
         int date1 = chosenDate.getDayOfMonth();
         String month = chosenDate.getMonth().toString();
@@ -704,11 +693,10 @@ public class ScheduleController {
         month = month.substring(0, 1).toUpperCase() + month.substring(1);
         String curTime = String.format(month + " %02dth", date1);
 
+        // Print the info in the label on the list
         schedLbl.setText("Book " + name + "\nfor the Week of\n" + curTime);
         schedLbl.setTextAlignment(TextAlignment.CENTER);
         schedLbl.setWrapText(true);
-
-
 
         // Make a list of time and activity labels for the schedule
         ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
@@ -719,7 +707,6 @@ public class ScheduleController {
             if (((int) i / 12) == 1) {    // If in the afternoon, use PM
                 amPm = "PM";
             }
-            //inputErrorLbl.setVisible(true); // todo what does this do?
 
             int time = i % 12;    // The hour, from 24 hours
             if (time == 0) {    // If the hour was 12, make it display as 12
@@ -743,6 +730,7 @@ public class ScheduleController {
             }
         }
 
+        // Set the date to start on
         LocalDate selectedDate = datePicker.getValue();
         int selectedDayOfWeek = datePicker.getValue().getDayOfWeek().getValue();    // 1 is Monday, 7 is Sunday
         if (selectedDayOfWeek != 7) {
@@ -792,12 +780,14 @@ public class ScheduleController {
         }
 
         ObservableList<ScheduleWrapper> wrap = FXCollections.observableArrayList();
-        // schedToAdd = an array list of ScheduleWrapper
         wrap.addAll(schedToAdd);
         scheduleTable.setItems(wrap);
         weeklyScheduleTab.setText("Weekly Schedule for " + currentSelection.getSpaceName());
     }
 
+    /**
+     * Set the daily schedule table.
+     */
     private void showDailySchedule() {
         // Clear the previous schedule
         for (int i = 0; i < NUM_ROOMS; i++) {
@@ -836,6 +826,7 @@ public class ScheduleController {
             }
         }
 
+        // Start date is start of the selected date, end date is the beginning of the next day
         GregorianCalendar gcalStartDay = GregorianCalendar.from(datePicker.getValue().atStartOfDay(ZoneId.systemDefault()));
         GregorianCalendar gcalEndDay = GregorianCalendar.from((datePicker.getValue().plus(1, ChronoUnit.DAYS)).atStartOfDay(ZoneId.systemDefault()));
 
@@ -879,6 +870,8 @@ public class ScheduleController {
         ObservableList<ScheduleWrapper> wrap = FXCollections.observableArrayList();
         // schedToAdd = an array list of ScheduleWrapper
         wrap.addAll(schedToAdd);
+
+        // Print out a nice tab title
         dailyScheduleAllRooms.setItems(wrap);
         String month = datePicker.getValue().getMonth() + "";
         month = month.substring(0,1) + month.substring(1).toLowerCase();
@@ -894,35 +887,27 @@ public class ScheduleController {
         boolean valid = validTimes(true);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
 
-        // If evreything is okay, create the reservation
+        // If everything is okay, create the reservation
         if (valid) {
-            // pass relevant info to next screen using event bus
-
             // Get the times and dates and turn them into gregorian calendars
             ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
 
             // post event to pass times
             event.setEventName("times");
             event.setStartAndEndTimes(cals);
-            System.out.println("Calendars being passed: " + event.getStartAndEndTimes());
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
             // post event to pass room id
             event.setEventName("room");
             event.setRoomId(currentSelection.getSpaceID());
-            System.out.println("Room id being passed: " + event.getRoomId());
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
             // switch screen to final stage of scheduler
             Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
             StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
-        } else {
-            repopulateMap();
         }
-
     }
-
 
     /**
      * Make gregorian calendars from the currently selected date and time.
@@ -942,23 +927,11 @@ public class ScheduleController {
     }
 
     /**
-     * Show the current schedule, clear errors, and clear user input.
-     */
-    private void resetView() {
-        showRoomSchedule(false);
-        repopulateMap();
-        inputErrorLbl.setVisible(false);
-//        timeErrorLbl.setVisible(false);
-//        resInfoLbl.setText("");
-    }
-
-
-    /**
      * Check whether the selected times are valid. If not, return false.
      * Valid times must: be within the chosen location's start and end times.
-     * Have an end time greater than the start time.
-     * Not conflict with any existing reservation.
-     * Be in the future.
+     *                  Have an end time greater than the start time.
+     *                  Not conflict with any existing reservation.
+     *                  Be in the future.
      *
      * @return true if the selected times are valid, false otherwise
      */
@@ -978,8 +951,6 @@ public class ScheduleController {
 
         // If the chosen date is in the past, show an error
         if (forRes && datePicker.getValue().atStartOfDay().isBefore(LocalDate.now().atStartOfDay())) {
-//            timeErrorLbl.setText(pastDateErrorText);
-//            timeErrorLbl.setVisible(true);
             inputErrorLbl.setVisible(true);
             inputErrorLbl.setText(pastDateErrorText);
             return false;
@@ -988,8 +959,6 @@ public class ScheduleController {
         // If the times are outside the location's open times
         // or end is greater than start, the times are invalid
         if (endIndex <= index || start < openTime || closeTime < end) {
-//            timeErrorLbl.setText(timeErrorText);
-//            timeErrorLbl.setVisible(true);
             inputErrorLbl.setVisible(true);
             inputErrorLbl.setText(timeErrorText);
             return false;
@@ -1000,8 +969,6 @@ public class ScheduleController {
             ArrayList<Integer> thisDay = weeklySchedule.get(datePicker.getValue().getDayOfWeek().getValue());
             for (int i = index; i < endIndex; i++) {
                 if (thisDay.get(i) == 1) {    // If so, show an error
-//                    timeErrorLbl.setText(conflictErrorText);
-//                    timeErrorLbl.setVisible(true);
                     inputErrorLbl.setVisible(true);
                     inputErrorLbl.setText(conflictErrorText);
                     return false;
@@ -1026,58 +993,10 @@ public class ScheduleController {
         }
         // If the end minutes selected are not divisible by the timeStep (ex. 30 minutes)
         if (endTimePicker.getValue().getMinute() % (timeStepMinutes) != 0) {
-            // Rund them down to the nearest timeStep
+            // Round them down to the nearest timeStep
             int minutes = ((int) endTimePicker.getValue().getMinute() / (timeStepMinutes)) * (timeStepMinutes);
             endTimePicker.setValue(LocalTime.of(endTimePicker.getValue().getHour(), minutes));
         }
-    }
-
-    /**
-     * Searches for reservable space
-     *
-     * @param e
-     */
-    @FXML
-    public void searchBarEnter(ActionEvent e) {
-        String search = searchBar.getText();
-        filterList(search);
-    }
-
-    /**
-     * Filters the ListView based on the string
-     */
-    private void filterList(String findStr) {
-        if (findStr.equals("")) {
-            reservableList.setItems(resSpaces);
-            System.out.println(resSpaces);
-        }
-        else {
-            //Get List of all nodes
-            ObservableList<ReservableSpace> original = resSpaces;
-            System.out.println(resSpaces);
-
-            //Get Sorted list of nodes based on search value
-            List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, ReservableSpace::getSpaceName), 75);
-
-            // Map to nodes based on index
-            Stream<ReservableSpace> stream = filtered.stream().map(er -> {
-                return original.get(er.getIndex());
-            });
-
-            // Convert to list and then to observable list
-            List<ReservableSpace> filteredSpaces = stream.collect(Collectors.toList());
-            ObservableList<ReservableSpace> toShow = FXCollections.observableList(filteredSpaces);
-
-            // Add to view
-            reservableList.setItems(toShow);
-        }
-    }
-
-    /**
-     * for lists
-     */
-    private static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
-        return from.stream().map(func).collect(Collectors.toList());
     }
 
     /**
@@ -1154,8 +1073,6 @@ public class ScheduleController {
      * Reset display to show all spaces
      */
     public void clearFilter() {
-//        timeErrorLbl.setVisible(false);
-        // Set list to all spaces
         ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
         Collections.sort(dbResSpaces);
         resSpaces.clear();
@@ -1181,27 +1098,23 @@ public class ScheduleController {
 
 
     /**
-     * Currently unused:
-     * returns a list of roomIDs which have a max capacity of less than nPeople
-     *
-     * @param nPeople
-     * @return
+     * Get the nodes that are booked for the selected date and time.
+     * @return the list of booked nodes for the selected date and time
      */
-    ArrayList<String> getMaxPeople(int nPeople) {
-        ArrayList<String> a = new ArrayList<>();
-        return a;
-    }
-
-    // MAP STUFF DOWN HERE ****************
-
-    ArrayList<ReservableSpace> getBookedNodes() {
+    private ArrayList<ReservableSpace> getBookedNodes() {
         // Get selected times
-        ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes(); // ******* GETS TWO GREG CALENDERS
-        // Get reservations between selected times                          ****** shows all rooms that are booked based on selected times
+        ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
+        // Get reservations between selected times
         return (ArrayList<ReservableSpace>) myDBS.getBookedReservableSpacesBetween(cals.get(0), cals.get(1));
     }
 
-    boolean isNodeInReservableSpace(ArrayList<ReservableSpace> rs, Node n) {
+    /**
+     * Check whether this node is in this list of reservable spaces
+     * @param rs  the list of reservable spaces
+     * @param n   the node to check
+     * @return  true if the node is in the list, false otherwise
+     */
+    private boolean isNodeInReservableSpace(ArrayList<ReservableSpace> rs, Node n) {
         for (int i = 0; i < rs.size(); i++) {
             if (rs.get(i).getLocationNodeID().equals(n.getNodeID())) {
                 return true;
@@ -1210,26 +1123,27 @@ public class ScheduleController {
         return false;
     }
 
+    /**
+     * Populate the map the first time.
+     */
     private void populateMap() {
-        System.out.println("**************** POPULATE MAP");
+        // Add all the shapes to a list
         shapeCollection = new ArrayList<SVGPath>();
         shapeCollection.addAll(Arrays.asList(auditorium, classroom4, classroom6, classroom8, classroom1, classroom2, classroom3, classroom5, classroom7, classroom9));
-        for (int i = 0; i < nodeCollection.size(); i++) {
+        for (int i = 0; i < nodeCollection.size(); i++) {    // For each shape, associate it with a node
             Node node = nodeCollection.get(i);
             SVGPath svg = shapeCollection.get(i);
-            svg.setStroke(Color.BLACK);
+            svg.setStroke(Color.BLACK);     // Set the default color and design
             svg.setFill(AVAILABLE_COLOR);
             svg.setStrokeWidth(0);
             svg.setStrokeType(StrokeType.INSIDE);
-            svg.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            svg.setOnMouseClicked(new EventHandler<MouseEvent>() {    // When this node is clicked, select it and show its schedules
                 @Override public void handle(MouseEvent e) {
                     currentSelection = nodeToResSpace.get(node);
-                    System.out.println(currentSelection);
                     showRoomSchedule(true);
                     repopulateMap();
                 }
             });
-            shapeCollection.add(svg);
         }
     }
 
@@ -1237,18 +1151,17 @@ public class ScheduleController {
      * Recolor the shapes on the map for the given time if they are booked.
      */
     private void repopulateMap() {
-        System.out.println("**************** REPOPULATE MAP");
         ArrayList<ReservableSpace> bookedRS = getBookedNodes();
-        for (int i = 0; i < nodeCollection.size(); i++) {
+        for (int i = 0; i < nodeCollection.size(); i++) {    // For each space, check whether it is available or booked
             Node node = nodeCollection.get(i);
             SVGPath svg = shapeCollection.get(i);
             svg.setStrokeWidth(0);
-            if (isNodeInReservableSpace(bookedRS, node)) {
+            if (isNodeInReservableSpace(bookedRS, node)) {    // If it's booked, change the color
                 svg.setFill(UNAVAILABLE_COLOR);
             } else {
                 svg.setFill(AVAILABLE_COLOR);
             }
-            if (nodeToResSpace.get(node).equals(currentSelection)) {
+            if (nodeToResSpace.get(node).equals(currentSelection)) {    // If this space is selected, change its color
                 svg.setStrokeWidth(1);
                 if (svg.getFill().equals(AVAILABLE_COLOR)) {
                     svg.setFill(SELECT_AVAILABLE_COLOR);
@@ -1258,11 +1171,6 @@ public class ScheduleController {
                 }
             }
         }
-    }
-
-    @FXML
-    void mapClickedHandler(MouseEvent e) {
-        System.out.println("x: " + e.getX() + ", y: " + e.getY());
     }
 
     // Admin functionality, ideally
