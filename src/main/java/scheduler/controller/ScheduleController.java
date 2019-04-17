@@ -401,6 +401,7 @@ public class ScheduleController {
         // Don't show errors yet
         inputErrorLbl.setVisible(false);
         inputErrorLbl.setWrapText(true);
+        inputErrorLbl.setPrefWidth(450);
 
         // Populate tables
         showRoomSchedule(false);
@@ -689,8 +690,8 @@ public class ScheduleController {
                 bookedRooms();
             }
             showRoomSchedule(false);
+            repopulateMap();
         }
-        repopulateMap();
     }
 
     /**
