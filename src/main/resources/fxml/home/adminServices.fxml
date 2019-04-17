@@ -90,6 +90,16 @@
                         <FontAwesomeIconView glyphName="BOLD" size="48" styleClass="request-glyph" />
                      </graphic>
                   </JFXToggleNode>
+                  <JFXToggleNode fx:id="bestFirstToggle" onAction="#bestSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Best" textAlignment="CENTER" toggleGroup="$algorithm">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="BOLD" size="48" styleClass="request-glyph" />
+                     </graphic>
+                  </JFXToggleNode>
+                  <JFXToggleNode fx:id="dijsktraToggle" onAction="#dijsktraSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Dijsktra" textAlignment="CENTER" toggleGroup="$algorithm">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="BOLD" size="48" styleClass="request-glyph" />
+                     </graphic>
+                  </JFXToggleNode>
                </children>
             </HBox>
          </children>
