@@ -893,11 +893,7 @@ public class ScheduleController {
             ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
 
             // post event to pass times
-            event.setEventName("times");
             event.setStartAndEndTimes(cals);
-            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
-
-            // post event to pass room id
             event.setEventName("room");
             event.setRoomId(currentSelection.getSpaceID());
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
@@ -966,7 +962,13 @@ public class ScheduleController {
 
         if (forRes) {
             // For each time in the reservation, check whether it is already booked
-            ArrayList<Integer> thisDay = weeklySchedule.get(datePicker.getValue().getDayOfWeek().getValue());
+            ArrayList<Integer> thisDay;
+            if (datePicker.getValue().getDayOfWeek().getValue() == 7) {
+                thisDay= weeklySchedule.get(0);
+            }
+            else {
+                thisDay = weeklySchedule.get(datePicker.getValue().getDayOfWeek().getValue());
+            }
             for (int i = index; i < endIndex; i++) {
                 if (thisDay.get(i) == 1) {    // If so, show an error
                     inputErrorLbl.setVisible(true);

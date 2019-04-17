@@ -21,17 +21,22 @@ import scheduler.model.Reservation;
 import service.ResourceLoader;
 import service.StageManager;
 
+import javax.xml.crypto.Data;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
-public class ConfirmReservationController implements Observer {
-
+/**
+ * Reservation confirmation screen. Displays selected location, date, and time
+ * and allows user to enter event name, auto-populates the user's ID,
+ * and allows user to select public or private event and submit reservation.
+ */
+public class ConfirmReservationController {
 
     @FXML
     public JFXButton homeBtn, makeReservationBtn, backBtn;
     @FXML
-    public Label inputErrorLbl;
+    public Label inputErrorLbl, resInfoLbl;
     @FXML
     public JFXComboBox<String> privacyLvlBox;
     @FXML
@@ -39,20 +44,11 @@ public class ConfirmReservationController implements Observer {
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
-
-
-    // variables to hold incoming event information
-    String roomID = "";
-    ArrayList<GregorianCalendar> cals = null;
-
-
     /**
      * Set up page.
      */
     @FXML
     public void initialize() {
-
-
         // sets ID to logged in employee
         setID();
 
@@ -66,25 +62,32 @@ public class ConfirmReservationController implements Observer {
                         "Private"
                 );
         privacyLvlBox.setItems(options);
-    }
 
+        Event e = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        ArrayList<GregorianCalendar> cals = e.getStartAndEndTimes();
 
-    // events I care about: am "subscribed" to
-    @Override
-    public void notify(Object newEvent) {
-        Event e = (Event) newEvent ;
-        switch (e.getEventName()) {
-            case "times":
-                cals = e.getStartAndEndTimes();
-                break;
-            case "room":
-                roomID = e.getRoomId();
-                break;
-            default:
-                break;
+        // Get the start time
+        int startHour = (int) (cals.get(0).getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+        String startMinutes = Integer.toString((int) (cals.get(0).getTimeInMillis() / (1000 * 60)) % 60);
+        if (startMinutes.equals("0")) {
+            startMinutes = "00";
         }
-    }
+        // Get the end time
+        int endHour = (int) (cals.get(1).getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+        String endMinutes = Integer.toString((int) (cals.get(1).getTimeInMillis() / (1000 * 60)) % 60);
+        if (endMinutes.equals("0")) {
+            endMinutes = "00";
+        }
 
+        String date = "" + cals.get(0).getTime();
+        date = date.substring(0, 10) + ", " + date.substring(24);
+
+
+        resInfoLbl.setText("Location:      " + myDBS.getReservableSpace(e.getRoomId()).getSpaceName()
+                + "\n\nDate:            " + date
+                + "\n\nStart Time:   " + startHour + ":" + startMinutes
+                + "\n\nEnd Time:    " + endHour + ":" + endMinutes);
+    }
 
     /**
      * pre-fill employee id field with id of logged in employee
@@ -94,7 +97,6 @@ public class ConfirmReservationController implements Observer {
         int idNum = ApplicationState.getApplicationState().getEmployeeLoggedIn().getID();
         String id = Integer.toString(idNum);
         employeeID.setText(id);
-
     }
 
 
@@ -109,7 +111,6 @@ public class ConfirmReservationController implements Observer {
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
-
     /**
      * switches window to back to scheduler screen
      *
@@ -121,14 +122,12 @@ public class ConfirmReservationController implements Observer {
         StageManager.changeExistingWindow(stage, root, "Scheduler");
     }
 
-
     /**
      * Called by the Make Reservation button.
      * Checks if event information is correct
      */
     @FXML
     public void makeReservation() throws Exception {
-
         // initially set variable to true
         boolean valid = true;
 
@@ -150,7 +149,7 @@ public class ConfirmReservationController implements Observer {
         if (badId) {
             inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
             inputErrorLbl.setVisible(true);
-            //valid = false ;
+            valid = false ;
         }
 
         // If the user has not entered an event name, has entered an invalid ID,
@@ -174,27 +173,24 @@ public class ConfirmReservationController implements Observer {
             valid = false;
         }
 
-        // If evreything is okay, create the reservation
+        // If everything is okay, create the reservation
         if (valid) {
             System.out.println("IS VALID - CREATING RESERVATION");
             createReservation();
 
-
+            // Return to schedule main page
             Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(ResourceLoader.scheduler);
             StageManager.changeExistingWindow(stage, root, "Scheduler");
         }
     }
 
-
     /**
      * Create the reservation and send it to the database.
      */
     @FXML
     public void createReservation() {
-
         Event event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
-
         // Get the privacy level
         int privacy = 0;
         if (privacyLvlBox.getValue().equals("Private")) {
@@ -202,18 +198,16 @@ public class ConfirmReservationController implements Observer {
         }
 
         // set event bussed info from other page
-        cals = event.getStartAndEndTimes();
-        roomID = event.getRoomId();
+        ArrayList<GregorianCalendar> cals = event.getStartAndEndTimes();
+        String roomID = event.getRoomId();
 
         // create new reservation and add to database
         Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
         myDBS.insertReservation(newRes);
-        System.out.println("NEW RESRVATION INSERTED INTO DATABASE");
 
         // Reset the screen
         resetView();
     }
-
 
     /**
      * Show the current schedule, clear errors, and clear user input.
@@ -223,6 +217,4 @@ public class ConfirmReservationController implements Observer {
         eventName.setText("");
         privacyLvlBox.setValue(null);
     }
-
-
 }
