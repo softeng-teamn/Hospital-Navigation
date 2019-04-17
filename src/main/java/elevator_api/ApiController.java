@@ -180,12 +180,12 @@ public class ApiController implements Initializable {
 
             loadData();
 
-            if(myDBS.isCallElev() && selectedReq.getUrgency() == ApiInternalTransportRequest.Urgency.VERY){
+            if(myDBS.isCallElev() && selectedReq.getUrgency() == ApiInternalTransportRequest.Urgency.VERY
+                    && selectedReq.getLocation().length() >= 2){
                 ElevatorConnection e = new ElevatorConnection();
                 try {
                     System.out.println("Calling Elev");
-                    System.out.println(myDBS.callElevTo);
-                    e.postFloor(myDBS.getTeam() + "L", myDBS.callElevTo);
+                    e.postFloor(myDBS.getTeam() + "L", selectedReq.getLocation().substring(selectedReq.getLocation().length() - 2));
                 } catch (IOException e1) {
                     System.out.println("error posting in onAssignedTo in DBS");
                     e1.printStackTrace();
