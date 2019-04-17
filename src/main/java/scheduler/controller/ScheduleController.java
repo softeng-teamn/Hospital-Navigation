@@ -955,7 +955,7 @@ public class ScheduleController {
             // post event to pass times
             event.setStartAndEndTimes(cals);
             event.setEventName("room");
-            event.setRoomId(currentSelection.getLocationNodeID());
+            event.setRoomId(currentSelection.getSpaceID());
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
             // switch screen to final stage of scheduler

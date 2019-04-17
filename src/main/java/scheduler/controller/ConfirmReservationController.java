@@ -200,9 +200,10 @@ public class ConfirmReservationController {
         // set event bussed info from other page
         ArrayList<GregorianCalendar> cals = event.getStartAndEndTimes();
         String roomID = event.getRoomId();
+        String locationID = myDBS.getReservableSpace(roomID).getLocationNodeID();
 
         // create new reservation and add to database
-        Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
+        Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), locationID, cals.get(0), cals.get(1));
         myDBS.insertReservation(newRes);
 
         // Reset the screen
