@@ -4,38 +4,28 @@
 <?import javafx.scene.effect.GaussianBlur?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="sp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employee.controller.EnterApplicationController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employee.controller.EnterApplicationController" fx:id="ap">
    <children>
-      <ImageView fitWidth="1920.0" opacity="0.71" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitWidth="1929.0" opacity="0.64" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../../../../Downloads/realbackgroundimg.jpg" />
          </image>
          <effect>
-            <GaussianBlur radius="16.87" />
+            <GaussianBlur radius="21.45" />
          </effect>
       </ImageView>
-      <Label text="TOUCH THE SCREEN TO CONTINUE">
+      <Label layoutX="415.0" layoutY="640.0" stylesheets="@../theme.css" text="TOUCH THE SCREEN TO BEGIN" textFill="WHITE">
          <font>
-            <Font name="Helvetica Neue Bold" size="72.0" />
+            <Font size="72.0" />
          </font>
       </Label>
-      <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" StackPane.alignment="TOP_CENTER">
-         <children>
-            <ImageView fitHeight="390.0" fitWidth="433.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../../../../Downloads/logotransparent.png" />
-               </image>
-            </ImageView>
-            <Label>
-               <font>
-                  <Font name="System Bold" size="200.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
+      <ImageView fitHeight="355.0" fitWidth="393.0" layoutX="810.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../Downloads/logotransparent.png" />
+         </image>
+      </ImageView>
    </children>
-</StackPane>
+</AnchorPane>

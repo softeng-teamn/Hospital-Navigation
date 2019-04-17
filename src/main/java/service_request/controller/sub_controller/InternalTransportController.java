@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXToggleNode;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -66,7 +67,8 @@ public class InternalTransportController extends RequestController{
                 request.makeRequest();
                 dropdown.getSelectionModel().select(0);
                 text_area.setText("");
-                errorMsg.setText("");
+                errorMsg.setTextFill(Color.BLACK);
+                errorMsg.setText("Request Submitted!");
             }
         }
         else{
