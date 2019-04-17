@@ -121,9 +121,16 @@ public class AdminServiceController {
         else if (event.getSearchMethod().equals("breadth")) {
             algorithm.selectToggle(breadthFirstToggle);
         }
-        else {
+        else if (event.getSearchMethod().equals("depth")){
             algorithm.selectToggle(depthFirstToggle);
         }
+        else if (event.getSearchMethod().equals("best")){
+            algorithm.selectToggle(bestFirstToggle);
+        }
+        else if (event.getSearchMethod().equals("dijsktra")){
+            algorithm.selectToggle(dijsktraToggle);
+        }
+
     }
 
     public void bestSwitch(ActionEvent actionEvent) {
