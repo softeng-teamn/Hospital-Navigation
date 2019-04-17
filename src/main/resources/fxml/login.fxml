@@ -8,27 +8,31 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/10.0.1" fx:id="sp" fx:controller="employee.controller.EnterApplicationController" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="sp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employee.controller.EnterApplicationController">
    <children>
-      <ImageView fitWidth="1920.0" opacity="0.55" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitWidth="1920.0" opacity="0.71" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../../../../Downloads/realbackgroundimg.jpg" />
          </image>
          <effect>
-            <GaussianBlur radius="35.2" />
+            <GaussianBlur radius="16.87" />
          </effect>
       </ImageView>
-      <Label text="TOUCH THE SCREEN TO CONTINUE" textFill="WHITE">
+      <Label text="TOUCH THE SCREEN TO CONTINUE">
          <font>
-            <Font name="Helvetica Neue Bold" size="96.0" />
+            <Font name="Helvetica Neue Bold" size="72.0" />
          </font>
       </Label>
       <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" StackPane.alignment="TOP_CENTER">
          <children>
-            <Label text="WELCOME" textFill="WHITE">
+            <ImageView fitHeight="390.0" fitWidth="433.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../Downloads/logotransparent.png" />
+               </image>
+            </ImageView>
+            <Label>
                <font>
-                  <Font name="Helvetica Neue Bold" size="200.0" />
+                  <Font name="System Bold" size="200.0" />
                </font>
             </Label>
          </children>

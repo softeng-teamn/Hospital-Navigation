@@ -97,7 +97,7 @@ public class TopNavController implements Observer {
     void showSchedule(ActionEvent e) throws Exception {
         Stage stage = (Stage) bookBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
-
+        StageManager.changeExistingWindow(stage, root, "Scheduler");
         stage.setMaximized(true);
     }
 
