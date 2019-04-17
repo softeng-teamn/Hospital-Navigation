@@ -388,7 +388,6 @@ public class ScheduleController {
     // Database
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
-
     /**
      * Set up scheduler page.
      */
