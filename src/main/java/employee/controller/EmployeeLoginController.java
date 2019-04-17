@@ -21,13 +21,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.apache.commons.io.FileUtils;
 import service.ResourceLoader;
 import service.StageManager;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -45,6 +41,7 @@ public class EmployeeLoginController implements Initializable {
     @FXML
     private MaterialDesignIconView eye_icon;
 
+    public static String usernameToFaceLogin;
     private boolean showEye = false;
     private boolean isFaceScanning = false;
 
@@ -152,30 +149,7 @@ public class EmployeeLoginController implements Initializable {
     }
 
     boolean changeKnownImg(String username) {
-        // get employeeImage
-        Employee employee = myDBS.getEmployeeByUsername(username);
-        if (employee != null) {
-            InputStream inputStream = myDBS.getEmployeeImage(employee.getID());
-
-            if (inputStream != null) {
-                File targetFile = new File(ResourceLoader.knownFace.getFile());
-                try {
-                    FileUtils.copyInputStreamToFile(inputStream, targetFile);
-                } catch (IOException io) {
-                    System.err.println("Can't copy Input to stream ..." + io);
-                }
-                System.out.println("Employee Image is written to file");
-                return  true;
-            } else {
-                // input stream didn't exist
-                return false;
-            }
-
-        } else {
-            // NO employee
-            return false;
-        }
-
+        return username.equals(usernameToFaceLogin);
     }
 
     void faceLogin(String username) {

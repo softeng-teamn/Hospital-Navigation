@@ -187,6 +187,7 @@ dependencies {
             [group: 'net.swisstech', name: 'bitly-api-client', version: '+']
     )
     compile(
+            [group: 'commons-io', name: 'commons-io', version: '2.5'],
             [group: 'com.jcraft', name: 'jsch', version: '0.1.55'],
             [group: 'org.toile-libre.libe', name: 'curl', version: '0.0.29'],
             [group: 'com.sparkjava', name: 'spark-core', version: '2.8.0'],

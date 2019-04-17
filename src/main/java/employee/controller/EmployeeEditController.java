@@ -20,15 +20,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 import service.ResourceLoader;
 import service.StageManager;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -212,6 +210,8 @@ public class EmployeeEditController {
                 // save the employeeImage
                 // but I need the employeeID.... how do I get that
                 Employee e = myDBS.getEmployeeByUsername(new_username.getText());
+                // set username to be face logged in
+                EmployeeLoginController.usernameToFaceLogin = new_username.getText();
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 try {
                     ImageIO.write(employeeImage, "png", os);
@@ -219,7 +219,17 @@ public class EmployeeEditController {
                     err.printStackTrace();
                 }
                 InputStream inputStream = new ByteArrayInputStream(os.toByteArray());
-                myDBS.updateEmployeeImage(e.getID(), inputStream);
+                System.out.println("Saving image to file");
+
+                File targetFile = new File(ResourceLoader.knownFace.getFile());
+                try {
+                    FileUtils.copyInputStreamToFile(inputStream, targetFile);
+
+                } catch (IOException io) {
+                    System.err.println("Can't copy Input to stream ..." + io);
+                }
+
+                System.out.println("Saving image to db....");
             }
             new_password.setText("");
             new_password_conf.setText("");
