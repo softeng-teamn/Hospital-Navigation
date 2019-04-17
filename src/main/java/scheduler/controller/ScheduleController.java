@@ -682,23 +682,18 @@ public class ScheduleController {
         String date = chosenDate.toString();
         String name = currentSelection.getSpaceName();
 
-        // TODO: 2019-04-16 fix date print out
+
         // format date
-        //schedLbl.setTextFill(Color.WHITE);
-        GregorianCalendar calendar = new GregorianCalendar();
-        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-
-        String formattedDate = dateFormat.format(new Date());
         int date1 = chosenDate.getDayOfMonth();
-        String day1 = chosenDate.getDayOfWeek().toString();
-
         String month = chosenDate.getMonth().toString();
-        String curTime = String.format(formattedDate + "\n" + day1 + ", the %02dth of " + month, date1);
-        //String curTime = String.format(formattedDate + "\n" + month + " " + day1 + "%02dth" + month, date1);
-
+        month = month.toLowerCase() ;
+        month = month.substring(0, 1).toUpperCase() + month.substring(1);
+        String curTime = String.format(month + " %02dth", date1);
 
         schedLbl.setText("Book " + name + "\nfor the Week of\n" + curTime);
         schedLbl.setTextAlignment(TextAlignment.CENTER);
+
+
 
         // Make a list of time and activity labels for the schedule
         ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
