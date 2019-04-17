@@ -421,12 +421,9 @@
     -fx-background-color: -fx-complementary;
 }
 
-.date-picker-popup > .month-year-pane {
-    -fx-background-color: -fx-primary;
-}
-
-.jfx-date-picker .date-picker-popup .calendar-grid .day-cell:focused {
-    -fx-text-fill: -fx-primary;
+.jfx-date-picker .jfx-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }
 
 /*******************************************************************************
