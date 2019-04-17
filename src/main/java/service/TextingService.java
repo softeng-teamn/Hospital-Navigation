@@ -18,6 +18,9 @@ import java.util.stream.Stream;
 
 import static org.apache.commons.codec.CharEncoding.UTF_8;
 
+/**
+ * controls texting functionality
+ */
 public class TextingService {
     // Find your Account Sid and Auth Token at twilio.com/console
     private String[] secrets= new String[2];

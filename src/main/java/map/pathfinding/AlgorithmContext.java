@@ -15,12 +15,9 @@ public abstract class AlgorithmContext{
 
     private HashMap<String, ElevatorFloor> elevTimes;
 
-
-
     public ArrayList<Node> findDest(MapNode start, MapNode dest, boolean accessibility, String filter) {
         MapNode target = returnMapNode(start, dest, accessibility, filter);
 
-        System.out.println(target);
         elevTimes = new HashMap<>();
         if (target != null) {
             ArrayList<Node> path = new ArrayList<Node>();
@@ -56,8 +53,8 @@ public abstract class AlgorithmContext{
 
     /**
      * Gets reachable MapNodes from given MapNode
-     * @param node
-     * @return
+     * @param node node to find the children of
+     * @return children of the given node in an ArrayList
      */
     public ArrayList<MapNode> getChildren(MapNode node) {
         ArrayList<Node> neighbors = MapController.getNodesConnectedTo(node.getData());

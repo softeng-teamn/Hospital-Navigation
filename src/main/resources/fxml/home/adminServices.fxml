@@ -72,7 +72,7 @@
                </VBox.margin></Label>
             <HBox alignment="CENTER" prefHeight="120.0" prefWidth="200.0" spacing="36.0">
                <children>
-                  <JFXToggleNode onAction="#astarSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Astar" textAlignment="CENTER">
+                  <JFXToggleNode fx:id="aStarToggle" onAction="#astarSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Astar" textAlignment="CENTER">
                      <graphic>
                         <FontAwesomeIconView glyphName="STAR" glyphStyle="FAR" size="48" styleClass="request-glyph" text="" />
                      </graphic>
@@ -80,12 +80,12 @@
                         <ToggleGroup fx:id="algorithm" />
                      </toggleGroup>
                   </JFXToggleNode>
-                  <JFXToggleNode onAction="#depthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Depth" textAlignment="CENTER" toggleGroup="$algorithm">
+                  <JFXToggleNode fx:id="depthFirstToggle" onAction="#depthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Depth" textAlignment="CENTER" toggleGroup="$algorithm">
                      <graphic>
                         <FontAwesomeIconView glyphName="" size="48" styleClass="request-glyph" text="" />
                      </graphic>
                   </JFXToggleNode>
-                  <JFXToggleNode onAction="#breadthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Breadth" textAlignment="CENTER" toggleGroup="$algorithm">
+                  <JFXToggleNode fx:id="breadthFirstToggle" onAction="#breadthSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Breadth" textAlignment="CENTER" toggleGroup="$algorithm">
                      <graphic>
                         <FontAwesomeIconView glyphName="BOLD" size="48" styleClass="request-glyph" />
                      </graphic>

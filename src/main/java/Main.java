@@ -17,7 +17,7 @@ public class Main extends Application {
 
     /**
      *  Application Start
-     * @param args
+     * @param args arguments for main
      */
     public static void main(String[] args) {
         DatabaseService.getDatabaseService().loadFromCSVsIfNecessary();
@@ -38,8 +38,8 @@ public class Main extends Application {
 
     /**
      * initializes the UI
-     * @param primaryStage
-     * @throws Exception
+     * @param primaryStage parameter to start the UI
+     * @throws Exception if the FXML fails to load
      */
     @Override
     public void start(Stage primaryStage) throws Exception {

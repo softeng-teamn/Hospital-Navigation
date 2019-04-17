@@ -5,6 +5,9 @@ import map.pathfinding.*;
 
 import java.util.*;
 
+/**
+ * Controls the pathfinding functionality of the application
+ */
 public class PathFindingService {
 
     public int estimatedTimeOfArrival;
@@ -16,9 +19,9 @@ public class PathFindingService {
 
     /**
      *  attempts to generate a path from a start node to a dest node
-     * @param start
-     * @param dest
-     * @param accessibility
+     * @param start the node to start from
+     * @param dest the node to end from
+     * @param accessibility if true, avoid non-handicapped-accessible nodes
      * @param filter "breadth" for BFS "depth" for DFS "astar" for astar, Any nodeType for a filtered BFS
      * @return Returns null on fail
      * */
@@ -88,7 +91,6 @@ public class PathFindingService {
         }
 
         if (target != null){
-            System.out.println(target);
             return target;
         } else {
             return null;

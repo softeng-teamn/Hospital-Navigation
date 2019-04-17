@@ -10,8 +10,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.controller.sub_controller.AVServiceRequestController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.controller.sub_controller.AVServiceRequestController">
    <children>
       <FontAwesomeIconView glyphName="HARD_OF_HEARING" size="240" styleClass="request-glyph">
          <VBox.margin>
@@ -47,6 +48,10 @@
          </children>
       </HBox>
       <Region prefHeight="300.0" prefWidth="534.0" />
+      <Label fx:id="errorMsg" stylesheets="@../../theme.css" textFill="#f44336">
+         <font>
+            <Font size="32.0" />
+         </font></Label>
       <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="%Submit">
          <VBox.margin>
             <Insets bottom="24.0" />

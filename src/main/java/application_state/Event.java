@@ -2,36 +2,41 @@ package application_state;
 
 import map.Node;
 
+import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
 import static service.ResourceLoader.dfBundle;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class Event {
 
-    Node DEFAULT_NODE = new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe");
-
+    // Used to indicate to all observers the action they should take
     String eventName = "";      // one of the event names below
                                 // signifies field change
 
-
-    String searchBarQuery = ""; // search-query
-    Node nodeStart = DEFAULT_NODE; // node-start
-    Node nodeSelected = null;   // node-select
-    boolean isLoggedIn = false; // login
-    boolean isAdmin = false;    // admin
-    boolean isAccessiblePath = false; // accessible
-    boolean isChangingStart = false;  // start-change
-    String filterSearch = ""; // filtered search
-    String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar, dijsktra, best for bestFS
+    String searchBarQuery = ""; // search-query, indicates typing in the node search text fields
+    Node nodeSelected = null;   // node-select, indicates user has selected a node in the listview
+    Node directionsNode = null;    // scroll-to-direction, indicates user has clicked a textual direction
+    boolean isLoggedIn = false; // login, logout; indicates whether someone is logged in
+    boolean isAdmin = false;    // admin, indicates whether user is admin
+    boolean isAccessiblePath = false; // accessible, indicates whether user has selected the accessibility/no-stairs toggle
+    String filterSearch = ""; // filtered search, indicates user has entered text in search field and to filter the listview
+    String searchMethod = "astar"; // depth for DFS, breadth for BFS, astar for astar, dijsktra, best for bestFS; indicates which method is selected
     boolean isEditing = false;      // editing
-    String floor = "1";      // floor
+    String floor = "1";      // floor, indicates current floor map displayed
     boolean callElev = false;
    // floor
-    ArrayList<Node> path = null;
-
+    ArrayList<Node> path = null;    // The currently drawn path
     ResourceBundle currentBundle = dfBundle;
+
+    // for scheduling an event. todo what are these used for?
+    ArrayList<GregorianCalendar> startAndEndTimes = null ;    // times.
+    String roomId = "" ;    // room
+
 
     public ResourceBundle getCurrentBundle() {
         return currentBundle;
@@ -41,25 +46,15 @@ public class Event {
         this.currentBundle = currentBundle;
     }
 
-
     public boolean isCallElev() {
         return callElev;
     }
 
     public void setCallElev(boolean callElev) {this.callElev = callElev;}
 
-    boolean endNode = true; //true for end node, false for start node
-
-
     public ArrayList<Node> getPath() { return path; }
 
     public void setPath(ArrayList<Node> path) { this.path = path; }
-
-    public boolean isEndNode() { return endNode; }
-
-    public void setEndNode(boolean startEnd) { this.endNode = startEnd; }
-
-    public void setDefaultStartNode (){this.nodeStart = DEFAULT_NODE;}
 
     public String getFloor() { return floor; }
 
@@ -72,24 +67,6 @@ public class Event {
     public void setEditing(boolean editing) {
         isEditing = editing;
     }
-
-    public boolean isChangingStart() {
-        return isChangingStart;
-    }
-
-    public void setChangingStart(boolean changingStart) {
-        isChangingStart = changingStart;
-    }
-
-    public Node getDefaultNode() {
-        return DEFAULT_NODE;
-    }
-
-    public Node getNodeStart() {
-        return nodeStart;
-    }
-
-    public void setNodeStart(Node nodeStart) { this.nodeStart = nodeStart; }
 
     public String getEventName() {
         return eventName;
@@ -140,4 +117,20 @@ public class Event {
     public String getSearchMethod() { return searchMethod; }
 
     public void setSearchMethod(String searchMethod) { this.searchMethod = searchMethod; }
+
+    public ArrayList<GregorianCalendar> getStartAndEndTimes() { return startAndEndTimes; }
+
+    public void setStartAndEndTimes(ArrayList<GregorianCalendar> startAndEndTimes) { this.startAndEndTimes = startAndEndTimes; }
+
+    public String getRoomId() {return roomId; }
+
+    public void setRoomId(String roomId) { this.roomId = roomId; }
+
+    public Node getDirectionsNode() {
+        return directionsNode;
+    }
+
+    public void setDirectionsNode(Node directionsNode) {
+        this.directionsNode = directionsNode;
+    }
 }

@@ -1,6 +1,5 @@
 package elevator;
 
-import elevator.ElevatorConnnection;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import testclassifications.ElevatorTest;
@@ -17,7 +16,7 @@ public class ElevatorConTest {
     @Category(ElevatorTest.class)
     public void getTest(){
         String floor = "";
-        ElevatorConnnection e = new ElevatorConnnection();
+        ElevatorConnection e = new ElevatorConnection();
 
         GregorianCalendar cal = new GregorianCalendar();
         try {

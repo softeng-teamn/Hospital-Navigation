@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
-import controller.Controller;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -29,7 +28,10 @@ import java.util.ResourceBundle;
 
 import static employee.model.JobType.*;
 
-public class FulfillRequestController extends Controller implements Initializable {
+/**
+ * controller for the request fulfilling FXML
+ */
+public class FulfillRequestController implements Initializable {
 
     @FXML
     public JFXRadioButton completedRadio;
@@ -58,7 +60,7 @@ public class FulfillRequestController extends Controller implements Initializabl
     /**
      * switches window to home screen
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showHome() throws Exception {
@@ -118,8 +120,8 @@ public class FulfillRequestController extends Controller implements Initializabl
     /**
      * initialize the list of requests
      *
-     * @param location
-     * @param resources
+     * @param location required parameter for the abstract method this overrides
+     * @param resources required parameter for the abstract method this overrides
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {

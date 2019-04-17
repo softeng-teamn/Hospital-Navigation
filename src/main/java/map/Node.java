@@ -2,6 +2,9 @@ package map;
 
 import java.util.Objects;
 
+/**
+ * Node that represents a location on the map
+ */
 public class Node {
 
     private int xcoord, ycoord;
@@ -53,6 +56,9 @@ public class Node {
         return floor;
     }
 
+    /** gets the floor the node is on as an int
+     * @return an int based on what floor the node is on
+     */
     public int getIntFloor() {
 
         if (floor.equals("L2")){
@@ -120,6 +126,10 @@ public class Node {
         this.shortName = shortName;
     }
 
+    /**
+     * @param x the x-coordinate of the node
+     * @param y the y-coordinate of the node
+     */
     public Node(int x, int y) {
         xcoord = x;
         ycoord = y;
@@ -154,6 +164,16 @@ public class Node {
         this.isClosed = false;
     }
 
+    /**
+     * @param xcoord the x-coordinate of the node
+     * @param ycoord the y-coordinate of the node
+     * @param nodeID the desired ID of the node
+     * @param floor the floor the node is on
+     * @param building the building the node is in
+     * @param nodeType the type of node this node is
+     * @param longName the long name of the node, used on the display
+     * @param shortName the abbreviated name of the node, used internally
+     */
     public Node(int xcoord, int ycoord, String nodeID, String floor, String building, String nodeType, String longName, String shortName) {
         this.xcoord = xcoord;
         this.ycoord = ycoord;
@@ -168,8 +188,8 @@ public class Node {
 
     /**
      * ensures nodeType is a string
-     * @param nodeType
-     * @return
+     * @param nodeType the type of node to check
+     * @return true
      */
     public boolean validateType(String nodeType) {
         return true;
@@ -177,8 +197,8 @@ public class Node {
 
     /**
      * checks if two nodes are equal to each other.
-     * @param o
-     * @return
+     * @param o the node to compare to another
+     * @return true if they are equal and false if otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -197,8 +217,8 @@ public class Node {
     }
 
     /**
-     * hash code
-     * @return
+     * node hash code
+     * @return a hashcode generated from the given parameters
      */
     @Override
     public int hashCode() {

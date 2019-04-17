@@ -1,0 +1,4 @@
+/**
+ * Pathfinding controller
+ */
+package map;

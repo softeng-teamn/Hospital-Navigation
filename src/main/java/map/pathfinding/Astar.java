@@ -8,6 +8,9 @@ import map.NodeFacade;
 
 import java.util.*;
 
+/**
+ * A* implementation
+ */
 public class Astar extends AlgorithmContext implements Algorithm{
     public int estimatedTime;
     PriorityQueue<MapNode> open;
@@ -89,15 +92,11 @@ public class Astar extends AlgorithmContext implements Algorithm{
                     if(open.contains(child)){
                         open.remove(child);
                     }
-                    //System.out.println("adding child to open list");
                     open.add(child);
                 }
             }
         }
         return null;
     }
-
-
-
 
 }

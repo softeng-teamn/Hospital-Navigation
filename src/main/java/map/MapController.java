@@ -1,13 +1,15 @@
 package map;
 
-import controller.Controller;
 import database.DatabaseService;
 import map.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MapController extends Controller {
+/**
+ * Controls the node hashmap for pathfinding
+ */
+public class MapController {
 
     // Creates static variables when compiled
     static {
@@ -18,13 +20,16 @@ public class MapController extends Controller {
 
     /**
      * a getter to return the notes connected to a given node
-     * @param n
-     * @return
+     * @param n the node to get nodes connected to
+     * @return all nodes connected to the given node
      */
     public static ArrayList<Node> getNodesConnectedTo(Node n) {
         return connections.get(n.getNodeID());
     }
 
+    /**
+     * initializes the node hashmap by extracting all edges and nodes from the database
+     */
     public static void initConnections() {
         System.out.println("creating hashmap ...");
         connections = new HashMap<>();
