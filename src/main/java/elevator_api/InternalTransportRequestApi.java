@@ -93,7 +93,6 @@ public class InternalTransportRequestApi {
         this.team = team;
         myDBS.setTeam(team);
         myDBS.setCallElev(useElev);
-        myDBS.setTeam(team);
     }
 
     /**
