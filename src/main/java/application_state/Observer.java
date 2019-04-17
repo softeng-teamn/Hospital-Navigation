@@ -1,12 +1,12 @@
 package application_state;
 
 /**
- * Implement this interface for any class that you wish to be registered as an observer of another object
+ * Implemented for any class that is registered as an observer of ObservableBus
  */
 public interface Observer {
     /**
-     * Receive notification from observed object
-     * @param object Whatever data might be passed in by the observed object
+     * Receive notification from observed object, the ObservableBus
+     * @param object the event from the ObservableBus
      */
     public void notify(Object object);
 }

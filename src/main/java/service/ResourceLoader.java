@@ -11,7 +11,7 @@ public class  ResourceLoader {
 
     public static final URL home = service.ResourceLoader.class.getResource("/fxml/home.fxml");
     public static final URL editNode = service.ResourceLoader.class.getResource("/fxml/editNode.fxml");
-    public static final URL scheduler = service.ResourceLoader.class.getResource("/fxml/schedule.fxml");
+    public static final URL scheduler = service.ResourceLoader.class.getResource("/fxml/schedule2.fxml");
     public static final URL request = service.ResourceLoader.class.getResource("/fxml/request.fxml");
     public static final URL createNode = service.ResourceLoader.class.getResource("/fxml/createNode.fxml");
     public static final URL deleteNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/deleteNodeConfirm.fxml");
@@ -22,6 +22,7 @@ public class  ResourceLoader {
     public static final URL pathFindingSettings = service.ResourceLoader.class.getResource("/fxml/home/pathfindingSettings.fxml");
     public static final URL searchResults = service.ResourceLoader.class.getResource("/fxml/home/searchResults.fxml");
     public static final URL adminServices = service.ResourceLoader.class.getResource("/fxml/home/adminServices.fxml");
+    public static final URL confirmScheduler = service.ResourceLoader.class.getResource("/fxml/confirmReservation.fxml");
 
     public static final URL superSecretPasswords = service.ResourceLoader.class.getResource("SuperSecretPasswords.txt");
 
@@ -55,6 +56,7 @@ public class  ResourceLoader {
     public static final URL firstFloor = service.ResourceLoader.class.getResource("/images/F1.png");
     public static final URL secondFloor = service.ResourceLoader.class.getResource("/images/F2.png");
     public static final URL thirdFloor = service.ResourceLoader.class.getResource("/images/F3.png");
+    public static final URL fourthFloor = service.ResourceLoader.class.getResource("/images/F4.png");
     public static final URL groundFloor = service.ResourceLoader.class.getResource("/images/ground.png");
     public static final URL firstLowerFloor = service.ResourceLoader.class.getResource("/images/L1.png");
     public static final URL secondLowerFloor = service.ResourceLoader.class.getResource("/images/L2.png");
