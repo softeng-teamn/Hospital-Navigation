@@ -1,6 +1,7 @@
 package scheduler.controller;
 
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 import application_state.ApplicationState;
 import application_state.Event;
 
+import com.google.zxing.WriterException;
 import com.jfoenix.controls.*;
 import com.twilio.rest.api.v2010.account.incomingphonenumber.Local;
 import javafx.application.Platform;
@@ -316,6 +318,7 @@ public class ScheduleController {
     @FXML
     private SVGPath classroom1, classroom2, classroom3, classroom4, classroom5, classroom6, classroom7, classroom8, classroom9, auditorium;
 
+    // Workstations
     @FXML
     private SVGPath ws1, ws2, ws3, ws4, ws5, ws6, ws7, ws8, ws9;
     @FXML
@@ -337,7 +340,7 @@ public class ScheduleController {
     @FXML
     private SVGPath ws90, ws91, ws92, ws93, ws94, ws95, ws96, ws97, ws98, ws99;
     @FXML
-    private SVGPath ws100, ws101, ws102, ws103, ws104, ws105, ws106, ws107, wsv8, ws109;
+    private SVGPath ws100, ws101, ws102, ws103, ws104, ws105, ws106, ws107, ws108, ws109;
     @FXML
     private SVGPath ws110, ws111, ws112, ws113, ws114, ws115, ws116, ws117, ws118, ws119;
     @FXML
@@ -403,9 +406,10 @@ public class ScheduleController {
         // Populate tables
         showRoomSchedule(false);
 
-        // Show map nodes
+        // Show map spaces
         populateMap();
         repopulateMap();
+        randomWorkstations();
 
         // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -640,6 +644,35 @@ public class ScheduleController {
                 });
             }
             col.setResizable(false);
+        }
+    }
+
+    /**
+     * Randomly assign available or unavailable to workstations.
+     */
+    private void randomWorkstations() {
+        workStations.addAll(Arrays.asList(ws1, ws2, ws3, ws4, ws5, ws6, ws7, ws8, ws9,
+                ws10, ws11, ws12, ws13, ws14, ws15, ws16, ws17, ws18, ws19,
+                ws20, ws21, ws22, ws23, ws24, ws25, ws26, ws27, ws28, ws29,
+                ws30, ws31, ws32, ws33, ws34, ws35, ws36, ws37, ws38, ws39,
+                ws40, ws41, ws42, ws43, ws44, ws45, ws46, ws47, ws48, ws49,
+                ws50, ws51, ws52, ws53, ws54, ws55, ws56, ws57, ws58, ws59,
+                ws60, ws61, ws62, ws63, ws64, ws65, ws66, ws67, ws68, ws69,
+                ws70, ws71, ws72, ws73, ws74, ws75, ws76, ws77, ws78, ws79,
+                ws80, ws81, ws82, ws83, ws84, ws85, ws86, ws87, ws88, ws89,
+                ws90, ws91, ws92, ws93, ws94, ws95, ws96, ws97, ws98, ws99,
+                ws100, ws101, ws102, ws103, ws104, ws105, ws106, ws107, ws108, ws109,
+                ws110, ws111, ws112, ws113, ws114, ws115, ws116, ws117, ws118, ws119, ws120));
+        Random rand = new Random();
+        for (int i = 0; i < workStations.size(); i++) {   // For each workstation,
+            int n = rand.nextInt(2);
+            SVGPath ws = workStations.get(i);
+            if (n <1) {
+                ws.setFill(AVAILABLE_COLOR);    // Set it as available
+            }
+            else {
+                ws.setFill(UNAVAILABLE_COLOR);    // Or not
+            }
         }
     }
 
