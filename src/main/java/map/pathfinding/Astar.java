@@ -95,7 +95,6 @@ public class Astar extends AlgorithmContext implements Algorithm{
                     open.add(child);
                 }
             }
-            System.out.println(open);
         }
         return null;
     }

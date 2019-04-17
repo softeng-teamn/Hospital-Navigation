@@ -74,6 +74,7 @@ public class DirectionsController implements Observer {
     private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
     private ArrayList<Node> path;
+    private ArrayList<Node> startNodes = new ArrayList<>();
 
 
     /**
@@ -81,10 +82,15 @@ public class DirectionsController implements Observer {
      */
     @FXML
     void initialize() {
+        // Register as an observer
         ApplicationState.getApplicationState().getObservableBus().register("directionsContoller",this);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+
+        // Get the current path and display it
         path = event.getPath();
         printDirections(makeDirections(path));
+
+        // Set whether the send-text button is enabled
         if (getApplicationState().getEmployeeLoggedIn() != null) {
             textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
             if (!getApplicationState().getEmployeeLoggedIn().getPhone().equals("")) {
@@ -151,7 +157,6 @@ public class DirectionsController implements Observer {
     }
 
 
-    // TODO: why does 1st instruction turn into ... if not scrollable?
     /**
      * Create textual instructions for the given path.
      * @param path the list of nodes in the path
@@ -191,6 +196,12 @@ public class DirectionsController implements Observer {
             directions.add(convertToCardinal(csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0), path.get(1))));
         }
 
+        // Make startNodes correspond to directions
+        for (int i = 0; i < path.size(); i++) {
+            startNodes.add(path.get(i));
+        }
+        startNodes.add(path.get(path.size()-1));
+
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
             String oldFl = (path.get(i+1).getFloor());
@@ -217,7 +228,7 @@ public class DirectionsController implements Observer {
             }
         }
 
-        System.out.println("before simplifying: " + directions);
+        //System.out.println("before simplifying: " + directions);
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
@@ -227,7 +238,6 @@ public class DirectionsController implements Observer {
             String newDir = "";
             boolean changed = false;
             if (currOne.equals("A") && !"IJNOPQ".contains(prevOne)) {
-                System.out.println(prevDir + currDir);
                 int prevDist = Integer.parseInt(prevDir.substring(1,6));
                 int currDist = Integer.parseInt(currDir.substring(1,6));
                 double totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
@@ -242,6 +252,7 @@ public class DirectionsController implements Observer {
                 directions.remove(i);
                 directions.remove(i-1);
                 directions.add(i-1, newDir);
+                startNodes.remove(i-1);
                 i--;
             }
         }
@@ -249,7 +260,7 @@ public class DirectionsController implements Observer {
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
         ApplicationState.getApplicationState().setEndNode(path.get(path.size() - 1));
-        System.out.println(directions); // TODO cut
+        //System.out.println(directions);
         return directions;
     }
 
@@ -717,8 +728,14 @@ public class DirectionsController implements Observer {
      * @return the padded distance as a string
      */
     private String padWithZeros(double distance) {
-        int fives = (int) distance / 5;
-        distance = fives * 5;
+        if (units.equals("feet")) {
+            int fives = (int) distance / 5;
+            distance = fives * 5;
+        }
+        else {
+            int twos = (int) distance / 2;
+            distance = twos * 2;
+        }
         String orig = String.format("%.0f", distance);
         for (int i = 0; i < 6; i++) {    // Assume max distance is less than 99999 feet
             if (orig.length() < i) {    // Pad with zeroes while string length is less than 6
@@ -735,8 +752,6 @@ public class DirectionsController implements Observer {
     public String getUnits() {
         return units;
     }
-
-    // TODO:  cut print statements.
 
     /**
      * Set the current units as feet or meters
@@ -755,6 +770,14 @@ public class DirectionsController implements Observer {
 
     public void setPath(ArrayList<Node> thePath) {
         this.path = thePath;
+    }
+
+    public void directionClicked() {
+        Node directionStart = startNodes.get(directionsView.getSelectionModel().getSelectedIndex());
+        Event e = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        e.setEventName("scroll-to-direction");
+        e.setDirectionsNode(directionStart);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(e);
     }
 
     public void validPhone(){
@@ -835,6 +858,9 @@ public class DirectionsController implements Observer {
         qrView.setImage(qr);
     }
 
+    /**
+     * Set whether the QR code is visible or not.
+     */
     @FXML
     public void showQRCode() {
         if (qrCodeVbox.getMaxHeight() == 0) {
