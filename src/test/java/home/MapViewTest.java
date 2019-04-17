@@ -12,7 +12,7 @@ public class MapViewTest {
 //    @Test
 //    @Category( FastTest.class)
 //    public void showDirections() {
-//        //TODO
+//
 //    }
 
     @Test
@@ -114,8 +114,8 @@ public class MapViewTest {
 //        path.addAll(Arrays.asList(ns1, ns2, ns3, ns4, ns5, ns6));
 //        System.out.println(mp.makeDirections(path).get(1).contains("3"));
 
-        // TODO - finish
+        //  finish
     }
 
-    // Other/changed funcions TODO
+    // Other/changed funcions
 }

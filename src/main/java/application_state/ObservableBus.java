@@ -39,7 +39,7 @@ public class ObservableBus {
      * Notify all observers.
      */
     @SuppressFBWarnings(value = "WMI_WRONG_MAP_ITERATOR")
-    public void notifyObservers(){
+    private void notifyObservers(){
         Set<String> observers = registeredObservers.keySet();
         for (String o: observers) {
             registeredObservers.get(o).notify(event);

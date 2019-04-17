@@ -105,6 +105,8 @@ public class FulfillRequestController implements Initializable {
                 employeeListView.getItems().add(employee);
             } else if (requestTypeSelected.equals("Toy") && employee.getJob() == TOY) {
                 employeeListView.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Help")){
+                employeeListView.getItems().add(employee);
             }
         }
 
@@ -125,7 +127,7 @@ public class FulfillRequestController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        String[] requestTypes = {"All", "AV Service", "External Transport", "Florist", "Gift Store", "Internal Transport", "Interpreter", "IT", "Maintenance", "Patient Info", "Religious", "Sanitation", "Security", "Toy"};
+        String[] requestTypes = {"All", "AV Service", "External Transport", "Florist", "Gift Store", "Internal Transport", "Interpreter", "IT", "Maintenance", "Patient Info", "Religious", "Sanitation", "Security", "Toy", "Help"};
         typeCombo.setItems(FXCollections.observableArrayList(requestTypes));
         typeCombo.getSelectionModel().select(0);
 
@@ -201,6 +203,7 @@ public class FulfillRequestController implements Initializable {
         requests.addAll(myDBS.getAllSanitationRequests());
         requests.addAll(myDBS.getAllSecurityRequests());
         requests.addAll(myDBS.getAllToyRequests());
+        requests.addAll(myDBS.getAllHelpRequests());
     }
 
     private void setRequestsIncomplete() {
@@ -219,6 +222,7 @@ public class FulfillRequestController implements Initializable {
         requests.addAll(myDBS.getAllIncompleteSanitationRequests());
         requests.addAll(myDBS.getAllIncompleteSecurityRequests());
         requests.addAll(myDBS.getAllIncompleteToyRequests());
+        requests.addAll(myDBS.getAllIncompleteHelpRequests());
     }
 
     private void setRequestsComplete() {
@@ -237,6 +241,7 @@ public class FulfillRequestController implements Initializable {
         requests.addAll(myDBS.getAllCompleteSanitationRequests());
         requests.addAll(myDBS.getAllCompleteSecurityRequests());
         requests.addAll(myDBS.getAllCompleteToyRequests());
+        requests.addAll(myDBS.getAllCompleteHelpRequests());
     }
 
     public void reqStateChange(ActionEvent actionEvent) {
