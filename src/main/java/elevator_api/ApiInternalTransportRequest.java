@@ -1,9 +1,13 @@
 package elevator_api;
 
-import service_request.model.sub_model.InternalTransportRequest;
+import elevator.ElevatorConnection;
 
+import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * API's internal transport request controller
+ */
 public class ApiInternalTransportRequest {
 
     public enum TransportType {
@@ -65,7 +69,6 @@ public class ApiInternalTransportRequest {
         this.assignedTo = -1;
         this.urgency = urgency;
     }
-
 
     public Urgency getUrgency() {
         return urgency;

@@ -1,6 +1,5 @@
-import database.DatabaseService;
 import application_state.ApplicationState;
-import javafx.application.Platform;
+import database.DatabaseService;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -54,7 +53,7 @@ public class Main extends Application {
     /**
      * initializes the UI
      * @param primaryStage parameter to start the UI
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -62,7 +61,7 @@ public class Main extends Application {
 //
 //        BorderPane rootElement = (BorderPane) loader.load();
 
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
         //
         // Closes all threads
         primaryStage.setOnCloseRequest((ae) -> {

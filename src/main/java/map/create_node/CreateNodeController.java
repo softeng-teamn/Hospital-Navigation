@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXTextField;
 import database.DatabaseService;
+import com.jfoenix.controls.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -31,8 +32,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * controls the create node FXML
+ */
 public class CreateNodeController {
 
+    @FXML
+    JFXComboBox<String> nodeType_combo, building_combo;
     @FXML
     AnchorPane anchor_pane;
     @FXML
@@ -46,7 +52,7 @@ public class CreateNodeController {
     @FXML
     VBox node_info_vbox, floor_change_vbox;
     @FXML
-    JFXTextField type_field, short_field, long_field, building_field;
+    JFXTextField short_field, long_field;
     @FXML
     JFXListView<String> time_view;
     @FXML
@@ -92,6 +98,9 @@ public class CreateNodeController {
         zoomSliderInit();
         zoomGroupInit();
         imagesInit();
+
+        nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
+        building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis", "FLEX");
 
         // start state at 0
         stateIterator = 0;
@@ -356,21 +365,12 @@ public class CreateNodeController {
 
     // takes new text changes and adds them to info variables
     void addTextFieldHooks() {
-
-        type_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            node_type = newValue;
-            checkAllFields();
-        });
         long_field.textProperty().addListener((observable, oldValue, newValue) -> {
             node_long = newValue;
             checkAllFields();
         });
         short_field.textProperty().addListener((observable, oldValue, newValue) -> {
             node_short = newValue;
-            checkAllFields();
-        });
-        building_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            node_building = newValue;
             checkAllFields();
         });
     }
@@ -444,5 +444,15 @@ public class CreateNodeController {
         Parent root = FXMLLoader.load(ResourceLoader.home);
         Stage mainStage = (Stage) cancel_btn.getScene().getWindow();
         StageManager.changeExistingWindow(mainStage, root, "Home");
+    }
+
+    @FXML
+    public void nodeTypeAction(ActionEvent actionEvent) {
+        node_type = nodeType_combo.getSelectionModel().getSelectedItem();
+    }
+
+    @FXML
+    public void buildingAction(ActionEvent actionEvent) {
+        node_building = building_combo.getSelectionModel().getSelectedItem();
     }
 }

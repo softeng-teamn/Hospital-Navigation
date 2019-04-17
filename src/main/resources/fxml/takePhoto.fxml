@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="357.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employee.controller.TakePhotoController">
+   <children>
+      <VBox prefHeight="355.0" prefWidth="393.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <ImageView fx:id="originalFrame" fitHeight="295.0" fitWidth="393.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                   <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#cancelAction" prefHeight="60.0" prefWidth="60.0" text="Start Node">
+                       <HBox.margin>
+                           <Insets right="8.0" />
+                       </HBox.margin>
+                       <graphic>
+                           <MaterialIconView fx:id="back_icon" glyphName="ARROW_BACK" size="35" />
+                       </graphic>
+                   </JFXButton>
+                  <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets right="8.0" />
+                     </HBox.margin>
+                     <children>
+                         <JFXButton fx:id="startNode_btn" contentDisplay="GRAPHIC_ONLY" onAction="#takePicture" prefHeight="60.0" prefWidth="60.0" text="Start Node">
+                             <graphic>
+                                 <MaterialIconView fx:id="camera_icon" glyphName="CAMERA_ENHANCE" size="35" />
+                             </graphic>
+                         </JFXButton>
+                     </children>
+                  </HBox>
+                  <JFXButton fx:id="save_btn" contentDisplay="GRAPHIC_ONLY" onAction="#saveAction" prefHeight="60.0" prefWidth="60.0" text="Start Node">
+                     <graphic>
+                        <MaterialIconView fx:id="save_icon" glyphName="SAVE" size="35" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

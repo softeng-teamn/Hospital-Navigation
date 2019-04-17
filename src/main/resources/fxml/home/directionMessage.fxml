@@ -2,24 +2,26 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Polygon?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="8.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.DirectionsController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="5.0" stylesheets="@../../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.DirectionsController">
     <children>
         <HBox alignment="TOP_CENTER">
             <children>
-                <JFXButton fx:id="unitSwitch_btn" minWidth="-Infinity" onAction="#setUnits" prefHeight="56.0" prefWidth="56.0" styleClass="confirm-button" text="M" />
-            <Region prefHeight="56.0" prefWidth="159.0" />
+                <JFXButton fx:id="unitSwitch_btn" minWidth="-Infinity" onAction="#setUnits" prefHeight="56.0" prefWidth="105.0" styleClass="confirm-button" text="Meters" />
+            <Region prefHeight="56.0" prefWidth="150.0" />
                 <Pane prefHeight="20.0">
                     <children>
-                        <Polygon fill="RED" layoutX="56.0" layoutY="29.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
-                        <Polygon fill="Grey" layoutX="66.0" layoutY="39.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="Grey" strokeType="INSIDE" />
+                        <Polygon fill="RED" layoutX="56.0" layoutY="35.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
+                        <Polygon fill="Grey" layoutX="66.0" layoutY="45.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="Grey" strokeType="INSIDE" />
                     </children>
                     <HBox.margin>
                         <Insets />
@@ -35,13 +37,31 @@
             <Insets left="12.0" right="12.0" top="8.0" />
          </VBox.margin>
         </HBox>
-        <JFXListView fx:id="directionsView" VBox.vgrow="ALWAYS">
+        <JFXListView fx:id="directionsView" onMouseClicked="#directionClicked" VBox.vgrow="ALWAYS">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin></JFXListView>
-        <JFXButton fx:id="textingButton" onAction="#sendMapToPhone" styleClass="confirm-button" text="Send Path as Text Message">
+      <VBox fx:id="qrCodeVbox" alignment="TOP_CENTER" maxHeight="0.0" minHeight="0.0" prefHeight="350.0" prefWidth="100.0">
+         <children>
+            <ImageView fx:id="qrView" fitHeight="350.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
          <VBox.margin>
-            <Insets bottom="24.0" />
-         </VBox.margin></JFXButton>
+            <Insets />
+         </VBox.margin>
+      </VBox>
+      <JFXTextField fx:id="phoneNumber" labelFloat="true" onInputMethodTextChanged="#validPhone" onKeyReleased="#validPhone" promptText="Enter Phone Number" stylesheets="@../../theme.css">
+         <VBox.margin>
+            <Insets bottom="12.0" left="48.0" right="48.0" />
+         </VBox.margin>
+      </JFXTextField>
+      <HBox alignment="CENTER" spacing="48.0">
+         <VBox.margin>
+            <Insets bottom="16.0" />
+         </VBox.margin>
+         <children>
+              <JFXButton fx:id="textingButton" onAction="#sendMapToPhone" prefHeight="50.0" styleClass="confirm-button" text="Send via Text " />
+            <JFXButton fx:id="viewQRCodeBtn" minHeight="50.0" onAction="#showQRCode" prefHeight="50.0" styleClass="confirm-button" stylesheets="@../../theme.css" text="Scan QR Code" />
+         </children>
+      </HBox>
     </children>
 </VBox>

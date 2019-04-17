@@ -1,12 +1,10 @@
 package service_request.controller;
 
 import application_state.ApplicationState;
-import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import foodRequest.FoodRequest;
 import foodRequest.ServiceException;
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +18,6 @@ import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import application_state.Event;
-import application_state.EventBusFactory;
 import map.Node;
 import service_request.controller.sub_controller.InternalTransportController;
 import service_request.model.Request;
@@ -37,8 +34,6 @@ import java.util.stream.Stream;
 
 import static service.ResourceLoader.enBundle;
 import static service.ResourceLoader.esBundle;
-
-import static application_state.ApplicationState.getApplicationState;
 
 public class RequestController implements Initializable {
 
@@ -66,24 +61,24 @@ public class RequestController implements Initializable {
     @SuppressFBWarnings(value="MS_CANNOT_BE_FINAL", justification = "I need to")
     public static Node selectedNode = null;
 
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event;
 
     /**
      * initializes the service_request controller
      *
-     * @param location
-     * @param resources
+     * @param location feels needed to override
+     * @param resources field needed to override
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         repopulateList();
     }
 
     /**
      * switches window to home screen
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showHome() throws Exception {
@@ -95,10 +90,11 @@ public class RequestController implements Initializable {
     /**
      * switches to English
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showEnglish() throws Exception{
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setCurrentBundle(enBundle);
         Stage stage = (Stage) englishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
@@ -108,10 +104,11 @@ public class RequestController implements Initializable {
     /**
      * switches to Spanish
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showSpanish() throws Exception{
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setCurrentBundle(esBundle);
         Stage stage = (Stage) spanishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
@@ -121,11 +118,11 @@ public class RequestController implements Initializable {
 
     /**
      * show every nodes on  JFXListView
+     * @param e FXML event that calls this method
      */
     @FXML
     public void searchBarEnter(ActionEvent e) {
         String search = search_bar.getText();
-        System.out.println(search);
         filterList(search);
     }
 

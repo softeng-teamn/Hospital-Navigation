@@ -42,6 +42,7 @@ public class Face {
         this.absoluteFaceSize = 0;
         // set classifier
         this.faceCascade.load(ResourceLoader.haarClassifier.getPath());
+
     }
 
     public void isMatch() {

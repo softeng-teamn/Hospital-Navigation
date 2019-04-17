@@ -2,6 +2,7 @@ package service_request.controller.sub_controller;
 
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXToggleNode;
+import javafx.scene.control.Label;
 import service_request.controller.RequestController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +22,9 @@ public class SecurityRequestController extends RequestController {
 
     @FXML
     private JFXToggleNode urgency_low;
+
+    @FXML
+    private Label errorMsg;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -51,10 +55,19 @@ public class SecurityRequestController extends RequestController {
         }
 
         if(selectedNode != null) {
-            SecurityRequest securityRequest = new SecurityRequest(-1, description.getText(), selectedNode, false, urgencyLevel);
-            securityRequest.makeRequest();
-            description.setText("");
-            urgency.selectToggle(urgency_low);
+            if(description.getText().equals("")){
+                errorMsg.setText("Please Enter Details");
+            }
+            else {
+                SecurityRequest securityRequest = new SecurityRequest(-1, description.getText(), selectedNode, false, urgencyLevel);
+                securityRequest.makeRequest();
+                description.setText("");
+                urgency.selectToggle(urgency_low);
+                errorMsg.setText("");
+            }
+        }
+        else{
+            errorMsg.setText("Please Select a Location");
         }
     }
 }

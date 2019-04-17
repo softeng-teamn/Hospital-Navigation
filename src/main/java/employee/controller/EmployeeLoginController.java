@@ -2,8 +2,6 @@ package employee.controller;
 
 import application_state.ApplicationState;
 import application_state.Event;
-import application_state.EventBusFactory;
-import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -11,6 +9,7 @@ import database.DatabaseService;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import employee.Face;
 import employee.MyCallback;
+import javafx.scene.input.KeyEvent;
 import employee.model.Employee;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -21,13 +20,19 @@ import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
+import application_state.Event;
+import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import static application_state.ApplicationState.getApplicationState;
 
+/**
+ * controller for the login FXML
+ */
 public class EmployeeLoginController implements Initializable {
 
     @FXML
@@ -43,9 +48,7 @@ public class EmployeeLoginController implements Initializable {
     private boolean isFaceScanning = false;
 
     Event event = new Event();
-    private EventBus eventBus = EventBusFactory.getEventBus();
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
-
 
     @FXML
     public void showHome() throws Exception {
@@ -69,24 +72,24 @@ public class EmployeeLoginController implements Initializable {
                 passwordField.getStyleClass().add("wrong-credentials");
                 // if user has admin credentials
             } else if (user.isAdmin()){
+                event = ApplicationState.getApplicationState().getObservableBus().getEvent();
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
                 event.setEventName("login");
-                eventBus.post(event);
+                ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
                 showHome();
-                // else user is an employee
-            } else {
+            } else {     // else user is an employee
                 event.setLoggedIn(true);
-                event.setAdmin(user.isAdmin() == false);
+                event.setAdmin(user.isAdmin());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
 
-                event.setEventName("empLogin");
-                eventBus.post(event);
+                event.setEventName("employee-login");    // Tell topNav not to show the gear/admin services button
+                ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
                 showHome();
             }
         }
@@ -97,7 +100,6 @@ public class EmployeeLoginController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 //        System.out.println("this is being run!!!!");
         initEyeButton();
-        eventBus.register(this);
 
     }
 
@@ -123,6 +125,7 @@ public class EmployeeLoginController implements Initializable {
 
     void turnOnCamera() {
         String usrName = usernameText.getText();
+        changeKnownImg(usrName);
         Face face = new Face(usrName, new MyCallback() {
             @Override
             public void callback(boolean b) {
@@ -141,14 +144,30 @@ public class EmployeeLoginController implements Initializable {
         face.isMatch();
     }
 
+    void changeKnownImg(String employeeId) {
+        // get employeeImage
+            // if image doesn't exist, send failed attempt and STOP
+        // write image to file 'known.png'
+    }
+
     void faceLogin(String username) {
         Employee user = myDBS.getEmployeeByUsername(username);
-        event.setLoggedIn(true);
-        event.setAdmin(user.isAdmin());
-        // set employee logged in with app state
-        ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
-        event.setEventName("login");
-        eventBus.post(event);
+        if (user.isAdmin()){
+            event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+            event.setLoggedIn(true);
+            event.setAdmin(user.isAdmin());
+            // set employee logged in with app state
+            ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
+            event.setEventName("login");
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
+        } else {     // else user is an employee
+            event.setLoggedIn(true);
+            event.setAdmin(user.isAdmin());
+            // set employee logged in with app state
+            ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
+            event.setEventName("employee-login");    // Tell topNav not to show the gear/admin services button
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
+        }
         try {
             showHome();
         } catch (Exception e) {
@@ -162,7 +181,7 @@ public class EmployeeLoginController implements Initializable {
     }
 
     void usrnameListener(String newValue) {
-        if(newValue.equals("")) {
+        if (newValue.equals("")) {
             eye_icon.setVisible(false);
             this.showEye = false;
             turnOffCamera();
@@ -172,4 +191,17 @@ public class EmployeeLoginController implements Initializable {
             eye_icon.setVisible(true);
         }
     }
+
+
+    public void ifEnterLogin(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            try {
+                login();
+            } catch (Exception e) {
+                System.out.println("Error logging in");
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
