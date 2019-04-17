@@ -7,7 +7,6 @@ import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import controller.Controller;
 import database.DatabaseService;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import employee.Face;
@@ -27,10 +26,9 @@ import service.StageManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import static application_state.ApplicationState.getApplicationState;
 
-public class EmployeeLoginController extends Controller implements Initializable {
+public class EmployeeLoginController implements Initializable {
 
     @FXML
     private JFXButton cancelBtn;
@@ -73,8 +71,6 @@ public class EmployeeLoginController extends Controller implements Initializable
             } else if (user.isAdmin()){
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin());
-                getApplicationState().setEmployeeID(user.getID());
-                Controller.setCurrentJob(user.getJob());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
@@ -85,7 +81,6 @@ public class EmployeeLoginController extends Controller implements Initializable
             } else {
                 event.setLoggedIn(true);
                 event.setAdmin(user.isAdmin() == false);
-                Controller.setCurrentJob(user.getJob());
                 // set employee logged in with app state
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
                 System.out.println("ApplicationState.getApplicationState().setEmployeeLoggedIn(null)" + ApplicationState.getApplicationState().getEmployeeLoggedIn());
@@ -148,9 +143,8 @@ public class EmployeeLoginController extends Controller implements Initializable
 
     void faceLogin(String username) {
         Employee user = myDBS.getEmployeeByUsername(username);
+        event.setLoggedIn(true);
         event.setAdmin(user.isAdmin());
-        getApplicationState().setEmployeeID(user.getID());
-        Controller.setCurrentJob(user.getJob());
         // set employee logged in with app state
         ApplicationState.getApplicationState().setEmployeeLoggedIn(user);
         event.setEventName("login");

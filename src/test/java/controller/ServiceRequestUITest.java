@@ -173,6 +173,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     }
 
     @Test
+    @Ignore
     @Category(SlowTest.class)
     public void sanitationTest() {
         // Verify no service_request of this type exist

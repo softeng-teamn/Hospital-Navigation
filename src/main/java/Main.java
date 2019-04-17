@@ -1,13 +1,20 @@
 import database.DatabaseService;
+import application_state.ApplicationState;
+import javafx.application.Platform;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.opencv.core.Core;
 import service.ResourceLoader;
 import service.StageManager;
 import web_server.WebServer;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 public class Main extends Application {
 
@@ -15,7 +22,7 @@ public class Main extends Application {
 
     /**
      *  Application Start
-     * @param args
+     * @param args arguments for main
      */
     public static void main(String[] args) {
 
@@ -29,12 +36,24 @@ public class Main extends Application {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         DatabaseService.getDatabaseService().loadFromCSVsIfNecessary();
+        HashMap<String, ImageView> imageCache = new HashMap<>();
+        try {
+            imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
+            imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
+            imageCache.put("1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
+            imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
+            imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
+            imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        ApplicationState.getApplicationState().setImageCache(imageCache);
         launch();
     }
 
     /**
      * initializes the UI
-     * @param primaryStage
+     * @param primaryStage parameter to start the UI
      * @throws Exception
      */
     @Override
