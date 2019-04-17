@@ -66,7 +66,7 @@ public class InternalTransportRequestApi {
      * @throws ServiceException
      */
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
-    public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin, boolean useElev, String team) throws ServiceException {
+    public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin, boolean useElev, String team, String callElevatorTo) throws ServiceException {
         Stage primaryStage = new Stage();
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/api/api.fxml"), ResourceBundle.getBundle("strings", Locale.getDefault()));
 
@@ -93,7 +93,7 @@ public class InternalTransportRequestApi {
         this.team = team;
         myDBS.setTeam(team);
         myDBS.setCallElev(useElev);
-        myDBS.setTeam(team);
+        myDBS.setCallElevTo(callElevatorTo);
     }
 
     /**
