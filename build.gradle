@@ -180,6 +180,13 @@ dependencies {
             [group: 'de.jensd', name:'fontawesomefx-materialdesignfont', version: '1.7.22-4']
     )
     compile(
+            [group: 'com.jcraft', name: 'jsch', version: '0.1.55'],
+            [group: 'org.toile-libre.libe', name: 'curl', version: '0.0.29'],
+            [group: 'com.sparkjava', name: 'spark-core', version: '2.8.0'],
+            [group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.4'],
+            [group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5'],
+            [group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.3.v20170317'],
+            [group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.3.v20170317'],
             [group: 'net.kurobako', name: 'gesturefx', version: '0.3.0'],
             [group: 'com.google.guava', name: 'guava', version: '23.0'],
             [group: 'com.jfoenix', name: 'jfoenix', version: '8.0.3'],

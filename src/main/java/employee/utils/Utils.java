@@ -1,4 +1,4 @@
-package face_detect.utils;
+package employee.utils;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;

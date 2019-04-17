@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -11,17 +12,17 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" fillWidth="false" prefHeight="406.0" prefWidth="490.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employee.controller.EmployeeLoginController">
+<VBox alignment="CENTER" fillWidth="false" prefHeight="500.0" prefWidth="800.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employee.controller.EmployeeLoginController">
    <children>
       <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" scaleX="2.0" scaleY="2.0" scaleZ="2.0">
          <image>
-            <Image url="@/Images/cfLLaKI.png" />
+            <Image url="@/images/cfLLaKI.png" />
          </image>
          <VBox.margin>
             <Insets bottom="48.0" left="32.0" />
          </VBox.margin>
       </ImageView>
-      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="250.0">
          <children>
             <FontAwesomeIconView glyphName="USER" size="30" styleClass="request-glyph">
                <HBox.margin>
@@ -29,22 +30,26 @@
                </HBox.margin>
             </FontAwesomeIconView>
             <JFXTextField fx:id="usernameText" labelFloat="true" prefHeight="34.0" prefWidth="202.0" promptText="Username" stylesheets="@/theme.css" />
+            <MaterialDesignIconView fx:id="eye_icon" glyphName="EYE_OFF" size="24" styleClass="request-glyph">
+               <HBox.margin>
+                  <Insets left="2.0" right="16.0" top="5.0" />
+               </HBox.margin>
+            </MaterialDesignIconView>
          </children>
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </HBox>
-      <HBox prefHeight="75.0" prefWidth="200.0">
+      <HBox prefHeight="75.0" prefWidth="250.0">
          <children>
             <FontAwesomeIconView glyphName="KEY" size="30" styleClass="request-glyph">
                <HBox.margin>
                   <Insets right="10.0" top="5.0" />
                </HBox.margin>
             </FontAwesomeIconView>
-            <JFXPasswordField fx:id="passwordField" labelFloat="true" prefHeight="34.0" prefWidth="202.0" promptText="Password" />
+            <JFXPasswordField fx:id="passwordField" labelFloat="true" prefHeight="34.0" prefWidth="170.0" promptText="Password" />
          </children>
       </HBox>
-      <JFXButton mnemonicParsing="false" onAction="#faceDetection" text="Face Detection" />
       <HBox>
          <children>
               <JFXButton fx:id="loginBtn" onAction="#login" prefHeight="34.0" prefWidth="120.0" ripplerFill="BLACK" styleClass="confirm-button" text="Log In" />

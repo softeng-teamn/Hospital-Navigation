@@ -62,8 +62,11 @@ public class  ResourceLoader {
     public static final ResourceBundle enBundle = ResourceBundle.getBundle("strings", new Locale("en"));
     public static final ResourceBundle esBundle = ResourceBundle.getBundle("strings", new Locale("es"));
 
+    public static final URL testFace = service.ResourceLoader.class.getResource("/public/testFace.png");
+    public static final URL knownFace = service.ResourceLoader.class.getResource("/public/known.png");
+    public static final URL train = service.ResourceLoader.class.getResource("/public/train");
     // classifiers
-//    public static final URL haarURL = service.ResourceLoader.class.getResource("/haarcascades/haarcascade_frontalface_alt.xml");
+    public static final URL haarClassifier = service.ResourceLoader.class.getResource("/haarcascades/haarcascade_frontalface_alt.xml");
 //    public static final File haarFile = new File(haarURL.getFile());
 //    public static final URL lbpcascades = service.ResourceLoader.class.getResource("/lbpcascades/lbpcascade_frontalface.xml");
 }
