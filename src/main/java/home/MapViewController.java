@@ -4,6 +4,7 @@ import application_state.ApplicationState;
 import application_state.Event;
 import application_state.Observer;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXNodesList;
 import database.DatabaseService;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.MaterialIconView;
@@ -38,6 +39,7 @@ import map.PathFindingService;
 import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
 import service.StageManager;
+import service_request.model.sub_model.HelpRequest;
 
 import java.io.IOException;
 import java.util.*;
@@ -53,7 +55,10 @@ public class MapViewController implements Observer {
     public VBox showDirVbox;
     @FXML
     public JFXButton showDirectionsBtn;
-    private Event event;
+    @FXML
+    private JFXNodesList infoNodeList;
+    private Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+
 
     private String currentMethod;
 
@@ -138,6 +143,9 @@ public class MapViewController implements Observer {
 //        startCircle.setFill(Color.rgb(67, 70, 76));
 //        zoomGroup.getChildren().add(startCircle);
         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
+
+        infoNodeList.setRotate(90);
+        infoNodeList.setSpacing(20);
     }
 
     void zoomGroupInit() {
@@ -308,11 +316,23 @@ public class MapViewController implements Observer {
                     }
                 });
                 break;
+            case "scroll-to-direction" :
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Node n = ApplicationState.getApplicationState().getObservableBus().getEvent().getDirectionsNode();
+                        setFloor(n.getFloor());
+                        scrollTo(n);
+                        if (hasPath){
+                            drawPath();
+                        }
+                    }
+                });
+                break;
             default:
                 break;
         }
     }
-
 
     void editNodeHandler(boolean isEditing) {
         if (isEditing) {
@@ -468,7 +488,7 @@ public class MapViewController implements Observer {
         /*   uncomment for auto elev call on path find, do breadth and depth things
         if (event.isCallElev()) {//if we are supposed to call elevator
             ElevatorConnection e = new ElevatorConnection();
-            if (pathFinder.getElevTimes() != null) {    // TODO: do breadth and depth set elevTimes? I'm getting null pointer exceptions here when I use them
+            if (pathFinder.getElevTimes() != null) {
                 for (String key : pathFinder.getElevTimes().keySet()
                 ) {
                     System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
@@ -701,5 +721,11 @@ public class MapViewController implements Observer {
                 .beforeStart(() -> System.out.println("Starting..."))
                 .afterFinished(() -> System.out.println("Done!"))
                 .centreOn(new Point2D(node.getXcoord(), node.getYcoord()));
+    }
+
+    public void sendHelp(ActionEvent actionEvent) {
+        ApplicationState currState = ApplicationState.getApplicationState();
+        HelpRequest helpRequest = new HelpRequest(-1, "Need Help", currState.getDEFAULT_NODE(), false);
+        helpRequest.makeRequest();
     }
 }

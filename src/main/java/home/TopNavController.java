@@ -178,7 +178,6 @@ public class TopNavController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println(" \nSTART: " + currState.getStartNode() + "end: " + currState.getEndNode() + "\nselected: " + event.getNodeSelected());
                         currState.setEndNode(event.getNodeSelected());
                         search_bar.setText(currState.getEndNode().getLongName());
                         if (currState.getEndNode() != null && currState.getStartNode() != null) {
@@ -187,7 +186,6 @@ public class TopNavController implements Observer {
                         else {
                             navigate_btn.setVisible(false);
                         }
-                        System.out.println(" \nSTART: " + currState.getStartNode() + "end: " + currState.getEndNode() + "\nselected: " + event.getNodeSelected());
                     }
                 });
                 break;
@@ -195,7 +193,6 @@ public class TopNavController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println(" \nSTART: " + currState.getStartNode() + "end: " + currState.getEndNode() + "\nselected: " + event.getNodeSelected());
                         currState.setStartNode(event.getNodeSelected());
                         startSearch.setText(currState.getStartNode().getLongName());
                         if (currState.getEndNode() != null && currState.getStartNode() != null) {
@@ -204,11 +201,10 @@ public class TopNavController implements Observer {
                         else {
                             navigate_btn.setVisible(false);
                         }
-                        System.out.println(" \nSTART: " + currState.getStartNode() + "end: " + currState.getEndNode() + "\nselected: " + event.getNodeSelected());
                     }
                 });
                 break;
-            case "login":     // receives from AdminLoginContoller?
+            case "login":
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -216,7 +212,7 @@ public class TopNavController implements Observer {
                     }
                 });
                 break;
-            case "employee-login":     // receives from AdminLoginContoller
+            case "employee-login":
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -410,6 +406,9 @@ public class TopNavController implements Observer {
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
             startNode_btn.setText("Start Node");
             home_icon.setIcon(MaterialIcon.LOCATION_ON);
+            if (ApplicationState.getApplicationState().getEndNode() != null) {
+                navigate_btn.setVisible(true);
+            }
         }
     }
 

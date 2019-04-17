@@ -101,7 +101,7 @@ public class CreateNodeController {
         imagesInit();
 
         nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
-        building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis");
+        building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis", "FLEX");
 
         // start state at 0
         stateIterator = 0;
@@ -199,6 +199,10 @@ public class CreateNodeController {
     void floorChangeAction(ActionEvent e) throws IOException {
         JFXButton clickedBtn = (JFXButton) e.getSource();
         switch (clickedBtn.getText()) {
+            case "4":
+                if(stateIterator == 0) {node_floor = "4";}
+                else if(stateIterator == 2) {showAllNodes("4");}
+                break;
             case "3":
                 if(stateIterator == 0) {node_floor = "3";}
                 else if(stateIterator == 2) {showAllNodes("3");}

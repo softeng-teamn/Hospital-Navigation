@@ -20,6 +20,10 @@ import java.io.IOException;
  */
 public class AdminServiceController {
 
+    @FXML
+    public JFXToggleNode bestFirstToggle;
+    @FXML
+    public JFXToggleNode dijsktraToggle;
     private Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
     @FXML
@@ -83,7 +87,6 @@ public class AdminServiceController {
     public void depthSwitch(ActionEvent actionEvent) {
         algorithm.selectToggle(depthFirstToggle);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!! function called !!!!!!!!!!!!!!!!!!");
         event.setEventName("methodSwitch");
         event.setSearchMethod("depth");
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);    }
@@ -111,7 +114,7 @@ public class AdminServiceController {
     }
 
     @FXML
-    void initialize() {    // Added so that search method toggle is already selected
+    void initialize() {    // Select the current method
         if (event.getSearchMethod().equals("astar")) {
             algorithm.selectToggle(aStarToggle);
         }
@@ -121,5 +124,21 @@ public class AdminServiceController {
         else {
             algorithm.selectToggle(depthFirstToggle);
         }
+    }
+
+    public void bestSwitch(ActionEvent actionEvent) {
+        algorithm.selectToggle(bestFirstToggle);
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        event.setEventName("methodSwitch");
+        event.setSearchMethod("best");
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
+    }
+
+    public void dijsktraSwitch(ActionEvent actionEvent) {
+        algorithm.selectToggle(dijsktraToggle);
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        event.setEventName("methodSwitch");
+        event.setSearchMethod("dijsktra");
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 }
