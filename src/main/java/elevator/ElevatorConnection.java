@@ -43,6 +43,10 @@ public class ElevatorConnection {
         postFloor(elevator, floorNum, time);
     }
 
+    public void postFloor(String floorNum) throws IOException {
+        postFloor(this.teamName + "L", floorNum);
+    }
+
     /** calls an elevator to go to the specific floor at the given time, will hold for 30 seconds
      * @param elevator name of elevator to tell
      * @param floorNum the floor the specified elevator should go to
