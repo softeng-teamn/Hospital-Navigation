@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXToggleNode;
+import database.DatabaseService;
 import elevator.ElevatorConnection;
 import employee.model.Employee;
 import javafx.beans.property.SimpleStringProperty;
@@ -179,12 +180,12 @@ public class ApiController implements Initializable {
 
             loadData();
 
-            if(myDBS.isCallElev() && selectedReq.getUrgency() == ApiInternalTransportRequest.Urgency.VERY
-                    && selectedReq.getLocation().length() >= 2){
+            if(myDBS.isCallElev() && selectedReq.getUrgency() == ApiInternalTransportRequest.Urgency.VERY){
                 ElevatorConnection e = new ElevatorConnection();
                 try {
                     System.out.println("Calling Elev");
-                    e.postFloor(myDBS.getTeam() + "L", selectedReq.getLocation().substring(selectedReq.getLocation().length() - 2));
+                    System.out.println(myDBS.callElevTo);
+                    e.postFloor(myDBS.getTeam() + "L", myDBS.callElevTo);
                 } catch (IOException e1) {
                     System.out.println("error posting in onAssignedTo in DBS");
                     e1.printStackTrace();
