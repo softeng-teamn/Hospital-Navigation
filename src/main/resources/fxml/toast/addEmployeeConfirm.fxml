@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="173.0" prefWidth="274.0" styleClass="theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.controller.sub_controller.HelpController">
+    <children>
+        <Label layoutX="72.0" layoutY="60.0" text="Employee Added." wrapText="true">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <JFXButton layoutX="93.0" layoutY="110.0" stylesheets="@../../theme.css" text="Button" fx:id="closeButton" onAction="#helpConfirmAction"/>
+    </children>
+</AnchorPane>

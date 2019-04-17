@@ -16,6 +16,9 @@ public class  ResourceLoader {
     public static final URL createNode = service.ResourceLoader.class.getResource("/fxml/createNode.fxml");
     public static final URL deleteNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/deleteNodeConfirm.fxml");
     public static final URL saveNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/saveNodeConfirm.fxml");
+    public static final URL helpConfirm = service.ResourceLoader.class.getResource("/fxml/toast/helpConfirm.fxml");
+    public static final URL fulfillConfirm = service.ResourceLoader.class.getResource("/fxml/toast/requestFulfilledConfirm.fxml");
+    public static final URL addEmployeeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/addEmployeeConfirm.fxml");
     public static final URL idle = service.ResourceLoader.class.getResource("/fxml/login.fxml");
 
     public static final URL about = service.ResourceLoader.class.getResource("/fxml/home/aboutPage.fxml");
