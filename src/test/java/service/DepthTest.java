@@ -1,7 +1,10 @@
 package service;
 
-import model.MapNode;
-import model.Node;
+import map.pathfinding.AlgorithmContext;
+import map.pathfinding.Astar;
+import map.pathfinding.DepthFS;
+import map.MapNode;
+import map.Node;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -77,7 +80,7 @@ public class DepthTest {
         mn9 = new MapNode(2,1,n9);
     }
 
-    final DepthFS mockPF = spy(new DepthFS());
+    final AlgorithmContext mockPF = spy(new DepthFS());
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();

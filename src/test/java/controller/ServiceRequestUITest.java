@@ -2,17 +2,12 @@ package controller;
 
 import com.jfoenix.controls.*;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.VerticalDirection;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.request.*;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -21,14 +16,15 @@ import org.junit.experimental.categories.Category;
 import org.junit.runners.MethodSorters;
 import org.loadui.testfx.GuiTest;
 import org.testfx.framework.junit.ApplicationTest;
-import service.DatabaseService;
+import database.DatabaseService;
 import service.ResourceLoader;
+import service_request.model.sub_model.*;
 import testclassifications.FastTest;
+import testclassifications.SlowTest;
 import testclassifications.UiTest;
 
-import java.awt.*;
-
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
@@ -66,22 +62,20 @@ public class ServiceRequestUITest extends ApplicationTest {
         assertThat(true, is(true));
     }
 
-    @Ignore
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void itTest() {
-        // Verify no requests of this type exist
+        // Verify no service_request of this type exist
         assertThat(myDBS.getAllITRequests().size(), is(0));
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
-        // Click on the request type
+        // Click on the service_request type
         Node tgNode = GuiTest.find("#itSelectNode");
         clickOn(tgNode);
 
@@ -100,26 +94,25 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Verify submission in database
         ITRequest req = myDBS.getITRequest(0);
-        verifyThat(req.getItRequestType(), is(ITRequest.ITRequestType.Maintenance));
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
+        verifyThat(req.getItRequestType(), is(ITRequest.ITRequestType.New_Computer));
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void toyTest() {
-        // Verify no requests of this type exist
+        // Verify no service_request of this type exist
         assertThat(myDBS.getAllToyRequests().size(), is(0));
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
-        // Click on the request type
+        // Click on the service_request type
         Node tgNode = GuiTest.find("#toySelectNode");
         clickOn(tgNode);
 
@@ -142,22 +135,20 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void securityTest() {
-        // Verify no requests of this type exist
+        // Verify no service_request of this type exist
         assertThat(myDBS.getAllSecurityRequests().size(), is(0));
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
-        // Click on the request type
+        // Click on the service_request type
         Node tgNode = GuiTest.find("#securitySelectNode");
         clickOn(tgNode);
 
@@ -176,26 +167,26 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Verify submission in database
         SecurityRequest req = myDBS.getSecurityRequest(0);
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getUrgency(), is(SecurityRequest.Urgency.VERY));
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
-    @Category(FastTest.class)
+    @Ignore
+    @Category(SlowTest.class)
     public void sanitationTest() {
-        // Verify no requests of this type exist
+        // Verify no service_request of this type exist
         assertThat(myDBS.getAllSanitationRequests().size(), is(0));
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
-        // Click on the request type
+        // Click on the service_request type
         Node tgNode = GuiTest.find("#sanitationSelectNode");
         clickOn(tgNode);
 
@@ -216,27 +207,26 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Verify submission in database
         SanitationRequest req = myDBS.getSanitationRequest(0);
-        verifyThat(req.getUrgency(), is("Low"));
-        verifyThat(req.getMaterialState(), is("Solid"));
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
+        verifyThat(req.getUrgency(), is("Medium"));
+        verifyThat(req.getMaterialState(), is("Mixture"));
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void patientInfoTest() {
-        // Verify no requests of this type exist
+        // Verify no service_request of this type exist
         assertThat(myDBS.getAllPatientInfoRequests().size(), is(0));
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
-        // Click on the request type
+        // Click on the service_request type
         Node tgNode = GuiTest.find("#patientSelectNode");
         clickOn(tgNode);
 
@@ -263,28 +253,27 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Verify submission in database
         PatientInfoRequest req = myDBS.getPatientInfoRequest(0);
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getFirstName(), is("John"));
         verifyThat(req.getLastName(), is("Doe"));
         verifyThat(req.getBirthDay(), is("20190409"));
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
-    @Ignore
     @Test
-    @Category(FastTest.class)
+    @Category(SlowTest.class)
     public void medicineRequestTest() {
-        // Verify no requests of this type exist
+        // Verify no service_request of this type exist
         assertThat(myDBS.getAllMedicineRequests().size(), is(0));
 
         // Get and click on a location
         JFXListView<Node> listView = GuiTest.find("#list_view");
         clickOn((Node) from(listView).lookup(".list-cell").nth(2).query());
 
-        // Verify no subscene is present
+        // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
-        verifyThat(subSceneHolder.getChildren().size(), is(0));
 
-        // Click on the request type
+        // Click on the service_request type
         Node tgNode = GuiTest.find("#medicineSelectNode");
         clickOn(tgNode);
 
@@ -305,6 +294,7 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Verify submission in database
         MedicineRequest req = myDBS.getMedicineRequest(0);
+        verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getMedicineType(), is("Something"));
         verifyThat(req.getNotes(), is("A description here..."));
     }

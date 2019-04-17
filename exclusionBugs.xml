@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
   <Match>
-    <Bug code="UuF,UrF" />
+    <Bug code="UuF,UrF,RV" />
   </Match>
   <Match>
     <Bug code="DLS" />
-    <Class name="controller.HomeController" />
+    <Class name="home.HomeController" />
   </Match>
   <Match>
     <Bug code="ST" />
-    <Class name="controller.EditNodeController" />
+    <Class name="map.edit_node.EditNodeController" />
+  </Match>
+  <Match>
+    <Bug code="NP" />
+    <Class name="map.edit_node.EditNodeController" />
+  </Match>
+  <Match>
+    <Bug code="UwF" />
+    <Class name="map.edit_node.EditNodeController" />
+  </Match>
+  <Match>
+    <Bug code="NP" />
+    <Class name="map.edit_node.EditConfirmController" />
+  </Match>
+  <Match>
+    <Bug code="UwF" />
+    <Class name="map.edit_node.EditConfirmController" />
   </Match>
   <Match>
     <Bug code="ST" />
-    <Class name="controller.MapView$5" />
+    <Class name="home.MapViewController$5" />
   </Match>
   <Match>
     <Bug code="NP,UwF" />
-    <Class name="controller.TopNav" />
+    <Class name="home.TopNavController" />
   </Match>
 </FindBugsFilter>
 

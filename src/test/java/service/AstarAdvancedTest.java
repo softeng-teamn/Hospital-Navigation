@@ -1,7 +1,10 @@
 package service;
 
-import model.MapNode;
-import model.Node;
+import map.pathfinding.Algorithm;
+import map.pathfinding.AlgorithmContext;
+import map.pathfinding.Astar;
+import map.MapNode;
+import map.Node;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -103,7 +106,7 @@ public class AstarAdvancedTest {
         n10.setFloor("1");
     }
 
-    final Astar mockPF = spy(new Astar());
+    final AlgorithmContext mockPF = spy(new Astar());
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -163,15 +166,17 @@ public class AstarAdvancedTest {
 //        when(mockPF.getChildren(mn10)).thenReturn(list);
     }
 
+
+
     @Test
     @Category(FastTest.class)
     public void testAStar() {
         // a path can be found
-        assertThat(mockPF.aStar(mn1, mn6, false, null), is(mn6));
-        assertThat(mockPF.aStar(mn10, mn8, false, null), is(mn8));
-        assertThat(mockPF.aStar(mn6, mn8, false, null), is(mn8));
-        assertThat(mockPF.aStar(mn2, mn10, false, null), is(mn10));
-        assertThat(mockPF.aStar(mn1, mn8, false, null), is(mn8));
+        assertThat(mockPF.returnMapNode(mn1, mn6, false, null), is(mn6));
+        assertThat(mockPF.returnMapNode(mn10, mn8, false, null), is(mn8));
+        assertThat(mockPF.returnMapNode(mn6, mn8, false, null), is(mn8));
+        assertThat(mockPF.returnMapNode(mn2, mn10, false, null), is(mn10));
+        assertThat(mockPF.returnMapNode(mn1, mn8, false, null), is(mn8));
     }
 
     @Test
