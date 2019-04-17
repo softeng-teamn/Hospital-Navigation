@@ -2,6 +2,7 @@ package service_request.controller.sub_controller;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
+import javafx.scene.control.Label;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -18,6 +19,9 @@ public class InterpreterController extends RequestController {
     @FXML
     private JFXComboBox<InterpreterRequest.Language> type;
 
+    @FXML
+    private Label errorMsg;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         type.setItems(FXCollections.observableArrayList(InterpreterRequest.Language.values()));
@@ -27,10 +31,19 @@ public class InterpreterController extends RequestController {
     @FXML
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
-            InterpreterRequest interpRequest = new InterpreterRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
-            interpRequest.makeRequest();
-            description.setText("");
-            type.getSelectionModel().select(0);
+            if(description.getText().equals("")){
+                errorMsg.setText("Please Enter Details");
+            }
+            else {
+                InterpreterRequest interpRequest = new InterpreterRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem());
+                interpRequest.makeRequest();
+                description.setText("");
+                type.getSelectionModel().select(0);
+                errorMsg.setText("");
+            }
+        }
+        else{
+            errorMsg.setText("Please Select a Location");
         }
     }
 

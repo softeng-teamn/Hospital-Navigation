@@ -33,7 +33,7 @@ public class CSVService {
 
     /**
      * Export the Nodes table
-     * @throws IOException
+     * @throws IOException if the file is not found or the load fails
      */
     public static void exportNodes() throws IOException {
         // Open a file
@@ -70,7 +70,7 @@ public class CSVService {
 
     /**
      * Export the Edges table
-     * @throws IOException
+     * @throws IOException if the file is not found or the load fails
      */
     public static void exportEdges() throws IOException {
         // Open a file
@@ -139,6 +139,7 @@ public class CSVService {
 
     /**
      * Export the Employees table
+     * @throws IOException if the file is not found or the load fails
      */
     public static void exportEmployees() throws IOException {
         // Open a file

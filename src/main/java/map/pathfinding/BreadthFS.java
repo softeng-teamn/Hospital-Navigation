@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+/**
+ * breadth first search implementation
+ */
 public class BreadthFS extends AlgorithmContext implements Algorithm{
     PriorityQueue<MapNode> needVisit;
     HashMap<MapNode, String> visited;

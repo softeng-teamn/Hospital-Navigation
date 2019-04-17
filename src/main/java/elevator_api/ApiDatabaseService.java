@@ -5,13 +5,17 @@ import employee.model.Employee;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Database controller for the API's internal database
+ */
 class ApiDatabaseService {
     public static final String DATABASE_NAME = "internal-transport-request-db";
 
     private Connection connection;
     public boolean createFlag;
-
+    public static String team;
     public static boolean callElev;
+
 
     private static class SingletonHelper {
         private static final ApiDatabaseService dbs = new ApiDatabaseService();
@@ -428,5 +432,13 @@ class ApiDatabaseService {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static String getTeam() {
+        return team;
+    }
+
+    public static void setTeam(String team) {
+        ApiDatabaseService.team = team;
     }
 }

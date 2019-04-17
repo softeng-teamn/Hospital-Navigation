@@ -1,5 +1,6 @@
 package employee.controller;
 
+import application_state.ApplicationState;
 import com.jfoenix.controls.*;
 import employee.model.Employee;
 import employee.model.JobType;
@@ -20,6 +21,9 @@ import service.StageManager;
 
 import java.util.List;
 
+/**
+ * controller for the employee editor FXML
+ */
 public class EmployeeEditController {
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -104,6 +108,9 @@ public class EmployeeEditController {
             Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
             employee.setUsername(e.getNewValue());
             myDBS.updateEmployee(employee);
+            if(ApplicationState.getApplicationState().getEmployeeLoggedIn().getID() == employee.getID()) {
+                ApplicationState.getApplicationState().setEmployeeLoggedIn(employee);
+            }
             loadData();
         });
 
@@ -112,6 +119,9 @@ public class EmployeeEditController {
             Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
             employee.setPhone(e.getNewValue());
             myDBS.updateEmployee(employee);
+            if(ApplicationState.getApplicationState().getEmployeeLoggedIn().getID() == employee.getID()) {
+                ApplicationState.getApplicationState().setEmployeeLoggedIn(employee);
+            }
             loadData();
         });
 
@@ -120,6 +130,9 @@ public class EmployeeEditController {
             Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
             employee.setEmail(e.getNewValue());
             myDBS.updateEmployee(employee);
+            if(ApplicationState.getApplicationState().getEmployeeLoggedIn().getID() == employee.getID()) {
+                ApplicationState.getApplicationState().setEmployeeLoggedIn(employee);
+            }
             loadData();
         });
 
@@ -128,6 +141,9 @@ public class EmployeeEditController {
             Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
             employee.setJob(e.getNewValue());
             myDBS.updateEmployee(employee);
+            if(ApplicationState.getApplicationState().getEmployeeLoggedIn().getID() == employee.getID()) {
+                ApplicationState.getApplicationState().setEmployeeLoggedIn(employee);
+            }
             loadData();
         });
 
@@ -136,6 +152,9 @@ public class EmployeeEditController {
             Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
             employee.setAdmin(Boolean.parseBoolean(e.getNewValue()));
             myDBS.updateEmployee(employee);
+            if(ApplicationState.getApplicationState().getEmployeeLoggedIn().getID() == employee.getID()) {
+                ApplicationState.getApplicationState().setEmployeeLoggedIn(employee);
+            }
             loadData();
         });
 
