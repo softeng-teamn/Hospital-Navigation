@@ -33,7 +33,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CreateNodeController extends Controller {
+/**
+ * controls the create node FXML
+ */
+public class CreateNodeController {
 
     @FXML
     JFXComboBox<String> nodeType_combo, building_combo;
@@ -98,7 +101,7 @@ public class CreateNodeController extends Controller {
         imagesInit();
 
         nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
-        building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis");
+        building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis", "FLEX");
 
         // start state at 0
         stateIterator = 0;

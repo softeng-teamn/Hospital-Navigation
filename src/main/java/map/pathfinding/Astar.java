@@ -8,6 +8,9 @@ import map.NodeFacade;
 
 import java.util.*;
 
+/**
+ * A* implementation
+ */
 public class Astar extends AlgorithmContext implements Algorithm{
     public int estimatedTime;
     PriorityQueue<MapNode> open;

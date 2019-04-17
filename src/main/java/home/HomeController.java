@@ -13,6 +13,9 @@ import service.ResourceLoader;
 
 import java.io.IOException;
 
+/**
+ * Controls the main screen of the application
+ */
 public class HomeController implements Observer {
 
     private Event event;
@@ -22,6 +25,9 @@ public class HomeController implements Observer {
 
     StackPane drawerPane = new StackPane();
 
+    /** initializes the main screen
+     * @throws IOException if the FXML fails to load
+     */
     @FXML
     void initialize() throws IOException {
         // Get the current info and register this as observer
@@ -39,6 +45,9 @@ public class HomeController implements Observer {
         drawer.setOverLayVisible(false);
     }
 
+    /** handles an observed event and changes the screen as appropriate
+     * @param newevent event to respond to from the observed class
+     */
     @Override
     public void notify(Object newevent) {
         event = (Event) newevent;

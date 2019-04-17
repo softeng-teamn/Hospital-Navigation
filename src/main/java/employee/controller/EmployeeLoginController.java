@@ -20,6 +20,9 @@ import service.StageManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * controller for the login FXML
+ */
 public class EmployeeLoginController implements Initializable {
 
     @FXML

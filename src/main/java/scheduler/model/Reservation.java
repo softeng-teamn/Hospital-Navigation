@@ -3,6 +3,9 @@ package scheduler.model;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
+/**
+ * space reservation object
+ */
 public class Reservation {
     int eventID, privacyLevel, employeeId;
     String eventName, locationID;
@@ -76,8 +79,8 @@ public class Reservation {
 
     /**
      * checks if two Reservations are equal to each other.
-     * @param o
-     * @return
+     * @param o a given reservation
+     * @return true if the reservations are equal and false if otherwise
      */
     @Override
     public boolean equals(Object o) {

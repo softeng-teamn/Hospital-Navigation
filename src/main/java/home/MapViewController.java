@@ -43,6 +43,9 @@ import java.io.IOException;
 import java.util.*;
 
 
+/**
+ * controls the map view screen
+ */
 public class MapViewController implements Observer {
     static ElevatorConnection elevatorCon = new ElevatorConnection();
 
@@ -82,7 +85,10 @@ public class MapViewController implements Observer {
     @FXML
     private Label FloorInfo;
 
-    // switch to about page
+    /** switch to about page
+     * @param e FXML event that calls this method
+     * @throws Exception if the FXML is not found
+     */
     @FXML
     void showAbout(ActionEvent e) throws Exception {
         Stage stage = (Stage) about_btn.getScene().getWindow();
@@ -176,7 +182,9 @@ public class MapViewController implements Observer {
     }
     */
 
-    // switch floor to new map image
+    /** switch floor to new map image
+     * @param floor the floor to switch the map image to
+     */
     public void setFloor(String floor) {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ImageView newImg;
@@ -193,6 +201,9 @@ public class MapViewController implements Observer {
         this.floorImg = newImg;
     }
 
+    /** change floor button controller
+     * @param e FXML event that calls this method
+     */
     @FXML
     void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
@@ -203,6 +214,9 @@ public class MapViewController implements Observer {
     }
 
 
+    /** inhereted obsever method
+     * @param e the event object given
+     */
     @Override
     public void notify(Object e) {
         System.out.println("    mapView notified " + event.getEventName() + " " + this);   // todo cut

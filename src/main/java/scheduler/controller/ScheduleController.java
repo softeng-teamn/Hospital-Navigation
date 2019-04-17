@@ -646,8 +646,7 @@ public class ScheduleController {
 
     /**
      * switches window to home screen
-     *
-     * @throws Exception
+     * @throws Exception if FXML fails to load
      */
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();

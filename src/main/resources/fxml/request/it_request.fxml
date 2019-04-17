@@ -7,7 +7,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
 
+<?import javafx.scene.text.Font?>
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.controller.sub_controller.ITRequestController">
    <children>
       <FontAwesomeIconView glyphName="DESKTOP" size="240" styleClass="request-glyph">
@@ -25,6 +27,10 @@
       </JFXTextArea>
       <JFXComboBox fx:id="type" prefHeight="31.0" prefWidth="358.0" promptText="%SelectType" />
       <Region prefHeight="391.0" prefWidth="522.0" />
+      <Label fx:id="errorMsg" stylesheets="@../../theme.css" textFill="#f44336">
+         <font>
+            <Font size="32.0" />
+         </font></Label>
       <JFXButton fx:id="submit" onAction="#submitRequest" styleClass="confirm-button" text="%Submit">
          <VBox.margin>
             <Insets bottom="24.0" />

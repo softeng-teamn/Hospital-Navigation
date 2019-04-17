@@ -22,6 +22,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * controller for the API FXML
+ */
 public class ApiController implements Initializable {
     static ApiDatabaseService myDBS = ApiDatabaseService.getDatabaseService();
 
@@ -181,7 +184,7 @@ public class ApiController implements Initializable {
                 ElevatorConnection e = new ElevatorConnection();
                 try {
                     System.out.println("Calling Elev");
-                    e.postFloor("L", selectedReq.getLocation().substring(selectedReq.getLocation().length() - 2));
+                    e.postFloor(myDBS.getTeam() + "L", selectedReq.getLocation().substring(selectedReq.getLocation().length() - 2));
                 } catch (IOException e1) {
                     System.out.println("error posting in onAssignedTo in DBS");
                     e1.printStackTrace();

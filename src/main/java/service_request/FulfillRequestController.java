@@ -28,6 +28,9 @@ import java.util.ResourceBundle;
 
 import static employee.model.JobType.*;
 
+/**
+ * controller for the request fulfilling FXML
+ */
 public class FulfillRequestController implements Initializable {
 
     @FXML
@@ -57,7 +60,7 @@ public class FulfillRequestController implements Initializable {
     /**
      * switches window to home screen
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showHome() throws Exception {
@@ -117,8 +120,8 @@ public class FulfillRequestController implements Initializable {
     /**
      * initialize the list of requests
      *
-     * @param location
-     * @param resources
+     * @param location required parameter for the abstract method this overrides
+     * @param resources required parameter for the abstract method this overrides
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
