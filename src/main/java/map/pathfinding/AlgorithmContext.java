@@ -53,8 +53,8 @@ public abstract class AlgorithmContext{
 
     /**
      * Gets reachable MapNodes from given MapNode
-     * @param node
-     * @return
+     * @param node node to find the children of
+     * @return children of the given node in an ArrayList
      */
     public ArrayList<MapNode> getChildren(MapNode node) {
         ArrayList<Node> neighbors = MapController.getNodesConnectedTo(node.getData());

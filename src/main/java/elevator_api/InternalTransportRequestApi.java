@@ -1,20 +1,27 @@
 package elevator_api;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import elevator.ElevatorConnection;
 import employee.model.Employee;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * API main class
+ */
 public class InternalTransportRequestApi {
     ApiDatabaseService myDBS = ApiDatabaseService.getDatabaseService();
 
     static String originNodeID;
+    private String team;
+    private boolean useElev;
 
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
     public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin) throws ServiceException {
@@ -39,6 +46,69 @@ public class InternalTransportRequestApi {
         primaryStage.setScene(scene);
         scene.getStylesheets().add(this.getClass().getResource(cssPath).toExternalForm());
         primaryStage.show();
+
+        useElev = false;
+        myDBS.setCallElev(useElev);
+    }
+
+
+    /**
+     *
+     * @param xcoord of node
+     * @param ycoord of node
+     * @param windowWidth of window
+     * @param windowLength of window
+     * @param cssPath make it pretty
+     * @param destination where do i go
+     * @param origin where did i start
+     * @param useElev true if you want to use the elevator
+     * @param team the team letter in upper case
+     * @throws ServiceException
+     */
+    @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
+    public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin, boolean useElev, String team) throws ServiceException {
+        Stage primaryStage = new Stage();
+        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/api/api.fxml"), ResourceBundle.getBundle("strings", Locale.getDefault()));
+
+        Parent root;
+        try {
+            root = loader.load();
+        } catch (Exception e) {
+            System.out.println("failed to load the file");
+            e.printStackTrace();
+            return;
+        }
+
+        originNodeID = (origin == null ? "" : origin);
+
+        Scene scene = new Scene(root, (double) windowWidth, (double) windowLength);
+        primaryStage.setX((double) xcoord);
+        primaryStage.setY((double) ycoord);
+        primaryStage.setTitle("Internal Transport Request");
+        primaryStage.setScene(scene);
+        scene.getStylesheets().add(this.getClass().getResource(cssPath).toExternalForm());
+        primaryStage.show();
+
+        this.useElev = useElev;
+        this.team = team;
+        myDBS.setTeam(team);
+        myDBS.setCallElev(useElev);
+        myDBS.setTeam(team);
+    }
+
+    /**
+     *
+     * @return a string containing elevator L's current floor. empty string if error
+     */
+    public String getCurrentElevFloor(){
+        ElevatorConnection e = new ElevatorConnection();
+        try {
+           return e.getFloor(team + "L");
+        } catch (IOException e1) {
+            System.out.println("Error Connecting to Elevator getCurrentElev in internal Transport Req API");
+            e1.printStackTrace();
+        }
+        return "";
     }
 
     public boolean insertEmployee(Employee e) {

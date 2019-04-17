@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXToggleNode;
+import elevator.ElevatorConnection;
 import employee.model.Employee;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -12,26 +13,26 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * controller for the API FXML
+ */
 public class ApiController implements Initializable {
     static ApiDatabaseService myDBS = ApiDatabaseService.getDatabaseService();
 
     @FXML
     public JFXToggleNode low;
+
     @FXML
-    public JFXToggleNode med;
-    @FXML
-    public JFXToggleNode high;
+    private ToggleGroup urgency;
 
     @FXML
     private JFXComboBox<ApiInternalTransportRequest.TransportType> dropdown;
@@ -127,8 +128,7 @@ public class ApiController implements Initializable {
         employees.setAll(myDBS.getAllEmployees());
         employeeComboBox.setItems(employees);
         employeeComboBox.getSelectionModel().select(0);
-
-        low.setSelected(true);
+        urgency.selectToggle(low);
 
         loadData();
     }
@@ -136,13 +136,27 @@ public class ApiController implements Initializable {
 
     @FXML
     public void submitAction(javafx.event.ActionEvent actionEvent) {
-        ApiInternalTransportRequest.Urgency urgency;
+        ApiInternalTransportRequest.Urgency urgencyLevel = ApiInternalTransportRequest.Urgency.NOT;
 
-        if (low.isSelected()) urgency = ApiInternalTransportRequest.Urgency.NOT;
-        if (med.isSelected()) urgency = ApiInternalTransportRequest.Urgency.SOMEWHAT;
-        else urgency = ApiInternalTransportRequest.Urgency.VERY;
+        JFXToggleNode selected = (JFXToggleNode) urgency.getSelectedToggle();
 
-        ApiInternalTransportRequest request = new ApiInternalTransportRequest(-1, text_area.getText(),  InternalTransportRequestApi.originNodeID, dropdown.getSelectionModel().getSelectedItem(), urgency);
+        if (selected != null) {
+            switch (selected.getText()) {
+                case "Low":
+                    urgencyLevel = ApiInternalTransportRequest.Urgency.NOT;
+                    break;
+                case "Medium":
+                    urgencyLevel = ApiInternalTransportRequest.Urgency.SOMEWHAT;
+                    break;
+                case "High":
+                    urgencyLevel = ApiInternalTransportRequest.Urgency.VERY;
+                    break;
+                default:
+                    urgencyLevel = ApiInternalTransportRequest.Urgency.NOT;
+            }
+        }
+
+        ApiInternalTransportRequest request = new ApiInternalTransportRequest(-1, text_area.getText(),  InternalTransportRequestApi.originNodeID, dropdown.getSelectionModel().getSelectedItem(), urgencyLevel);
         myDBS.insertInternalTransportRequest(request);
         dropdown.getSelectionModel().select(0);
         text_area.setText("");
@@ -154,6 +168,7 @@ public class ApiController implements Initializable {
         loadData();
     }
 
+    //also calls elev
     public void onAssignTo(ActionEvent actionEvent) {
         ApiInternalTransportRequest selectedReq = open_table.getSelectionModel().getSelectedItem();
         Employee employee = employeeComboBox.getSelectionModel().getSelectedItem();
@@ -162,11 +177,19 @@ public class ApiController implements Initializable {
             selectedReq.setAssignedTo(employee.getID());
             myDBS.updateInternalTransportRequest(selectedReq);
 
-            if(selectedReq.getUrgency() == ApiInternalTransportRequest.Urgency.VERY){
-                selectedReq.callElev();
-            }
-
             loadData();
+
+            if(myDBS.isCallElev() && selectedReq.getUrgency() == ApiInternalTransportRequest.Urgency.VERY
+                    && selectedReq.getLocation().length() >= 2){
+                ElevatorConnection e = new ElevatorConnection();
+                try {
+                    System.out.println("Calling Elev");
+                    e.postFloor(myDBS.getTeam() + "L", selectedReq.getLocation().substring(selectedReq.getLocation().length() - 2));
+                } catch (IOException e1) {
+                    System.out.println("error posting in onAssignedTo in DBS");
+                    e1.printStackTrace();
+                }
+            }
         }
     }
 

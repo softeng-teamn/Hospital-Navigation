@@ -5,16 +5,15 @@ import application_state.Event;
 import application_state.Observer;
 import com.jfoenix.controls.JFXButton;
 import database.DatabaseService;
+import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+import de.jensd.fx.glyphs.materialicons.MaterialIconView;
 import elevator.ElevatorConnection;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import elevator.ElevatorConnection;
-import application_state.Event;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,7 +29,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -41,12 +39,13 @@ import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
 import service.StageManager;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 
+/**
+ * controls the map view screen
+ */
 public class MapViewController implements Observer {
     static ElevatorConnection elevatorCon = new ElevatorConnection();
 
@@ -58,10 +57,11 @@ public class MapViewController implements Observer {
 
     private String currentMethod;
 
+    JFXButton startNodeLabel;
+    JFXButton endNodeLabel;
     private Group zoomGroup;
     private Circle startCircle;
     private Circle selectCircle;
-    private ArrayList<Line> lineCollection;
     private ArrayList<Circle> circleCollection;
     private HashMap<String, ArrayList<Polyline>> polylineCollection;
     private boolean hasPath = false;
@@ -73,6 +73,7 @@ public class MapViewController implements Observer {
     private static HashMap<String, ImageView> imageCache;
     private static final double MIN_ZOOM = 0.4;
     private static final double MAX_ZOOM = 1.2;
+    private MaterialIconView location;
 
 
     @FXML
@@ -84,7 +85,10 @@ public class MapViewController implements Observer {
     @FXML
     private Label FloorInfo;
 
-    // switch to about page
+    /** switch to about page
+     * @param e FXML event that calls this method
+     * @throws Exception if the FXML is not found
+     */
     @FXML
     void showAbout(ActionEvent e) throws Exception {
         Stage stage = (Stage) about_btn.getScene().getWindow();
@@ -119,7 +123,6 @@ public class MapViewController implements Observer {
         ApplicationState currState = ApplicationState.getApplicationState();
 
         // Setup collection of lines
-        lineCollection = new ArrayList<>();
         polylineCollection = new HashMap<>();
 
         // Set start circle
@@ -129,11 +132,12 @@ public class MapViewController implements Observer {
         circleCollection = new ArrayList<>();
 
         // Setting Up Circle Destination Point
-        startCircle.setCenterX(currState.getStartNode().getXcoord());
-        startCircle.setCenterY(currState.getStartNode().getYcoord());
-        startCircle.setRadius(20);
-        startCircle.setFill(Color.rgb(67, 70, 76));
-        zoomGroup.getChildren().add(startCircle);
+//        startCircle.setCenterX(currState.getStartNode().getXcoord());
+//        startCircle.setCenterY(currState.getStartNode().getYcoord());
+//        startCircle.setRadius(20);
+//        startCircle.setFill(Color.rgb(67, 70, 76));
+//        zoomGroup.getChildren().add(startCircle);
+        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
     }
 
     void zoomGroupInit() {
@@ -178,7 +182,9 @@ public class MapViewController implements Observer {
     }
     */
 
-    // switch floor to new map image
+    /** switch floor to new map image
+     * @param floor the floor to switch the map image to
+     */
     public void setFloor(String floor) {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ImageView newImg;
@@ -195,6 +201,9 @@ public class MapViewController implements Observer {
         this.floorImg = newImg;
     }
 
+    /** change floor button controller
+     * @param e FXML event that calls this method
+     */
     @FXML
     void floorChangeAction(ActionEvent e){
         JFXButton btn = (JFXButton)e.getSource();
@@ -205,6 +214,9 @@ public class MapViewController implements Observer {
     }
 
 
+    /** inhereted obsever method
+     * @param e the event object given
+     */
     @Override
     public void notify(Object e) {
         System.out.println("    mapView notified " + event.getEventName() + " " + this);   // todo cut
@@ -228,7 +240,8 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        drawPoint(currState.getEndNode(), selectCircle, Color.rgb(72, 87, 125), false);
+                        deletePolyLine();
+                        drawIcon(currState.getEndNode());
                     }
                 });
                 break;
@@ -236,7 +249,9 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76), true);
+                        deletePolyLine();
+                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
+
                     }
                 });
                 break;
@@ -244,8 +259,9 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76), true);
-                        drawPoint(event.getNodeSelected(), selectCircle, Color.rgb(72, 87, 125), false);
+                        deletePolyLine();
+                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
+                        drawIcon(currState.getEndNode());
                     }
                 });
                 break;
@@ -269,6 +285,13 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        deletePolyLine();
+                        if(zoomGroup.getChildren().contains(startNodeLabel)){
+                            zoomGroup.getChildren().remove(startNodeLabel);
+                        }
+                        if(zoomGroup.getChildren().contains(location)){
+                            zoomGroup.getChildren().remove(location);
+                        }
                         editNodeHandler(event.isEditing());
                     }
                 });
@@ -279,12 +302,13 @@ public class MapViewController implements Observer {
                     public void run() {
                         zoomGroup.getChildren().removeAll(circleCollection);
                         circleCollection.clear();
-                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67,70,76), true);
+                        deletePolyLine();
+                        zoomGroup.getChildren().remove(location);
+                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67,70,76));
                     }
                 });
                 break;
             default:
-//                        System.out.println("I don'");
                 break;
         }
     }
@@ -292,10 +316,6 @@ public class MapViewController implements Observer {
 
     void editNodeHandler(boolean isEditing) {
         if (isEditing) {
-            // remove previous selected circle
-            if (zoomGroup.getChildren().contains(selectCircle)) {
-                zoomGroup.getChildren().remove(selectCircle);
-            }
             // remove old circles
             zoomGroup.getChildren().removeAll(circleCollection);
             circleCollection.clear();
@@ -349,28 +369,36 @@ public class MapViewController implements Observer {
     }
 
 
-    private void clearBothPoint() {
-        if (zoomGroup.getChildren().contains(selectCircle)) {
-            zoomGroup.getChildren().remove((selectCircle));
-        }
-        if (zoomGroup.getChildren().contains(startCircle)) {
-            zoomGroup.getChildren().remove(startCircle);
-        }
-    }
-
-    private void drawPoint(Node node, Circle circle, Color color, boolean start) {
-        // remove points
-        for (Line line : lineCollection) {
-            if (zoomGroup.getChildren().contains(line)) {
-                zoomGroup.getChildren().remove(line);
-                hasPath = false;
+    private void deletePolyLine(){
+        for (ArrayList<Polyline> polylines : polylineCollection.values()) {
+            for(Polyline polyline : polylines){
+                if(zoomGroup.getChildren().contains(polyline)){
+                    zoomGroup.getChildren().remove(polyline);
+                }
             }
         }
+        hasPath = false;
+    }
+
+    private void drawPoint(Node node, Circle circle, Color color) {
         // remove old selected Circle
         if (zoomGroup.getChildren().contains(circle)) {
             //System.out.println("we found new Selected Circles");
             zoomGroup.getChildren().remove(circle);
         }
+
+        if(zoomGroup.getChildren().contains(startNodeLabel)){
+            zoomGroup.getChildren().remove(startNodeLabel);
+        }
+
+
+
+        if(!node.getFloor().equals(event.getFloor())){
+            //switch the map
+            //System.out.println(node + node.getFloor());
+            setFloor(node.getFloor());
+        }
+
         // create new Circle
         circle = new Circle();
         circle.setCenterX(node.getXcoord());
@@ -379,23 +407,46 @@ public class MapViewController implements Observer {
         circle.setFill(color);
         zoomGroup.getChildren().add(circle);
         // set circle to selected
-        if (start) {
-            startCircle = circle;
-        } else {
-            selectCircle = circle;
+
+        startCircle = circle;
+
+
+
+        // Scroll to new point
+        scrollTo(node);
+
+        addLabel(node, true);
+
+        //display node info
+        System.out.println("done drawing point");
+    }
+
+    private void drawIcon(Node node){
+        if(zoomGroup.getChildren().contains(location)){
+            zoomGroup.getChildren().remove(location);
+        }
+
+        if(zoomGroup.getChildren().contains(endNodeLabel)){
+            zoomGroup.getChildren().remove(endNodeLabel);
         }
 
         if(!node.getFloor().equals(event.getFloor())){
             //switch the map
             //System.out.println(node + node.getFloor());
-                setFloor(node.getFloor());
+            setFloor(node.getFloor());
         }
 
-        // Scroll to new point
+        location = new MaterialIconView();
+        location.setIcon(MaterialIcon.LOCATION_ON);
+        location.setTranslateX(node.getXcoord()-50);
+        location.setTranslateY(node.getYcoord());
+        location.setSize("100");
+        location.getStyleClass().add("dest-icon");
+        zoomGroup.getChildren().add(location);
+
         scrollTo(node);
 
-        //display node info
-        System.out.println("done drawing point");
+        addLabel(node, false);
     }
 
     // generate path on the screen
@@ -414,6 +465,7 @@ public class MapViewController implements Observer {
             // not accessible
             newpath = pathFinder.genPath(start, dest, false, currentMethod);
         }
+        /*   uncomment for auto elev call on path find, do breadth and depth things
         if (event.isCallElev()) {//if we are supposed to call elevator
             ElevatorConnection e = new ElevatorConnection();
             if (pathFinder.getElevTimes() != null) {    // TODO: do breadth and depth set elevTimes? I'm getting null pointer exceptions here when I use them
@@ -431,11 +483,12 @@ public class MapViewController implements Observer {
                 }
             }
         } // todo
-
+        */
         path = newpath;
         hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
+            scrollTo(path.get(0));
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
@@ -477,13 +530,14 @@ public class MapViewController implements Observer {
         if (newpath == null) {
             System.out.println("DIDNT FIND A PATH");
         } else {
-            drawPoint(newpath.get(newpath.size() - 1), selectCircle, Color.rgb(72, 87, 125), false);
+            drawIcon(newpath.get(newpath.size() - 1));
         }
 
         path = newpath;
         hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
+            scrollTo(path.get(0));
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
@@ -494,25 +548,21 @@ public class MapViewController implements Observer {
     @SuppressFBWarnings(value = "WMI_WRONG_MAP_ITERATOR")
     private void drawPath() {
 
+        ApplicationState currState = ApplicationState.getApplicationState();
+
         if(!hasPath){
             setFloor(path.get(0).getFloor());
-            scrollTo(path.get(0));
         }
 
-        for (ArrayList<Polyline> polylines : polylineCollection.values()) {
-            for(Polyline polyline : polylines){
-                if(zoomGroup.getChildren().contains(polyline)){
-                    zoomGroup.getChildren().remove(polyline);
-                }
-            }
-        }
-
+        deletePolyLine();
         polylineCollection.clear();
+
 
         Polyline polyline = new Polyline();
 
         Node last = path.get(0);
         polyline.getPoints().addAll((double) last.getXcoord(), (double) last.getYcoord());
+
 
         for(int i = 1; i < path.size(); i++) {
             Node current = path.get(i);
@@ -545,6 +595,18 @@ public class MapViewController implements Observer {
                 }
             }
         }
+
+        if (event.getFloor().equals(path.get(0).getFloor())){
+            drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
+        }
+
+        if (event.getFloor().equals(path.get(path.size()-1).getFloor())){
+            drawIcon(currState.getEndNode());
+        }
+
+
+
+
         hasPath = true;
     }
 
@@ -561,6 +623,26 @@ public class MapViewController implements Observer {
             }
         });
         zoomGroup.getChildren().add(floorSwitcher);
+    }
+
+    private  void addLabel(Node node, boolean isStart){
+        if (isStart){
+            startNodeLabel = new JFXButton(node.getShortName());
+            startNodeLabel.getStyleClass().add("path-button");
+            startNodeLabel.setTranslateX(node.getXcoord());
+            startNodeLabel.setTranslateY(node.getYcoord());
+            startNodeLabel.setDisable(true);
+            startNodeLabel.setOpacity(0.6);
+            zoomGroup.getChildren().add(startNodeLabel);
+        } else {
+            endNodeLabel = new JFXButton(node.getShortName());
+            endNodeLabel.getStyleClass().add("path-button");
+            endNodeLabel.setTranslateX(node.getXcoord());
+            endNodeLabel.setTranslateY(node.getYcoord());
+            endNodeLabel.setDisable(true);
+            endNodeLabel.setOpacity(0.6);
+            zoomGroup.getChildren().add(endNodeLabel);
+        }
     }
 
     private synchronized void addToList(String mapKey, Polyline polyline) {
