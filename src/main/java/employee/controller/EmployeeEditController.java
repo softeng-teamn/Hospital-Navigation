@@ -23,8 +23,12 @@ import javafx.stage.Stage;
 import service.ResourceLoader;
 import service.StageManager;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -224,6 +228,15 @@ public class EmployeeEditController {
             if (employeeImage != null) {
                 // save the employeeImage
                 // but I need the employeeID.... how do I get that
+                Employee e = myDBS.getEmployeeByUsername(new_username.getText());
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(employeeImage, "png", os);
+                } catch (IOException err) {
+                    err.printStackTrace();
+                }
+                InputStream inputStream = new ByteArrayInputStream(os.toByteArray());
+                myDBS.updateEmployeeImage(e.getID(), inputStream);
             }
             new_password.setText("");
             new_password_conf.setText("");

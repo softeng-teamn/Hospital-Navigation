@@ -9,7 +9,6 @@ import database.DatabaseService;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import employee.Face;
 import employee.MyCallback;
-import javafx.scene.input.KeyEvent;
 import employee.model.Employee;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,16 +16,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
-import application_state.Event;
-import database.DatabaseService;
+import org.apache.commons.io.FileUtils;
 import service.ResourceLoader;
 import service.StageManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -125,29 +126,56 @@ public class EmployeeLoginController implements Initializable {
 
     void turnOnCamera() {
         String usrName = usernameText.getText();
-        changeKnownImg(usrName);
-        Face face = new Face(usrName, new MyCallback() {
-            @Override
-            public void callback(boolean b) {
-                if (b) {
-                    // prompt the user of success
-                    eye_icon.setFill(Color.rgb(98, 225, 125));
-                    // log them in
-                    Platform.runLater(() -> {
-                        faceLogin(usrName);
-                    });
-                } else {
-                    eye_icon.setFill(Color.rgb(202, 56, 65));
+        if (changeKnownImg(usrName)) {
+            Face face = new Face(usrName, new MyCallback() {
+                @Override
+                public void callback(boolean b) {
+                    if (b) {
+                        // prompt the user of success
+                        eye_icon.setFill(Color.rgb(98, 225, 125));
+                        // log them in
+                        Platform.runLater(() -> {
+                            faceLogin(usrName);
+                        });
+                    } else {
+                        eye_icon.setFill(Color.rgb(202, 56, 65));
+                    }
                 }
-            }
-        });
-        face.isMatch();
+            });
+            face.isMatch();
+        } else {
+            // something went wrong
+            System.out.println("couldn't change the file");
+            eye_icon.setFill(Color.rgb(202, 56, 65));
+        }
+
     }
 
-    void changeKnownImg(String employeeId) {
+    boolean changeKnownImg(String username) {
         // get employeeImage
-            // if image doesn't exist, send failed attempt and STOP
-        // write image to file 'known.png'
+        Employee employee = myDBS.getEmployeeByUsername(username);
+        if (employee != null) {
+            InputStream inputStream = myDBS.getEmployeeImage(employee.getID());
+
+            if (inputStream != null) {
+                File targetFile = new File(ResourceLoader.knownFace.getFile());
+                try {
+                    FileUtils.copyInputStreamToFile(inputStream, targetFile);
+                } catch (IOException io) {
+                    System.err.println("Can't copy Input to stream ..." + io);
+                }
+                System.out.println("Employee Image is written to file");
+                return  true;
+            } else {
+                // input stream didn't exist
+                return false;
+            }
+
+        } else {
+            // NO employee
+            return false;
+        }
+
     }
 
     void faceLogin(String username) {
