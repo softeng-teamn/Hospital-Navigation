@@ -169,6 +169,7 @@ public class DirectionsController implements Observer {
         floors.put("1", 1);
         floors.put("2", 2);
         floors.put("3", 3);
+        floors.put("4", 4);
 
         if (path == null || path.size() < 2) {
             return null;
@@ -279,6 +280,7 @@ public class DirectionsController implements Observer {
         floorsQR.put("1", "D");
         floorsQR.put("2", "E");
         floorsQR.put("3", "F");
+        floorsQR.put("4", "G");
 
         String ret = "";
 
@@ -312,6 +314,7 @@ public class DirectionsController implements Observer {
         backToFloors.put("D", "1");
         backToFloors.put("E", "2");
         backToFloors.put("F", "3");
+        backToFloors.put("G", "4");
         ArrayList<String> directions = new ArrayList<>();
         directions.add(ds.get(0));
         ObservableList<HBox> dirs = FXCollections.observableArrayList();

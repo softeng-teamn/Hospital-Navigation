@@ -604,16 +604,6 @@ WHALL00702,1740,1500,2,Tower,HALL,Hallway Connector 7 Floor 2,Hallway W0702
 WHALL00802,1720,1745,2,Shapiro,HALL,Hallway Connector 8 Floor 2,Hallway W0802
 WHALL00902,1690,2240,2,Shapiro,HALL,Hallway Connector 9 Floor 2,Hallway W0902
 WHALL01002,1690,2455,2,BTM,HALL,Hallway Connector 10 Floor 2,Hallway W1002
-BBBBB00105,1983,750,RES,RES,RES,Reservable 1 Classroom,Reserve 1
-BBBBB00106,2316,760,RES,RES,RES,Reservable 2 Classroom,Reserve 2
-BBBBB00107,2603,763,RES,RES,RES,Reservable 3 Classroom,Reserve 3
-BBBBB00108,3195,2190,RES,RES,RES,Reservable 4 Ampitheater,Ampitheater
-BBBBB00109,1930,1205,RES,RES,RES,Reservable 5 Computer 1,Computer 1
-BBBBB00110,2960,1305,RES,RES,RES,Reservable 6 Computer 2,Computer 2
-BBBBB00111,2175,1305,RES,RES,RES,Reservable 7 Computer 3,Computer 3
-BBBBB00112,3080,1675,RES,RES,RES,Reservable 8 Computer 4,Computer 4
-BBBBB00113,2450,1300,RES,RES,RES,Reservable 9 Computer 5,Computer 5
-BBBBB00114,2490,2180,RES,RES,RES,Reservable 10 Computer 6,Computer 6
 XEXIT  102,3063,1095,2,45 Francis,EXIT,45 Francis Entrance,45 Entrance
 XHALL15702,3281,1134,2,45 Francis,HALL,45 sidewalk,45 sidewalk
 XHALL15802,3372,1219,2,45 Francis,HALL,45 sidewalk,45 sidewalk
@@ -625,3 +615,34 @@ XHALL16202,3830,2316,2,FLEX,HALL,FLEX Hall,FLEX Hall
 XHALL16302,3772,2316,2,FLEX,HALL,FLEX Entry Hall,FLEX Entry Hall
 XELEV 1502,3739,2252,2,FLEX,ELEV,Elevator T,FLEX Elevator
 XHALL16402,3338,1166,2,45 Francis,HALL,45 sidewalk,45 sidewalk
+XELEV  803,3742,2260,3,FLEX,ELEV,Elevator T,Flex Elevator
+XELEV 1101,3743,2257,4,FLEX,ELEV,Elevator T,Flex Elevator
+XHALL  004,3800,2293,4,FLEX,HALL,Flex 4 Hall,Flex 4 Hall
+XCONF  004,3915,2301,4,FLEX,CONF,Flexible Amphitheater,Amphitheater
+XCONF  104,3892,2270,4,FLEX,CONF,Flexible Computer Room 2,Computer Room 2
+XHALL  104,3856,2260,4,FLEX,HALL,Flex Hall,Flex Hall
+XHALL  204,3810,2101,4,FLEX,HALL,Flex Hall,Flex Hall
+XHALL  304,3730,1882,4,FLEX,HALL,Flex Hall,Flex Hall
+XHALL  404,3664,1880,4,FLEX,HALL,Flex Hall,Flex Hall
+XHALL  504,3510,1875,4,FLEX,HALL,Flex Hall,Flex Hall
+XHALL  604,3360,1876,4,FLEX,HALL,Flex Hall,Flex Hall
+XCONF  204,3834,2090,4,FLEX,CONF,Flexible Computer Room 3,Computer Room 3
+XCONF  304,3670,1924,4,FLEX,CONF,Flexible Computer Room 4,Computer Room 4
+XCONF  404,3746,1837,4,FLEX,CONF,Flexible Classroom 1,Classroom 1
+XCONF  504,3493,1839,4,FLEX,CONF,Flexible Classroom 2,Classroom 2
+XCONF  604,3522,1912,4,FLEX,CONF,Flexible Computer Room 5,Computer Room 5
+XCONF  704,3384,1836,4,FLEX,CONF,Flexible Classroom 3,Classroom 3
+XCONF  804,3347,1922,4,FLEX,CONF,Flexible Computer Room 6,Computer Room 6
+XCONF  904,3739,2447,4,FLEX,CONF,Flexible Computer Room 1,Computer Room 1
+XRETL  004,3768,2587,4,FLEX,RETL,Flexible Pantry,Pantry
+XCONF 1004,3536,2591,4,FLEX,CONF,Flexible Workzone 5,Workzone 5
+XHALL  704,2789,1873,4,FLEX,HALL,Flex hall,Flex hall
+XCONF 1104,2796,1828,4,FLEX,CONF,Flexible Workzone 3,Workzone 3
+XHALL  804,3646,2117,4,FLEX,HALL,Flex hall,Flex hall
+XHALL  904,3731,2323,4,FLEX,HALL,Flex Hall,Flex Hall
+XHALL 1004,3646,2324,4,FLEX,HALL,Flex Hall,Flex Hall
+XCONF 1204,3296,2113,4,FLEX,CONF,Flexible Workzone 1,Workzone 1
+XHALL 1104,3302,1871,4,FLEX,HALL,Flex Hall,Flex Hall
+XHALL 1204,2787,2106,4,FLEX,HALL,Flex Hall,Flex Hall
+XCONF 1304,2785,2164,4,FLEX,CONF,Flexible Workzone 4,Workzone 4
+XCONF 1404,3273,1836,4,FLEX,CONF,Flexible Workzone 2,Workzone 2

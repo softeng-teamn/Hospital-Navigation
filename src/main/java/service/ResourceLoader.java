@@ -57,6 +57,7 @@ public class  ResourceLoader {
     public static final URL firstFloor = service.ResourceLoader.class.getResource("/images/F1.png");
     public static final URL secondFloor = service.ResourceLoader.class.getResource("/images/F2.png");
     public static final URL thirdFloor = service.ResourceLoader.class.getResource("/images/F3.png");
+    public static final URL fourthFloor = service.ResourceLoader.class.getResource("/images/F4.png");
     public static final URL groundFloor = service.ResourceLoader.class.getResource("/images/ground.png");
     public static final URL firstLowerFloor = service.ResourceLoader.class.getResource("/images/L1.png");
     public static final URL secondLowerFloor = service.ResourceLoader.class.getResource("/images/L2.png");
