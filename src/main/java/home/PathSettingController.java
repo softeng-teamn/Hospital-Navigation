@@ -118,6 +118,5 @@ public class PathSettingController {
             event.setAccessiblePath(true);
             accessibilityButton.setSelected(true);
         }
-        //ApplicationState.getApplicationState().getObservableBus().updateEvent(event); // todo should this be here? I added it
     }
 }
