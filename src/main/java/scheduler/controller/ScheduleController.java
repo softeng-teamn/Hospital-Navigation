@@ -316,8 +316,8 @@ public class ScheduleController {
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private int timeStep = 2;    // Fractions of an hour
     private int timeStepMinutes = 60 / timeStep;    // In Minutes
-    private final int NUM_ROOMS = 10;
-    private final int NUM_DAYS_IN_WEEK = 7;
+    private static final int NUM_ROOMS = 10;
+    private static final int NUM_DAYS_IN_WEEK = 7;
 
     // Currently selected location
     public ReservableSpace currentSelection;
@@ -788,8 +788,6 @@ public class ScheduleController {
         for (int i = 0; i < NUM_ROOMS; i++) {
             dailyScheduleAllRoomsInts.get(i).clear();
         }
-        // Get that date and turn it into gregorian calendars to pass to the database
-        LocalDate chosenDate = datePicker.getValue();
 
         // Make a list of time and activity labels for the schedule
         ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
@@ -1199,7 +1197,6 @@ public class ScheduleController {
 
     private void populateMap() {
         System.out.println("**************** POPULATE MAP");
-        ArrayList<ReservableSpace> bookedRS = getBookedNodes();
         shapeCollection = new ArrayList<SVGPath>();
         shapeCollection.addAll(Arrays.asList(auditorium, classroom4, classroom6, classroom8, classroom1, classroom2, classroom3, classroom5, classroom7, classroom9));
         for (int i = 0; i < nodeCollection.size(); i++) {
