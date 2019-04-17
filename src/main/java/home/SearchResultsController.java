@@ -121,6 +121,7 @@ public class SearchResultsController implements Observer {
 
         // Get the nodeID from that item
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
+        System.out.println(ID);
         String Name = DatabaseService.getDatabaseService().getNode(ID).getLongName();
         System.out.println("You clicked on: " + ID + Name);
 

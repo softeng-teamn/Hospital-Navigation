@@ -190,7 +190,7 @@ public class ConfirmReservationController {
      */
     @FXML
     public void createReservation() {
-        Event event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
+        Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         // Get the privacy level
         int privacy = 0;
         if (privacyLvlBox.getValue().equals("Private")) {
