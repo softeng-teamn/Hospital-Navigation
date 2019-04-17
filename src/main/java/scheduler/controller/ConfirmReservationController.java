@@ -149,7 +149,7 @@ public class ConfirmReservationController {
         if (badId) {
             inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
             inputErrorLbl.setVisible(true);
-            valid = false ;
+            //valid = false ;
         }
 
         // If the user has not entered an event name, has entered an invalid ID,
