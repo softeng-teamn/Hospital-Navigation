@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.controller.ScheduleController">
+   <children>
+      <HBox alignment="CENTER_LEFT" prefHeight="128.0" prefWidth="200.0" spacing="5.0" styleClass="header">
+         <children>
+            <Region prefHeight="116.0" prefWidth="787.0" />
+            <Label text="Reserve a Room" textFill="WHITE">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
+               <graphic>
+                  <FontAwesomeIconView glyphName="HOME" size="60" />
+               </graphic>
+            </JFXButton>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="5.0" left="24.0" right="24.0" top="5.0" />
+         </padding>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox alignment="BOTTOM_CENTER" prefHeight="952.0" prefWidth="419.0" spacing="48.0">
+               <children>
+                  <Label fx:id="schedLbl" styleClass="big-label" text="Weekly Schedule for&#10; ">
+                     <VBox.margin>
+                        <Insets bottom="72.0" />
+                     </VBox.margin>
+                  </Label>
+                  <JFXDatePicker fx:id="datePicker" maxWidth="256.0" prefWidth="256.0" promptText="Choose a Date" />
+                  <JFXTimePicker fx:id="startTimePicker" maxWidth="256.0" prefWidth="256.0" promptText="Start Time" />
+                  <JFXTimePicker fx:id="endTimePicker" maxWidth="256.0" prefWidth="256.0" promptText="End Time" />
+                  <Region prefHeight="139.0" prefWidth="419.0" />
+                  <Label fx:id="inputErrorLbl" styleClass="small-label" wrapText="true" />
+                  <JFXButton fx:id="makeReservationBtn" maxWidth="1.7976931348623157E308" onAction="#makeReservation" styleClass="confirm-button" text="Make Reservation" />
+               </children>
+               <HBox.margin>
+                  <Insets left="36.0" right="12.0" />
+               </HBox.margin>
+               <padding>
+                  <Insets bottom="48.0" top="24.0" />
+               </padding>
+            </VBox>
+            <JFXTabPane prefWidth="1536.0" stylesheets="@../theme.css">
+               <tabs>
+                  <Tab text="Map of Available Rooms">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: ffffff;">
+                           <children>
+                              <ImageView fitHeight="1100.0" fitWidth="2000.0" layoutX="136.0" layoutY="-139.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/flex.jpg" />
+                                 </image>
+                              </ImageView>
+                              <SVGPath fx:id="classroom8" content="m 31.790578,106.06615 h 6.602378 v 1.60143 h 2.640952 v -1.62953 h 19.192553 v 29.70017 H 38.445635 c 0,0 0.01053,0.68131 0,0.68131 -0.01053,0 -4.077319,0 -4.077319,0 v -0.17911 h -2.549642 z" fill="#25e24e9e" layoutX="752.0" layoutY="-9.0" scaleX="4.0" scaleY="4.0" />
+                              <SVGPath fx:id="classroom6" content="m 63.829041,106.05308 h 9.21524 v 1.74191 h 2.32487 v -1.74893 h 15.42428 v 29.71773 h -26.95736 z" fill="#25e24e9e" layoutX="832.0" layoutY="-9.0" scaleX="4.0" scaleY="4.0" />
+                              <SVGPath fx:id="classroom4" content="m 93.389921,106.28478 h 13.710469 v 1.51714 h 2.47238 l 10.0019,27.58951 H 93.418021 Z" fill="#25e24e9e" layoutX="909.0" layoutY="-10.0" scaleX="4.0" scaleY="4.0" />
+                              <SVGPath fx:id="classroom9" content="M 29.025854,161.84628 H 47.32989 V 146.68891 H 35.586089 V 143.472 h -6.602378 z" fill="#25e24e9e" layoutX="748.0" layoutY="111.0" scaleX="4.0" scaleY="4.0" />
+                              <SVGPath fx:id="classroom7" content="m 50.255081,175.31794 h 19.69475 v -28.88189 h -1.46095 v -3.37143 h -5.64714 v 3.42762 h -12.69905 z" fill="#25e24e9e" layoutX="802.0" layoutY="131.0" scaleX="4.0" scaleY="4.0" />
+                              <SVGPath fx:id="classroom5" content="m 73.157065,146.43605 v 28.79761 h 26.07237 v -31.74761 h -5.70332 v 2.9219 z" fill="#25e24e9e" layoutX="868.0" layoutY="132.0" scaleX="4.0" scaleY="4.0" />
+                              <SVGPath fx:id="classroom3" content="m 126.4174,141.89206 8.58226,-3.01968 0.1192,-0.63573 c 0,0 12.19792,-0.51652 16.56852,12.43632 -1.18475,0.43942 -2.90049,1.11252 -2.90049,1.11252 l 0.83439,2.02636 -1.39303,0.48384 0.77007,1.90716 1.1109,-0.41002 0.58346,1.35342 0.45363,-0.21301 3.87692,10.60805 -0.50438,0.1571 0.43823,1.28157 -16.32977,5.92006 z" fill="#25e24e9e" layoutX="976.0" layoutY="137.0" scaleX="4.0" scaleY="4.0" />
+                              <SVGPath fx:id="classroom1" content="M 69.350913,216.18402 H 33.0791 v -20.93054 h 29.513233 v 3.32082 h -1.052372 v 1.77734 h 0.982212 v 9.752 h 6.75858 z" fill="#25e24e9e" layoutX="922.0" layoutY="372.0" scaleX="4.0" scaleY="4.0" />
+                              <SVGPath fx:id="classroom2" content="m 139.44736,176.91279 c 0.1323,0 16.30495,-6.08542 16.30495,-6.08542 l 0.95912,2.57969 0.59531,-0.23151 9.19427,25.63151 -0.59349,0.21999 0.4612,1.136 -1.15755,0.46302 0.83851,2.01544 0.9805,-0.36179 0.26458,0.66145 -16.37109,5.92006 z" fill="#25e24e9e" layoutX="1010.0" layoutY="229.0" scaleX="4.0" scaleY="4.0" />
+                              <SVGPath fx:id="auditorium" content="m 155.79484,209.86287 12.63385,-4.46485 3.90261,10.71563 -0.56224,0.23151 1.5875,4.23333 0.52916,-0.23151 1.42214,3.86953 -0.59531,0.29766 0.26458,0.85989 -1.15755,0.42995 0.62838,2.05052 1.2237,-0.46302 1.19063,3.07578 2.3151,-0.79375 c 0,0 6.28385,19.31459 -14.78359,27.68203 -0.72761,-2.48047 -0.72761,-2.48047 -0.72761,-2.48047 l -24.34166,0.0992 v -9.62422 h 2.44739 v -1.55442 l 13.32839,-25.4 3.27422,-1.15755 z" fill="#25e24e9e" layoutX="1029.0" layoutY="342.0" scaleX="4.0" scaleY="4.0" />
+                              <Label layoutX="855.0" layoutY="20.0" styleClass="small-label" stylesheets="@../theme.css" text="Classroom 2 " />
+                              <Label layoutX="774.0" layoutY="260.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="C6" />
+                              <Label layoutX="942.0" layoutY="288.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="C4" />
+                              <Label layoutX="851.0" layoutY="288.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="C5" />
+                              <Label layoutX="1067.0" layoutY="101.0" styleClass="small-label" text="Classroom 1" />
+                              <Label layoutX="1062.0" layoutY="279.0" mouseTransparent="true" pickOnBounds="false" rotate="69.4" style="-fx-font-size: 10pt;" styleClass="map-label" text="Computer Room 3" />
+                              <Label layoutX="1110.0" layoutY="408.0" mouseTransparent="true" pickOnBounds="false" rotate="69.4" style="-fx-font-size: 10pt;" styleClass="map-label" text="Computer Room 2 " />
+                              <Label layoutX="906.0" layoutY="575.0" mouseTransparent="true" pickOnBounds="false" prefHeight="26.0" prefWidth="140.0" style="-fx-font-size: 10pt;" styleClass="map-label" text="Computer Room 1" />
+                              <Label layoutX="1139.0" layoutY="586.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="Amphitheater" />
+                              <Label layoutX="696.0" layoutY="20.0" styleClass="small-label" stylesheets="@../theme.css" text="Classroom 3" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab text="List of Available Rooms">
+                    <content>
+                      <AnchorPane>
+                           <children>
+                              <VBox prefHeight="915.0" prefWidth="1485.0">
+                                 <children>
+                                    <JFXListView fx:id="reservableList" prefHeight="915.0" prefWidth="1278.0" styleClass="list-view-requests">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin></JFXListView>
+                                    <HBox alignment="CENTER" prefHeight="270.0" prefWidth="200.0" spacing="300.0">
+                                       <children>
+                                          <JFXButton fx:id="availRoomsBtn" maxWidth="-Infinity" onAction="#availRooms" prefWidth="368.0" styleClass="confirm-button" text="Show Available Rooms" />
+                                          <JFXButton fx:id="bookedRoomsBtn" maxWidth="-Infinity" onAction="#bookedRooms" prefWidth="368.0" styleClass="confirm-button" text="Show Booked Rooms" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets top="5.0" />
+                           </padding>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab fx:id="weeklyScheduleTab" text="Weekly Schedule">
+                    <content>
+                      <AnchorPane prefHeight="915.0" prefWidth="1485.0">
+                           <children>
+                              <TableView fx:id="scheduleTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="915.0" prefWidth="1485.0" />
+                           </children>
+                           <padding>
+                              <Insets top="5.0" />
+                           </padding>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab fx:id="dailyScheduleTab" text="Daily Schedule All Rooms">
+                     <content>
+                        <AnchorPane prefHeight="915.0" prefWidth="1485.0">
+                           <children>
+                              <TableView fx:id="dailyScheduleAllRooms" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="915.0" prefWidth="1485.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+               </tabs>
+            </JFXTabPane>
+         </children>
+      </HBox>
+   </children>
+</VBox>

@@ -114,4 +114,8 @@ public class ApplicationState {
         this.startEnd = startEnd;
     }
 
+    public Node getDEFAULT_NODE() {
+        return DEFAULT_NODE;
+    }
+
 }
