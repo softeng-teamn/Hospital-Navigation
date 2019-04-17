@@ -6,6 +6,7 @@
     -fx-complementarytext: #FFFFFF;
     -fx-unfocusedtext: #6B6D6F;
     -fx-red: #F44336;
+    -fx-mapText: #FFFFFF
 }
 
 /*******************************************************************************
@@ -53,6 +54,12 @@
     -fx-text-fill: -fx-primaryText;
     -fx-font-family: Roboto;
     -fx-font-size: 12pt;
+}
+
+.map-label{
+    -fx-text-fill: -fx-mapText;
+    -fx-font-family: Roboto;
+    -fx-font-size: 13pt;
 }
 
 .glyph-icon {
@@ -339,6 +346,11 @@
     -fx-text-fill: -fx-primarytext;
 }
 
+.list-view-requests .list-cell {
+    -fx-background-color: -fx-primary;
+    -fx-font-size: 24pt;
+    -fx-border-radius: 0px;
+}
 /*******************************************************************************
  *                                                                             *
  * Scroll Bar			                                                       *
@@ -405,6 +417,10 @@
     -jfx-default-color: -fx-secondary;
 }
 
+.jfx-date-picker .arrow-button .jfx-svg-glyph {
+    -fx-background-color: -fx-complementary;
+}
+
 .date-picker-popup > .month-year-pane {
     -fx-background-color: -fx-primary;
 }
@@ -419,13 +435,12 @@
  *                                                                             *
  ******************************************************************************/
 
-
 .jfx-time-picker {
     -jfx-default-color: -fx-secondary;
 }
 
-.jfx-time-picker > .month-year-pane {
-    -fx-background-color: -fx-primary;
+.jfx-time-picker .arrow-button .jfx-svg-glyph {
+    -fx-background-color: -fx-complementary;
 }
 
 /*******************************************************************************
@@ -474,6 +489,26 @@
     /*    -fx-padding: 0.666667em 0.083333em 0.666667em 0.083333em;  8 1 8 1 */
     -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
 }
+
+/*******************************************************************************
+ *                                                                             *
+ * TabPane                                                                     *
+ *                                                                             *
+ ******************************************************************************/
+
+.jfx-tab-pane .tab-header-background {
+    -fx-background-color: -fx-complementary;
+}
+
+.jfx-tab-pane .headers-region {
+    -fx-background-color: -fx-complementary;
+}
+
+.jfx-tab-pane .tab-selected-line {
+    -fx-stroke: -fx-secondary;
+    -fx-stroke-width: 3pt;
+}
+
 /*******************************************************************************
  *                                                                             *
  * TableView                                                                   *

@@ -38,7 +38,7 @@ public class DirectionsControllerTest {
         path.add(n1);
         assertNull(mp.makeDirections(path));
         path.add(n2);
-        // TODO: need to mock getNodesconnectedTo or otherwise create hashmap
+        // need to mock getNodesconnectedTo or otherwise create hashmap
 //        assertNotNull(mp.makeDirections(path));
 //        path.add(n3);
 //        assertNotNull(mp.makeDirections(path));
@@ -130,7 +130,7 @@ public class DirectionsControllerTest {
 //        assertTrue(mp.makeDirections(path).get(1).contains("QFA"));
 
 
-        // TODO - finish
+        // finish
         // test afterFloorchange ->, write
     }
 
@@ -151,7 +151,7 @@ public class DirectionsControllerTest {
     @Category( FastTest.class)
     public void csDirPrint() {
         // Up right diagonal
-        // TODO: same with mocking
+        // same with mocking
 //        assertTrue(mp.csDirPrint(new Node(0, 0), new Node(3, 3), new Node(4, 4)).contains("A"));
 //        assertTrue(mp.csDirPrint(new Node(0, 0), new Node(3, 3), new Node(4, 8)).contains("F"));
 //        assertTrue(mp.csDirPrint(new Node(0,0), new Node(3,3), new Node(4, 0)).contains("B"));

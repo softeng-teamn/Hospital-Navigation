@@ -57,7 +57,8 @@ public class MapViewController implements Observer {
     public JFXButton showDirectionsBtn;
     @FXML
     private JFXNodesList infoNodeList;
-    private Event event;
+    private Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+
 
     private String currentMethod;
 
@@ -315,11 +316,23 @@ public class MapViewController implements Observer {
                     }
                 });
                 break;
+            case "scroll-to-direction" :
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Node n = ApplicationState.getApplicationState().getObservableBus().getEvent().getDirectionsNode();
+                        setFloor(n.getFloor());
+                        scrollTo(n);
+                        if (hasPath){
+                            drawPath();
+                        }
+                    }
+                });
+                break;
             default:
                 break;
         }
     }
-
 
     void editNodeHandler(boolean isEditing) {
         if (isEditing) {
@@ -475,7 +488,7 @@ public class MapViewController implements Observer {
         /*   uncomment for auto elev call on path find, do breadth and depth things
         if (event.isCallElev()) {//if we are supposed to call elevator
             ElevatorConnection e = new ElevatorConnection();
-            if (pathFinder.getElevTimes() != null) {    // TODO: do breadth and depth set elevTimes? I'm getting null pointer exceptions here when I use them
+            if (pathFinder.getElevTimes() != null) {
                 for (String key : pathFinder.getElevTimes().keySet()
                 ) {
                     System.out.println("Calling Elevator " + key + "to floor " + pathFinder.getElevTimes().get(key).getFloor());
