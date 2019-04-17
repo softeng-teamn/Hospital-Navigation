@@ -1,5 +1,8 @@
 package map;
 
+/**
+ * A facade that reduces the complexity of interfacing with nodes
+ */
 public class NodeFacade {
     Node node;
     MapNode mapNode;

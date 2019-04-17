@@ -1,6 +1,7 @@
 package service_request.controller.sub_controller;
 
 import com.jfoenix.controls.*;
+import javafx.scene.control.Label;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +23,9 @@ public class GiftStoreRequestController extends RequestController {
     @FXML
     private JFXButton submit;
 
+    @FXML
+    private Label errorMsg;
+
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @FXML
@@ -37,11 +41,23 @@ public class GiftStoreRequestController extends RequestController {
     @FXML
     void submitRequest(ActionEvent event) {
         if(selectedNode != null) {
-            GiftStoreRequest giftStoreRequest = new GiftStoreRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem(), patientName.getText());
-            giftStoreRequest.makeRequest();
-            description.setText("");
-            type.getSelectionModel().select(0);
-            patientName.setText("");
+            if(description.getText().equals("")){
+                errorMsg.setText("Please Enter Details");
+            }
+            else if(patientName.getText().equals("")){
+                errorMsg.setText("Please Enter a Patient Name");
+            }
+            else {
+                GiftStoreRequest giftStoreRequest = new GiftStoreRequest(-1, description.getText(), selectedNode, false, type.getSelectionModel().getSelectedItem(), patientName.getText());
+                giftStoreRequest.makeRequest();
+                description.setText("");
+                type.getSelectionModel().select(0);
+                patientName.setText("");
+                errorMsg.setText("");
+            }
+        }
+        else{
+            errorMsg.setText("Please Select a Location");
         }
     }
 }

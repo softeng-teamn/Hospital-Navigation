@@ -8,6 +8,9 @@ import map.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * depth first search implementation
+ */
 public class DepthFS extends AlgorithmContext implements Algorithm{
 
 

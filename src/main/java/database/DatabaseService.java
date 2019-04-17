@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.Date;
 import java.util.function.Function;
 
-/** DatabaseService controls each other class's access to the database, kept as a singleton for ease of access.
+/** Singleton that controls access to the database
  *
  */
 public class DatabaseService {
@@ -376,7 +376,6 @@ public class DatabaseService {
      */
     @SuppressFBWarnings(value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING", justification = "Not a security issue - just add question marks based on number of types to filter out.")
     public ArrayList<Node> getNodesFilteredByType(String... filterOut) {
-
         return nodeDatabase.getNodesFilteredByType(filterOut);
     }
 

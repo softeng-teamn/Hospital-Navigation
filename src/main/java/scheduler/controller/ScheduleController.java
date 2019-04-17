@@ -35,6 +35,9 @@ import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
+/**
+ * controller for the room scheduling screen
+ */
 public class ScheduleController {
 
     private static class ScheduleWrapper {
@@ -340,7 +343,7 @@ public class ScheduleController {
 
     /**
      * switches window to home screen
-     * @throws Exception
+     * @throws Exception if FXML fails to load
      */
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
@@ -606,7 +609,7 @@ public class ScheduleController {
 
     /**
      * Searches for reservable space
-     * @param e
+     * @param e FXML event that calls this method
      */
     @FXML
     public void searchBarEnter(ActionEvent e) {

@@ -5,6 +5,9 @@ import elevator.ElevatorConnection;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * API's internal transport request controller
+ */
 public class ApiInternalTransportRequest {
 
     public enum TransportType {
@@ -77,24 +80,6 @@ public class ApiInternalTransportRequest {
 
     public void makeRequest() {
         ApiDatabaseService.getDatabaseService().insertInternalTransportRequest(this);
-    }
-
-    public void fillRequest() {
-        if(this.urgency == Urgency.VERY){
-            callElev();
-        }
-        ApiDatabaseService.getDatabaseService().insertInternalTransportRequest(this);
-    }
-
-    public void callElev() {
-        ElevatorConnection eCon = new ElevatorConnection();
-        try {
-            System.out.println("elevator = L, Floor = " + location.substring(8));
-            eCon.postFloor("L", location.substring(location.length() - 2)); // post elevator, floornum
-        } catch (IOException e) {
-            System.out.println("error posting elevator check WIFI from Internal Transport API");
-            e.printStackTrace();
-        }
     }
 
     public TransportType getTransport() {

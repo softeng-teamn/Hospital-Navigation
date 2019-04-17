@@ -66,8 +66,8 @@ public class RequestController implements Initializable {
     /**
      * initializes the service_request controller
      *
-     * @param location
-     * @param resources
+     * @param location feels needed to override
+     * @param resources field needed to override
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -78,7 +78,7 @@ public class RequestController implements Initializable {
     /**
      * switches window to home screen
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showHome() throws Exception {
@@ -90,7 +90,7 @@ public class RequestController implements Initializable {
     /**
      * switches to English
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showEnglish() throws Exception{
@@ -104,7 +104,7 @@ public class RequestController implements Initializable {
     /**
      * switches to Spanish
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showSpanish() throws Exception{
@@ -118,6 +118,7 @@ public class RequestController implements Initializable {
 
     /**
      * show every nodes on  JFXListView
+     * @param e FXML event that calls this method
      */
     @FXML
     public void searchBarEnter(ActionEvent e) {

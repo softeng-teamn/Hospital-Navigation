@@ -15,6 +15,9 @@ import service.StageManager;
 
 import java.io.IOException;
 
+/**
+ * Controls the admin options screen
+ */
 public class AdminServiceController {
 
     private Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -63,6 +66,9 @@ public class AdminServiceController {
         CSVService.exportReservableSpaces();
     }
 
+    /** change the pathfinding algorithm to A*
+     * @param actionEvent FXML event that calls this method
+     */
     public void astarSwitch(ActionEvent actionEvent) {
         algorithm.selectToggle(aStarToggle);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -71,6 +77,9 @@ public class AdminServiceController {
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
+    /** change the pathfinding algorithm to depth-first
+     * @param actionEvent FXML event that calls this method
+     */
     public void depthSwitch(ActionEvent actionEvent) {
         algorithm.selectToggle(depthFirstToggle);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -79,6 +88,9 @@ public class AdminServiceController {
         event.setSearchMethod("depth");
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);    }
 
+    /** switch the pathfinding algorithm to breadth-first
+     * @param actionEvent FXML event that calls this method
+     */
     public void breadthSwitch(ActionEvent actionEvent) {
         algorithm.selectToggle(breadthFirstToggle);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -87,6 +99,10 @@ public class AdminServiceController {
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
+    /** Switch the screen to add node
+     * @param e FXML event that calls this method
+     * @throws Exception if the FXML fails to load
+     */
     @FXML
     void showNewNode(ActionEvent e) throws  Exception{
         Parent root = FXMLLoader.load(ResourceLoader.createNode);

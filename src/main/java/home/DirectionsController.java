@@ -2,25 +2,52 @@ package home;
 
 import application_state.ApplicationState;
 import application_state.Observer;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import application_state.Event;
 import map.MapController;
 import map.Node;
+import service.ResourceLoader;
+import net.swisstech.bitly.BitlyClient;
+import net.swisstech.bitly.model.Response;
+import net.swisstech.bitly.model.v3.ShortenResponse;
 import service.TextingService;
 
+import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static application_state.ApplicationState.getApplicationState;
 
+/**
+ * Textual directions controller
+ */
 public class DirectionsController implements Observer {
     private Event event;
 
@@ -28,10 +55,20 @@ public class DirectionsController implements Observer {
     private JFXButton home_btn, unitSwitch_btn;
 
     @FXML
-    private JFXListView<Label> directionsView;
+    private JFXListView<HBox> directionsView;
 
     @FXML
-    private JFXButton textingButton;
+
+    private JFXTextField phoneNumber;
+
+    @FXML
+    private JFXButton textingButton, viewQRCodeBtn;
+
+    @FXML
+    private VBox qrCodeVbox;
+
+    @FXML
+    private ImageView qrView;
 
     //text message global variable
     private String units = "feet";    // Feet or meters conversion
@@ -39,14 +76,40 @@ public class DirectionsController implements Observer {
     private ArrayList<Node> path;
 
 
+    /**
+     * Initializes the directions controller
+     */
     @FXML
     void initialize() {
         ApplicationState.getApplicationState().getObservableBus().register("directionsContoller",this);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         path = event.getPath();
         printDirections(makeDirections(path));
+        if (getApplicationState().getEmployeeLoggedIn() != null) {
+            textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+            if (!getApplicationState().getEmployeeLoggedIn().getPhone().equals("")) {
+                phoneNumber.setText(getApplicationState().getEmployeeLoggedIn().getPhone());
+            }
+        }
+        else {
+            textingButton.setDisable(true);
+        }
+
+        ((Runnable) () -> {
+            try {
+                generateQRCode(makeDirections(path));
+            } catch (WriterException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).run();
+        qrView.setVisible(false);
     }
 
+    /** shows the list of searched ????
+     * @param e FXML event that calls this method
+     */
     @FXML
     void showSearchList(ActionEvent e) {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
@@ -54,6 +117,9 @@ public class DirectionsController implements Observer {
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
+    /** recieve a notification from the observed object
+     * @param o event recieved
+     */
     @Override
     public void notify(Object o) {
         event = (Event) o;
@@ -63,7 +129,18 @@ public class DirectionsController implements Observer {
                     @Override
                     public void run() {
                         path = event.getPath();
-                        printDirections(makeDirections(path));
+                        ArrayList<String> dirs = makeDirections(path);
+                        printDirections(dirs);
+
+                        ((Runnable) () -> {
+                            try {
+                                generateQRCode(dirs);
+                            } catch (WriterException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }).run();
                     }
                 });
                 break;
@@ -226,100 +303,223 @@ public class DirectionsController implements Observer {
         backToFloors.put("F", "3");
         ArrayList<String> directions = new ArrayList<>();
         directions.add(ds.get(0));
-        ObservableList<Label> dirs = FXCollections.observableArrayList();
-        ArrayList<Label> labels = new ArrayList<>();
+        ObservableList<HBox> dirs = FXCollections.observableArrayList();
+        ArrayList<HBox> labels = new ArrayList<>();
 
+        HBox firstBox = new HBox();
         Label first = new Label(ds.get(0));
         first.setWrapText(true);
         first.setTextFill(Color.WHITE);
-        labels.add(first);
+        firstBox.getChildren().add(first);
+        labels.add(firstBox);
 
         for (int i = 1; i < ds.size() - 1; i++) {
             String direct = ds.get(i);
+            Image image = null;
             switch(direct.substring(0,1)) {
                 case "A":
                     direct = "Walk straight for " + Integer.parseInt(direct.substring(1,6)) + " " + units + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.continue_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "B":
                     direct = "Turn left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_left_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "C":
                     direct = "Turn slightly left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_slight_left_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "D":
                     direct = "Turn sharply left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_sharp_left_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "E":
                     direct = "Turn right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_right_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "F":
                     direct = "Turn slightly right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_slight_right_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "G":
                     direct = "Turn sharply right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_sharp_right_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "H":
                     direct = "Turn around and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.uturn_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "I":
                     direct = "Walk to the elevator.\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "J":
                     direct = "Walk to the stairs.\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "N":
                     direct = "Take the elevator up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.elevator_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "O":
                     direct = "Take the elevator down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.elevator_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "P":
                     direct = "Take the stairs up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.stairs_up_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "Q":
                     direct = "Take the stairs down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.stairs_down_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "S":
                     direct = "Walk north for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "T":
                     direct = "Walk north west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "U":
                     direct = "Walk west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "V":
                     direct = "Walk south west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "W":
                     direct = "Walk south for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "X":
                     direct = "Walk south east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "Y":
                     direct = "Walk east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "Z":
                     direct = "Walk north east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 default:
                     direct = "Houston we have a problem";
                     break;
             }
-
+            HBox box = new HBox();
+            box.setAlignment(Pos.CENTER_LEFT);
+            if(image != null) {
+                ImageView iv = new ImageView(image);
+                iv.setFitHeight(30);
+                iv.setFitWidth(30);
+                box.getChildren().add(iv);
+            }
             Label l = new Label(direct);
             l.setWrapText(true);
             l.setTextFill(Color.WHITE);
-            labels.add(l);
+            box.getChildren().add(l);
+            labels.add(box);
             directions.add(direct);
         }
         directions.add(ds.get(ds.size() -1));
 
+        HBox lastBox = new HBox();
         Label last = new Label(ds.get(ds.size() - 1));
         last.setWrapText(true);
         last.setTextFill(Color.WHITE);
-        labels.add(last);
+        lastBox.getChildren().add(last);
+        labels.add(lastBox);
 
         dirs.addAll(labels);
         directionsView.setItems(dirs);
@@ -344,7 +544,7 @@ public class DirectionsController implements Observer {
      * @param cardinal the direction with the first vector going south
      * @return the direction as a cardinal direction
      */
-    public String convertToCardinal(String cardinal) {
+    String convertToCardinal(String cardinal) {
         if (cardinal.contains("C")) {
             cardinal = "X" + cardinal.substring(1);
         }
@@ -375,7 +575,7 @@ public class DirectionsController implements Observer {
         return cardinal;
     }
 
-    public String csDirPrint(int x, int y, Node curr, Node next) {
+    private String csDirPrint(int x, int y, Node curr, Node next) {
         Node n1 = new Node("ID", x, y, "HALL");
         return csDirPrint(n1, curr, next);
     }
@@ -388,7 +588,7 @@ public class DirectionsController implements Observer {
      * @return the direction for someone walking from points 1 to 3 with the turn direction and distance
      *      *          between the middle and last point
      */
-    public String csDirPrint(Node prev, Node curr, Node next) {
+    private String csDirPrint(Node prev, Node curr, Node next) {
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
         prevXd = prev.getXcoord();
         prevYd = prev.getYcoord();
@@ -557,13 +757,40 @@ public class DirectionsController implements Observer {
         this.path = thePath;
     }
 
+    public void validPhone(){
+        if (getApplicationState().getEmployeeLoggedIn() != null) {
+            textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+        }
+        for (char c: phoneNumber.getText().toCharArray()) {
+            if (!Character.isDigit(c)) {
+                textingButton.setDisable(true);
+            }
+        }
+        if (phoneNumber.getText().length() != 10) {
+            textingButton.setDisable(true);
+        }
+        else {
+            textingButton.setDisable(false);
+        }
+    }
+
     /**
      * Send a text message with the URL of the map
      */
     public void sendMapToPhone(){
         TextingService textSender = new TextingService();
         //this grabs the employee ID from the Application state and uses that to get the employee from the database, whose phone we want to use. and sends them the directions.
-        textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(),printDirections(makeDirections(path)));
+        if(!(phoneNumber.getText().equals(""))){
+            String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(makeDirections(path));
+            url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
+            textSender.textMap(phoneNumber.getText(), url);
+        }
+        else if(!(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""))) {
+            textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(), printDirections(makeDirections(path)));
+        }
+        else{
+            System.out.println("NO PHONE NUMBER");
+        }
     }
 
     /**
@@ -572,9 +799,53 @@ public class DirectionsController implements Observer {
      * Format: <Instruction> <Distance/Floor> <Hint>
      * @return the String to use in the QR code
      */
-    private String convertToQRCode(ArrayList<String> directions) {
-        // TODO if necc - ex all into one
-        return "";
+    private String convertDirectionsToParamerterString(ArrayList<String> directions) {
+        StringBuilder res = new StringBuilder();
+
+        for (int i = 1; i < directions.size() - 1; i++) {
+            res.append(directions.get(i));
+            res.append(",");
+        }
+        res.delete(res.lastIndexOf(","), res.lastIndexOf(",") + 1);
+        return res.toString();
     }
 
+    /**
+     * Given a set of directions, generate and place a QR code on the list of directions
+     * @param directions the textual directions to generate a QR code from
+     * @throws WriterException if the output fails
+     * @throws IOException if the file is not found or cannot be written
+     */
+    public void generateQRCode(ArrayList<String> directions) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+
+        // Uncomment and use resp.data.url in the QR to shorten the URL
+//        BitlyClient client = new BitlyClient("bcba608ae5c6045d223241662c704f38c52930e4");
+//        Response<ShortenResponse> resp = client.shorten()
+//                .setLongUrl("https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions))
+//                .call();
+        String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions);
+        url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
+        BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, 350, 350);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        byte[] pngData = pngOutputStream.toByteArray();
+        Image qr = new Image(new ByteArrayInputStream(pngData));
+        qrView.setImage(qr);
+    }
+
+    @FXML
+    public void showQRCode() {
+        if (qrCodeVbox.getMaxHeight() == 0) {
+            qrCodeVbox.setPrefHeight(750);
+            qrCodeVbox.setMaxHeight(750);
+            qrView.setVisible(true);
+        }
+        else {
+            qrCodeVbox.setPrefHeight(0);
+            qrCodeVbox.setMaxHeight(0);
+            qrView.setVisible(false);
+        }
+    }
 }
