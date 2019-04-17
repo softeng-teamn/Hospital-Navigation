@@ -27,7 +27,6 @@ public class GoogleTranslateService {
     }
 
     public String TranslateFromEnglish(String orginText,String langKey){
-        System.out.println(translate.getOptions().getApiKey());
         Translation translation = translate.translate(
                 orginText,
                 TranslateOption.sourceLanguage("en"),

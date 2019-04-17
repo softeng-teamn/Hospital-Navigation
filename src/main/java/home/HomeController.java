@@ -152,13 +152,13 @@ public class HomeController implements Observer {
 
     private void showAdmin() throws IOException {
         drawerPane.getChildren().clear();
-        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices,event.getCurrentBundle()));
         drawer.open();
     }
 
     private void showEmployee() throws IOException {
         drawerPane.getChildren().clear();
-        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices,event.getCurrentBundle()));
         drawer.open();
     }
 
