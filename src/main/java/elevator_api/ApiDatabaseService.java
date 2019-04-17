@@ -15,6 +15,11 @@ class ApiDatabaseService {
     public boolean createFlag;
     public static String team;
     public static boolean callElev;
+    public String callElevTo;
+
+    public void setCallElevTo(String callElevatorTo) {
+        callElevTo = callElevatorTo;
+    }
 
 
     private static class SingletonHelper {
