@@ -77,4 +77,6 @@ public class  ResourceLoader {
     public static final ResourceBundle dfBundle = ResourceBundle.getBundle("strings", Locale.getDefault());
     public static final ResourceBundle enBundle = ResourceBundle.getBundle("strings", new Locale("en"));
     public static final ResourceBundle esBundle = ResourceBundle.getBundle("strings", new Locale("es"));
+
+    public static final URL google_translate = service.ResourceLoader.class.getResource("/TranslateKeys.json");
 }
