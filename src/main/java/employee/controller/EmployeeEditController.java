@@ -67,8 +67,8 @@ public class EmployeeEditController {
     @FXML
     private JFXButton remove;
 
-    //@FXML
-    //private VBox root;
+    @FXML
+    private VBox root;
 
     @FXML
     public void initialize() {
@@ -219,13 +219,35 @@ public class EmployeeEditController {
     }
 
 
+
     @FXML
-    void onRemoveEmployee(ActionEvent event) {
+    void onRemoveEmployee(ActionEvent event) throws IOException {
+        Employee e = employee_table.getSelectionModel().getSelectedItem();
+        ApplicationState.getApplicationState().setEmployeeToDelete(e);
+        Parent parent = FXMLLoader.load(ResourceLoader.deleteEmployeeConfirm);
+        Stage stage = new Stage();
+        stage.setScene(new Scene(parent));
+        stage.setTitle("Delete Confirmation");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(root.getScene().getWindow());
+        stage.showAndWait();
+
+        if(ApplicationState.getApplicationState().getEmployeeToDelete() == null){
+            loadData();
+            remove.setDisable(true);
+        }
+    }
+
+    @FXML
+    void deleteEmployee(){
         Employee employee = employee_table.getSelectionModel().getSelectedItem();
         myDBS.deleteEmployee(employee);
+        ApplicationState.getApplicationState().setEmployeeToDelete(null);
         loadData();
         remove.setDisable(true);
     }
+
+
 
     public void showHome(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();

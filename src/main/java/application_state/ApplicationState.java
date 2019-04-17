@@ -24,6 +24,15 @@ public class ApplicationState {
     private int employeeID;
     private Employee employeeLoggedIn;
     private String startEnd = "end";    // Whether the currently selected node in the listView is the start or end node
+    private Employee employeeToDelete;
+
+    public Employee getEmployeeToDelete() {
+        return employeeToDelete;
+    }
+
+    public void setEmployeeToDelete(Employee employeeToDelete) {
+        this.employeeToDelete = employeeToDelete;
+    }
 
     //******************************************
 
