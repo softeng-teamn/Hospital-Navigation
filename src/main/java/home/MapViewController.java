@@ -137,6 +137,7 @@ public class MapViewController implements Observer {
         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
 
         infoNodeList.setRotate(90);
+        infoNodeList.setSpacing(20);
     }
 
     void zoomGroupInit() {

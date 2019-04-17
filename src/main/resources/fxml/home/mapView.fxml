@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXNodesList?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import net.kurobako.gesturefx.GesturePane?>
 
-<StackPane prefHeight="952.0" prefWidth="1920.0" stylesheets="@../../theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
+<StackPane prefHeight="952.0" prefWidth="1920.0" stylesheets="@../../theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
     <children>
         <GesturePane fx:id="gPane" HBarEnabled="false" VBarEnabled="false" />
         <VBox fx:id="floor_change_vbox" alignment="BOTTOM_RIGHT" pickOnBounds="false" spacing="12.0">
@@ -24,14 +25,24 @@
             <Region prefHeight="50.0" />
             <JFXNodesList fx:id="infoNodeList" alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0" spacing="12.0">
                <children>
-                  <JFXButton contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" pickOnBounds="false" prefHeight="60.0" prefWidth="60.0" styleClass="confirm-button" text="About">
+                  <JFXButton contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" pickOnBounds="false" prefHeight="80.0" prefWidth="80.0" styleClass="confirm-button" text="About">
                      <graphic>
-                        <MaterialIconView boundsType="VISUAL" glyphName="INFO_OUTLINE" size="29" text="" />
+                        <MaterialIconView boundsType="VISUAL" glyphName="INFO_OUTLINE" size="52" text="" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="about_btn" minHeight="60.0" minWidth="80.0" mnemonicParsing="false" onAction="#showAbout" styleClass="floor-map-button" text="About" />
-                  <JFXButton mnemonicParsing="false" onAction="#sendHelp" styleClass="floor-map-button" text="Help" />
+                  <JFXButton fx:id="about_btn" alignment="CENTER" contentDisplay="TOP" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#showAbout" styleClass="node-button" text="About">
+                     <graphic>
+                        <MaterialIconView boundsType="VISUAL" glyphName="INFO_OUTLINE" size="29" text="" />
+                     </graphic></JFXButton>
+                  <JFXButton alignment="CENTER" contentDisplay="TOP" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#sendHelp" styleClass="node-button" text="Help">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="USER" size="29" />
+                     </graphic>
+                  </JFXButton>
                </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
             </JFXNodesList>
            </children>
            <StackPane.margin>
