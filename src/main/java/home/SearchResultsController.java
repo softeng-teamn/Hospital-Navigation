@@ -57,6 +57,7 @@ public class SearchResultsController implements Observer {
         buildingAbbrev.put("45 Francis", "45Fr");
         buildingAbbrev.put("15 Francis", "15Fr");
         buildingAbbrev.put("RES", "RES");
+        buildingAbbrev.put("FLEX", "FLEX");
         ApplicationState.getApplicationState().getObservableBus().register("searchResultsContoller",this);    // Register as observer
         repopulateList(event.isAdmin());    // Populate the list based on whether the current user is admin - can see halls
     }
