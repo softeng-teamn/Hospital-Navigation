@@ -38,7 +38,7 @@ public class EmployeeLoginController implements Initializable {
     @FXML
     public void showHome() throws Exception {
         Stage stage = (Stage) cancelBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        Parent root = FXMLLoader.load(ResourceLoader.home,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 

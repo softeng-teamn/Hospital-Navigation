@@ -1,6 +1,7 @@
 package employee.controller;
 
 import application_state.ApplicationState;
+import application_state.Event;
 import com.jfoenix.controls.*;
 import employee.model.Employee;
 import employee.model.JobType;
@@ -26,6 +27,8 @@ import java.util.List;
  */
 public class EmployeeEditController {
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
+
+    private Event event;
 
     @FXML
     private Button homeBtn;
@@ -65,6 +68,7 @@ public class EmployeeEditController {
 
     @FXML
     public void initialize() {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         new_job.getItems().add(JobType.ADMINISTRATOR.toString());
         new_job.getItems().add(JobType.DOCTOR.toString());
         new_job.getItems().add(JobType.NURSE.toString());
@@ -217,7 +221,7 @@ public class EmployeeEditController {
     public void showHome(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader();
-        Parent root = fxmlLoader.load(ResourceLoader.home);
+        Parent root = fxmlLoader.load(ResourceLoader.home,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 }

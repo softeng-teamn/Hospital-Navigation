@@ -152,25 +152,25 @@ public class HomeController implements Observer {
 
     private void showAdmin() throws IOException {
         drawerPane.getChildren().clear();
-        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices,event.getCurrentBundle()));
         drawer.open();
     }
 
     private void showEmployee() throws IOException {
         drawerPane.getChildren().clear();
-        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices));
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.adminServices,event.getCurrentBundle()));
         drawer.open();
     }
 
     private void showSearch() throws IOException {
         drawerPane.getChildren().clear();
-        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults));
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.searchResults,event.getCurrentBundle()));
         drawer.open();
     }
 
     private void showText() throws IOException {
         drawerPane.getChildren().clear();
-        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.directionMessage));
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.directionMessage,event.getCurrentBundle()));
         drawer.open();
         //event.setEventName("printText");
         //eventBus.post(event);TODO
@@ -178,7 +178,7 @@ public class HomeController implements Observer {
 
     private void showPathSettings() throws IOException {
         drawerPane.getChildren().clear();
-        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.pathFindingSettings));
+        drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.pathFindingSettings,event.getCurrentBundle()));
         drawer.open();
     }
 }

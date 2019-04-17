@@ -1,5 +1,7 @@
 package service_request;
 
+import application_state.ApplicationState;
+import application_state.Event;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -33,6 +35,8 @@ import static employee.model.JobType.*;
  */
 public class FulfillRequestController implements Initializable {
 
+    private Event event;
+
     @FXML
     public JFXRadioButton completedRadio;
     @FXML
@@ -65,7 +69,7 @@ public class FulfillRequestController implements Initializable {
     @FXML
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        Parent root = FXMLLoader.load(ResourceLoader.home,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
@@ -125,6 +129,8 @@ public class FulfillRequestController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+
         String[] requestTypes = {"All", "AV Service", "External Transport", "Florist", "Gift Store", "Internal Transport", "Interpreter", "IT", "Maintenance", "Patient Info", "Religious", "Sanitation", "Security", "Toy"};
         typeCombo.setItems(FXCollections.observableArrayList(requestTypes));
         typeCombo.getSelectionModel().select(0);

@@ -40,7 +40,7 @@ public class AdminServiceController {
     @FXML
     private void showFulfillRequest() throws Exception {
         Stage stage = (Stage) fulfillRequestBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest);
+        Parent root = FXMLLoader.load(ResourceLoader.fulfillrequest,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage, root, "Fulfill Request");
     }
 
@@ -54,7 +54,7 @@ public class AdminServiceController {
     @FXML
     private void showEditEmployees() throws Exception {
         Stage stage = (Stage) editEmployeeBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
+        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage, root, "Edit Employees");
     }
 
@@ -105,7 +105,7 @@ public class AdminServiceController {
      */
     @FXML
     void showNewNode(ActionEvent e) throws  Exception{
-        Parent root = FXMLLoader.load(ResourceLoader.createNode);
+        Parent root = FXMLLoader.load(ResourceLoader.createNode,event.getCurrentBundle());
         Stage stage = (Stage) newNode_btn.getScene().getWindow();
         StageManager.changeExistingWindow(stage, root, "Add Node");
     }

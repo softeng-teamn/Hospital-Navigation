@@ -1,6 +1,7 @@
 package map.create_node;
 
 import application_state.ApplicationState;
+import application_state.Event;
 import com.jfoenix.controls.*;
 import controller.Controller;
 import javafx.event.ActionEvent;
@@ -37,6 +38,8 @@ import java.util.HashMap;
  * controls the create node FXML
  */
 public class CreateNodeController {
+
+    private Event event;
 
     @FXML
     JFXComboBox<String> nodeType_combo, building_combo;
@@ -95,6 +98,7 @@ public class CreateNodeController {
 
     @FXML
     void initialize() {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
         zoomSliderInit();
         zoomGroupInit();
@@ -267,7 +271,7 @@ public class CreateNodeController {
             // SUBMIT AND REDIRECT
             // the node is fully created,
             // we are done here
-            Parent root = FXMLLoader.load(ResourceLoader.home);
+            Parent root = FXMLLoader.load(ResourceLoader.home,event.getCurrentBundle());
             Stage stage = (Stage) cancel_btn.getScene().getWindow();
             StageManager.changeExistingWindow(stage, root, "Home");
         } else {
@@ -442,7 +446,7 @@ public class CreateNodeController {
     // Change window back to home screen
     void showHome() throws Exception {
         // open the new editor window
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        Parent root = FXMLLoader.load(ResourceLoader.home,event.getCurrentBundle());
         Stage mainStage = (Stage) cancel_btn.getScene().getWindow();
         StageManager.changeExistingWindow(mainStage, root, "Home");
     }

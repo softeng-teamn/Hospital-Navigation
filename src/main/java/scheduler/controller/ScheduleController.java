@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import application_state.ApplicationState;
+import application_state.Event;
 import com.jfoenix.controls.*;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
@@ -39,6 +40,8 @@ import service.StageManager;
  * controller for the room scheduling screen
  */
 public class ScheduleController {
+
+    private Event event;
 
     private static class ScheduleWrapper {
         private String time;
@@ -150,6 +153,8 @@ public class ScheduleController {
      */
     @FXML
     public void initialize() {
+
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
         setID();
 
@@ -347,7 +352,7 @@ public class ScheduleController {
      */
     public void showHome() throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        Parent root = FXMLLoader.load(ResourceLoader.home, event.getCurrentBundle());
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 

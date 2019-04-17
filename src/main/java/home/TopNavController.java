@@ -79,7 +79,7 @@ public class TopNavController implements Observer {
         }
         // go to login screen
         else {
-            Parent root = FXMLLoader.load(ResourceLoader.adminLogin);
+            Parent root = FXMLLoader.load(ResourceLoader.adminLogin,event.getCurrentBundle());
             Stage stage = (Stage) navigate_btn.getScene().getWindow();
             StageManager.changeExistingWindow(stage, root, "Admin Login");
         }
@@ -96,7 +96,7 @@ public class TopNavController implements Observer {
     @FXML
     void showSchedule(ActionEvent e) throws Exception {
         Stage stage = (Stage) bookBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.scheduler);
+        Parent root = FXMLLoader.load(ResourceLoader.scheduler,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage, root, "Scheduler");
         stage.setMaximized(true);
     }

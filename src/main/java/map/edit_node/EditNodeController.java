@@ -1,6 +1,7 @@
 package map.edit_node;
 
 import application_state.ApplicationState;
+import application_state.Event;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -44,6 +45,8 @@ import java.util.HashMap;
  */
 public class EditNodeController extends Control {
 
+    private Event event;
+
     Group zoomGroup;
     Circle selectedCircle = new Circle();
     Node tempEditNode;      // mutating the node based on edits
@@ -86,6 +89,8 @@ public class EditNodeController extends Control {
      */
     @FXML
     void initialize() {
+
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
         zoomSliderInit();
         zoomGroupInit();
@@ -267,7 +272,7 @@ public class EditNodeController extends Control {
     @FXML
     void deleteAction(ActionEvent e) throws IOException {
         ApplicationState.getApplicationState().setEdgesToEdit(oldEdgesFromEditNode);
-        Parent root = FXMLLoader.load(ResourceLoader.deleteNodeConfirm);
+        Parent root = FXMLLoader.load(ResourceLoader.deleteNodeConfirm,event.getCurrentBundle());
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
         stage.setTitle("Delete Confirmation");
@@ -277,7 +282,7 @@ public class EditNodeController extends Control {
 
         if (ApplicationState.getApplicationState().getNodeToEdit() == null) {
             try {
-                Parent myRoot = FXMLLoader.load(ResourceLoader.home);
+                Parent myRoot = FXMLLoader.load(ResourceLoader.home,event.getCurrentBundle());
                 Stage myStage = (Stage)gPane.getScene().getWindow();
                 StageManager.changeExistingWindow(myStage, myRoot, "Home");
             } catch (Exception execp) {
@@ -314,7 +319,7 @@ public class EditNodeController extends Control {
         // set edges globally
         ApplicationState.getApplicationState().setEdgesToEdit(newEdges);
         // fire confirmation
-        Parent root = FXMLLoader.load(ResourceLoader.saveNodeConfirm);
+        Parent root = FXMLLoader.load(ResourceLoader.saveNodeConfirm,event.getCurrentBundle());
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
         stage.setTitle("Save Confirmation");
@@ -340,7 +345,7 @@ public class EditNodeController extends Control {
     @FXML
     void cancelAction(ActionEvent e) throws Exception {
         Stage stage = (Stage) gPane.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        Parent root = FXMLLoader.load(ResourceLoader.home,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage, root, "Home");
         stage.setMaximized(true);
     }

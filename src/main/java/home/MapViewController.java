@@ -330,28 +330,28 @@ public class MapViewController implements Observer {
                 Tooltip tp = new Tooltip("ID: " + n.getNodeID() + ", Short Name: " + n.getShortName());
                 nodeCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
                     @Override
-                    public void handle(MouseEvent event) {
+                    public void handle(MouseEvent Mevent) {
                         Stage stage = (Stage) gPane.getScene().getWindow();
-                        Circle c = (Circle) event.getSource();
-                        tp.show(c, stage.getX() + event.getSceneX() + 15, stage.getY() + event.getSceneY());
+                        Circle c = (Circle) Mevent.getSource();
+                        tp.show(c, stage.getX() + Mevent.getSceneX() + 15, stage.getY() + Mevent.getSceneY());
                     }
                 });
                 nodeCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
                     @Override
-                    public void handle(MouseEvent event) {
+                    public void handle(MouseEvent Mevent) {
                         tp.hide();
                     }
                 });
                 nodeCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
-                    public void handle(MouseEvent event) {
+                    public void handle(MouseEvent Mevent) {
 
                         ApplicationState.getApplicationState().setNodeToEdit(n);
 
                         System.out.println("WE CLICKED THE CIRCLE");
                         try {
                             Stage stage = (Stage) gPane.getScene().getWindow();
-                            Parent root = FXMLLoader.load(ResourceLoader.editNode);
+                            Parent root = FXMLLoader.load(ResourceLoader.editNode,event.getCurrentBundle());
                             StageManager.changeExistingWindow(stage, root, "Node Editor");
                         } catch (Exception e) {
                             e.printStackTrace();
