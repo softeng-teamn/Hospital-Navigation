@@ -34,20 +34,6 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.internalTransportRequest, is(notNullValue()));
         assertThat(ResourceLoader.reservablespaces, is(notNullValue()));
         assertThat(ResourceLoader.employees, is(notNullValue()));
-
-        assertThat(ResourceLoader.continue_icon, is(notNullValue()));
-        assertThat(ResourceLoader.elevator_icon, is(notNullValue()));
-        assertThat(ResourceLoader.walking_icon, is(notNullValue()));
-        assertThat(ResourceLoader.stairs_down_icon, is(notNullValue()));
-        assertThat(ResourceLoader.stairs_up_icon, is(notNullValue()));
-        assertThat(ResourceLoader.turn_left_icon, is(notNullValue()));
-        assertThat(ResourceLoader.turn_right_icon, is(notNullValue()));
-        assertThat(ResourceLoader.turn_sharp_left_icon, is(notNullValue()));
-        assertThat(ResourceLoader.turn_sharp_right_icon, is(notNullValue()));
-        assertThat(ResourceLoader.turn_slight_left_icon, is(notNullValue()));
-        assertThat(ResourceLoader.turn_slight_right_icon, is(notNullValue()));
-        assertThat(ResourceLoader.uturn_icon, is(notNullValue()));
-
     }
 
 }
