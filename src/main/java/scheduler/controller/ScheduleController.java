@@ -50,9 +50,20 @@ import service.ResourceLoader;
 import service.StageManager;
 
 // todo: cleanup this class
+
+/**
+ * Controls the schedule page of the application. Allows user to view a map of rooms and
+ * their availability at the selected time and date, to view a list of all rooms,
+ * to view a schedule of the selected room for the selected week, and to
+ * view a schedule for the selected date for all rooms.
+ * User can then make reservations for a selected location, date, start time,
+ * and end time. Reservations must be valid and not conflict with any other reservations.
+ */
 public class ScheduleController {
 
-    // Wrapper to display times in table
+    /**
+     * Wrapper to display times in tables.
+     */
     private static class ScheduleWrapper {
         private String time;
         private String sunAvailability;
@@ -64,6 +75,10 @@ public class ScheduleController {
         private String satAvailability;
         private String cla1Availability, cla2Availability, cla3Availability, comp1Availability, comp2Availability, comp3Availability, comp4Availability, comp5Availability, comp6Availability, auditoriumAvailability;
 
+        /**
+         * Initialize all availabilities to "-", ie available.
+         * @param time the time of this scheduleWrapper
+         */
         public ScheduleWrapper(String time) {
             this.time = time;
             this.sunAvailability = "-";
@@ -93,11 +108,11 @@ public class ScheduleController {
             return time;
         }
 
-        /*
-        public void setAvailability(String value) { this.availability = value; }
-        public String getAvailability() { return availability; }
-        */
-
+        /**
+         * Set the availability for the given day to the given value.
+         * @param day  the day to set the availability for
+         * @param value  the availability or event name
+         */
         public void setDayAvailability(int day, String value) {
             switch(day) {
                 case 0:
@@ -127,6 +142,11 @@ public class ScheduleController {
             }
         }
 
+        /**
+         * Set the availability for the given room to the given value.
+         * @param day  the room to set the availability for
+         * @param value  the availability or event name
+         */
         public void setRoomAvailability(int day, String value) {
             switch(day) {
                 case 0:
@@ -321,11 +341,13 @@ public class ScheduleController {
 
     // Currently selected location
     public ReservableSpace currentSelection;
+    // Hashmap connecting reservable spaces to their location nodes
     private HashMap<Node, ReservableSpace> nodeToResSpace = new HashMap<>();
     // List of ints representing time blocks, where 0 is available and 1 is booked
     private ArrayList<ArrayList<Integer>> weeklySchedule, dailyScheduleAllRoomsInts;
     // LIst of spaces to display
     private ObservableList<ReservableSpace> resSpaces;
+    // List of all reservable spaces
     private ObservableList<ReservableSpace> allResSpaces;
     // Error messages
     private String timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
@@ -345,14 +367,118 @@ public class ScheduleController {
     public void initialize() {
         setDefaultTimes();
         setUpArrayLists();
+        setUpWeeklyTable();
+        setUpAllRoomsTable();
 
-        //resInfoLbl.setText("");
         // Don't show errors yet
-//        timeErrorLbl.setVisible(false);
         inputErrorLbl.setVisible(false);
         inputErrorLbl.setWrapText(true);
 
-        // todo: throw these into separate functions
+        // Populate tables
+        showRoomSchedule(false);
+
+        // Show map nodes
+        populateMap();
+        repopulateMap();
+
+        // Set listeners to update listview and label
+        reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            listFocus(newValue);
+        });
+        datePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            focusState(newValue);
+        });
+        startTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            focusState(newValue);
+        });
+        endTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            focusState(newValue);
+        });
+    }
+
+    /**
+     * Set default times and date.
+     */
+    private void setDefaultTimes() {
+        // Set default date to today's date
+        LocalDate date = LocalDate.now();
+        datePicker.setValue(date);
+
+        // Set default start time to current time, or the closest open hour
+        int startHour = LocalTime.now().getHour();
+        if (startHour < openTime) {
+            startHour = openTime;
+        }
+        if (startHour >= closeTime) {
+            startHour = closeTime - 1;
+        }
+        LocalTime startTime = LocalTime.of(startHour, 0);
+        startTimePicker.setValue(startTime);
+
+        // Set default end time to an hour after open time
+        LocalTime endTime = LocalTime.of(startHour + 1, 0);
+        endTimePicker.setValue(endTime);
+    }
+
+    /**
+     * Set up arrayLists and reservation listview.
+     */
+    private void setUpArrayLists() {
+        // Create arraylists for tables
+        weeklySchedule = new ArrayList<ArrayList<Integer>>();
+        for (int i = 0; i < NUM_DAYS_IN_WEEK; i++) {
+            weeklySchedule.add(new ArrayList<Integer>());
+        }
+        dailyScheduleAllRoomsInts = new ArrayList<ArrayList<Integer>>();
+        for (int i = 0; i < NUM_ROOMS; i++) {
+            dailyScheduleAllRoomsInts.add(new ArrayList<Integer>());
+        }
+
+        // Initialize arrayLists
+        resSpaces = FXCollections.observableArrayList();
+        allResSpaces = FXCollections.observableArrayList();
+
+        //  Pull spaces from database, sort, add to list and listview
+        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
+        Collections.sort(dbResSpaces);
+        for (ReservableSpace rs : dbResSpaces) {
+            Node n = DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID());
+            nodeCollection.add(n);
+            nodeToResSpace.put(n, rs);
+        }
+
+        resSpaces.addAll(dbResSpaces);
+        allResSpaces.addAll(dbResSpaces);
+        reservableList.setItems(resSpaces);
+        reservableList.setEditable(false);
+
+        // Set the cell to display only the name of the reservableSpace
+        reservableList.setCellFactory(param -> new ListCell<ReservableSpace>() {
+            @Override
+            protected void updateItem(ReservableSpace item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null || item.getSpaceName() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getSpaceName());
+                    setOnMouseClicked(EventHandler -> {
+                        showRoomSchedule(false);
+                        repopulateMap();
+                    });
+                }
+            }
+        });
+
+        // Select the first item and display its schedule
+        reservableList.getSelectionModel().select(0);
+        reservableList.getFocusModel().focus(0);
+    }
+
+    /**
+     * Set up the weekly schedule table.
+     */
+    private void setUpWeeklyTable() {
         // Create table columns, set what they display, and add to the table
         TableColumn<ScheduleWrapper, String> timeCol = new TableColumn<>("Time");
         TableColumn<ScheduleWrapper, String> sunday = new TableColumn<>("Sunday");
@@ -375,39 +501,36 @@ public class ScheduleController {
             TableColumn<ScheduleWrapper, String> col = (TableColumn<ScheduleWrapper, String>) scheduleTable.getColumns().get(i);
             if (i == 0) {
                 col.setPrefWidth(177);
+                // Set the text for the first column to time
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                        // p.getValue() returns the Person instance for a particular TableView row
                         return new ReadOnlyStringWrapper(p.getValue().getTime());
                     }
                 });
             }
             else {
                 col.setPrefWidth(185);
+                // Set the text for every other column to the availability for that day
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
-                        // p.getValue() returns the Person instance for a particular TableView row
                         return new ReadOnlyStringWrapper(p.getValue().getDayAvailability(finInt));
 
                     }
                 });
+                // Set the coloring to green for available and red for booked
                 col.setCellFactory(column -> {
                     return new TableCell<ScheduleWrapper, String>() {
                         @Override
                         protected void updateItem(String item, boolean empty) {
                             super.updateItem(item, empty);
-
                             if (item == null || empty) {
                                 setText(null);
                                 setStyle("");
                             } else {
-                                // Format date.
                                 setText(item);
-
-                                // Style all dates in March with a different color.
-                                if (item.equals("-")) {
+                                if (item.equals("-")) {    // Available = green
                                     setStyle("-fx-background-color: #98FB98");
-                                } else {
+                                } else {    // Not available = red
                                     setTextFill(Color.BLACK);
                                     setStyle("-fx-background-color: #ff6347");
                                 }
@@ -418,7 +541,12 @@ public class ScheduleController {
             }
             col.setResizable(false);
         }
+    }
 
+    /**
+     * Set up the all rooms daily schedule table.
+     */
+    private void setUpAllRoomsTable() {
         // Daily schedule all rooms table
         TableColumn<ScheduleWrapper, String> daytimeCol = new TableColumn<>("Time");
         TableColumn<ScheduleWrapper, String> audit = new TableColumn<>("Auditorium");
@@ -487,115 +615,15 @@ public class ScheduleController {
             }
             col.setResizable(false);
         }
-
-//        scheduleTable.setPrefHeight(900);
-        showRoomSchedule(false);
-        // Show map nodes
-        populateMap();
-        repopulateMap();
-
-        // Set listeners to update listview and label
-        reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            listFocus(newValue);
-        });
-        datePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            focusState(newValue);
-        });
-        startTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            focusState(newValue);
-        });
-        endTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            focusState(newValue);
-        });
     }
-
-       /**
-     * Set default times and date.
-     */
-    private void setDefaultTimes() {
-        // Set default date to today's date
-        LocalDate date = LocalDate.now();
-        datePicker.setValue(date);
-
-        // Set default start time to current time, or the closest open hour
-        int startHour = LocalTime.now().getHour();
-        if (startHour < openTime) {
-            startHour = openTime;
-        }
-        if (startHour >= closeTime) {
-            startHour = closeTime - 1;
-        }
-        LocalTime startTime = LocalTime.of(startHour, 0);
-        startTimePicker.setValue(startTime);
-
-        // Set default end time to an hour after open time
-        LocalTime endTime = LocalTime.of(startHour + 1, 0);
-        endTimePicker.setValue(endTime);
-    }
-
-    /**
-     * Set up arrayLists and reservation listview.
-     */
-    private void setUpArrayLists() {
-        // Create arraylists
-        weeklySchedule = new ArrayList<ArrayList<Integer>>();
-        for (int i = 0; i < NUM_DAYS_IN_WEEK; i++) {
-            weeklySchedule.add(new ArrayList<Integer>());
-        }
-
-        dailyScheduleAllRoomsInts = new ArrayList<ArrayList<Integer>>();
-        for (int i = 0; i < NUM_ROOMS; i++) {
-            dailyScheduleAllRoomsInts.add(new ArrayList<Integer>());
-        }
-
-        resSpaces = FXCollections.observableArrayList();
-        allResSpaces = FXCollections.observableArrayList();
-
-        //  Pull spaces from database, sort, add to list and listview
-        ArrayList<ReservableSpace> dbResSpaces = (ArrayList<ReservableSpace>) myDBS.getAllReservableSpaces();
-        Collections.sort(dbResSpaces);
-        for (ReservableSpace rs : dbResSpaces) {
-            Node n = DatabaseService.getDatabaseService().getNode(rs.getLocationNodeID());
-            nodeCollection.add(n);
-            nodeToResSpace.put(n, rs);
-        }
-
-        resSpaces.addAll(dbResSpaces);
-        allResSpaces.addAll(dbResSpaces);
-        reservableList.setItems(resSpaces);
-        reservableList.setEditable(false);
-
-        // Set the cell to display only the name of the reservableSpace
-        reservableList.setCellFactory(param -> new ListCell<ReservableSpace>() {
-            @Override
-            protected void updateItem(ReservableSpace item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty || item == null || item.getSpaceName() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getSpaceName());
-                    setOnMouseClicked(EventHandler -> {
-                        showRoomSchedule(false);
-                        repopulateMap();
-                    });
-                }
-            }
-        });
-
-        // Select the first item and display its schedule
-        reservableList.getSelectionModel().select(0);
-        reservableList.getFocusModel().focus(0);
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     /**
      * Listener to update listview of rooms and info label
      *
-     * @param value
+     * @param value whether it is focused or not
      */
     private void focusState(boolean value) {
+        // If this was selected and loses selection, show the room schedule based on the current filters
         if (!value && validTimes(false)) {
             if (availRoomsBtn.getText().contains("ear")) {
                 availRooms();
@@ -603,19 +631,8 @@ public class ScheduleController {
                 bookedRooms();
             }
             showRoomSchedule(false);
-            repopulateMap();
         }
         repopulateMap();
-    }
-
-    /**
-     * Display the current reservation information for the user
-     */
-    private void changeResInfo() {
-        resInfoLbl.setText("Location:      " + currentSelection.getSpaceName()
-            + "\n\nDate:            " + datePicker.getValue()
-            + "\n\nStart Time:   " + startTimePicker.getValue()
-            + "\n\nEnd Time:    " + endTimePicker.getValue());
     }
 
     /**
@@ -625,10 +642,8 @@ public class ScheduleController {
      */
     private void listFocus(boolean value) {
         if (!value) {
-            // Display the current information
-            changeResInfo();
+            showRoomSchedule(false);
         }
-        repopulateMap();
     }
 
     /**
@@ -1209,6 +1224,7 @@ public class ScheduleController {
             svg.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override public void handle(MouseEvent e) {
                     currentSelection = nodeToResSpace.get(node);
+                    System.out.println(currentSelection);
                     showRoomSchedule(true);
                     repopulateMap();
                 }
