@@ -277,7 +277,7 @@ public class FulfillRequestController implements Initializable {
             Parent root = FXMLLoader.load(ResourceLoader.fulfillConfirm);
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
-            stage.setTitle("Help Confirmation");
+            stage.setTitle("Confirm Fulfillment");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initOwner(typeVBox.getScene().getWindow());
             stage.showAndWait();

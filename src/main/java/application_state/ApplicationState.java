@@ -25,6 +25,7 @@ public class ApplicationState {
     private Employee employeeLoggedIn;
     private String startEnd = "end";    // Whether the currently selected node in the listView is the start or end node
     private Employee employeeToDelete;
+    private boolean confirmReservation;
 
     public Employee getEmployeeToDelete() {
         return employeeToDelete;
@@ -32,6 +33,14 @@ public class ApplicationState {
 
     public void setEmployeeToDelete(Employee employeeToDelete) {
         this.employeeToDelete = employeeToDelete;
+    }
+
+    public boolean getConfirmReservation() {
+        return confirmReservation;
+    }
+
+    public void setConfirmReservation(boolean confirmReservation) {
+        this.confirmReservation = confirmReservation;
     }
 
     //******************************************

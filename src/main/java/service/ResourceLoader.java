@@ -20,6 +20,10 @@ public class  ResourceLoader {
     public static final URL fulfillConfirm = service.ResourceLoader.class.getResource("/fxml/toast/requestFulfilledConfirm.fxml");
     public static final URL addEmployeeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/addEmployeeConfirm.fxml");
     public static final URL deleteEmployeeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/deleteEmployeeConfirm.fxml");
+    public static final URL reservationConfirm = service.ResourceLoader.class.getResource("/fxml/toast/reservationSuccess.fxml");
+    public static final URL invalidTime = service.ResourceLoader.class.getResource("/fxml/toast/invalidTimeToast.fxml");
+    public static final URL impossibleTime = service.ResourceLoader.class.getResource("/fxml/toast/impossibleTimeToast.fxml");
+    public static final URL invalidDate = service.ResourceLoader.class.getResource("/fxml/toast/invalidDateToast.fxml");
     public static final URL idle = service.ResourceLoader.class.getResource("/fxml/login.fxml");
 
     public static final URL about = service.ResourceLoader.class.getResource("/fxml/home/aboutPage.fxml");
