@@ -443,7 +443,7 @@ public class ScheduleController {
             final int finInt = i;
             TableColumn<ScheduleWrapper, String> col = (TableColumn<ScheduleWrapper, String>) dailyScheduleAllRooms.getColumns().get(i);
             if (i == 0) {
-                col.setPrefWidth(100);
+                col.setPrefWidth(70);
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                         // p.getValue() returns the Person instance for a particular TableView row
@@ -452,7 +452,7 @@ public class ScheduleController {
                 });
             }
             else {
-                col.setPrefWidth(150);
+                col.setPrefWidth(140);
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduleWrapper, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduleWrapper, String> p) {
                         // p.getValue() returns the Person instance for a particular TableView row
@@ -679,7 +679,6 @@ public class ScheduleController {
         LocalDate chosenDate = datePicker.getValue();
 
         // set label of weekly scheduler based on date
-        String date = chosenDate.toString();
         String name = currentSelection.getSpaceName();
 
 
@@ -692,6 +691,7 @@ public class ScheduleController {
 
         schedLbl.setText("Book " + name + "\nfor the Week of\n" + curTime);
         schedLbl.setTextAlignment(TextAlignment.CENTER);
+        schedLbl.setWrapText(true);
 
 
 
@@ -867,7 +867,9 @@ public class ScheduleController {
         // schedToAdd = an array list of ScheduleWrapper
         wrap.addAll(schedToAdd);
         dailyScheduleAllRooms.setItems(wrap);
-        dailyScheduleTab.setText("Daily Schedule All Rooms on " + datePicker.getValue().getMonth() + " " + datePicker.getValue().getDayOfMonth() + ", " + datePicker.getValue().getYear());
+        String month = datePicker.getValue().getMonth() + "";
+        month = month.substring(0,1) + month.substring(1).toLowerCase();
+        dailyScheduleTab.setText("Daily Schedule for All Rooms on " + month + " " + datePicker.getValue().getDayOfMonth() + ", " + datePicker.getValue().getYear());
     }
 
     /**
