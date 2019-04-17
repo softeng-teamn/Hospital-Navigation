@@ -43,6 +43,7 @@ public class DatabaseService {
     private final database.AVRequestDatabase AVRequestDatabase = new AVRequestDatabase(this);
     private final MaintenanceRequestDatabase maintenanceRequestDatabase = new MaintenanceRequestDatabase(this);
     private final ToyRequestDatabase toyRequestDatabase = new ToyRequestDatabase(this);
+    private final HelpRequestDatabase helpRequestDatabase = new HelpRequestDatabase(this);
 
     private Connection connection;
     private ArrayList<Function<Void, Void>> nodeCallbacks;
@@ -242,6 +243,8 @@ public class DatabaseService {
             statement.addBatch("CREATE TABLE MAINTENANCEREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, maintenanceType varchar(30), assignedEmployee int)");
             statement.addBatch("CREATE TABLE TOYREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255),completed boolean, toyName varchar(255), assignedEmployee int)");
             statement.addBatch("CREATE TABLE INTERPRETERREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255), completed boolean, language varchar(30), assignedEmployee int)");
+            statement.addBatch("CREATE TABLE HELPREQUEST(serviceID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), notes varchar(255), locationNodeID varchar(255),completed boolean, assignedEmployee int)");
+
 
             // DATABASE CONSTRAINTS
             statement.addBatch("CREATE TABLE META_DB_VER(id int PRIMARY KEY , version int)");
@@ -265,21 +268,7 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE AVSERVICEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID) ON DELETE CASCADE");
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID) ON DELETE CASCADE");
             statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-
-            statement.addBatch("ALTER TABLE ITREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE MEDICINEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE SECURITYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE FLORISTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE GIFTSTOREREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE SANITATIONREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE RELIGIOUSREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE INTERNALTRANSPORTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE PATIENTINFOREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE INTERPRETERREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE EXTERNALTRANSPORTREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE AVSERVICEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE (nodeID) ON DELETE CASCADE");
-            statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE HELPREQUEST ADD FOREIGN KEY (locationNodeID) REFERENCES NODE(nodeID) ON DELETE CASCADE");
           
             statement.addBatch("ALTER TABLE ITREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
             statement.addBatch("ALTER TABLE MEDICINEREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
@@ -295,6 +284,7 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE AVSERVICEREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
             statement.addBatch("ALTER TABLE TOYREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
+            statement.addBatch("ALTER TABLE HELPREQUEST ADD FOREIGN KEY (assignedEmployee) REFERENCES EMPLOYEE(employeeID) ON DELETE CASCADE");
 
             statement.addBatch("CREATE INDEX LocationIndex ON RESERVATION (spaceID)");
 
@@ -1364,6 +1354,60 @@ public class DatabaseService {
     }
 
     /**
+     * @param req the service_request to insert to the database
+     * @return true if the insert succeeds and false if otherwise
+     */
+    public boolean insertHelpRequest(HelpRequest req) {
+        return helpRequestDatabase.insertHelpRequest(req);
+    }
+
+    /**
+     * @param id the id of the service_request to get from the database
+     * @return the IT service_request object with the given ID
+     */
+    public HelpRequest getHelpRequest(int id) {
+        return helpRequestDatabase.getHelpRequest(id);
+    }
+
+    /**
+     * @return all IT service_request stored in the database in a List.
+     */
+    public List<HelpRequest> getAllHelpRequests() {
+        return helpRequestDatabase.getAllHelpRequests();
+    }
+
+    /**
+     * updates a given IT service_request in the database.
+     *
+     * @param req the service_request to update
+     * @return true if the update succeeds and false if otherwise
+     */
+    public boolean updateHelpRequest(HelpRequest req) {
+        return helpRequestDatabase.updateHelpRequest(req);
+    }
+
+    /**
+     * deletes a given IT service_request from the database
+     *
+     * @param req the service_request to delete
+     * @return true if the delete succeeds and false if otherwise
+     */
+    public boolean deleteHelpRequest(HelpRequest req) {
+        return helpRequestDatabase.deleteHelpRequest(req);
+    }
+
+    /**
+     * @return a list of every IT service_request that has not been completed yet.
+     */
+    public List<HelpRequest> getAllIncompleteHelpRequests() {
+        return helpRequestDatabase.getAllIncompleteHelpRequests();
+    }
+
+    public List<HelpRequest> getAllCompleteHelpRequests() {
+        return helpRequestDatabase.getAllCompleteHelpRequests();
+    }
+
+    /**
      * @param table table to check
      * @return true if a table with the given name exists in the database and false if otherwise.
      */
@@ -1441,6 +1485,7 @@ public class DatabaseService {
             statement.addBatch("DELETE FROM EXTERNALTRANSPORTREQUEST");
             statement.addBatch("DELETE FROM MAINTENANCEREQUEST");
             statement.addBatch("DELETE FROM TOYREQUEST");
+            statement.addBatch("DELETE FROM HELPREQUEST");
 
             // restart the auto-generated keys
             statement.addBatch("ALTER TABLE RESERVATION ALTER COLUMN eventID RESTART WITH 0");
@@ -1459,6 +1504,8 @@ public class DatabaseService {
             statement.addBatch("ALTER TABLE EXTERNALTRANSPORTREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE MAINTENANCEREQUEST ALTER COLUMN serviceID RESTART WITH 0");
             statement.addBatch("ALTER TABLE TOYREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+            statement.addBatch("ALTER TABLE HELPREQUEST ALTER COLUMN serviceID RESTART WITH 0");
+
 
             statement.addBatch("DELETE FROM NODE");
 
@@ -1638,6 +1685,7 @@ public class DatabaseService {
         else if (cls.equals(ExternalTransportRequest.class)) return extractExtTransRequest(rs);
         else if (cls.equals(MaintenanceRequest.class)) return extractMaintenanceRequest(rs);
         else if (cls.equals(ToyRequest.class)) return extractToyRequest(rs);
+        else if (cls.equals(HelpRequest.class)) return extractHelpRequest(rs);
         else return null;
     }
 
@@ -1808,6 +1856,17 @@ public class DatabaseService {
         return req;
     }
 
+    private HelpRequest extractHelpRequest(ResultSet rs) throws SQLException {
+        int serviceID = rs.getInt("serviceID");
+        String notes = rs.getString("notes");
+        Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
+        boolean completed = rs.getBoolean("completed");
+        int assignedEmployee = rs.getInt("assignedEmployee");
+
+        HelpRequest req = new HelpRequest(serviceID, notes, locationNode, completed);
+        req.setAssignedTo(assignedEmployee);
+        return req;
+    }
     private Node extractNode(ResultSet rs, String name) throws SQLException {
         String newNodeID = rs.getString(name + "nodeID");
         int newxcoord = rs.getInt(name + "xcoord");

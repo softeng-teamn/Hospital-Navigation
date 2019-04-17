@@ -3202,4 +3202,194 @@ public class DatabaseServiceTest {
         assertThat(allToyRequests.size(), is(1));
         assertEquals(req2, allToyRequests.get(0));
     }
+
+
+
+
+
+
+
+    @Test
+    @Category(FastTest.class)
+    public void insertAndGetHelpRequest() {
+        // Assume an empty DB (ensured by setUp())
+
+        HelpRequest value, expected;
+
+        // First verify that the service_request is null
+        value = myDBS.getHelpRequest(0);
+        assertThat(value, is(nullValue()));
+
+        // Create a service_request
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        HelpRequest req = new HelpRequest(0, "No notes", node, false);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        boolean insertRes = myDBS.insertHelpRequest(req);
+        assertTrue(insertRes);
+
+        // Verify successful get
+        expected = req;
+        value = myDBS.getHelpRequest(0);
+        assertEquals(expected, value);
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllHelpRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        HelpRequest value;
+
+        // First verify that these service_request are null
+        value = myDBS.getHelpRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getHelpRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getHelpRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some service_request - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        HelpRequest req1 = new HelpRequest(0, "No notes", node, false);
+        HelpRequest req2 = new HelpRequest(1, "Priority", node, true);
+        HelpRequest req3 = new HelpRequest(2, "Notes go here", node, false);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertHelpRequest(req1));
+        assertTrue(myDBS.insertHelpRequest(req2));
+
+        req1.setId(0);
+        req2.setId(1);
+
+        // Check that there are two and only two, and that they are the right two
+        List<HelpRequest> allHelpRequests = myDBS.getAllHelpRequests();
+        assertThat(allHelpRequests.size(), is(2));
+        assertEquals(req1, allHelpRequests.get(0));
+        assertEquals(req2, allHelpRequests.get(1));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertHelpRequest(req3));
+
+        req3.setId(2);
+
+        allHelpRequests = myDBS.getAllHelpRequests();
+        assertThat(allHelpRequests.size(), is(3));
+        assertEquals(req1, allHelpRequests.get(0));
+        assertEquals(req2, allHelpRequests.get(1));
+        assertEquals(req3, allHelpRequests.get(2));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void updateHelpRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        HelpRequest req = new HelpRequest(0, "No notes", node, false);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertHelpRequest(req));
+        assertEquals(req, myDBS.getHelpRequest(0));
+
+        req.setCompleted(true);
+
+        assertTrue(myDBS.updateHelpRequest(req));
+        assertEquals(req, myDBS.getHelpRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void deleteHelpRequest() {
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        HelpRequest req = new HelpRequest(0, "No notes", node, false);
+
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertHelpRequest(req));
+        assertEquals(req, myDBS.getHelpRequest(0));
+
+        assertTrue(myDBS.deleteHelpRequest(req));
+        assertNull(myDBS.getHelpRequest(0));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllIncompleteHelpRequests() {
+        // Assume an empty DB (ensured by setUp())
+
+        HelpRequest value;
+
+        // First verify that these service_request are null
+        value = myDBS.getHelpRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getHelpRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getHelpRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some service_request - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        HelpRequest req1 = new HelpRequest(0, "No notes", node, false);
+        HelpRequest req2 = new HelpRequest(1, "Priority", node, true);
+        HelpRequest req3 = new HelpRequest(2, "Notes go here", node, false);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertHelpRequest(req1));
+        assertTrue(myDBS.insertHelpRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<HelpRequest> allHelpRequests = myDBS.getAllIncompleteHelpRequests();
+        assertThat(allHelpRequests.size(), is(1));
+        assertEquals(req1, allHelpRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertHelpRequest(req3));
+
+        allHelpRequests = myDBS.getAllIncompleteHelpRequests();
+        assertThat(allHelpRequests.size(), is(2));
+        assertEquals(req1, allHelpRequests.get(0));
+        assertEquals(req3, allHelpRequests.get(1));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getAllCompleteHelpRequests() {
+        // Assume an empty DB (ensured by setUp())
+        HelpRequest value;
+
+        // First verify that these service_request are null
+        value = myDBS.getHelpRequest(0);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getHelpRequest(1);
+        assertThat(value, is(nullValue()));
+        value = myDBS.getHelpRequest(2);
+        assertThat(value, is(nullValue()));
+
+
+        // Create a some service_request - don't care about node, so all the same
+        Node node = new Node("ACONF00102", 1580, 2538, "2", "BTM", "HALL", "Hall", "Hall");
+        HelpRequest req1 = new HelpRequest(0, "No notes", node, false);
+        HelpRequest req2 = new HelpRequest(1, "Priority", node, true);
+        HelpRequest req3 = new HelpRequest(2, "Notes go here", node, false);
+
+        // Verify successful insertion
+        assertTrue(myDBS.insertNode(node));
+        assertTrue(myDBS.insertHelpRequest(req1));
+        assertTrue(myDBS.insertHelpRequest(req2));
+
+        // Check that there are two and only two, and that they are the right two
+        List<HelpRequest> allHelpRequests = myDBS.getAllCompleteHelpRequests();
+        assertThat(allHelpRequests.size(), is(1));
+        assertEquals(req2, allHelpRequests.get(0));
+
+        // Insert #3, and rerun checks
+        assertTrue(myDBS.insertHelpRequest(req3));
+
+        allHelpRequests = myDBS.getAllCompleteHelpRequests();
+        assertThat(allHelpRequests.size(), is(1));
+        assertEquals(req2, allHelpRequests.get(0));
+    }
 }
