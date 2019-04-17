@@ -55,7 +55,8 @@ public class MapViewController implements Observer {
     public VBox showDirVbox;
     @FXML
     public JFXButton showDirectionsBtn;
-    public JFXNodesList infoNodeList;
+    @FXML
+    private JFXNodesList infoNodeList;
     private Event event;
 
     private String currentMethod;
