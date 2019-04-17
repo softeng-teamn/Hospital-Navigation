@@ -271,7 +271,7 @@ public class SearchResultsController implements Observer {
                 String buildFlStr = "FlWk, 4";
                 //String buildFlStr = buildingAbbrev.get(myDBS.getNode(currRes.getLocationID()).getBuilding()) + ", " + myDBS.getNode(currRes.getLocationID()).getFloor();
                 Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
-                Label nodeId = new Label(currRes.getLocationID());    // Save the nodeID for pathfinding but make it invisible
+                Label nodeId = new Label(myDBS.getReservableSpace(currRes.getLocationID()).getLocationNodeID());    // Save the nodeID for pathfinding but make it invisible
                 nodeId.setPrefWidth(0);
                 nodeId.setVisible(false);
                 nodeId.setPadding(new Insets(0, -10, 0, 0));
