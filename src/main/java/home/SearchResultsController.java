@@ -259,7 +259,6 @@ public class SearchResultsController implements Observer {
 
 
 
-
 // old code to show the selected location on the map and auto scroll to that
 //        // Draw Circle on Map
 //        showDestination(selectedNode);
