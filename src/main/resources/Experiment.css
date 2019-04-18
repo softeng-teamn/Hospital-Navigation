@@ -1,12 +1,13 @@
 * {
-    -fx-primary: #F1F1F1;
+    -fx-primary: #717171;
     -fx-complementary: #012D5A;
     -fx-secondary: #F6BD38;
     -fx-primarytext: #2F2F2F;
     -fx-complementarytext: #FFFFFF;
     -fx-unfocusedtext: #6B6D6F;
     -fx-red: #F44336;
-    -fx-mapText: #FFFFFF
+    -fx-mapText: #FFFFFF;
+    -fx-interactioncolor: #C6C9CC
 }
 
 /*******************************************************************************
@@ -29,7 +30,7 @@
 }
 
 .interaction-area {
-    -fx-background-color: #C6C9CC;
+    -fx-background-color: -fx-interactioncolor;
 }
 
 .header-label{

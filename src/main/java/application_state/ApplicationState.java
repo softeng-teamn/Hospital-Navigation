@@ -24,6 +24,7 @@ public class ApplicationState {
     private int employeeID;
     private Employee employeeLoggedIn;
     private String startEnd = "end";    // Whether the currently selected node in the listView is the start or end node
+    private java.net.URL currentTheme = getClass().getResource("default.css"); // sets the current theme
 
     //******************************************
 
@@ -78,6 +79,15 @@ public class ApplicationState {
 
     public void setEmployeeLoggedIn(Employee employeeLoggedIn) {
         this.employeeLoggedIn = employeeLoggedIn;
+    }
+
+    // methods for storing themes
+    public java.net.URL getCurrentTheme() {
+        return currentTheme;
+    }
+
+    public void setCurrentTheme(java.net.URL currentTheme) {
+        this.currentTheme = currentTheme;
     }
 
     /**

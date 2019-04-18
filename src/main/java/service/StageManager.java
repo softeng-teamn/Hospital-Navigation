@@ -4,6 +4,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * controls scene switching
+ */
 public class StageManager {
 
     /**
@@ -18,6 +21,7 @@ public class StageManager {
         primaryStage.setTitle(title);
         primaryStage.setScene(new Scene(root));
         primaryStage.setFullScreen(true);
+        //set the style here
         primaryStage.show();
         return primaryStage;
     }

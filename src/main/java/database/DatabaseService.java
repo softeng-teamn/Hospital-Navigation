@@ -763,6 +763,10 @@ public class DatabaseService {
         return floristRequestDatabase.insertFloristRequest(req);
     }
 
+    /**
+     * @param req
+     * @return
+     */
     public boolean updateFloristRequest(FloristRequest req) {
         return floristRequestDatabase.updateFloristRequest(req);
     }
