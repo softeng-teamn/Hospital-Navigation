@@ -20,6 +20,7 @@ import map.Node;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import database.DatabaseService;
+import scheduler.model.Reservation;
 
 import java.util.*;
 import java.util.List;
@@ -43,8 +44,7 @@ public class SearchResultsController implements Observer {
     ArrayList<Node> allNodesObservable;    // List of nodes for listView
     ArrayList<Node> filteredNodes = DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL");    // Non-admin list
     ArrayList<Node> allNodes = DatabaseService.getDatabaseService().getAllNodes();
-
-
+    ArrayList<Reservation> allReservation = DatabaseService.getDatabaseService().getAllReservations();
     DatabaseService myDBS;
 
     @FXML
@@ -122,6 +122,7 @@ public class SearchResultsController implements Observer {
 
         // Get the nodeID from that item
         String ID = ((Label) ((HBox) selectedNode.getChildren().get(1)).getChildren().get(0)).getText();
+        System.out.println(ID);
         String Name = DatabaseService.getDatabaseService().getNode(ID).getLongName();
         System.out.println("You clicked on: " + ID + Name);
 
@@ -151,6 +152,7 @@ public class SearchResultsController implements Observer {
         System.out.println("Repopulation of listView" + isAdmin);
 
         allNodes = myDBS.getAllNodes();
+        allReservation = myDBS.getAllReservations();
         filteredNodes = (ArrayList<Node>) myDBS.getNodesFilteredByType("STAI", "HALL").stream().filter((n) -> !n.isClosed()).collect(Collectors.toList());
 
         // wipe old observable
@@ -175,7 +177,7 @@ public class SearchResultsController implements Observer {
             return;
         }
 
-        ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable);
+        ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable, allReservation, false);
 
         list_view.getItems().clear();
         // add to listView
@@ -189,26 +191,34 @@ public class SearchResultsController implements Observer {
     private void filterList(String findStr) {
         if (findStr.equals("")) {
             list_view.getItems().clear();
-            ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable);
+            ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodesObservable, allReservation, false);
             list_view.getItems().addAll(observeHboxes);
-
         }
         else {
             //Get List of all nodes
             ObservableList<Node> original = FXCollections.observableArrayList();
             original.addAll(allNodesObservable);
 
+            ObservableList<Reservation> orginalRes = FXCollections.observableArrayList();
+            orginalRes.addAll(allReservation);
+
             //Get Sorted list of nodes based on search value
             List<ExtractedResult> filtered = FuzzySearch.extractSorted(findStr, convertList(original, Node::getLongName),75);
+            List<ExtractedResult> filteredRes = FuzzySearch.extractSorted(findStr, convertList(orginalRes,  Reservation::getEventName), 75);
 
             // Map to nodes based on index
             Stream<Node> stream = filtered.stream().map(er -> {
                 return original.get(er.getIndex());
             });
 
+            Stream<Reservation> streamRes  = filteredRes.stream().map(er -> {
+                return orginalRes.get(er.getIndex());
+            });
+
             // Convert to list and then to observable list
             List<Node> filteredNodes = stream.collect(Collectors.toList());
-            ObservableList<HBox> observeHboxes = makeIntoHBoxes((ArrayList)filteredNodes);
+            List<Reservation> filteredReservation = streamRes.collect(Collectors.toList());
+            ObservableList<HBox> observeHboxes = makeIntoHBoxes((ArrayList)filteredNodes, (ArrayList)filteredReservation, true);
 
             // Add to view
             list_view.getItems().clear();
@@ -229,7 +239,7 @@ public class SearchResultsController implements Observer {
      * @param nodes the list of nodes to display
      * @return the list of hboxes, one for each node
      */
-    private ObservableList<HBox> makeIntoHBoxes(ArrayList<Node> nodes) {
+    private ObservableList<HBox> makeIntoHBoxes(ArrayList<Node> nodes, ArrayList<Reservation> reservations, Boolean displayEvents) {
         ArrayList<HBox> hBoxes = new ArrayList<>();
         for (int i = 0; i < nodes.size(); i++) {    // For every node
             Node currNode = nodes.get(i);
@@ -242,7 +252,7 @@ public class SearchResultsController implements Observer {
             Label nodeId = new Label(currNode.getNodeID());    // Save the nodeID for pathfinding but make it invisible
             nodeId.setPrefWidth(0);
             nodeId.setVisible(false);
-            nodeId.setPadding(new Insets(0,-10,0,0));
+            nodeId.setPadding(new Insets(0, -10, 0, 0));
             hb.getChildren().add(longName);    // Add the node name
             inner.getChildren().add(nodeId);
             inner.getChildren().add(buildFloor);    // Add the ID and building and floor to the right-aligned hbox
@@ -251,6 +261,30 @@ public class SearchResultsController implements Observer {
             hb.setSpacing(0);
             hBoxes.add(hb);    // Add it all to the list
         }
+        if (displayEvents) {
+            for (int i = 0; i < reservations.size(); i++) {    // For every node
+                Reservation currRes = reservations.get(i);
+                HBox hb = new HBox();
+                HBox inner = new HBox();    // So the building can be right-aligned
+                inner.setAlignment(Pos.CENTER_RIGHT);
+                Label longName = new Label("Event: " + currRes.getEventName());    // Make a label for the long name
+                String buildFlStr = "FlWk, 4";
+                //String buildFlStr = buildingAbbrev.get(myDBS.getNode(currRes.getLocationID()).getBuilding()) + ", " + myDBS.getNode(currRes.getLocationID()).getFloor();
+                Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
+                Label nodeId = new Label(myDBS.getReservableSpace(currRes.getLocationID()).getLocationNodeID());    // Save the nodeID for pathfinding but make it invisible
+                nodeId.setPrefWidth(0);
+                nodeId.setVisible(false);
+                nodeId.setPadding(new Insets(0, -10, 0, 0));
+                hb.getChildren().add(longName);    // Add the node name
+                inner.getChildren().add(nodeId);
+                inner.getChildren().add(buildFloor);    // Add the ID and building and floor to the right-aligned hbox
+                hb.getChildren().add(inner);    // Combine them
+                hb.setHgrow(inner, Priority.ALWAYS);
+                hb.setSpacing(0);
+                hBoxes.add(hb);    // Add it all to the list
+            }
+        }
+
         ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
         observeHboxes.addAll(hBoxes);
         return observeHboxes;
