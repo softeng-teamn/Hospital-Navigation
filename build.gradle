@@ -80,6 +80,8 @@ task uiFastTest(type: Test) {
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
+    minHeapSize="2g"
+    maxHeapSize="4g"
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -94,6 +96,8 @@ task uiSlowTest(type: Test) {
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
+    minHeapSize="2g"
+    maxHeapSize="4g"
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -121,6 +125,8 @@ task regressionTest(type: Test) {
         excludeCategories 'testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
+    minHeapSize="2g"
+    maxHeapSize="4g"
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -144,6 +150,8 @@ test {
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
+    minHeapSize="2g"
+    maxHeapSize="4g"
 }
 
 repositories {
