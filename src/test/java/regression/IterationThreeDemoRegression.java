@@ -29,6 +29,7 @@ import scheduler.controller.ScheduleController;
 import service.ResourceLoader;
 import service.StageManager;
 import testclassifications.FastTest;
+import testclassifications.SlowTest;
 import testclassifications.UiTest;
 
 import java.io.IOException;
