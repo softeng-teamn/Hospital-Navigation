@@ -16,7 +16,6 @@ class ApiDatabaseService {
     public static String team;
     public static boolean callElev;
 
-
     private static class SingletonHelper {
         private static final ApiDatabaseService dbs = new ApiDatabaseService();
     }

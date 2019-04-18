@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXToggleNode?>
+<?import de.jensd.fx.glyphs.emojione.EmojiOneView?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -42,7 +43,7 @@
       </JFXButton>
       <JFXButton fx:id="newNode_btn" graphicTextGap="8.0" onAction="#showNewNode" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Create New Node">
          <VBox.margin>
-            <Insets top="50.0" />
+            <Insets top="20.0" />
          </VBox.margin>
          <graphic>
             <FontAwesomeIconView glyphName="MAP" />
@@ -50,7 +51,7 @@
       </JFXButton>
       <JFXButton fx:id="editEmployeeBtn" graphicTextGap="8.0" onAction="#showEditEmployees" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Edit Employees">
          <VBox.margin>
-            <Insets top="50.0" />
+            <Insets top="20.0" />
          </VBox.margin>
          <graphic>
             <FontAwesomeIconView glyphName="USER" />
@@ -58,7 +59,7 @@
       </JFXButton>
       <JFXButton fx:id="exportCSVBtn" graphicTextGap="8.0" onAction="#exportCSV" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" stylesheets="@/theme.css" text="Export CSV">
          <VBox.margin>
-            <Insets top="50.0" />
+            <Insets top="20.0" />
          </VBox.margin>
          <graphic>
             <FontAwesomeIconView glyphName="DOWNLOAD" />
@@ -91,10 +92,30 @@
                      </graphic>
                   </JFXToggleNode>
                </children>
+               <VBox.margin>
+                  <Insets bottom="36.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="36.0">
+               <children>
+                  <JFXToggleNode fx:id="bestFirstToggle" onAction="#bestSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Best" textAlignment="CENTER" toggleGroup="$algorithm">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="TROPHY" size="48" styleClass="request-glyph" />
+                     </graphic>
+                  </JFXToggleNode>
+                  <JFXToggleNode fx:id="dijsktraToggle" onAction="#dijsktraSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Dijsktra" textAlignment="CENTER" toggleGroup="$algorithm">
+                     <graphic>
+                        <EmojiOneView glyphName="REGIONAL_INDICATOR_D" size="48" styleClass="request-glyph" />
+                     </graphic>
+                  </JFXToggleNode>
+               </children>
+               <padding>
+                  <Insets bottom="15.0" />
+               </padding>
             </HBox>
          </children>
          <VBox.margin>
-            <Insets top="48.0" />
+            <Insets top="38.0" />
          </VBox.margin>
       </VBox>
    </children>

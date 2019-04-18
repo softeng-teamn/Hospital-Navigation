@@ -2,7 +2,6 @@ package map.create_node;
 
 import application_state.ApplicationState;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -199,6 +198,10 @@ public class CreateNodeController {
     void floorChangeAction(ActionEvent e) throws IOException {
         JFXButton clickedBtn = (JFXButton) e.getSource();
         switch (clickedBtn.getText()) {
+            case "4":
+                if(stateIterator == 0) {node_floor = "4";}
+                else if(stateIterator == 2) {showAllNodes("4");}
+                break;
             case "3":
                 if(stateIterator == 0) {node_floor = "3";}
                 else if(stateIterator == 2) {showAllNodes("3");}

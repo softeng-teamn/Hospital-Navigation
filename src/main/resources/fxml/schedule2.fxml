@@ -68,7 +68,7 @@
             </VBox>
             <JFXTabPane prefWidth="1536.0" stylesheets="@../theme.css">
                <tabs>
-                  <Tab text="Map of Available Rooms">
+                  <Tab fx:id="mapAvailRooms" text="Map of Available Rooms">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: ffffff;">
                            <children>
@@ -77,6 +77,9 @@
                                     <Image url="@../images/flex.jpg" />
                                  </image>
                               </ImageView>
+                              <SVGPath fx:id="ws1" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="519.0" layoutY="-46.0" scaleX="2.5" scaleY="3.0" />
+                              <SVGPath fx:id="ws2" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="117.0" layoutY="6.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws3" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="190.0" layoutY="-14.0" scaleX="2.0" scaleY="2.0" />
                               <SVGPath fx:id="classroom8" content="m 31.790578,106.06615 h 6.602378 v 1.60143 h 2.640952 v -1.62953 h 19.192553 v 29.70017 H 38.445635 c 0,0 0.01053,0.68131 0,0.68131 -0.01053,0 -4.077319,0 -4.077319,0 v -0.17911 h -2.549642 z" fill="#25e24e9e" layoutX="752.0" layoutY="-9.0" scaleX="4.0" scaleY="4.0" />
                               <SVGPath fx:id="classroom6" content="m 63.829041,106.05308 h 9.21524 v 1.74191 h 2.32487 v -1.74893 h 15.42428 v 29.71773 h -26.95736 z" fill="#25e24e9e" layoutX="832.0" layoutY="-9.0" scaleX="4.0" scaleY="4.0" />
                               <SVGPath fx:id="classroom4" content="m 93.389921,106.28478 h 13.710469 v 1.51714 h 2.47238 l 10.0019,27.58951 H 93.418021 Z" fill="#25e24e9e" layoutX="909.0" layoutY="-10.0" scaleX="4.0" scaleY="4.0" />
@@ -87,7 +90,7 @@
                               <SVGPath fx:id="classroom1" content="M 69.350913,216.18402 H 33.0791 v -20.93054 h 29.513233 v 3.32082 h -1.052372 v 1.77734 h 0.982212 v 9.752 h 6.75858 z" fill="#25e24e9e" layoutX="922.0" layoutY="372.0" scaleX="4.0" scaleY="4.0" />
                               <SVGPath fx:id="classroom2" content="m 139.44736,176.91279 c 0.1323,0 16.30495,-6.08542 16.30495,-6.08542 l 0.95912,2.57969 0.59531,-0.23151 9.19427,25.63151 -0.59349,0.21999 0.4612,1.136 -1.15755,0.46302 0.83851,2.01544 0.9805,-0.36179 0.26458,0.66145 -16.37109,5.92006 z" fill="#25e24e9e" layoutX="1010.0" layoutY="229.0" scaleX="4.0" scaleY="4.0" />
                               <SVGPath fx:id="auditorium" content="m 155.79484,209.86287 12.63385,-4.46485 3.90261,10.71563 -0.56224,0.23151 1.5875,4.23333 0.52916,-0.23151 1.42214,3.86953 -0.59531,0.29766 0.26458,0.85989 -1.15755,0.42995 0.62838,2.05052 1.2237,-0.46302 1.19063,3.07578 2.3151,-0.79375 c 0,0 6.28385,19.31459 -14.78359,27.68203 -0.72761,-2.48047 -0.72761,-2.48047 -0.72761,-2.48047 l -24.34166,0.0992 v -9.62422 h 2.44739 v -1.55442 l 13.32839,-25.4 3.27422,-1.15755 z" fill="#25e24e9e" layoutX="1029.0" layoutY="342.0" scaleX="4.0" scaleY="4.0" />
-                              <Label layoutX="855.0" layoutY="20.0" styleClass="small-label" stylesheets="@../theme.css" text="Classroom 2 " />
+                              <Label layoutX="863.0" layoutY="20.0" styleClass="small-label" stylesheets="@../theme.css" text="Classroom 2 " />
                               <Label layoutX="774.0" layoutY="260.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="C6" />
                               <Label layoutX="942.0" layoutY="288.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="C4" />
                               <Label layoutX="851.0" layoutY="288.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="C5" />
@@ -96,12 +99,129 @@
                               <Label layoutX="1110.0" layoutY="408.0" mouseTransparent="true" pickOnBounds="false" rotate="69.4" style="-fx-font-size: 10pt;" styleClass="map-label" text="Computer Room 2 " />
                               <Label layoutX="906.0" layoutY="575.0" mouseTransparent="true" pickOnBounds="false" prefHeight="26.0" prefWidth="140.0" style="-fx-font-size: 10pt;" styleClass="map-label" text="Computer Room 1" />
                               <Label layoutX="1139.0" layoutY="586.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="Amphitheater" />
-                              <Label layoutX="696.0" layoutY="20.0" styleClass="small-label" stylesheets="@../theme.css" text="Classroom 3" />
+                              <Label layoutX="748.0" layoutY="20.0" styleClass="small-label" stylesheets="@../theme.css" text="Classroom 3" />
+                              <SVGPath fx:id="ws4" content="m 74.451386,35.430586 h 7.256041 v 9.13701 h -7.419098 z" fill="#25e24e" layoutX="308.0" layoutY="184.0" scaleX="3.0" scaleY="3.0" />
+                              <SVGPath fx:id="ws5" content="m 74.451386,35.430586 h 7.256041 v 9.13701 h -7.419098 z" fill="#25e24e" layoutX="308.0" layoutY="214.0" scaleX="3.0" scaleY="3.0" />
+                              <SVGPath fx:id="ws6" content="m 74.451386,35.430586 h 7.256041 v 9.13701 h -7.419098 z" fill="#25e24e" layoutX="308.0" layoutY="242.0" scaleX="3.0" scaleY="3.0" />
+                              <SVGPath fx:id="ws7" content="m 74.451386,35.430586 h 7.256041 v 9.13701 h -7.419098 z" fill="#25e24e" layoutX="308.0" layoutY="270.0" scaleX="3.0" scaleY="3.0" />
+                              <SVGPath fx:id="ws8" content="m 74.451386,35.430586 h 7.256041 v 9.13701 h -7.419098 z" fill="#25e24e" layoutX="308.0" layoutY="300.0" scaleX="3.0" scaleY="3.0" />
+                              <SVGPath fx:id="ws9" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="190.0" layoutY="-1.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws10" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="190.0" layoutY="12.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws11" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="189.0" layoutY="48.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws12" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="189.0" layoutY="61.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws13" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="189.0" layoutY="74.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws14" content="m 129.70452,90.48473 h 26.74135 v 19.9353 H 126.28032 V 92.51518 h 3.58725 z" layoutX="158.0" layoutY="101.0" scaleX="2.4" scaleY="2.4" />
+                              <SVGPath fx:id="ws15" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="188.0" layoutY="107.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws16" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="188.0" layoutY="120.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws17" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="188.0" layoutY="133.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws18" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="188.0" layoutY="146.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws19" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="728.0" layoutY="651.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws20" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="728.0" layoutY="667.0" scaleX="2.0" scaleY="3.0" />
+                              <SVGPath fx:id="ws21" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="728.0" layoutY="687.0" scaleX="2.0" scaleY="3.0" />
+                              <SVGPath fx:id="ws22" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="720.0" layoutY="725.0" scaleX="2.0" scaleY="2.0" />
+                              <SVGPath fx:id="ws23" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="720.0" layoutY="740.0" scaleX="2.0" scaleY="3.0" />
+                              <SVGPath fx:id="ws24" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="720.0" layoutY="760.0" scaleX="2.0" scaleY="3.0" />
+                              <SVGPath fx:id="ws25" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="138.0" layoutY="6.0" scaleX="2.0" scaleY="2.5" />
+                              <SVGPath fx:id="ws26" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="180.0" layoutY="6.0" scaleX="2.0" scaleY="2.5" />
+                              <SVGPath fx:id="ws27" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="159.0" layoutY="6.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws28" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="117.0" layoutY="22.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws29" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="138.0" layoutY="22.0" scaleX="2.0" scaleY="2.5" />
+                              <SVGPath fx:id="ws30" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="179.0" layoutY="22.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws31" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="158.0" layoutY="22.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws32" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="116.0" layoutY="56.0" scaleX="2.0" scaleY="2.5" />
+                              <SVGPath fx:id="ws33" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="137.0" layoutY="56.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws34" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="179.0" layoutY="56.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws35" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="158.0" layoutY="56.0" scaleX="2.1" scaleY="2.5" />
+                              <SVGPath fx:id="ws36" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="116.0" layoutY="72.0" scaleX="2.0" scaleY="2.5" />
+                              <SVGPath fx:id="ws37" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="137.0" layoutY="72.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws38" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="179.0" layoutY="72.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws39" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="158.0" layoutY="72.0" scaleX="2.1" scaleY="2.5" />
+                              <SVGPath fx:id="ws40" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="447.0" layoutY="439.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws41" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="470.0" layoutY="439.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws42" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="491.0" layoutY="439.0" scaleX="2.0" scaleY="2.5" />
+                              <SVGPath fx:id="ws43" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="447.0" layoutY="455.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws44" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="468.0" layoutY="455.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws45" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="489.0" layoutY="455.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws46" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="530.0" layoutY="440.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws47" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="552.0" layoutY="440.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws48" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="574.0" layoutY="440.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws49" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="531.0" layoutY="456.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws50" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="553.0" layoutY="456.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws51" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="574.0" layoutY="456.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws52" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="519.0" layoutY="-23.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws53" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="501.0" layoutY="-23.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws54" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="519.0" layoutY="-2.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws55" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="501.0" layoutY="-2.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws56" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="519.0" layoutY="18.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws57" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="501.0" layoutY="19.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws58" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="519.0" layoutY="40.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws59" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="501.0" layoutY="40.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws60" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="574.0" layoutY="284.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws61" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="574.0" layoutY="305.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws62" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="556.0" layoutY="305.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws63" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="574.0" layoutY="326.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws64" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="556.0" layoutY="326.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws65" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="574.0" layoutY="346.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws66" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="556.0" layoutY="347.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws67" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="574.0" layoutY="368.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws68" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="556.0" layoutY="368.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws69" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="698.0" layoutY="518.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws70" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="680.0" layoutY="518.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws71" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="698.0" layoutY="539.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws72" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="680.0" layoutY="539.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws73" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="698.0" layoutY="559.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws74" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="680.0" layoutY="560.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws75" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="698.0" layoutY="581.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws76" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="680.0" layoutY="581.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws77" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="750.0" layoutY="517.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws78" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="732.0" layoutY="517.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws79" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="750.0" layoutY="538.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws80" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="732.0" layoutY="538.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws81" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="750.0" layoutY="558.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws82" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="732.0" layoutY="559.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws83" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="750.0" layoutY="580.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws84" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="732.0" layoutY="580.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws85" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="742.0" layoutY="453.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws86" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="725.0" layoutY="453.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws87" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="742.0" layoutY="474.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws88" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="725.0" layoutY="474.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws89" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="769.0" layoutY="453.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws90" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="769.0" layoutY="474.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws91" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="556.0" layoutY="284.0" scaleX="2.5" scaleY="2.5" />
+                              <SVGPath fx:id="ws92" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="491.0" layoutY="572.0" scaleX="3.1" scaleY="1.9" />
+                              <SVGPath fx:id="ws93" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="794.0" layoutY="637.0" scaleX="3.0" scaleY="5.0" />
+                              <SVGPath fx:id="ws94" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="794.0" layoutY="672.0" scaleX="3.0" scaleY="4.0" />
+                              <SVGPath fx:id="ws95" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="794.0" layoutY="702.0" scaleX="3.0" scaleY="3.5" />
+                              <SVGPath fx:id="ws96" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="794.0" layoutY="735.0" scaleX="3.0" scaleY="4.8" />
+                              <SVGPath fx:id="ws97" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="209.0" layoutY="345.0" scaleX="2.8" scaleY="3.5" />
+                              <SVGPath fx:id="ws98" content="m 21.080692,89.662894 v -6.645113 h 9.29425 v 6.460523 z" fill="#25e24e" layoutX="334.0" layoutY="364.0" scaleX="2.7" scaleY="4.8" />
+                              <SVGPath fx:id="ws99" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="346.0" layoutY="290.0" scaleX="4.5" scaleY="2.8" />
+                              <SVGPath fx:id="ws100" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="377.0" layoutY="290.0" scaleX="4.5" scaleY="2.8" />
+                              <SVGPath fx:id="ws101" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="410.0" layoutY="290.0" scaleX="4.7" scaleY="2.8" />
+                              <SVGPath fx:id="ws102" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="344.0" layoutY="313.0" scaleX="4.0" scaleY="2.8" />
+                              <SVGPath fx:id="ws103" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="371.0" layoutY="313.0" scaleX="3.0" scaleY="2.8" />
+                              <SVGPath fx:id="ws104" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="393.0" layoutY="313.0" scaleX="3.0" scaleY="2.8" />
+                              <SVGPath fx:id="ws105" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="344.0" layoutY="392.0" scaleX="4.0" scaleY="2.8" />
+                              <SVGPath fx:id="ws106" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="371.0" layoutY="392.0" scaleX="3.0" scaleY="2.8" />
+                              <SVGPath fx:id="ws107" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="394.0" layoutY="392.0" scaleX="3.0" scaleY="2.8" />
+                              <SVGPath fx:id="ws108" content="m 117.39863,114.9808 h -6.60715 v -7.89017 h 6.71373 z" layoutX="416.0" layoutY="392.0" scaleX="3.0" scaleY="2.8" />
+                              <SVGPath fx:id="ws109" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="320.0" layoutY="383.0" scaleX="1.4" scaleY="2.7" />
+                              <SVGPath fx:id="ws110" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="334.0" layoutY="383.0" scaleX="1.5" scaleY="2.7" />
+                              <SVGPath fx:id="ws111" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="364.0" layoutY="383.0" scaleX="1.5" scaleY="2.7" />
+                              <SVGPath fx:id="ws112" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="349.0" layoutY="383.0" scaleX="1.5" scaleY="2.7" />
+                              <SVGPath fx:id="ws113" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="394.0" layoutY="383.0" scaleX="1.5" scaleY="2.7" />
+                              <SVGPath fx:id="ws114" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="379.0" layoutY="383.0" scaleX="1.5" scaleY="2.7" />
+                              <SVGPath fx:id="ws115" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="320.0" layoutY="402.0" scaleX="1.4" scaleY="2.7" />
+                              <SVGPath fx:id="ws116" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="334.0" layoutY="402.0" scaleX="1.5" scaleY="2.7" />
+                              <SVGPath fx:id="ws117" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="364.0" layoutY="402.0" scaleX="1.5" scaleY="2.7" />
+                              <SVGPath fx:id="ws118" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="349.0" layoutY="402.0" scaleX="1.5" scaleY="2.7" />
+                              <SVGPath fx:id="ws119" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="394.0" layoutY="402.0" scaleX="1.5" scaleY="2.7" />
+                              <SVGPath fx:id="ws120" content="m 126.88859,75.047884 v -6.64511 h 9.29425 v 6.46052 z" fill="#25e24e" layoutX="379.0" layoutY="402.0" scaleX="1.5" scaleY="2.7" />
                            </children>
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab text="List of Available Rooms">
+                  <Tab fx:id="listAvailRooms" text="List of Available Rooms">
                     <content>
                       <AnchorPane>
                            <children>

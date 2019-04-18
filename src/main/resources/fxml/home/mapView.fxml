@@ -16,6 +16,7 @@
         <GesturePane fx:id="gPane" HBarEnabled="false" VBarEnabled="false" />
         <VBox fx:id="floor_change_vbox" alignment="BOTTOM_RIGHT" pickOnBounds="false" spacing="12.0">
            <children>
+            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="4" />
                <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="3" />
                <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="2" />
                <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="1" />

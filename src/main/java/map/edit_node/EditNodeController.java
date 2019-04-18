@@ -233,6 +233,7 @@ public class EditNodeController extends Control {
         building_combo.getSelectionModel().select(node.getBuilding());
         nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
         nodeType_combo.getSelectionModel().select(node.getNodeType());
+        floor_combo.getItems().add("4");
         floor_combo.getItems().add("3");
         floor_combo.getItems().add("2");
         floor_combo.getItems().add("1");
