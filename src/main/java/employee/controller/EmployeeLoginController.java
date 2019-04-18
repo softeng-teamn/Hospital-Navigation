@@ -41,7 +41,7 @@ public class EmployeeLoginController implements Initializable {
     @FXML
     private MaterialDesignIconView eye_icon;
 
-    public static String usernameToFaceLogin;
+    public static String usernameToFaceLogin = "nathan";
     private boolean showEye = false;
     private boolean isFaceScanning = false;
 

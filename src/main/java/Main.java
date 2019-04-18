@@ -62,7 +62,7 @@ public class Main extends Application {
 //
 //        BorderPane rootElement = (BorderPane) loader.load();
 
-        Parent root = FXMLLoader.load(ResourceLoader.employeeEdit);
+        Parent root = FXMLLoader.load(ResourceLoader.home);
         //
         // Closes all threads
         primaryStage.setOnCloseRequest((ae) -> {

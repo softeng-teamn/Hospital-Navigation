@@ -20,11 +20,16 @@ public class FindMatch implements Runnable {
                 "  --form \"img_1=https://teamnhospital.serveo.net/testFace.png\"" +
                 "  --form \"img_2=https://teamnhospital.serveo.net/known.png\"");
         System.out.println(res.toString());
-        String[] myResponse = res.split("\"");
-        String val = myResponse[3];
-        System.out.println("HERE IS THE VALUE");
-        System.out.println(val);
-        Boolean value = Double.valueOf(val) >= 0.4;
-        c.callback(value);
+        try {
+            String[] myResponse = res.split("\"");
+            String val = myResponse[3];
+            System.out.println("HERE IS THE VALUE");
+            System.out.println(val);
+            Boolean value = Double.valueOf(val) >= 0.4;
+            c.callback(value);
+        } catch (Exception e) {
+            c.callback(false);
+        }
+
     }
 }
