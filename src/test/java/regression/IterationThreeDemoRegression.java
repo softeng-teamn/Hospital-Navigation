@@ -48,7 +48,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.ListViewMatchers.hasItems;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
 
-@Category({FastTest.class, UiTest.class})
+@Category({SlowTest.class, UiTest.class})
 public class IterationThreeDemoRegression extends ApplicationTest {
     Stage stage;
 
