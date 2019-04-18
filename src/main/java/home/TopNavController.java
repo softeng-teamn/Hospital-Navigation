@@ -392,6 +392,7 @@ public class TopNavController implements Observer {
             startSearch.setOnMouseClicked(this::setEventStartNode);
             startSearch.getStyleClass().add("header-text-field");
             startSearch.setPrefWidth(180);
+            startSearch.setId("startSearch");
             top_nav.getChildren().add(2, startSearch);
             currState.setStartNode(null);
             startNode_btn.setText("Use default");
