@@ -1,4 +1,4 @@
-package employee.controller;
+package home;
 
 import application_state.ApplicationState;
 import application_state.Event;
@@ -63,7 +63,9 @@ public class EnterApplicationController{
     public void gameStart() throws Exception{
 
     }
-    public void centerImage() {
+
+    //USELESS IGNORE (but may come in handy idk, probably won't)
+    /*public void centerImage() {
         Image img = imageView.getImage();
         if (img != null) {
             double w = 0;
@@ -89,6 +91,6 @@ public class EnterApplicationController{
             imageView.setY((imageView.getFitHeight() - h) / 2);
 
         }
-    }
+    }*/
 
 }

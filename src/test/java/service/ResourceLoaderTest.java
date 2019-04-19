@@ -34,6 +34,7 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.internalTransportRequest, is(notNullValue()));
         assertThat(ResourceLoader.reservablespaces, is(notNullValue()));
         assertThat(ResourceLoader.employees, is(notNullValue()));
+        assertThat(ResourceLoader.continue_icon, is(notNullValue()));
     }
 
 }

@@ -1,5 +1,4 @@
 import application_state.ApplicationState;
-import employee.controller.EnterApplicationController;
 import javafx.application.Platform;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
