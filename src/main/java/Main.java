@@ -46,6 +46,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+        ApplicationState.getApplicationState().setPrimaryStage(primaryStage);
         Parent root = FXMLLoader.load(ResourceLoader.home);
         //
         // Closes all threads
