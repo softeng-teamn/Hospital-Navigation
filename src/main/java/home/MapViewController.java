@@ -143,7 +143,7 @@ public class MapViewController implements Observer {
 //        startCircle.setFill(Color.rgb(67, 70, 76));
 //        zoomGroup.getChildren().add(startCircle);
         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
-
+        scrollTo(currState.getStartNode());
         infoNodeList.setRotate(90);
         infoNodeList.setSpacing(20);
     }
@@ -207,6 +207,7 @@ public class MapViewController implements Observer {
         zoomGroup.getChildren().remove(this.floorImg);
         zoomGroup.getChildren().add(newImg);
         this.floorImg = newImg;
+        centerOnPath(event.getPath(), floor);
     }
 
     /** change floor button controller
@@ -250,6 +251,7 @@ public class MapViewController implements Observer {
                     public void run() {
                         deletePolyLine();
                         drawIcon(currState.getEndNode());
+                        scrollTo(currState.getEndNode());
                     }
                 });
                 break;
@@ -259,7 +261,7 @@ public class MapViewController implements Observer {
                     public void run() {
                         deletePolyLine();
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
-
+                        scrollTo(currState.getStartNode());
                     }
                 });
                 break;
@@ -270,6 +272,7 @@ public class MapViewController implements Observer {
                         deletePolyLine();
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
                         drawIcon(currState.getEndNode());
+                        scrollTo(currState.getStartNode());
                     }
                 });
                 break;
@@ -313,6 +316,7 @@ public class MapViewController implements Observer {
                         deletePolyLine();
                         zoomGroup.getChildren().remove(location);
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67,70,76));
+                        scrollTo(currState.getStartNode());
                     }
                 });
                 break;
@@ -322,9 +326,11 @@ public class MapViewController implements Observer {
                     public void run() {
                         Node n = ApplicationState.getApplicationState().getObservableBus().getEvent().getDirectionsNode();
                         setFloor(n.getFloor());
-                        scrollTo(n);
                         if (hasPath){
                             drawPath();
+                        }
+                        else{
+                            scrollTo(n);
                         }
                     }
                 });
@@ -430,10 +436,9 @@ public class MapViewController implements Observer {
 
         startCircle = circle;
 
-
-
         // Scroll to new point
-        scrollTo(node);
+        //scrollTo(node);
+        //centerOnPath(path, node.getFloor());
 
         addLabel(node, true);
 
@@ -464,7 +469,7 @@ public class MapViewController implements Observer {
         location.getStyleClass().add("dest-icon");
         zoomGroup.getChildren().add(location);
 
-        scrollTo(node);
+        //scrollTo(node);
 
         addLabel(node, false);
     }
@@ -508,10 +513,10 @@ public class MapViewController implements Observer {
         hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
-            scrollTo(path.get(0));
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
+            centerOnPath(event.getPath(),event.getFloor());
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         }
     }
@@ -557,10 +562,10 @@ public class MapViewController implements Observer {
         hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
-            scrollTo(path.get(0));
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
+            centerOnPath(event.getPath(), event.getFloor());
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         }
     }
@@ -623,9 +628,6 @@ public class MapViewController implements Observer {
         if (event.getFloor().equals(path.get(path.size()-1).getFloor())){
             drawIcon(currState.getEndNode());
         }
-
-
-
 
         hasPath = true;
     }
@@ -714,13 +716,70 @@ public class MapViewController implements Observer {
         timeline.play();
     }
 
-    private void scrollTo(Node node) {
-        // animation scroll to new position
+    //if there is a path, center on it, otherwise, do nothing
+
+    /**
+     * centers on path if one exists
+     * @return true if a path existed and centering occurred
+     */
+    private void centerOnPath(ArrayList<Node> path, String floor){
+        Node start;
+        Node end;
+        System.out.println("EVENT PATH = : ");
+        //if there is a path
+        if(event.getPath() != null && event.getPath().size() > 1){
+            start = path.get(0);
+            end = path.get(path.size() - 1);
+            boolean startFound = false;
+            for(int i = 0; i  <path.size(); i++){//find furthest node from start on same floor
+                Node n = path.get(i);
+                System.out.print(n.getNodeID() + "-> ");
+                if(n.getFloor().equals(floor)){
+                    if(!startFound) {
+                        start = n;
+                        startFound = true;
+                    }
+                    else{
+                        end = n;
+                    }
+                }
+            }
+            System.out.println();
+            System.out.println("End node is: " + end.getNodeID());
+        }
+        else{//if no path, do nothing
+            return;
+        }
+
+        double xDiff = (start.getXcoord() + end.getXcoord()) / 2.0;
+        double yDiff = (start.getYcoord() + end.getYcoord()) / 2.0;
+        double maxDiff = Math.max(xDiff, yDiff);
+        double kp = .0002;
+        maxDiff = 2.0 - maxDiff * kp; //2.0 is max zoom
+
+        Point2D p = new Point2D(xDiff, yDiff);
+
         gPane.animate(Duration.millis(200))
                 .interpolateWith(Interpolator.EASE_BOTH)
                 .beforeStart(() -> System.out.println("Starting..."))
                 .afterFinished(() -> System.out.println("Done!"))
-                .centreOn(new Point2D(node.getXcoord(), node.getYcoord()));
+                .centreOn(p);
+        //gPane.zoomTo(.01, p);
+
+
+        System.out.println("Zoom = " + (2.0 - kp*maxDiff));
+        System.out.println("Centering between nodes");
+    }
+
+    private void scrollTo(Node node) {
+        // animation scroll to new position
+            gPane.animate(Duration.millis(200))
+                    .interpolateWith(Interpolator.EASE_BOTH)
+                    .beforeStart(() -> System.out.println("Starting..."))
+                    .afterFinished(() -> System.out.println("Done!"))
+                    .centreOn(new Point2D(node.getXcoord(), node.getYcoord()));
+
+            System.out.println("Centering on single node");
     }
 
     public void sendHelp(ActionEvent actionEvent) {
