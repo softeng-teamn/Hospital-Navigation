@@ -89,6 +89,22 @@ public class MapViewController implements Observer {
     private GesturePane gPane;
     @FXML
     private Label FloorInfo;
+    @FXML
+    private Label show4 ;
+    @FXML
+    private Label show3 ;
+    @FXML
+    private Label show2 ;
+    @FXML
+    private Label show1 ;
+    @FXML
+    private Label showG ;
+    @FXML
+    private Label showL1 ;
+    @FXML
+    private Label showL2 ;
+
+
 
     /** switch to about page
      * @param e FXML event that calls this method
@@ -220,6 +236,31 @@ public class MapViewController implements Observer {
             drawPath();
         }
     }
+
+
+    /**
+     * Show the buttons indicating which floor the pathfinding begins and ends on
+     */
+    @FXML
+    void showFloorChangeLbls(Node start, Node end) {
+
+        System.out.println("START NODE = " + start.getLongName());
+        System.out.println("END NODE = " + end.getLongName()) ;
+        String startFloor = "" ;
+        String endFloor = "" ;
+        // get the path of the current pathfinding search
+
+        // get start floor and end floor
+        startFloor = start.getFloor() ;
+        endFloor = end.getFloor() ;
+        System.out.println("start floor = " + startFloor);
+        System.out.println("end floor = " + endFloor);
+
+        // make buttons visible
+
+        // NOTE: make sure to make buttons visible/invisible to respective places
+    }
+
 
 
     /** inhereted obsever method
@@ -475,6 +516,10 @@ public class MapViewController implements Observer {
         ArrayList<Node> newpath;
         MapNode start = new MapNode(currState.getStartNode().getXcoord(), currState.getStartNode().getYcoord(), currState.getStartNode());
         MapNode dest = new MapNode(currState.getEndNode().getXcoord(),currState.getEndNode().getYcoord(), currState.getEndNode());
+
+        // show start and end floor labels
+        //showFloorChangeLbls(currState.getStartNode(), currState.getEndNode()) ;
+
         // check if the path need to be 'accessible'
         if (event.isAccessiblePath()) {
             // do something special

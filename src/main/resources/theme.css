@@ -231,7 +231,17 @@
 }
 
 .floor-map-button:hover .glyph-icon {
-    -fx-fill: -fx-primary;
+     -fx-fill: -fx-primary;
+}
+
+.floor-map-button:focused{
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
+}
+
+.floor-map-button:focused .glyph-icon{
+    -fx-fill: -fx-complementary;
 }
 
 .request-toggle-node {
