@@ -121,7 +121,7 @@ public class RequestController implements Initializable {
      * @param e FXML event that calls this method
      */
     @FXML
-    public void searchBarEnter(ActionEvent e) {
+    public void searchBarEnter(javafx.event.Event e) {
         String search = search_bar.getText();
         filterList(search);
     }
