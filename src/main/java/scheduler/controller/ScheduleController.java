@@ -410,6 +410,7 @@ public class ScheduleController {
         populateMap();
         repopulateMap();
         randomWorkstations();
+        randomizeSpaces();
 
         // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -424,6 +425,42 @@ public class ScheduleController {
         endTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             focusState(newValue);
         });
+    }
+
+    private void randomizeSpaces() {
+        Task task = new Task<Void>() {
+            @Override public Void call() throws Exception {     // Note that these numbers are all adjustable: sleep time, rem, bound
+                int rem = 0;
+                while (true) {
+                    final int r = rem;
+                    Thread.sleep(2000);
+                    Platform.runLater(new Runnable() {
+                        @Override public void run() {
+                            Random rand = new Random();
+                            for (int i = 0; i < workStations.size(); i++) {   // For each workstation,
+                                if (i % 5 == r) {
+                                    int n = rand.nextInt(5);
+                                    SVGPath ws = workStations.get(i);
+                                    if (n < 1) {
+                                        if (ws.getFill().equals(AVAILABLE_COLOR)) {
+                                            ws.setFill(UNAVAILABLE_COLOR);    // Set it as available
+                                        } else {
+                                            ws.setFill(AVAILABLE_COLOR);    // Set it as available
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    rem ++;
+                    if (rem == 5) {
+                        rem = 0;
+                    }
+                }
+            }
+        };
+
+        new Thread(task).start();
     }
 
     /**
