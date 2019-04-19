@@ -1026,6 +1026,7 @@ public class ScheduleController {
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
             // switch screen to final stage of scheduler
+            randomizeSpaces(false);
             Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
             StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
