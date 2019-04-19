@@ -168,6 +168,7 @@ public class EmployeeEditController {
             new_password_conf.getStyleClass().add("wrong-credentials");
             return;
         }
+        //HERE IS THE OTHER PART OF THE PASSWORD MINIMUM CODE
         else if(new_password.getText().length() < 6){
             Parent parent = FXMLLoader.load(ResourceLoader.passwordTooShort);
             Stage stage = new Stage();
@@ -183,13 +184,6 @@ public class EmployeeEditController {
         else {
             new_password.getStyleClass().remove("wrong-credentials");
             new_password_conf.getStyleClass().remove("wrong-credentials");
-            /*Parent root = FXMLLoader.load(ResourceLoader.addEmployeeConfirm);
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Help Confirmation");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(root.getScene().getWindow());
-            stage.showAndWait();*/
         }
 
         int max = -1;

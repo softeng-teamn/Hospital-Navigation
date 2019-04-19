@@ -57,9 +57,11 @@ public class EmployeeLoginController implements Initializable {
                 passwordField.getStyleClass().add("wrong-credentials");
                 // if user has admin credentials
             }
-            else if(password.length() < 5){
+            //HERE IS ONE PART OF THE EMPLOYEE PASSWORD MINIMUM
+            /*
+            else if(password.length() < 6){
                 passwordField.getStyleClass().add("wrong-credentials");
-            }
+            }*/
             else if (user.isAdmin()) {
                 event = ApplicationState.getApplicationState().getObservableBus().getEvent();
                 event.setLoggedIn(true);
