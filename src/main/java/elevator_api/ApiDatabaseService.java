@@ -1,16 +1,20 @@
 package elevator_api;
 
 import employee.model.Employee;
-import map.Node;
 
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Database controller for the API's internal database
+ */
 class ApiDatabaseService {
     public static final String DATABASE_NAME = "internal-transport-request-db";
 
     private Connection connection;
     public boolean createFlag;
+    public static String team;
+    public static boolean callElev;
 
     private static class SingletonHelper {
         private static final ApiDatabaseService dbs = new ApiDatabaseService();
@@ -114,6 +118,15 @@ class ApiDatabaseService {
     ArrayList<Employee> getAllEmployees() {
         String query = "Select * FROM EMPLOYEE";
         return (ArrayList<Employee>) (List<?>) executeGetMultiple(query, Employee.class, new Object[]{});
+    }
+
+
+    public static boolean isCallElev() {
+        return callElev;
+    }
+
+    public static void setCallElev(boolean callElev) {
+        ApiDatabaseService.callElev = callElev;
     }
 
     /**
@@ -418,5 +431,13 @@ class ApiDatabaseService {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static String getTeam() {
+        return team;
+    }
+
+    public static void setTeam(String team) {
+        ApiDatabaseService.team = team;
     }
 }

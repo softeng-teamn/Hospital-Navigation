@@ -2,6 +2,9 @@ package employee.model;
 
 import java.util.Objects;
 
+/**
+ * Employee Object
+ */
 public class Employee {
     int ID;
     JobType job;

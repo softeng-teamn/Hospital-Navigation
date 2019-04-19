@@ -1,122 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXListView?>
-<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXNodesList?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Polygon?>
-<?import javafx.scene.text.Font?>
 <?import net.kurobako.gesturefx.GesturePane?>
 
-<StackPane prefHeight="952.0" prefWidth="1920.0" stylesheets="@/theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
+<StackPane prefHeight="952.0" prefWidth="1920.0" stylesheets="@../../theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
     <children>
-        <GesturePane fx:id="gPane" />
-      <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="350.0" prefWidth="137.0" stylesheets="@/theme.css" StackPane.alignment="TOP_RIGHT">
-         <children>
-            <HBox alignment="BOTTOM_LEFT" layoutY="-2.0" prefHeight="420.0" prefWidth="98.0" spacing="24.0">
-               <children>
-                  <JFXSlider fx:id="zoom_slider" orientation="VERTICAL" />
-                   <VBox fx:id="floor_change_vbox" alignment="TOP_CENTER" spacing="12.0">
-                       <children>
-                           <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="3" />
-                           <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="2" />
-                           <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="1" />
-                           <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="G" />
-                           <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="L1" />
-                           <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="L2" />
-
-                       </children>
-                   </VBox>
-               </children>
-            </HBox>
-         </children>
-         <StackPane.margin>
-            <Insets right="24.0" top="24.0" />
-         </StackPane.margin>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </Pane>
-            <JFXListView fx:id="directionsView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" StackPane.alignment="BOTTOM_RIGHT">
-                <StackPane.margin>
-                    <Insets bottom="20.0" right="300.0" />
-                </StackPane.margin>
-            </JFXListView>
-            <VBox fx:id="showDirVbox" alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="360.0" prefWidth="300.0" StackPane.alignment="BOTTOM_RIGHT">
-                <StackPane.margin>
-                    <Insets right="300.0" />
-                </StackPane.margin>
-                <children>
-            <Label fx:id="FloorInfo" style="-fx-background-color: #465AAC;" text="Floor 1" textFill="WHITE">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-                    <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="200.0">
-                        <children>
-                            <Pane prefHeight="40.0" prefWidth="58.0">
-                                <children>
-                                    <Polygon fill="RED" layoutX="56.0" layoutY="29.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" stroke="RED" strokeType="INSIDE" />
-                                    <Polygon fill="WHITE" layoutX="66.0" layoutY="39.0" points="-35.5, -3.0, -45.0, -27.5, -20.5, -18.0" rotate="180.0" stroke="WHITE" strokeType="INSIDE" />
-                                </children>
-                                <HBox.margin>
-                                    <Insets />
-                                </HBox.margin>
-                            </Pane>
-                            <JFXButton fx:id="showDirectionsBtn" onAction="#showDirections" style="-fx-background-color: #456AAC;" text="Show Textual Directions">
-                                <HBox.margin>
-                                    <Insets left="5.0" />
-                                </HBox.margin>
-                            </JFXButton>
-                        </children>
-                    </HBox>
-                </children>
-            </VBox>
-        <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="347.0" prefWidth="263.0" StackPane.alignment="BOTTOM_RIGHT">
+        <GesturePane fx:id="gPane" HBarEnabled="false" VBarEnabled="false" />
+        <VBox fx:id="floor_change_vbox" alignment="BOTTOM_RIGHT" pickOnBounds="false" spacing="12.0">
            <children>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: white;">
+            <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="4" />
+               <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="3" />
+               <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="2" />
+               <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="1" />
+               <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="G" />
+               <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="L1" />
+               <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="L2" />
+            <Region prefHeight="50.0" />
+            <JFXNodesList fx:id="infoNodeList" alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0" spacing="12.0">
                <children>
-                     <Label text="Call Elevator" />
-                     <JFXButton fx:id="call_el1_btn" onAction="#callElevatorAction" styleClass="confirm-button" stylesheets="@/theme.css" text="Level 1">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                     </JFXButton>
-                     <JFXButton fx:id="call_el2_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 2">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                     </JFXButton>
-                     <JFXButton fx:id="call_el3_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 3">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                     </JFXButton>
-                     <JFXButton fx:id="call_el4_btn" onAction="#callElevatorAction" styleClass="confirm-button" text="Level 4">
-                     <VBox.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                     </VBox.margin>
-                     </JFXButton>
-                     <Label text="Current Level" />
-                     <Label fx:id="cur_el_floor" text="2">
-                         <font>
-                             <Font size="24.0" />
-                         </font>
-                     <VBox.margin>
-                        <Insets bottom="6.0" />
-                     </VBox.margin>
-                     </Label>
+                  <JFXButton contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" pickOnBounds="false" prefHeight="80.0" prefWidth="80.0" styleClass="confirm-button" text="About">
+                     <graphic>
+                        <MaterialIconView boundsType="VISUAL" glyphName="INFO_OUTLINE" size="52" text="" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="about_btn" alignment="CENTER" contentDisplay="TOP" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#showAbout" styleClass="node-button" text="About">
+                     <graphic>
+                        <MaterialIconView boundsType="VISUAL" glyphName="INFO_OUTLINE" size="29" text="" />
+                     </graphic></JFXButton>
+                  <JFXButton alignment="CENTER" contentDisplay="TOP" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#sendHelp" styleClass="node-button" text="Help">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="USER" size="29" />
+                     </graphic>
+                  </JFXButton>
                </children>
-               <padding>
-                  <Insets bottom="10.0" top="10.0" />
-               </padding>
-            </VBox>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </JFXNodesList>
            </children>
-        </Pane>
+           <StackPane.margin>
+               <Insets bottom="24.0" right="24.0" />
+           </StackPane.margin>
+        </VBox>
         </children>
 </StackPane>

@@ -20,23 +20,13 @@
    <children>
       <HBox alignment="CENTER" prefHeight="128.0" styleClass="header">
          <children>
-            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" promptText="%SearchRoom" styleClass="header-text-field" />
+            <JFXTextField fx:id="search_bar" labelFloat="true" onInputMethodTextChanged="#searchBarEnter" onKeyReleased="#searchBarEnter" promptText="%SearchRoom" styleClass="header-text-field" />
             <Region prefHeight="118.0" prefWidth="491.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
                </HBox.margin></Region>
             <Label prefHeight="40.0" prefWidth="254.0" styleClass="header-label" text="%RequestService" />
             <Region prefHeight="128.0" prefWidth="643.0" />
-            <JFXButton fx:id="spanishBtn" graphicTextGap="2.0" onAction="#showSpanish" prefHeight="80.0" prefWidth="80.0" text="ES">
-               <HBox.margin>
-                  <Insets right="12.0" />
-               </HBox.margin>
-            </JFXButton>
-            <JFXButton fx:id="englishBtn" graphicTextGap="2.0" onAction="#showEnglish" prefHeight="80.0" prefWidth="80.0" text="EN">
-               <HBox.margin>
-                  <Insets right="12.0" />
-               </HBox.margin>
-            </JFXButton>
             <JFXButton fx:id="cancelBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
                <graphic>
                   <FontAwesomeIconView glyphName="HOME" size="60" />

@@ -1,78 +1,160 @@
 package home;
 
-import application_state.HomeState;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
+import application_state.ApplicationState;
+import application_state.Observer;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
-import database.DatabaseService;
+import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import application_state.Event;
-import application_state.EventBusFactory;
+import map.MapController;
 import map.Node;
+import service.ResourceLoader;
+import net.swisstech.bitly.BitlyClient;
+import net.swisstech.bitly.model.Response;
+import net.swisstech.bitly.model.v3.ShortenResponse;
 import service.TextingService;
 
+import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static application_state.ApplicationState.getApplicationState;
-import static database.DatabaseService.getDatabaseService;
 
-public class DirectionsController {
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+/**
+ * Textual directions controller
+ */
+public class DirectionsController implements Observer {
+    private Event event;
 
     @FXML
     private JFXButton home_btn, unitSwitch_btn;
 
     @FXML
-    private JFXListView<Label> directionsView;
+    private JFXListView<HBox> directionsView;
 
     @FXML
-    private JFXButton textingButton;
+
+    private JFXTextField phoneNumber;
+
+    @FXML
+    private JFXButton textingButton, viewQRCodeBtn;
+
+    @FXML
+    private VBox qrCodeVbox;
+
+    @FXML
+    private ImageView qrView;
 
     //text message global variable
-    private String units = "Ft";    // Feet or meters conversion
+    private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
     private ArrayList<Node> path;
+    private ArrayList<Node> startNodes = new ArrayList<>();
 
 
+    /**
+     * Initializes the directions controller
+     */
     @FXML
     void initialize() {
-        eventBus.register(this);
+        // Register as an observer
+        ApplicationState.getApplicationState().getObservableBus().register("directionsContoller",this);
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+
+        // Get the current path and display it
+        path = event.getPath();
+        printDirections(makeDirections(path));
+
+        // Set whether the send-text button is enabled
+        if (getApplicationState().getEmployeeLoggedIn() != null) {
+            textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+            if (!getApplicationState().getEmployeeLoggedIn().getPhone().equals("")) {
+                phoneNumber.setText(getApplicationState().getEmployeeLoggedIn().getPhone());
+            }
+        }
+        else {
+            textingButton.setDisable(true);
+        }
+
+        ((Runnable) () -> {
+            try {
+                generateQRCode(makeDirections(path));
+            } catch (WriterException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).run();
+        qrView.setVisible(false);
     }
 
+    /** shows the list of searched ????
+     * @param e FXML event that calls this method
+     */
     @FXML
     void showSearchList(ActionEvent e) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setEventName("closeDrawer");
-        eventBus.post(event);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
     }
 
-
-    @Subscribe
-    void eventListener(Event newevent) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                switch (event.getEventName()) {
-                    case "printText":
-//                        Thread.sleep(100);
+    /** recieve a notification from the observed object
+     * @param o event recieved
+     */
+    @Override
+    public void notify(Object o) {
+        event = (Event) o;
+        switch (event.getEventName()) {
+            case "printText":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
                         path = event.getPath();
-                        printDirections(makeDirections(path));
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-    }
+                        ArrayList<String> dirs = makeDirections(path);
+                        printDirections(dirs);
 
+                        ((Runnable) () -> {
+                            try {
+                                generateQRCode(dirs);
+                            } catch (WriterException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }).run();
+                    }
+                });
+                break;
+            default:
+                break;
+        }
+
+    }
 
 
     /**
@@ -87,6 +169,7 @@ public class DirectionsController {
         floors.put("1", 1);
         floors.put("2", 2);
         floors.put("3", 3);
+        floors.put("4", 4);
 
         if (path == null || path.size() < 2) {
             return null;
@@ -98,21 +181,27 @@ public class DirectionsController {
         ArrayList<String> directions = new ArrayList<>();    // Collection of instructions
         directions.add("\nStart at " + path.get(0).getLongName() + ".\n");    // First instruction
 
-        // Make the next instruction cardinal, or up/down if it is a floor connector
+        // Make the first instruction cardinal, or up/down if it is a floor connector
         String oldFloor = path.get(0).getFloor();
         String newFloor = path.get(1).getFloor();
         if (!floors.get(oldFloor).equals(floors.get(newFloor))) {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
         }
-        else if (path.get(1).getNodeType().equals("ELEV")) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("ELEV")) || (path.size() > 2 && path.get(1).getNodeType().equals("ELEV") && path.get(2).getNodeType().equals("ELEV"))) {
             directions.add("I");
         }
-        else if (path.get(1).getNodeType().equals("STAI")) {
+        else if ((path.size() == 2 && path.get(1).getNodeType().equals("STAI")) || (path.size() > 2 && path.get(1).getNodeType().equals("STAI") && path.get(2).getNodeType().equals("STAI"))) {
             directions.add("J");
         }
         else {
             directions.add(convertToCardinal(csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0), path.get(1))));
         }
+
+        // Make startNodes correspond to directions
+        for (int i = 0; i < path.size(); i++) {
+            startNodes.add(path.get(i));
+        }
+        startNodes.add(path.get(path.size()-1));
 
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
@@ -140,6 +229,7 @@ public class DirectionsController {
             }
         }
 
+        //System.out.println("before simplifying: " + directions);
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
@@ -148,11 +238,11 @@ public class DirectionsController {
             String prevOne = prevDir.substring(0,1);
             String newDir = "";
             boolean changed = false;
-            if (currOne.equals("A") && !"IJ".contains(prevOne)) {
-                int prevDist = Integer.parseInt(prevDir.substring(1));
-                int currDist = Integer.parseInt(currDir.substring(1));
-                int totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
-                newDir = prevOne + totalDist;
+            if (currOne.equals("A") && !"IJNOPQ".contains(prevOne)) {
+                int prevDist = Integer.parseInt(prevDir.substring(1,6));
+                int currDist = Integer.parseInt(currDir.substring(1,6));
+                double totalDist = prevDist + currDist;    // Combine the distance of this direction with the previous one
+                newDir = prevOne + padWithZeros(totalDist) + currDir.substring(6);
                 changed = true;
             }
             else if ("NOPQ".contains(currOne) && currOne.equals(prevOne)) {    // If the current direction contains straight, get the distance substring
@@ -163,12 +253,15 @@ public class DirectionsController {
                 directions.remove(i);
                 directions.remove(i-1);
                 directions.add(i-1, newDir);
+                startNodes.remove(i-1);
                 i--;
             }
         }
 
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
+        ApplicationState.getApplicationState().setEndNode(path.get(path.size() - 1));
+        //System.out.println(directions);
         return directions;
     }
 
@@ -187,6 +280,7 @@ public class DirectionsController {
         floorsQR.put("1", "D");
         floorsQR.put("2", "E");
         floorsQR.put("3", "F");
+        floorsQR.put("4", "G");
 
         String ret = "";
 
@@ -220,102 +314,226 @@ public class DirectionsController {
         backToFloors.put("D", "1");
         backToFloors.put("E", "2");
         backToFloors.put("F", "3");
+        backToFloors.put("G", "4");
         ArrayList<String> directions = new ArrayList<>();
         directions.add(ds.get(0));
-        ObservableList<Label> dirs = FXCollections.observableArrayList();
-        ArrayList<Label> labels = new ArrayList<>();
+        ObservableList<HBox> dirs = FXCollections.observableArrayList();
+        ArrayList<HBox> labels = new ArrayList<>();
 
+        HBox firstBox = new HBox();
         Label first = new Label(ds.get(0));
         first.setWrapText(true);
         first.setTextFill(Color.WHITE);
-        labels.add(first);
+        firstBox.getChildren().add(first);
+        labels.add(firstBox);
 
         for (int i = 1; i < ds.size() - 1; i++) {
             String direct = ds.get(i);
+            Image image = null;
             switch(direct.substring(0,1)) {
                 case "A":
-                    direct = "Walk straight for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk straight for " + Integer.parseInt(direct.substring(1,6)) + " " + units + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.continue_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "B":
-                    direct = "Turn left and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_left_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "C":
-                    direct = "Turn slightly left and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn slightly left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_slight_left_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "D":
-                    direct = "Turn sharply left and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn sharply left and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_sharp_left_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "E":
-                    direct = "Turn right and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_right_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "F":
-                    direct = "Turn slightly right and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn slightly right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_slight_right_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "G":
-                    direct = "Turn sharply right and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn sharply right and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.turn_sharp_right_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "H":
-                    direct = "Turn around and walk for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Turn around and walk for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.uturn_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "I":
                     direct = "Walk to the elevator.\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "J":
                     direct = "Walk to the stairs.\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "N":
                     direct = "Take the elevator up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.elevator_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "O":
                     direct = "Take the elevator down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.elevator_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "P":
                     direct = "Take the stairs up from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.stairs_up_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "Q":
                     direct = "Take the stairs down from floor " + backToFloors.get(direct.substring(1,2)) + " to floor " + backToFloors.get(direct.substring(2,3)) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.stairs_down_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "S":
-                    direct = "Walk north for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk north for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "T":
-                    direct = "Walk north west for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk north west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "U":
-                    direct = "Walk west for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "V":
-                    direct = "Walk south west for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk south west for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "W":
-                    direct = "Walk south for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk south for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "X":
-                    direct = "Walk south east for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk south east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "Y":
-                    direct = "Walk east for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "Z":
-                    direct = "Walk north east for " + direct.substring(1) + " " + units + ".\n";
+                    direct = "Walk north east for " + Integer.parseInt(direct.substring(1,6)) + " " + units  + direct.substring(6) + ".\n";
+                    try {
+                        image = new Image(ResourceLoader.walking_icon.openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 default:
                     direct = "Houston we have a problem";
                     break;
             }
-
+            HBox box = new HBox();
+            box.setAlignment(Pos.CENTER_LEFT);
+            if(image != null) {
+                ImageView iv = new ImageView(image);
+                iv.setFitHeight(30);
+                iv.setFitWidth(30);
+                box.getChildren().add(iv);
+            }
             Label l = new Label(direct);
             l.setWrapText(true);
             l.setTextFill(Color.WHITE);
-            labels.add(l);
+            box.getChildren().add(l);
+            labels.add(box);
             directions.add(direct);
         }
         directions.add(ds.get(ds.size() -1));
 
+        HBox lastBox = new HBox();
         Label last = new Label(ds.get(ds.size() - 1));
         last.setWrapText(true);
         last.setTextFill(Color.WHITE);
-        labels.add(last);
+        lastBox.getChildren().add(last);
+        labels.add(lastBox);
 
         dirs.addAll(labels);
         directionsView.setItems(dirs);
@@ -327,9 +545,12 @@ public class DirectionsController {
             buf.append(directions.get(i));
         }
         String total = buf.toString();
+        System.out.println(total);
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        event.setEventName("showDestination");
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         return total;
     }
-
 
     /**
      * Convert this direction to a cardinal direction
@@ -337,7 +558,7 @@ public class DirectionsController {
      * @param cardinal the direction with the first vector going south
      * @return the direction as a cardinal direction
      */
-    public String convertToCardinal(String cardinal) {
+    String convertToCardinal(String cardinal) {
         if (cardinal.contains("C")) {
             cardinal = "X" + cardinal.substring(1);
         }
@@ -368,7 +589,7 @@ public class DirectionsController {
         return cardinal;
     }
 
-    public String csDirPrint(int x, int y, Node curr, Node next) {
+    private String csDirPrint(int x, int y, Node curr, Node next) {
         Node n1 = new Node("ID", x, y, "HALL");
         return csDirPrint(n1, curr, next);
     }
@@ -381,7 +602,7 @@ public class DirectionsController {
      * @return the direction for someone walking from points 1 to 3 with the turn direction and distance
      *      *          between the middle and last point
      */
-    public String csDirPrint(Node prev, Node curr, Node next) {
+    private String csDirPrint(Node prev, Node curr, Node next) {
         double prevXd, prevYd, currXd, currYd, nextXd, nextYd;
         prevXd = prev.getXcoord();
         prevYd = prev.getYcoord();
@@ -409,7 +630,7 @@ public class DirectionsController {
 
         // Distance in feet based on measurements from the map: 260 pixels per 85 feet
         double distance;
-        if (units.equals("Ft")) {
+        if (units.equals("feet")) {
             distance = lengthNew /260 * 85;    // Pixels to feet
         }
         else {
@@ -481,9 +702,50 @@ public class DirectionsController {
             }
         }
 
+        String landmark = "";
+        ArrayList<Node> closeNodes = MapController.getNodesConnectedTo(next);
+        for (Node n: closeNodes) {
+            if (n.equals(curr)) {
+                // do nothing
+            }
+            else if (!landmark.contains("towards") && n.getNodeType().equals("HALL")) {
+                landmark = " down the hall";
+            }
+           else if (!n.getNodeType().equals("HALL") && !n.getNodeType().equals("ELEV") && !n.getNodeType().equals("STAI")) {
+                landmark = " towards " + n.getLongName();
+            }
+        }
+        if (!next.getNodeType().equals("HALL") && !next.getNodeType().equals("ELEV") && !next.getNodeType().equals("STAI")) {
+            landmark = " towards " + next.getLongName();
+        }
+
         // Create and return the direction
-        String direction = String.format(turn +  "%.0f", distance);
+        String distPadded = padWithZeros(distance);    // Pad direction with zeros so always same lengtb
+        String direction = turn + distPadded + landmark;
         return direction;
+    }
+
+    /**
+     * Pad a distance with zeros so all distances are the same length
+     * @param distance the distance to pad with zeros
+     * @return the padded distance as a string
+     */
+    private String padWithZeros(double distance) {
+        if (units.equals("feet")) {
+            int fives = (int) distance / 5;
+            distance = fives * 5;
+        }
+        else {
+            int twos = (int) distance / 2;
+            distance = twos * 2;
+        }
+        String orig = String.format("%.0f", distance);
+        for (int i = 0; i < 6; i++) {    // Assume max distance is less than 99999 feet
+            if (orig.length() < i) {    // Pad with zeroes while string length is less than 6
+                orig = "0" + orig;
+            }
+        }
+        return orig;
     }
 
     /**
@@ -498,15 +760,44 @@ public class DirectionsController {
      * Set the current units as feet or meters
      */
     public void setUnits() {
-        if (unitSwitch_btn.getText().equals("M")) {
-            units = "M";
-            unitSwitch_btn.setText("Ft");
+        if (unitSwitch_btn.getText().equals("Meters")) {
+            units = "meters";
+            unitSwitch_btn.setText("Feet");
         }
         else {
-            units = "Ft";
-            unitSwitch_btn.setText("M");
+            units = "feet";
+            unitSwitch_btn.setText("Meters");
         }
         printDirections(makeDirections(path));
+    }
+
+    public void setPath(ArrayList<Node> thePath) {
+        this.path = thePath;
+    }
+
+    public void directionClicked() {
+        Node directionStart = startNodes.get(directionsView.getSelectionModel().getSelectedIndex());
+        Event e = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        e.setEventName("scroll-to-direction");
+        e.setDirectionsNode(directionStart);
+        ApplicationState.getApplicationState().getObservableBus().updateEvent(e);
+    }
+
+    public void validPhone(){
+        if (getApplicationState().getEmployeeLoggedIn() != null) {
+            textingButton.setDisable(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""));
+        }
+        for (char c: phoneNumber.getText().toCharArray()) {
+            if (!Character.isDigit(c)) {
+                textingButton.setDisable(true);
+            }
+        }
+        if (phoneNumber.getText().length() != 10) {
+            textingButton.setDisable(true);
+        }
+        else {
+            textingButton.setDisable(false);
+        }
     }
 
     /**
@@ -515,7 +806,17 @@ public class DirectionsController {
     public void sendMapToPhone(){
         TextingService textSender = new TextingService();
         //this grabs the employee ID from the Application state and uses that to get the employee from the database, whose phone we want to use. and sends them the directions.
-        textSender.textMap("+1" + getApplicationState().getEmployeeLoggedIn().getPhone(),printDirections(makeDirections(path)));
+        if(!(phoneNumber.getText().equals(""))){
+            String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(makeDirections(path));
+            url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
+            textSender.textMap(phoneNumber.getText(), url);
+        }
+        else if(!(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""))) {
+            textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(), printDirections(makeDirections(path)));
+        }
+        else{
+            System.out.println("NO PHONE NUMBER");
+        }
     }
 
     /**
@@ -524,9 +825,56 @@ public class DirectionsController {
      * Format: <Instruction> <Distance/Floor> <Hint>
      * @return the String to use in the QR code
      */
-    private String convertToQRCode(ArrayList<String> directions) {
-        // TODO if necc - ex all into one
-        return "";
+    private String convertDirectionsToParamerterString(ArrayList<String> directions) {
+        StringBuilder res = new StringBuilder();
+
+        for (int i = 1; i < directions.size() - 1; i++) {
+            res.append(directions.get(i));
+            res.append(",");
+        }
+        res.delete(res.lastIndexOf(","), res.lastIndexOf(",") + 1);
+        return res.toString();
     }
 
+    /**
+     * Given a set of directions, generate and place a QR code on the list of directions
+     * @param directions the textual directions to generate a QR code from
+     * @throws WriterException if the output fails
+     * @throws IOException if the file is not found or cannot be written
+     */
+    public void generateQRCode(ArrayList<String> directions) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+
+        // Uncomment and use resp.data.url in the QR to shorten the URL
+//        BitlyClient client = new BitlyClient("bcba608ae5c6045d223241662c704f38c52930e4");
+//        Response<ShortenResponse> resp = client.shorten()
+//                .setLongUrl("https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions))
+//                .call();
+        String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions);
+        url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
+        BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, 350, 350);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        byte[] pngData = pngOutputStream.toByteArray();
+        Image qr = new Image(new ByteArrayInputStream(pngData));
+        qrView.setImage(qr);
+    }
+
+    /**
+     * Set whether the QR code is visible or not.
+     */
+    @FXML
+    public void showQRCode() {
+        if (qrCodeVbox.getMaxHeight() == 0) {
+            qrCodeVbox.setPrefHeight(750);
+            qrCodeVbox.setMaxHeight(750);
+            qrView.setVisible(true);
+        }
+        else {
+            qrCodeVbox.setPrefHeight(0);
+            qrCodeVbox.setMaxHeight(0);
+            qrView.setVisible(false);
+        }
+    }
 }

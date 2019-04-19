@@ -12,11 +12,11 @@ public class StageManager {
 
     /**
      * change stage window
-     * @param primaryStage
-     * @param root
-     * @param title
-     * @return
-     * @throws Exception
+     * @param primaryStage Stage to change to
+     * @param root given root
+     * @param title window title to set
+     * @return Stage switched to
+     * @throws Exception if the FXML fails to load
      */
     public static Stage changeWindow(Stage primaryStage, Parent root, String title) throws Exception {
         primaryStage.setTitle(title);
@@ -29,11 +29,11 @@ public class StageManager {
     /**
      * change stage window
      * testing out faster load
-     * @param primaryStage
-     * @param root
-     * @param title
-     * @return
-     * @throws Exception
+     * @param primaryStage Stage to change to
+     * @param root given root
+     * @param title window title to set
+     * @return Stage switched to
+     * @throws Exception if the FXML fails to load
      */
     public static Stage changeExistingWindow(Stage primaryStage, Parent root, String title) throws Exception {
         getApplicationState().getIM().startTheTimer();

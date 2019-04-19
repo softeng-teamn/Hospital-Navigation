@@ -1,33 +1,37 @@
 package service_request.controller;
 
 import application_state.ApplicationState;
-import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import foodRequest.FoodRequest;
 import foodRequest.ServiceException;
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import application_state.Event;
-import application_state.EventBusFactory;
 import map.Node;
+import scheduler.model.Reservation;
 import service_request.controller.sub_controller.InternalTransportController;
 import service_request.model.Request;
 import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -38,8 +42,6 @@ import java.util.stream.Stream;
 import static service.ResourceLoader.enBundle;
 import static service.ResourceLoader.esBundle;
 
-import static application_state.ApplicationState.getApplicationState;
-
 public class RequestController implements Initializable {
 
     @FXML
@@ -49,7 +51,7 @@ public class RequestController implements Initializable {
     @FXML
     private JFXButton spanishBtn;
     @FXML
-    private JFXListView list_view;
+    private JFXListView<HBox> list_view;
     @FXML
     private JFXTextField search_bar;
     @FXML
@@ -60,30 +62,39 @@ public class RequestController implements Initializable {
 
     private ArrayList<Node> allNodes;
     private ObservableList<Node> allNodesObservable;
+    private HashMap<String, String> buildingAbbrev = new HashMap<>();    // Abbreviate buildings to fit in listview
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @SuppressFBWarnings(value="MS_CANNOT_BE_FINAL", justification = "I need to")
     public static Node selectedNode = null;
 
-    private Event event = EventBusFactory.getEvent();
-    private EventBus eventBus = EventBusFactory.getEventBus();
+    private Event event;
 
     /**
      * initializes the service_request controller
      *
-     * @param location
-     * @param resources
+     * @param location feels needed to override
+     * @param resources field needed to override
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+        buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
+        buildingAbbrev.put("BTM", "BTM");
+        buildingAbbrev.put("Tower", "Tow");
+        buildingAbbrev.put("45 Francis", "45Fr");
+        buildingAbbrev.put("15 Francis", "15Fr");
+        buildingAbbrev.put("RES", "RES");
+        buildingAbbrev.put("FLEX", "FLEX");
+
         repopulateList();
     }
 
     /**
      * switches window to home screen
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showHome() throws Exception {
@@ -95,10 +106,11 @@ public class RequestController implements Initializable {
     /**
      * switches to English
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showEnglish() throws Exception{
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setCurrentBundle(enBundle);
         Stage stage = (Stage) englishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
@@ -108,10 +120,11 @@ public class RequestController implements Initializable {
     /**
      * switches to Spanish
      *
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @FXML
     public void showSpanish() throws Exception{
+        event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         event.setCurrentBundle(esBundle);
         Stage stage = (Stage) spanishBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.request,event.getCurrentBundle());
@@ -121,11 +134,11 @@ public class RequestController implements Initializable {
 
     /**
      * show every nodes on  JFXListView
+     * @param e FXML event that calls this method
      */
     @FXML
-    public void searchBarEnter(ActionEvent e) {
+    public void searchBarEnter(javafx.event.Event e) {
         String search = search_bar.getText();
-        System.out.println(search);
         filterList(search);
     }
 
@@ -148,7 +161,8 @@ public class RequestController implements Initializable {
     private void filterList(String findStr) {
         if (findStr.equals("")) {
             list_view.getItems().clear();
-            list_view.getItems().addAll(allNodesObservable);
+            ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodes);
+            list_view.getItems().addAll(observeHboxes);
         } else {
             //Get List of all nodes
             ObservableList<Node> original = allNodesObservable;
@@ -163,11 +177,10 @@ public class RequestController implements Initializable {
 
             // Convert to list and then to observable list
             List<Node> filteredNodes = stream.collect(Collectors.toList());
-            ObservableList<Node> toShow = FXCollections.observableList(filteredNodes);
+            ObservableList<HBox> toShow = makeIntoHBoxes((ArrayList) filteredNodes);
 
             // Add to view
-            list_view.getItems().clear();
-            list_view.getItems().addAll(toShow);
+            list_view.setItems(toShow);
         }
     }
 
@@ -208,22 +221,44 @@ public class RequestController implements Initializable {
             return;
         }
 
-        list_view.getItems().clear();
+        ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodes);
         // add to listView
-        list_view.getItems().addAll(allNodesObservable);
-
-        list_view.setCellFactory(param -> new JFXListCell<Node>() {
-            @Override
-            protected void updateItem(Node item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNodeID() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getLongName());
-                }
-            }
-        });
+        list_view.setItems(observeHboxes);
     }
+
+    /**
+     * Make the passed in arraylist into an observable list of hboxes with name, building, floor
+     * to put into the listview
+     * @param nodes the list of nodes to display
+     * @return the list of hboxes, one for each node
+     */
+    private ObservableList<HBox> makeIntoHBoxes(ArrayList<Node> nodes) {
+        ArrayList<HBox> hBoxes = new ArrayList<>();
+        for (int i = 0; i < nodes.size(); i++) {    // For every node
+            Node currNode = nodes.get(i);
+            HBox hb = new HBox();
+            HBox inner = new HBox();    // So the building can be right-aligned
+            inner.setAlignment(Pos.CENTER_RIGHT);
+            Label longName = new Label(currNode.getLongName());    // Make a label for the long name
+            String buildFlStr = buildingAbbrev.get(currNode.getBuilding()) + ", " + currNode.getFloor();
+            Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
+            Label nodeId = new Label(currNode.getNodeID());    // Save the nodeID for pathfinding but make it invisible
+            nodeId.setPrefWidth(0);
+            nodeId.setVisible(false);
+            nodeId.setPadding(new Insets(0, -10, 0, 0));
+            hb.getChildren().add(longName);    // Add the node name
+            inner.getChildren().add(nodeId);
+            inner.getChildren().add(buildFloor);    // Add the ID and building and floor to the right-aligned hbox
+            hb.getChildren().add(inner);    // Combine them
+            hb.setHgrow(inner, Priority.ALWAYS);
+            hb.setSpacing(0);
+            hBoxes.add(hb);    // Add it all to the list
+        }
+        ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
+        observeHboxes.addAll(hBoxes);
+        return observeHboxes;
+    }
+
 
     @FXML
     public void internalTransportSelect(ActionEvent e) throws IOException {
@@ -278,7 +313,7 @@ public class RequestController implements Initializable {
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "I need to")
     @FXML
     public void locationSelected(MouseEvent mouseEvent) {
-        selectedNode = (Node) list_view.getSelectionModel().getSelectedItem();
+        selectedNode = DatabaseService.getDatabaseService().getNode(((Label) ((HBox) list_view.getSelectionModel().getSelectedItem().getChildren().get(1)).getChildren().get(0)).getText());
     }
 
     public void toyRequestSelect(ActionEvent actionEvent) throws IOException {

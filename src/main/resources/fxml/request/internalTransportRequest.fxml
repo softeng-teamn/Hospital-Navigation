@@ -3,24 +3,24 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXToggleNode?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<?import com.jfoenix.controls.JFXToggleNode?>
-<?import javafx.scene.control.ToggleGroup?>
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.controller.sub_controller.InternalTransportController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <FontAwesomeIconView glyphName="WHEELCHAIR" size="240" styleClass="request-glyph">
          <VBox.margin>
             <Insets bottom="24.0" />
          </VBox.margin>
       </FontAwesomeIconView>
-      <JFXTextArea fx:id="text_area" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="534.0" promptText="%InternalTitle">
+      <JFXTextArea fx:id="text_area" labelFloat="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="254.0" prefWidth="534.0" promptText="%InternalTitle">
          <VBox.margin>
             <Insets bottom="10.0" left="12.0" right="12.0" />
          </VBox.margin>
@@ -31,7 +31,7 @@
       <Label alignment="CENTER" contentDisplay="CENTER" text="Priority Level" />
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <JFXToggleNode fx:id="low" graphicTextGap="0.0" text="%Low" toggleGroup="$urgency" prefHeight="41.0" prefWidth="75.0" styleClass="enum-toggle-node">
+            <JFXToggleNode fx:id="low" graphicTextGap="0.0" prefHeight="41.0" prefWidth="75.0" styleClass="enum-toggle-node" text="%Low" toggleGroup="$urgency">
                <toggleGroup>
                   <ToggleGroup fx:id="urgency" />
                </toggleGroup>
@@ -42,7 +42,7 @@
                   <Insets left="24.0" right="24.0" />
                </HBox.margin>
             </JFXToggleNode>
-            <JFXToggleNode fx:id="med" graphicTextGap="0.0" text="%Medium" toggleGroup="$urgency" prefHeight="41.0" prefWidth="110.0" styleClass="enum-toggle-node">
+            <JFXToggleNode fx:id="med" graphicTextGap="0.0" prefHeight="41.0" prefWidth="110.0" styleClass="enum-toggle-node" text="%Medium" toggleGroup="$urgency">
                <graphic>
                   <FontAwesomeIconView size="1" />
                </graphic>
@@ -50,7 +50,7 @@
                   <Insets left="24.0" right="24.0" />
                </HBox.margin>
             </JFXToggleNode>
-            <JFXToggleNode fx:id="high" graphicTextGap="0.0" text="%High" toggleGroup="$urgency" prefHeight="41.0" prefWidth="80.0" styleClass="enum-toggle-node">
+            <JFXToggleNode fx:id="high" graphicTextGap="0.0" prefHeight="41.0" prefWidth="80.0" styleClass="enum-toggle-node" text="%High" toggleGroup="$urgency">
                <graphic>
                   <FontAwesomeIconView size="1" />
                </graphic>
@@ -62,6 +62,10 @@
       </HBox>
       <JFXComboBox fx:id="dropdown" promptText="%InternalSelect" />
       <Region prefHeight="367.0" prefWidth="534.0" />
+      <Label fx:id="errorMsg" stylesheets="@../../theme.css" textFill="#f44336">
+         <font>
+            <Font size="32.0" />
+         </font></Label>
       <JFXButton onAction="#submitAction" styleClass="confirm-button" text="%Submit">
          <VBox.margin>
             <Insets bottom="24.0" />

@@ -25,12 +25,13 @@ public class Main extends Application {
         DatabaseService.getDatabaseService().loadFromCSVsIfNecessary();
         HashMap<String, ImageView> imageCache = new HashMap<>();
         try {
+            imageCache.put("4", new ImageView(new Image(ResourceLoader.fourthFloor.openStream())));
             imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
             imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
             imageCache.put("1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
+            imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
             imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
             imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
-            imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -41,7 +42,7 @@ public class Main extends Application {
     /**
      * initializes the UI
      * @param primaryStage parameter to start the UI
-     * @throws Exception
+     * @throws Exception if the FXML fails to load
      */
     @Override
     public void start(Stage primaryStage) throws Exception {

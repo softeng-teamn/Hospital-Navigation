@@ -1,6 +1,10 @@
 package map.edit_node;
 
 import application_state.ApplicationState;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextField;
 import com.google.common.eventbus.EventBus;
 import com.jfoenix.controls.*;
 import de.jensd.fx.glyphs.materialicons.MaterialIconView;
@@ -25,7 +29,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import map.Edge;
-import application_state.EventBusFactory;
 import map.Node;
 import database.DatabaseService;
 import net.kurobako.gesturefx.GesturePane;
@@ -36,10 +39,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Handles interactions with the node editor FXML
+ */
 public class EditNodeController extends Control {
 
     Group zoomGroup;
-    private EventBus eventBus = EventBusFactory.getEventBus();
     Circle selectedCircle = new Circle();
     Node tempEditNode;      // mutating the node based on edits
     boolean isEditEdges = false;
@@ -77,8 +82,10 @@ public class EditNodeController extends Control {
     private ToggleButton closedToggle;
 
 
+    /** initializes variables for node editing
+     */
     @FXML
-    void initialize() throws InterruptedException {
+    void initialize() {
 
         zoomSliderInit();
         zoomGroupInit();
@@ -103,12 +110,12 @@ public class EditNodeController extends Control {
 
     }
 
-    void zoomGroupInit() {
+    private void zoomGroupInit() {
         zoomGroup = new Group();
         gPane.setContent(zoomGroup);
     }
 
-    void zoomSliderInit() {
+    private void zoomSliderInit() {
         gPane.currentScaleProperty().setValue(MIN_ZOOM+0.1);
         zoom_slider.setMin(MIN_ZOOM);
         zoom_slider.setMax(MAX_ZOOM);
@@ -117,13 +124,15 @@ public class EditNodeController extends Control {
         gPane.currentScaleProperty().bindBidirectional(zoom_slider.valueProperty());
     }
 
-    void imagesInit() {
+    private void imagesInit() {
         imageCache = ApplicationState.getApplicationState().getImageCache();
         this.floorImg = imageCache.get("1");
         setFloor("1"); // DEFAULT
     }
 
-    // switch floor to new map image
+    /** switch floor to new map image
+     * @param floor the floor to switch to
+     */
     public void setFloor(String floor) {
         ImageView newImg;
         if (imageCache.containsKey(floor)) {
@@ -138,7 +147,7 @@ public class EditNodeController extends Control {
     }
 
 
-    void fillEdges(Node node) {
+    private void fillEdges(Node node) {
         edgeNodeCollection = DatabaseService.getDatabaseService().getNodesConnectedTo(node);
         for (Node n : edgeNodeCollection) {
             edges_list.getItems().add(n.getNodeID());
@@ -147,6 +156,9 @@ public class EditNodeController extends Control {
         oldEdgesFromEditNode = DatabaseService.getDatabaseService().getAllEdgesWithNode(node.getNodeID());
     }
 
+    /** toggles the visibility of edges
+     * @param e event that calls this method
+     */
     @FXML
     void editToggle(ActionEvent e) {
         isEditEdges = !isEditEdges;
@@ -157,7 +169,7 @@ public class EditNodeController extends Control {
         }
     }
 
-    void hideEdges() {
+    private void hideEdges() {
         edit_show_btn.setGraphic(edit_icon_down);
         floor_change_hbox.getChildren().remove(floor_change_vbox);
         edges_container.getChildren().remove(edges_list);
@@ -165,7 +177,7 @@ public class EditNodeController extends Control {
         circleCollection.clear();
     }
 
-    void showEdges() {
+    private void showEdges() {
         edit_show_btn.setGraphic(edit_icon_up);
         floor_change_hbox.getChildren().add(0,floor_change_vbox);
         edges_container.getChildren().add(edges_list);
@@ -173,7 +185,7 @@ public class EditNodeController extends Control {
 
     }
 
-    void drawSelectedCircle(double x, double y) {
+    private void drawSelectedCircle(double x, double y) {
         Circle circle = new Circle();
         circle.setCenterX(x);
         circle.setCenterY(y);
@@ -215,12 +227,13 @@ public class EditNodeController extends Control {
                 .centreOn(new Point2D(node.getXcoord(), node.getYcoord()));
     }
 
-    void fillNodeInfo() {
+    private void fillNodeInfo() {
         Node node = ApplicationState.getApplicationState().getNodeToEdit();
         building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis");
         building_combo.getSelectionModel().select(node.getBuilding());
         nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
         nodeType_combo.getSelectionModel().select(node.getNodeType());
+        floor_combo.getItems().add("4");
         floor_combo.getItems().add("3");
         floor_combo.getItems().add("2");
         floor_combo.getItems().add("1");
@@ -233,18 +246,12 @@ public class EditNodeController extends Control {
         closedToggle.setSelected(node.isClosed());
     }
 
-//    @FXML
-//    void mapClickedHandler(MouseEvent e) {
-//        if (!isEditEdges) {
-//            double mouseX = e.getX();
-//            double mouseY = e.getY();
-//            zoomGroup.getChildren().remove(selectedCircle);
-//            drawSelectedCircle(mouseX, mouseY);
-//        }
-//    }
 
+    /** Changes the selection of the combo box
+     * @param e FXML event that calls this method
+     */
     @FXML
-    void comboAction(ActionEvent e) throws IOException {
+    void comboAction(ActionEvent e) {
         String newFloor = floor_combo.getSelectionModel().getSelectedItem();
         tempEditNode.setFloor(newFloor);
         // hide any nodes on screen
@@ -254,6 +261,10 @@ public class EditNodeController extends Control {
 //        System.out.println("Selecting NEW FLOOR RENDER: " + newFloor);
     }
 
+    /** handles deleting nodes
+     * @param e FXML event that calls this method
+     * @throws IOException if the node does not exist
+     */
     @FXML
     void deleteAction(ActionEvent e) throws IOException {
         ApplicationState.getApplicationState().setEdgesToEdit(oldEdgesFromEditNode);
@@ -278,6 +289,10 @@ public class EditNodeController extends Control {
 
     }
 
+    /** handles the save node action from the FXML
+     * @param e FXML event that calls this method
+     * @throws IOException if the save fails
+     */
     @FXML
     void saveAction(ActionEvent e) throws IOException {
         updateNode();
@@ -309,7 +324,7 @@ public class EditNodeController extends Control {
         stage.showAndWait();
     }
 
-    void updateNode() {
+    private void updateNode() {
         tempEditNode.setXcoord((int)selectedCircle.getCenterX());
         tempEditNode.setYcoord((int)selectedCircle.getCenterY());
         tempEditNode.setNodeType(nodeType_combo.getSelectionModel().getSelectedItem());
@@ -319,6 +334,10 @@ public class EditNodeController extends Control {
         tempEditNode.setClosed(closedToggle.isSelected());
     }
 
+    /** returns from the edit node screen to the home screen
+     * @param e FXML event that calls this method
+     * @throws Exception if the FMXL fails to load
+     */
     @FXML
     void cancelAction(ActionEvent e) throws Exception {
         Stage stage = (Stage) gPane.getScene().getWindow();
@@ -327,7 +346,7 @@ public class EditNodeController extends Control {
         stage.setMaximized(true);
     }
 
-    void drawFloorNodes(String floor){
+    private void drawFloorNodes(String floor){
         ArrayList<Node> floorNodes = DatabaseService.getDatabaseService().getNodesByFloor(floor);
         zoomGroup.getChildren().removeAll(circleCollection);
         circleCollection.clear();
@@ -363,8 +382,11 @@ public class EditNodeController extends Control {
     }
 
 
+    /** handles floor change events
+     * @param e FXML event that calls this method
+     */
     @FXML
-    void floorChangeAction(ActionEvent e) throws IOException {
+    void floorChangeAction(ActionEvent e) {
         JFXButton clickedBtn = (JFXButton) e.getSource();
         setFloor(clickedBtn.getText());
     }
