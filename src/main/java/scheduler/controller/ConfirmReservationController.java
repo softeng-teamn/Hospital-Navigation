@@ -220,7 +220,7 @@ public class ConfirmReservationController {
         dialog.initOwner(stage);
         VBox dialogVbox = new VBox(20);
         dialogVbox.getChildren().add(new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + eventName.getText() + "&eventLocation=" + myDBS.getReservableSpace(roomID).getSpaceName() + "&eventOrganizer=" + myDBS.getEmployee(Integer.parseInt(employeeID.getText())).getUsername() + "&startTime=" + cals.get(0).getTimeInMillis()/1000 + "&endTime=" + cals.get(1).getTimeInMillis()/1000, true)));
-        Scene dialogScene = new Scene(dialogVbox, 350, 375);
+        Scene dialogScene = new Scene(dialogVbox, 350, 350);
         dialog.setScene(dialogScene);
         dialog.show();
 
