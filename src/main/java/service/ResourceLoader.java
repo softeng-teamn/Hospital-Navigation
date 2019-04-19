@@ -24,7 +24,8 @@ public class  ResourceLoader {
     public static final URL invalidTime = service.ResourceLoader.class.getResource("/fxml/toast/invalidTimeToast.fxml");
     public static final URL impossibleTime = service.ResourceLoader.class.getResource("/fxml/toast/impossibleTimeToast.fxml");
     public static final URL invalidDate = service.ResourceLoader.class.getResource("/fxml/toast/invalidDateToast.fxml");
-    public static final URL idle = service.ResourceLoader.class.getResource("/fxml/login.fxml");
+    public static final URL passwordTooShort = service.ResourceLoader.class.getResource("/fxml/toast/passwordTooShortToast.fxml");
+    public static final URL idle = service.ResourceLoader.class.getResource("/fxml/Idle.fxml");
 
     public static final URL about = service.ResourceLoader.class.getResource("/fxml/home/aboutPage.fxml");
     public static final URL directionMessage = service.ResourceLoader.class.getResource("/fxml/home/directionMessage.fxml");

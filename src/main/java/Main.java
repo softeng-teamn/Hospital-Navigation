@@ -1,4 +1,5 @@
 import application_state.ApplicationState;
+import employee.controller.EnterApplicationController;
 import javafx.application.Platform;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -54,5 +55,7 @@ public class Main extends Application {
         primaryStage.setMaximized(true);
         StageManager.changeWindow(primaryStage, root, "Idle");
     }
+
+
 
 }
