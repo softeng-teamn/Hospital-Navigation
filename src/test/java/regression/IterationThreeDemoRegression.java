@@ -169,6 +169,8 @@ public class IterationThreeDemoRegression extends ApplicationTest {
         clickOn("#privacyLvlBox").type(KeyCode.DOWN); // Public
         clickOn("#makeReservationBtn");
 
+        clickOn("#confirmReservationBtn");
+
         verifyThat(((SVGPath) GuiTest.find("#classroom4")).getFill(), is(ScheduleController.AVAILABLE_COLOR), informedErrorMessage(this));
         datePicker = GuiTest.find("#datePicker");
         startTimePicker = GuiTest.find("#startTimePicker");
@@ -199,6 +201,8 @@ public class IterationThreeDemoRegression extends ApplicationTest {
         clickOn("#eventName").write("Other Event");
         clickOn("#privacyLvlBox").type(KeyCode.DOWN).type(KeyCode.DOWN); // Private
         clickOn("#makeReservationBtn");
+
+        clickOn("#confirmReservationBtn");
 
         verifyThat(((SVGPath) GuiTest.find("#auditorium")).getFill(), is(ScheduleController.SELECT_AVAILABLE_COLOR), informedErrorMessage(this));
         datePicker = GuiTest.find("#datePicker");
