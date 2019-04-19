@@ -22,6 +22,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
@@ -31,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import map.MapNode;
@@ -721,9 +723,16 @@ public class MapViewController implements Observer {
                 .centreOn(new Point2D(node.getXcoord(), node.getYcoord()));
     }
 
-    public void sendHelp(ActionEvent actionEvent) {
+    public void sendHelp(ActionEvent actionEvent) throws IOException {
         ApplicationState currState = ApplicationState.getApplicationState();
         HelpRequest helpRequest = new HelpRequest(-1, "Need Help", currState.getDEFAULT_NODE(), false);
         helpRequest.makeRequest();
+        Parent root = FXMLLoader.load(ResourceLoader.helpConfirm);
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Help Confirmation");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(gPane.getScene().getWindow());
+        stage.showAndWait();
     }
 }

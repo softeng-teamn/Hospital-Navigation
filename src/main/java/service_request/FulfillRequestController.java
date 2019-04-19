@@ -11,9 +11,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import employee.model.Employee;
@@ -22,6 +24,7 @@ import service.ResourceLoader;
 import service.StageManager;
 import service_request.model.Request;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -262,7 +265,7 @@ public class FulfillRequestController implements Initializable {
         }
     }
 
-    public void fulfillRequest(ActionEvent actionEvent) {
+    public void fulfillRequest(ActionEvent actionEvent) throws IOException {
         Request selectedRequest = requestListView.getSelectionModel().getSelectedItem();
 
         if (selectedRequest != null) {
@@ -271,6 +274,13 @@ public class FulfillRequestController implements Initializable {
             }
             selectedRequest.fillRequest();
             reqStateChange(null);
+            Parent root = FXMLLoader.load(ResourceLoader.fulfillConfirm);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Confirm Fulfillment");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(typeVBox.getScene().getWindow());
+            stage.showAndWait();
         }
     }
 

@@ -3,6 +3,7 @@ package service_request.controller.sub_controller;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,7 +37,8 @@ public class MedicineRequestController extends RequestController {
                     medicineType.setText("");
                     quantity.setText("");
                     quantity.getStyleClass().remove("wrong-credentials");
-                    errorMsg.setText("");
+                    errorMsg.setTextFill(Color.BLACK);
+                    errorMsg.setText("Request Submitted!");
                 }
             } catch (NumberFormatException e) {
                 //quantity.getStyleClass().add("wrong-credentials");  //commented out because inconsistant with other reqs
