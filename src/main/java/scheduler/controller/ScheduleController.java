@@ -290,6 +290,53 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * Randomly color workstations while running.
+     */
+    private class WorkStationRunner implements Runnable{
+        private volatile boolean exit = false;    // Whether to stop running
+
+        public void run() {    // Note that these numbers are all adjustable: sleep time, rem, bound
+            int rem = 0;
+            while(!exit){    // Whil running
+                final int r = rem;
+                try {
+                    Thread.sleep(2000);    // Wait a little
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Random rand = new Random();
+                        for (int i = 0; i < workStations.size(); i++) {   // For each workstation,
+                            if (i % 5 == r) {
+                                int n = rand.nextInt(5);
+                                SVGPath ws = workStations.get(i);
+                                if (n < 1) {
+                                    if (ws.getFill().equals(AVAILABLE_COLOR)) {
+                                        ws.setFill(UNAVAILABLE_COLOR);    // Set it as whatever it was not available
+                                    } else {
+                                        ws.setFill(AVAILABLE_COLOR);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                rem++;
+                if (rem == 5) {
+                    rem = 0;
+                }
+            }
+            //System.out.println("Thread is stopped....");     can cut
+        }
+
+        public void stop(){
+            exit = true;
+        }
+    }
+
 
     @FXML
     public JFXButton homeBtn, makeReservationBtn, availRoomsBtn, bookedRoomsBtn;
@@ -350,6 +397,8 @@ public class ScheduleController {
     private Tab weeklyScheduleTab, dailyScheduleTab;
 
     private Event event ;    // The current event
+    private Thread randStationsThread;    // Random stations thread
+    private WorkStationRunner runner;    // Stoppable part
 
     // Map Stuff
     public static final Color AVAILABLE_COLOR = Color.rgb(67, 160, 71,0.6);
@@ -367,6 +416,7 @@ public class ScheduleController {
     private int timeStepMinutes = 60 / timeStep;    // In Minutes
     private static final int NUM_ROOMS = 10;
     private static final int NUM_DAYS_IN_WEEK = 7;
+
 
     // Currently selected location
     public ReservableSpace currentSelection;
@@ -410,6 +460,8 @@ public class ScheduleController {
         populateMap();
         repopulateMap();
         randomWorkstations();
+        runner = new WorkStationRunner();
+        randomizeSpaces(true);
 
         // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -424,6 +476,20 @@ public class ScheduleController {
         endTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             focusState(newValue);
         });
+    }
+
+    /**
+     * Randomly color spaces.
+     * @param start  true to start, false to end
+     */
+    private void randomizeSpaces(boolean start) {
+        randStationsThread = new Thread(runner, "T1");
+        if (start) {
+            randStationsThread.start();
+        }
+        else {
+            runner.stop();
+        }
     }
 
     /**
@@ -710,6 +776,7 @@ public class ScheduleController {
      * @throws Exception if FXML fails to load
      */
     public void showHome() throws Exception {
+        randomizeSpaces(false);    // Stop thread
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
@@ -959,6 +1026,7 @@ public class ScheduleController {
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
 
             // switch screen to final stage of scheduler
+            randomizeSpaces(false);
             Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
             StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
