@@ -59,31 +59,27 @@
             <children>
                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="300.0" spacing="10.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Domino's Pizza, Team A">
+                        <Label text=", Team A">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text="Gift Service Request, Team B">
+                        <Label text=", Team B">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text="Flower/Balloon, Team C">
+                        <Label text=", Team C">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text="Twitter, Team D">
+                        <Label text=", Team D">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text="Food Request, Team E">
+                        <Label text=", Team E">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text="Food Request, Team F">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text="Food Request, Team G">
+                        <Label text="Sanitation Service, Team F">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
@@ -99,7 +95,7 @@
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text="Twitter, Team P">
+                        <Label text=", Team P">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
