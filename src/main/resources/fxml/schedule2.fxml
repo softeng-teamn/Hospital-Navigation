@@ -68,7 +68,7 @@
             </VBox>
             <JFXTabPane prefWidth="1536.0" stylesheets="@../theme.css">
                <tabs>
-                  <Tab text="Map of Available Rooms">
+                  <Tab fx:id="mapAvailRooms" text="Map of Available Rooms">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: ffffff;">
                            <children>
@@ -221,7 +221,7 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab text="List of Available Rooms">
+                  <Tab fx:id="listAvailRooms" text="List of Available Rooms">
                     <content>
                       <AnchorPane>
                            <children>
