@@ -1,4 +1,5 @@
 import application_state.ApplicationState;
+import application_state.InactivityManager;
 import javafx.application.Platform;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import static application_state.ApplicationState.getApplicationState;
+import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseMotionListener;
 
 public class Main extends Application {
 
@@ -46,6 +48,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+        addMouseMotionListener(getApplicationState().getIM());
         ApplicationState.getApplicationState().setPrimaryStage(primaryStage);
         Parent root = FXMLLoader.load(ResourceLoader.idle);
         //
@@ -54,7 +57,6 @@ public class Main extends Application {
             Platform.exit();
             System.exit(0);
         });
-        getApplicationState().setPrimaryStage(primaryStage);
         primaryStage.setMaximized(true);
         StageManager.changeWindow(primaryStage, root, "Idle");
     }

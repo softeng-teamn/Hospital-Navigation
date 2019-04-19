@@ -34,8 +34,8 @@ public class InactivityManager extends AnimationTimer implements MouseMotionList
         getApplicationState().setInactive(true);
         Stage stage = getApplicationState().getPrimaryStage();
         try {
-            Parent root = FXMLLoader.load(ResourceLoader.home);
-            StageManager.changeExistingWindow(stage, root, "Home");
+            Parent root = FXMLLoader.load(ResourceLoader.idle);
+            StageManager.changeExistingWindow(stage, root, "idle");
         }
         catch(Exception exception){
             System.out.println("big sad");
