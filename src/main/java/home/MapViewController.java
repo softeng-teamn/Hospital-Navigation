@@ -418,8 +418,6 @@ public class MapViewController implements Observer {
             zoomGroup.getChildren().remove(startNodeLabel);
         }
 
-
-
         if(!node.getFloor().equals(event.getFloor())){
             //switch the map
             //System.out.println(node + node.getFloor());
