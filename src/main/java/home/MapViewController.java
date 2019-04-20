@@ -756,23 +756,23 @@ public class MapViewController implements Observer {
             return;
         }
 
-        double xDiff = (start.getXcoord() + end.getXcoord()) / 2.0;
-        double yDiff = (start.getYcoord() + end.getYcoord()) / 2.0;
-        double maxDiff = Math.max(xDiff, yDiff);
-        double kp = .0002;
-        maxDiff = 2.0 - maxDiff * kp; //2.0 is max zoom
+        double xDiff = Math.abs(start.getXcoord() - end.getXcoord());
+        double yDiff = Math.abs(start.getYcoord() - end.getYcoord());
+        double maxDiff = Math.max(Math.abs(xDiff), Math.abs(yDiff));
+        double m = -.0006401;
+        maxDiff = 1.2 + m * (maxDiff - 255);
 
-        Point2D p = new Point2D(xDiff, yDiff);
+        Point2D p = new Point2D((start.getXcoord() + end.getXcoord()) / 2.0, (start.getYcoord() + end.getYcoord()) / 2.0);
+        gPane.zoomTo(maxDiff, p);
 
         gPane.animate(Duration.millis(200))
                 .interpolateWith(Interpolator.EASE_BOTH)
                 .beforeStart(() -> System.out.println("Starting..."))
                 .afterFinished(() -> System.out.println("Done!"))
                 .centreOn(p);
-        //gPane.zoomTo(.01, p);
 
-
-        System.out.println("Zoom = " + (2.0 - kp*maxDiff));
+        System.out.println("X -> " + xDiff + " Y -> " + yDiff);
+        System.out.println("Zoom = " + maxDiff);
         System.out.println("Centering between nodes");
     }
 
