@@ -216,7 +216,7 @@ dependencies {
             [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
             [group: 'com.calendarfx', name: 'calendar', version: '8.5.0', ext: 'pom'],
 
-            files('view-8.5.0.jar', 'recurrence-11.5.0.jar', 'controlsfx-8.40.11.jar')
+            files('/libs/view-8.5.0.jar', '/libs/recurrence-11.5.0.jar', '/libs/controlsfx-8.40.11.jar')
     )
 
     compileApi (

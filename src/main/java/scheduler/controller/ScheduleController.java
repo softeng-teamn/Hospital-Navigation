@@ -7,6 +7,8 @@ import java.util.*;
 import application_state.ApplicationState;
 import application_state.Event;
 
+import com.calendarfx.model.Entry;
+import com.calendarfx.model.Interval;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -38,6 +40,8 @@ import com.calendarfx.model.Calendar.Style;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.view.CalendarView;
 import org.controlsfx.control.*;
+
+import javax.xml.crypto.Data;
 
 
 /**
@@ -354,6 +358,8 @@ public class ScheduleController {
     @FXML
     private SVGPath classroom1, classroom2, classroom3, classroom4, classroom5, classroom6, classroom7, classroom8, classroom9, auditorium;
 
+    private CalendarView calendarView;
+
     // Workstations
     @FXML
     private SVGPath ws1, ws2, ws3, ws4, ws5, ws6, ws7, ws8, ws9;
@@ -439,7 +445,7 @@ public class ScheduleController {
         setUpArrayLists();
         setUpWeeklyTable();
         setUpAllRoomsTable();
-        setUpCalendar();
+        setUpCalendar();    // todo: why does this take so long to load?
 
         // Don't show errors yet
         inputErrorLbl.setVisible(false);
@@ -476,18 +482,44 @@ public class ScheduleController {
      */
     private void setUpCalendar() {
 
-        CalendarView calendarView = new CalendarView();
+        calendarView = new CalendarView();
 
-        Calendar birthdays = new Calendar("Birthdays"); // todo
-        Calendar holidays = new Calendar("Holidays");
+        Calendar amphitheaterCal = new Calendar("Amphitheater");
+        Calendar classroom1Cal = new Calendar("Classroom 1");
+        Calendar classroom2Cal = new Calendar("Classroom 2");
+        Calendar classroom3Cal = new Calendar("Classroom 3");
+        Calendar computer1Cal = new Calendar("Computer Room 1");
+        Calendar computer2Cal = new Calendar("Computer Room 2");
+        Calendar computer3Cal = new Calendar("Computer Room 3");
+        Calendar computer4Cal = new Calendar("Computer Room 4");
+        Calendar computer5Cal = new Calendar("Computer Room 5");
+        Calendar computer6Cal = new Calendar("Computer Room 6");
 
-        birthdays.setStyle(Style.STYLE1); // todo
-        holidays.setStyle(Style.STYLE2);
+        amphitheaterCal.setStyle(Style.STYLE1); // todo - colors? etc?
+        amphitheaterCal.setShortName("AMPHI00001");
+        classroom1Cal.setStyle(Style.STYLE2);
+        classroom1Cal.setShortName("CLASS00001");
+        classroom2Cal.setStyle(Style.STYLE3);
+        classroom2Cal.setShortName("CLASS00002");
+        classroom3Cal.setStyle(Style.STYLE4);
+        classroom3Cal.setShortName("CLASS00003");
+        computer1Cal.setStyle(Style.STYLE5);
+        computer1Cal.setShortName("COMPU00001");
+        computer2Cal.setStyle(Style.STYLE6);
+        computer2Cal.setShortName("COMPU00002");
+        computer3Cal.setStyle(Style.STYLE7);
+        computer3Cal.setShortName("COMPU00003");
+        computer4Cal.setStyle(Style.STYLE7);
+        computer4Cal.setShortName("COMPU00004");
+        computer5Cal.setStyle(Style.STYLE7);
+        computer5Cal.setShortName("COMPU00005");
+        computer6Cal.setStyle(Style.STYLE7);
+        computer6Cal.setShortName("COMPU00006");
 
-        CalendarSource myCalendarSource = new CalendarSource("My Calendars"); // todo
-        myCalendarSource.getCalendars().addAll(birthdays, holidays);
+        CalendarSource myCalendarSource = new CalendarSource("Room Calendars");
+        myCalendarSource.getCalendars().addAll(amphitheaterCal, classroom1Cal, classroom2Cal, classroom3Cal, computer1Cal, computer2Cal, computer3Cal, computer4Cal, computer5Cal, computer6Cal);
 
-        calendarView.getCalendarSources().addAll(myCalendarSource); // todo
+        calendarView.getCalendarSources().setAll(myCalendarSource); // todo
 
         calendarView.setRequestedTime(LocalTime.now());
 
@@ -513,13 +545,45 @@ public class ScheduleController {
 
         updateTimeThread.setPriority(Thread.MIN_PRIORITY);
         updateTimeThread.setDaemon(true);
-        updateTimeThread.start();    // todo: when does this end
+        updateTimeThread.start();    // todo: when does this end?
 
-        //Scene scene = new Scene(calendarView);
+        calendarView.setPrefWidth(1485);
+        calendarView.setPrefHeight(915);
+
+        populateCalendar();
 
         subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(calendarView);
+    }
 
+    /**
+     * Show reservations in calendar.
+     */
+    private void populateCalendar() {
+        System.out.println("    STARTING TO POPULATE");
+        CalendarSource source = calendarView.getCalendarSources().get(0);
+        //System.out.println(source);
+        for (int i = 0; i < source.getCalendars().size(); i++) {
+            Calendar currCal = source.getCalendars().get(i);
+            System.out.println(currCal);
+            ArrayList<Reservation> roomRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currCal.getShortName());
+            System.out.println(roomRes + " " + currCal.getShortName());
+            for (Reservation r: roomRes) {
+                System.out.println(r);
+                GregorianCalendar startCal = r.getStartTime();
+                GregorianCalendar endCal = r.getEndTime();
+                LocalDateTime startLDT = startCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time
+                LocalDateTime endLDT = endCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time
+                LocalDate startDate = startLDT.toLocalDate();
+                LocalDate endDate = endLDT.toLocalDate();
+                LocalTime startTime = startLDT.toLocalTime();
+                LocalTime endTime = endLDT.toLocalTime();
+                Interval time = new Interval(startDate, startTime, endDate, endTime);
+                currCal.addEntry(new Entry(r.getEventName(), time));
+                System.out.println(r);
+            }
+        }
+        System.out.println("populated...");
     }
 
     /**
