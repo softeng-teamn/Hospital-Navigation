@@ -170,19 +170,6 @@ public class MapViewController implements Observer {
     @FXML
     void initialize() {
 
-        ArrayList<Label> floorLbls = new ArrayList<Label>(Arrays.asList(show1, show2, show3, show4, showG, showL1, showL2));
-        ArrayList<JFXButton> floorBtns = new ArrayList<JFXButton>(Arrays.asList(floor1, floor2, floor3, floor4, floorG, floorL1, floorL2));
-
-
-        // set directionally available floor labels to hidden
-        for (int i = 0; i < floorLbls.size(); i++) {
-            floorLbls.get(i).setVisible(false);
-        }
-
-        //floor1.setBackground(yellowBackground) ;
-        //System.out.println("floor 1 set to yellow (probably)");
-
-
         //pingTiming();
         gPane.currentScaleProperty().setValue(MIN_ZOOM + 0.1);
         zoomGroupInit();
@@ -191,9 +178,6 @@ public class MapViewController implements Observer {
         ApplicationState.getApplicationState().getObservableBus().register("mapViewContoller", this);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ApplicationState currState = ApplicationState.getApplicationState();
-
-        // set background of current floor button to be yellow
-        //event.getFloor()
 
         // Setup collection of lines
         polylineCollection = new HashMap<>();
@@ -214,6 +198,19 @@ public class MapViewController implements Observer {
 
         infoNodeList.setRotate(90);
         infoNodeList.setSpacing(20);
+
+
+        ArrayList<Label> floorLbls = new ArrayList<Label>(Arrays.asList(show1, show2, show3, show4, showG, showL1, showL2));
+
+        // set directionally available floor labels to hidden
+        for (int i = 0; i < floorLbls.size(); i++) {
+            floorLbls.get(i).setVisible(false);
+        }
+
+        // update current floor to be yellow (does not work)
+        changeCurrentFloorButton();
+        floor1.setBackground(yellowBackground);
+
     }
 
     void zoomGroupInit() {
@@ -280,51 +277,38 @@ public class MapViewController implements Observer {
         this.floorImg = newImg;
 
 
-        // change floor button based on current floor (is this a good place for this?)
+        // change floor button based on current floor
         changeCurrentFloorButton();
 
-        // clear past current floor colors
-        clearCurrentFloorButton();
-
-
     }
 
+    /**
+     * Changes the color of button of the current floor to yellow
+     */
     private void changeCurrentFloorButton() {
         String currFloor = event.getFloor();
-        ArrayList<JFXButton> floorBtns = new ArrayList<JFXButton>(Arrays.asList(floor1, floor2, floor3, floor4, floorG, floorL1, floorL2));
+
+        floorBtns = new ArrayList<JFXButton>(Arrays.asList(floor1, floor2, floor3, floor4, floorG, floorL1, floorL2));
 
         for (int i = 0; i < floorBtns.size(); i++) {
 
+            // if i is the current floor
             if (floorBtns.get(i).getText().equals(currFloor)) {
-                // change color of button
+                // change color of button to yellow
                 floorBtns.get(i).setBackground(yellowBackground);
-                System.out.println("YELLOW BACKGROUND IS SET");
             }
-        }
 
-    }
-
-    private void clearCurrentFloorButton() {
-        String currFloor = event.getFloor();
-        ArrayList<JFXButton> floorBtns = new ArrayList<JFXButton>(Arrays.asList(floor1, floor2, floor3, floor4, floorG, floorL1, floorL2));
-
-        System.out.println("Inside clear fcn");
-        for (int i = 0; i < floorBtns.size(); i++) {
-            // if yellow buttons are not the current floor, change back to blue
-            System.out.println(i +" background = " + floorBtns.get(i).getBackground());
-            System.out.println("yellow background = " + yellowBackground);
-            if (floorBtns.get(i).getBackground() == yellowBackground) {
-                System.out.println("same backgrounds");
-                if (!floorBtns.get(i).getText().equals(currFloor)) {
-                    System.out.println("background changed");
+            // if i is not the current floor
+            else {
+                // but is yellow
+                if (floorBtns.get(i).getBackground() == yellowBackground) {
+                    // change i to blue
                     floorBtns.get(i).setBackground(blueBackground);
-                } else {
-                    floorBtns.get(i).setBackground(yellowBackground);
-                    System.out.println(" Y BACK IS SET");
                 }
             }
         }
     }
+
 
     /**
      * change floor button controller
@@ -916,6 +900,8 @@ public class MapViewController implements Observer {
                 .beforeStart(() -> System.out.println("Starting..."))
                 .afterFinished(() -> System.out.println("Done!"))
                 .centreOn(new Point2D(node.getXcoord(), node.getYcoord()));
+
+        //System.out.println("current floor = " + event.getFloor() + " background = " + floor1.getBackground());
     }
 
     public void sendHelp(ActionEvent actionEvent) {
