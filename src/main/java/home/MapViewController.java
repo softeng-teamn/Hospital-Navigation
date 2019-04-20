@@ -86,7 +86,7 @@ public class MapViewController implements Observer {
     @FXML
     private ScrollPane map_scrollpane;
     @FXML
-    private JFXButton about_btn;
+    private JFXButton about_btn, credit_btn;
     @FXML
     private GesturePane gPane;
     @FXML
@@ -101,6 +101,13 @@ public class MapViewController implements Observer {
         Stage stage = (Stage) about_btn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.about,event.getCurrentBundle());
         StageManager.changeExistingWindow(stage,root,"About Page");
+    }
+
+    @FXML
+    void showCredit(ActionEvent e) throws Exception {
+        Stage stage = (Stage) credit_btn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.credit,event.getCurrentBundle());
+        StageManager.changeExistingWindow(stage,root,"Credit Page");
     }
 
     // ELEVATOR CALL BUTTONS

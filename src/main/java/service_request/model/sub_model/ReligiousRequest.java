@@ -14,11 +14,20 @@ import static employee.model.JobType.*;
 
 public class ReligiousRequest extends Request {
     public enum Religion {
-        CHRISTIAN,
-        JEWISH,
-        CATHOLIC,
-        ISLAM,
-        OTHER
+        CHRISTIAN("Christian"),
+        JEWISH("Jewish"),
+        CATHOLIC("Catholic"),
+        ISLAM("Islam"),
+        OTHER("Other");
+
+        private String string;
+
+        Religion(String name){string = name;}
+
+        @Override
+        public String toString() {
+            return string;
+        }
     }
 
     ReligiousRequest.Religion religion;
