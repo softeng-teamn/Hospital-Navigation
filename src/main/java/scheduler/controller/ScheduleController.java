@@ -1,55 +1,44 @@
 package scheduler.controller;
 
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import application_state.ApplicationState;
 import application_state.Event;
 
-import com.google.zxing.WriterException;
 import com.jfoenix.controls.*;
-import com.twilio.rest.api.v2010.account.incomingphonenumber.Local;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import me.xdrop.fuzzywuzzy.FuzzySearch;
-import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import map.Node;
 import scheduler.model.ReservableSpace;
 import scheduler.model.Reservation;
-import database.CSVService;
 import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.Calendar.Style;
+import com.calendarfx.model.CalendarSource;
+import com.calendarfx.view.CalendarView;
+import org.controlsfx.control.*;
+
 
 /**
  * Controls the schedule page of the application. Allows user to view a map of rooms and
@@ -394,6 +383,9 @@ public class ScheduleController {
     private SVGPath ws120;
 
     @FXML
+    private Pane subSceneHolder;
+
+    @FXML
     private Tab weeklyScheduleTab, dailyScheduleTab;
 
     private Event event ;    // The current event
@@ -447,6 +439,7 @@ public class ScheduleController {
         setUpArrayLists();
         setUpWeeklyTable();
         setUpAllRoomsTable();
+        setUpCalendar();
 
         // Don't show errors yet
         inputErrorLbl.setVisible(false);
@@ -476,6 +469,57 @@ public class ScheduleController {
         endTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             focusState(newValue);
         });
+    }
+
+    /**
+     * Set up calendar tab.
+     */
+    private void setUpCalendar() {
+
+        CalendarView calendarView = new CalendarView();
+
+        Calendar birthdays = new Calendar("Birthdays"); // todo
+        Calendar holidays = new Calendar("Holidays");
+
+        birthdays.setStyle(Style.STYLE1); // todo
+        holidays.setStyle(Style.STYLE2);
+
+        CalendarSource myCalendarSource = new CalendarSource("My Calendars"); // todo
+        myCalendarSource.getCalendars().addAll(birthdays, holidays);
+
+        calendarView.getCalendarSources().addAll(myCalendarSource); // todo
+
+        calendarView.setRequestedTime(LocalTime.now());
+
+        Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
+            @Override
+            public void run() {
+                while (true) {
+                    Platform.runLater(() -> {
+                        calendarView.setToday(LocalDate.now());
+                        calendarView.setTime(LocalTime.now());
+                    });
+
+                    try {
+                        // update every 10 seconds
+                        sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            };
+        };
+
+        updateTimeThread.setPriority(Thread.MIN_PRIORITY);
+        updateTimeThread.setDaemon(true);
+        updateTimeThread.start();    // todo: when does this end
+
+        //Scene scene = new Scene(calendarView);
+
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(calendarView);
+
     }
 
     /**

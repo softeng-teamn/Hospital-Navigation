@@ -213,7 +213,10 @@ dependencies {
             [group: 'edu.wpi.cs3733.b17.teamG', name: 'FoodRequest', version:'1.0.0'],
             [group: 'com.google.zxing', name: 'core', version: '3.3.3'],
             [group: 'com.google.zxing', name: 'javase', version: '3.3.0'],
-            [group: 'net.swisstech', name: 'bitly-api-client', version: '+']
+            [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
+            [group: 'com.calendarfx', name: 'calendar', version: '8.5.0', ext: 'pom'],
+
+            files('view-8.5.0.jar', 'recurrence-11.5.0.jar', 'controlsfx-8.40.11.jar')
     )
 
     compileApi (
