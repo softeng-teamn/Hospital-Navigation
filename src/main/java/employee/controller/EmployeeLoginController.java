@@ -37,6 +37,9 @@ public class EmployeeLoginController implements Initializable {
 
     @FXML
     public void showHome() throws Exception {
+        ApplicationState currState = ApplicationState.getApplicationState();
+        currState.setDefaultStartNode();    // Set the default start
+        currState.setEndNode(null);
         Stage stage = (Stage) cancelBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");

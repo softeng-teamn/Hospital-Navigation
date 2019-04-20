@@ -2,7 +2,6 @@ package map.create_node;
 
 import application_state.ApplicationState;
 import com.jfoenix.controls.*;
-import controller.Controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
