@@ -42,7 +42,9 @@ import service.StageManager;
 import service_request.model.sub_model.HelpRequest;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -118,6 +120,8 @@ public class MapViewController implements Observer {
 
     @FXML
     void initialize() {
+    // Initialize Circle Collection
+        circleCollection = new ArrayList<>();
         //pingTiming();
         gPane.currentScaleProperty().setValue(MIN_ZOOM+0.1);
         zoomGroupInit();
@@ -133,16 +137,11 @@ public class MapViewController implements Observer {
         // Set start circle
         startCircle = new Circle();
 
-        // Initialize Circle Collection
-        circleCollection = new ArrayList<>();
 
         // Setting Up Circle Destination Point
-//        startCircle.setCenterX(currState.getStartNode().getXcoord());
-//        startCircle.setCenterY(currState.getStartNode().getYcoord());
-//        startCircle.setRadius(20);
-//        startCircle.setFill(Color.rgb(67, 70, 76));
-//        zoomGroup.getChildren().add(startCircle);
         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
+
+        showAllNodes();
 
         infoNodeList.setRotate(90);
         infoNodeList.setSpacing(20);
@@ -207,6 +206,7 @@ public class MapViewController implements Observer {
         zoomGroup.getChildren().remove(this.floorImg);
         zoomGroup.getChildren().add(newImg);
         this.floorImg = newImg;
+        showAllNodes();
     }
 
     /** change floor button controller
@@ -337,8 +337,7 @@ public class MapViewController implements Observer {
     void editNodeHandler(boolean isEditing) {
         if (isEditing) {
             // remove old circles
-            zoomGroup.getChildren().removeAll(circleCollection);
-            circleCollection.clear();
+            clearAllNodes();
             // load all nodes for the floor
             ArrayList<Node> nodeByFlooor = DatabaseService.getDatabaseService().getNodesByFloor(event.getFloor());
             for (Node n : nodeByFlooor) {
@@ -386,6 +385,76 @@ public class MapViewController implements Observer {
             zoomGroup.getChildren().removeAll(circleCollection);
             circleCollection.clear();
         }
+    }
+
+    private void showAllNodes(){
+        //clear all circle on map
+        clearAllNodes();
+        //load all nodes for the floor
+        ArrayList<Node> nodeByFlooor = DatabaseService.getDatabaseService().getNodesByFloor(event.getFloor());
+        ArrayList<Node> nodesByType = (ArrayList<Node>) DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL").stream().filter((n) -> !n.isClosed()).collect(Collectors.toList());
+        ArrayList<Node> nodeToShow = new ArrayList<>();
+        for (Node n : nodeByFlooor){
+            if (nodesByType.contains(n)){
+                nodeToShow.add(n);
+            }
+        }
+
+
+
+        for (Node n : nodeToShow) {
+            Circle nodeCircle = new Circle();
+            nodeCircle.setCenterX(n.getXcoord());
+            nodeCircle.setCenterY(n.getYcoord());
+            nodeCircle.setRadius(20);
+            nodeCircle.setFill(Color.valueOf("012D5A"));
+            Tooltip tp = new Tooltip(n.getShortName());
+            nodeCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    Stage stage = (Stage) gPane.getScene().getWindow();
+//                    tp.getStyleClass().add("tooltip");
+                    tp.setStyle("-fx-background-color: #012D5A");
+                    tp.setStyle("-fx-font-family: Roboto");
+                    tp.setStyle("-fx-font-size: 12pt");
+                    Circle c = (Circle) event.getSource();
+                    tp.show(c, stage.getX() + event.getSceneX() + 15, stage.getY() + event.getSceneY());
+                }
+            });
+            nodeCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    tp.hide();
+                }
+            });
+            nodeCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    // Get the current event and ApplicationState
+                    ApplicationState currState = ApplicationState.getApplicationState();
+
+                    // Tell topNav whether the start or end node was selected
+                    if (ApplicationState.getApplicationState().getStartEnd().equals("end")){
+                        event.setNodeSelected(n);
+                        currState.setEndNode(n);
+                        event.setEventName("node-select-end");
+                    } else {
+                        event.setNodeSelected(n);
+                        currState.setStartNode(n);
+                        event.setEventName("node-select-start");
+                    }
+                    ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
+                }
+            });
+            circleCollection.add(nodeCircle);
+        }
+        // Show on screen
+        zoomGroup.getChildren().addAll(circleCollection);
+    }
+
+    private void clearAllNodes(){
+        zoomGroup.getChildren().removeAll(circleCollection);
+        circleCollection.clear();
     }
 
 
