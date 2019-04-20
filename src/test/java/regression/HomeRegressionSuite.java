@@ -156,9 +156,10 @@ public class HomeRegressionSuite extends ApplicationTest {
         clickOn(targetListItem, MouseButton.PRIMARY);
 
         // Verify that the destination node is drawn correctly (based on cell item)
-        verifyThat(((Text) mapContent.getChildren().get(3)).getText(), is("\uE0C8"), informedErrorMessage(this));
-        verifyThat((int) ((Text) mapContent.getChildren().get(3)).getTranslateX(), is(ApplicationState.getApplicationState().getEndNode().getXcoord() - 50), informedErrorMessage(this));
-        verifyThat((int) ((Text) mapContent.getChildren().get(3)).getTranslateY(), is(ApplicationState.getApplicationState().getEndNode().getYcoord()), informedErrorMessage(this));
+        System.out.println(Arrays.toString(mapContent.getChildren().toArray()));
+        verifyThat(((Text) mapContent.getChildren().get(56)).getText(), is("\uE0C8"), informedErrorMessage(this));
+        verifyThat((int) ((Text) mapContent.getChildren().get(56)).getTranslateX(), is(ApplicationState.getApplicationState().getEndNode().getXcoord() - 50), informedErrorMessage(this));
+        verifyThat((int) ((Text) mapContent.getChildren().get(56)).getTranslateY(), is(ApplicationState.getApplicationState().getEndNode().getYcoord()), informedErrorMessage(this));
 
         // Verify that the navigation button is now visible
         navigateBtnVisible = stage.getScene().lookup("#navigate_btn").isVisible();
@@ -167,6 +168,6 @@ public class HomeRegressionSuite extends ApplicationTest {
         // Click on the navigation button
         clickOn("#navigate_btn");
 
-        verifyThat(mapContent.getChildren(), hasSize(8));
+        verifyThat(mapContent.getChildren(), hasSize(61));
     }
 }
