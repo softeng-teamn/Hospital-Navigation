@@ -178,9 +178,17 @@
             </VBox>
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label text="A special thank you to Brigham and Women’s Faulkner Hospital and Andrew Shinn, for their time and thoughtful input.">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children></HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label text="The Brigham and Women’s Hospital maps and data used in this application are copyrighted and provided for the sole use of educational purposes.">
                <font>
                   <Font size="18.0" />
                </font>
