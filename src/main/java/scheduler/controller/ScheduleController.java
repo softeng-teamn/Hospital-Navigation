@@ -27,6 +27,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -518,8 +519,8 @@ public class ScheduleController {
         Calendar computer5Cal = new Calendar("Computer Room 5");
         Calendar computer6Cal = new Calendar("Computer Room 6");
 
-        amphitheaterCal.setStyle(Style.STYLE1); // todo - colors? etc?
-        amphitheaterCal.setShortName("AMPHI00001");    // todo; Hardcoded - should probaly not be
+        amphitheaterCal.setStyle(Style.STYLE1);
+        amphitheaterCal.setShortName("AMPHI00001");
         classroom1Cal.setStyle(Style.STYLE2);
         classroom1Cal.setShortName("CLASS00001");
         classroom2Cal.setStyle(Style.STYLE3);
@@ -575,6 +576,7 @@ public class ScheduleController {
 
         //calendarView.setShowSourceTray(true);
         //calendarView.setShowSourceTrayButton(false);    // todo
+        calendarView.setEntryDetailsPopOverContentCallback(new MyEntryPopOverContentProvider());
 
         populateCalendar();
 
@@ -612,6 +614,7 @@ public class ScheduleController {
                     }
                     Entry e = new Entry(name, time);
                     e.setLocation(currCal.getName());
+                    e.setId(Integer.toString(r.getEventID()));
                     currCal.addEntry(e);
                 }
             }
@@ -623,9 +626,7 @@ public class ScheduleController {
     private static class MyEntryPopOverContentProvider implements Callback<DateControl.EntryDetailsPopOverContentParameter, javafx.scene.Node> {
         @Override
         public javafx.scene.Node call(DateControl.EntryDetailsPopOverContentParameter param) {
-            PopOver popOver = param.getPopOver();
             Entry entry = param.getEntry();
-
             return new MyCustomPopOverContentNode(entry, param.getDateControl().getCalendars());
         }
     }
@@ -646,18 +647,63 @@ public class ScheduleController {
     }
 
     private static class MyEntryDetailsView extends EntryPopOverPane {
-        private final Label summaryLabel;
-
         private Entry entry;
 
         public MyEntryDetailsView(Entry entry) {
-            // super(requireNonNull(entry));
-
             this.entry = entry;
 
-            this.summaryLabel = new Label("Location: " + this.entry.getLocation());
+            Reservation res = myDBS.getReservation(Integer.parseInt(entry.getId()));
+            String nameStr = res.getEventName();
+            String contactStr = myDBS.getEmployee(res.getEmployeeId()).getUsername();    // todo: I want a real first and last name
+            if (res.getPrivacyLevel() > 0) {
+                nameStr = "Private Event";
+                contactStr = "Private Organizer";
+            }
 
-            VBox center = new VBox();
+            String startTimeStr = res.getStartTime().toInstant().toString();
+            int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+            String startMinutes = Integer.toString((int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60);
+            if (startMinutes.equals("0")) {
+                startMinutes = "00";
+            }
+
+            // Get the end time
+            String endTimeStr = res.getEndTime().toInstant().toString();
+            int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+            String endMinutes = Integer.toString((int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60);
+            if (endMinutes.equals("0")) {
+                endMinutes = "00";
+            }
+            String startDate = startTimeStr.substring(5,7) + "/" + startTimeStr.substring(8,10) + "/" + startTimeStr.substring(0,4);
+            String endDate = endTimeStr.substring(5,7) + "/" + endTimeStr.substring(8,10) + "/" + endTimeStr.substring(0,4);
+            if (endHour >= 21) {
+                endDate = endDate.substring(0,3) + (Integer.parseInt(endDate.substring(3,5)) - 1) + endDate.substring(5);
+            }
+            if (startHour >= 21) {
+                startDate = startDate.substring(0,3) + (Integer.parseInt(startDate.substring(3,5)) - 1) + startDate.substring(5);
+            }
+
+            startTimeStr = startHour + ":" + startMinutes + " on " + startDate;
+            endTimeStr = endHour + ":"  + endMinutes + " on " + endDate;
+            Label leftName = new Label("Event: ");
+            Label rightName = new Label(nameStr);
+            Label leftStartTime = new Label("Start Time: ");
+            Label rightStartTime = new Label(startTimeStr);
+            Label leftEndTime = new Label("End Time: ");
+            Label rightEndTime = new Label(endTimeStr);
+            Label leftContact = new Label("Contact: ");
+            Label rightContact = new Label(contactStr);
+            Label leftLoc = new Label("Location: ");
+            Label rightLoc = new Label(this.entry.getLocation());
+
+            VBox left = new VBox();
+            left.getChildren().addAll(leftName, leftLoc, leftStartTime, leftEndTime, leftContact);
+            VBox right = new VBox();
+            right.getChildren().addAll(rightName, rightLoc, rightStartTime, rightEndTime, rightContact);
+
+            HBox both = new HBox();
+            both.getChildren().addAll(left, right);
+            this.getChildren().add(both);
         }
     }
 
