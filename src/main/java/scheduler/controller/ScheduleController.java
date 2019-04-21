@@ -10,8 +10,9 @@ import application_state.Event;
 
 import com.calendarfx.model.Entry;
 import com.calendarfx.model.Interval;
+import com.calendarfx.view.DateControl;
 import com.calendarfx.view.DayEntryView;
-import com.calendarfx.view.popover.EntryPopOverContentPane;
+import com.calendarfx.view.popover.*;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -27,6 +28,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
@@ -47,6 +49,8 @@ import com.calendarfx.view.CalendarView;
 import org.controlsfx.control.*;
 
 import javax.xml.crypto.Data;
+
+import static java.util.Objects.requireNonNull;
 
 
 /**
@@ -450,13 +454,12 @@ public class ScheduleController {
         setUpArrayLists();
         setUpWeeklyTable();
         setUpAllRoomsTable();
-        Platform.runLater(() -> {
+        Platform.runLater(() -> {    // In order to speed up switching scenes
             try {
-                setUpCalendar();    // todo: why does this take so long to load?
+                setUpCalendar();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("done setting up calendar");
         });
 
         // Don't show errors yet
@@ -530,17 +533,21 @@ public class ScheduleController {
         computer2Cal.setShortName("COMPU00002");
         computer3Cal.setStyle(Style.STYLE7);
         computer3Cal.setShortName("COMPU00003");
-        computer4Cal.setStyle("style-8-color");
+        computer4Cal.setStyle("style-8-color");    // todo
         computer4Cal.setShortName("COMPU00004");
         computer5Cal.setStyle("style-9-color");
         computer5Cal.setShortName("COMPU00005");
         computer6Cal.setStyle("style-10-color");
         computer6Cal.setShortName("COMPU00006");
 
-        CalendarSource myCalendarSource = new CalendarSource("Room Calendars");
-        myCalendarSource.getCalendars().addAll(amphitheaterCal, classroom1Cal, classroom2Cal, classroom3Cal, computer1Cal, computer2Cal, computer3Cal, computer4Cal, computer5Cal, computer6Cal);
+        CalendarSource myCalendarSource = new CalendarSource("Amphitheater");
+        myCalendarSource.getCalendars().addAll(amphitheaterCal);
+        CalendarSource classRoomSource = new CalendarSource("Classrooms");
+        classRoomSource.getCalendars().addAll(classroom1Cal, classroom2Cal, classroom3Cal);
+        CalendarSource computerRoomSource = new CalendarSource("Computer Rooms");
+        computerRoomSource.getCalendars().addAll(computer1Cal, computer2Cal, computer3Cal, computer4Cal, computer5Cal, computer6Cal);
 
-        calendarView.getCalendarSources().setAll(myCalendarSource); // todo
+        calendarView.getCalendarSources().setAll(myCalendarSource, classRoomSource, computerRoomSource); // todo
 
         calendarView.setRequestedTime(LocalTime.now());
 
@@ -569,7 +576,7 @@ public class ScheduleController {
         updateTimeThread.start();    // todo: when does this end?
 
         //calendarView.setPadding(new Insets(30,0,5,0));  // todo: when not fullscreen
-        //calendarView.setEntryDetailsPopOverContentCallback(param -> new EntryPopOverContentPane(param.getPopOver(), param.getDateControl(), param.getEntry()));
+
         // todo
         //calendarView.setShowSourceTray(true);
         //calendarView.setShowSourceTrayButton(false);    // todo
@@ -584,28 +591,31 @@ public class ScheduleController {
      */
     private void populateCalendar() {
         System.out.println("    STARTING TO POPULATE");
-        CalendarSource source = calendarView.getCalendarSources().get(0);
-        for (int i = 0; i < source.getCalendars().size(); i++) {
-            Calendar currCal = source.getCalendars().get(i);
-            ArrayList<Reservation> roomRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currCal.getShortName());
-            for (Reservation r: roomRes) {
-                GregorianCalendar startCal = r.getStartTime();
-                GregorianCalendar endCal = r.getEndTime();
-                LocalDateTime startLDT = startCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time
-                LocalDateTime endLDT = endCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time
-                LocalDate startDate = startLDT.toLocalDate();
-                LocalDate endDate = endLDT.toLocalDate();
-                LocalTime startTime = startLDT.toLocalTime();
-                LocalTime endTime = endLDT.toLocalTime();
-                Interval time = new Interval(startDate, startTime, endDate, endTime);
-                String name = r.getEventName();
-                if (r.getPrivacyLevel() != 0) {
-                    name = "Booked";
+        for (int s = 0; s < calendarView.getCalendarSources().size(); s++) {
+            CalendarSource source = calendarView.getCalendarSources().get(s);
+            for (int i = 0; i < source.getCalendars().size(); i++) {
+                Calendar currCal = source.getCalendars().get(i);
+                currCal.setReadOnly(true);
+                ArrayList<Reservation> roomRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currCal.getShortName());
+                for (Reservation r : roomRes) {
+                    GregorianCalendar startCal = r.getStartTime();
+                    GregorianCalendar endCal = r.getEndTime();
+                    LocalDateTime startLDT = startCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time
+                    LocalDateTime endLDT = endCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time
+                    LocalDate startDate = startLDT.toLocalDate();
+                    LocalDate endDate = endLDT.toLocalDate();
+                    LocalTime startTime = startLDT.toLocalTime();
+                    LocalTime endTime = endLDT.toLocalTime();
+                    Interval time = new Interval(startDate, startTime, endDate, endTime);
+                    String name = r.getEventName();
+                    if (r.getPrivacyLevel() != 0) {
+                        name = "Booked";
+                    }
+                    Entry e = new Entry(name, time);
+                    e.setLocation(currCal.getName());
+                    currCal.addEntry(e);
+                    System.out.println(r);
                 }
-                Entry e = new Entry(name, time);
-                e.setLocation(currCal.getName());
-                currCal.addEntry(e);
-                System.out.println(r);
             }
         }
         System.out.println("populated...");
