@@ -75,7 +75,7 @@
 }
 
 .dest-icon{
-    -fx-fill: -fx-complementary;
+    -fx-fill: #DE9528;
 }
 
 .request-glyph {
@@ -629,4 +629,19 @@
 .text-field-table-cell > .text-field {
     -fx-text-fill: black;
 
+}
+
+
+
+.tooltip {
+    -fx-background-color: -fx-complementary;
+    -fx-font-family: Roboto;
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 0.85em;
+}
+
+.tooltip.label {
+    -fx-font-family: Roboto;
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 20pt;
 }

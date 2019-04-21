@@ -48,6 +48,7 @@ import service_request.model.sub_model.HelpRequest;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -169,7 +170,8 @@ public class MapViewController implements Observer {
 
     @FXML
     void initialize() {
-
+    // Initialize Circle Collection
+        circleCollection = new ArrayList<>();
         //pingTiming();
         gPane.currentScaleProperty().setValue(MIN_ZOOM + 0.1);
         zoomGroupInit();
@@ -185,16 +187,13 @@ public class MapViewController implements Observer {
         // Set start circle
         startCircle = new Circle();
 
-        // Initialize Circle Collection
-        circleCollection = new ArrayList<>();
 
         // Setting Up Circle Destination Point
-//        startCircle.setCenterX(currState.getStartNode().getXcoord());
-//        startCircle.setCenterY(currState.getStartNode().getYcoord());
-//        startCircle.setRadius(20);
-//        startCircle.setFill(Color.rgb(67, 70, 76));
-//        zoomGroup.getChildren().add(startCircle);
         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
+
+
+        showAllNodes();
+        scrollTo(currState.getStartNode());
 
         infoNodeList.setRotate(90);
         infoNodeList.setSpacing(20);
@@ -276,10 +275,16 @@ public class MapViewController implements Observer {
         zoomGroup.getChildren().add(newImg);
         this.floorImg = newImg;
 
+        showAllNodes();
 
-        // change floor button based on current floor
+        centerOnPath(event.getPath(), floor);
+
+        showAllNodes();
+
+        centerOnPath(event.getPath(), floor);
+
+        // update current floor to be yellow
         changeCurrentFloorButton();
-
     }
 
     /**
@@ -425,6 +430,7 @@ public class MapViewController implements Observer {
                     public void run() {
                         deletePolyLine();
                         drawIcon(currState.getEndNode());
+                        scrollTo(currState.getEndNode());
                     }
                 });
                 break;
@@ -434,7 +440,7 @@ public class MapViewController implements Observer {
                     public void run() {
                         deletePolyLine();
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
-
+                        scrollTo(currState.getStartNode());
                     }
                 });
                 break;
@@ -445,6 +451,7 @@ public class MapViewController implements Observer {
                         deletePolyLine();
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
                         drawIcon(currState.getEndNode());
+                        scrollTo(currState.getStartNode());
                     }
                 });
                 break;
@@ -487,7 +494,8 @@ public class MapViewController implements Observer {
                         circleCollection.clear();
                         deletePolyLine();
                         zoomGroup.getChildren().remove(location);
-                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
+                        drawPoint(currState.getStartNode(), startCircle, Color.rgb(67,70,76));
+                        scrollTo(currState.getStartNode());
                     }
                 });
                 break;
@@ -497,9 +505,11 @@ public class MapViewController implements Observer {
                     public void run() {
                         Node n = ApplicationState.getApplicationState().getObservableBus().getEvent().getDirectionsNode();
                         setFloor(n.getFloor());
-                        scrollTo(n);
-                        if (hasPath) {
+                        if (hasPath){
                             drawPath();
+                        }
+                        else{
+                            scrollTo(n);
                         }
                     }
                 });
@@ -512,8 +522,7 @@ public class MapViewController implements Observer {
     void editNodeHandler(boolean isEditing) {
         if (isEditing) {
             // remove old circles
-            zoomGroup.getChildren().removeAll(circleCollection);
-            circleCollection.clear();
+            clearAllNodes();
             // load all nodes for the floor
             ArrayList<Node> nodeByFlooor = DatabaseService.getDatabaseService().getNodesByFloor(event.getFloor());
             for (Node n : nodeByFlooor) {
@@ -563,6 +572,76 @@ public class MapViewController implements Observer {
         }
     }
 
+    private void showAllNodes(){
+        //clear all circle on map
+        clearAllNodes();
+        //load all nodes for the floor
+        ArrayList<Node> nodeByFlooor = DatabaseService.getDatabaseService().getNodesByFloor(event.getFloor());
+        ArrayList<Node> nodesByType = (ArrayList<Node>) DatabaseService.getDatabaseService().getNodesFilteredByType("STAI", "HALL").stream().filter((n) -> !n.isClosed()).collect(Collectors.toList());
+        ArrayList<Node> nodeToShow = new ArrayList<>();
+        for (Node n : nodeByFlooor){
+            if (nodesByType.contains(n)){
+                nodeToShow.add(n);
+            }
+        }
+
+
+
+        for (Node n : nodeToShow) {
+            Circle nodeCircle = new Circle();
+            nodeCircle.setCenterX(n.getXcoord());
+            nodeCircle.setCenterY(n.getYcoord());
+            nodeCircle.setRadius(20);
+            nodeCircle.setFill(Color.valueOf("012D5A"));
+            Tooltip tp = new Tooltip(n.getShortName());
+            nodeCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    Stage stage = (Stage) gPane.getScene().getWindow();
+//                    tp.getStyleClass().add("tooltip");
+                    tp.setStyle("-fx-background-color: #012D5A");
+                    tp.setStyle("-fx-font-family: Roboto");
+                    tp.setStyle("-fx-font-size: 12pt");
+                    Circle c = (Circle) event.getSource();
+                    tp.show(c, stage.getX() + event.getSceneX() + 15, stage.getY() + event.getSceneY());
+                }
+            });
+            nodeCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    tp.hide();
+                }
+            });
+            nodeCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    // Get the current event and ApplicationState
+                    ApplicationState currState = ApplicationState.getApplicationState();
+
+                    // Tell topNav whether the start or end node was selected
+                    if (ApplicationState.getApplicationState().getStartEnd().equals("end")){
+                        event.setNodeSelected(n);
+                        currState.setEndNode(n);
+                        event.setEventName("node-select-end");
+                    } else {
+                        event.setNodeSelected(n);
+                        currState.setStartNode(n);
+                        event.setEventName("node-select-start");
+                    }
+                    ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
+                }
+            });
+            circleCollection.add(nodeCircle);
+        }
+        // Show on screen
+        zoomGroup.getChildren().addAll(circleCollection);
+    }
+
+    private void clearAllNodes(){
+        zoomGroup.getChildren().removeAll(circleCollection);
+        circleCollection.clear();
+    }
+
 
     private void deletePolyLine() {
         for (ArrayList<Polyline> polylines : polylineCollection.values()) {
@@ -604,8 +683,10 @@ public class MapViewController implements Observer {
         startCircle = circle;
 
 
+
         // Scroll to new point
-        scrollTo(node);
+        //scrollTo(node);
+        //centerOnPath(path, node.getFloor());
 
         addLabel(node, true);
 
@@ -636,7 +717,7 @@ public class MapViewController implements Observer {
         location.getStyleClass().add("dest-icon");
         zoomGroup.getChildren().add(location);
 
-        scrollTo(node);
+        //scrollTo(node);
 
         addLabel(node, false);
     }
@@ -689,10 +770,10 @@ public class MapViewController implements Observer {
         hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
-            scrollTo(path.get(0));
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
+            centerOnPath(event.getPath(),event.getFloor());
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         }
     }
@@ -738,10 +819,10 @@ public class MapViewController implements Observer {
         hasPath = false;
         if (path != null && path.size() > 1) {
             drawPath();
-            scrollTo(path.get(0));
             event = ApplicationState.getApplicationState().getObservableBus().getEvent();
             event.setPath(path);
             event.setEventName("showText");     // Changed b/c shouldn't try to show directions for nonexistent paths
+            centerOnPath(event.getPath(), event.getFloor());
             ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
         }
     }
@@ -804,6 +885,8 @@ public class MapViewController implements Observer {
         if (event.getFloor().equals(path.get(path.size() - 1).getFloor())) {
             drawIcon(currState.getEndNode());
         }
+
+
 
 
         hasPath = true;
@@ -893,15 +976,70 @@ public class MapViewController implements Observer {
         timeline.play();
     }
 
-    private void scrollTo(Node node) {
-        // animation scroll to new position
+    //if there is a path, center on it, otherwise, do nothing
+
+    /**
+     * centers on path if one exists
+     * @return true if a path existed and centering occurred
+     */
+    private void centerOnPath(ArrayList<Node> path, String floor){
+        Node start;
+        Node end;
+        System.out.println("EVENT PATH = : ");
+        //if there is a path
+        if(event.getPath() != null && event.getPath().size() > 1){
+            start = path.get(0);
+            end = path.get(path.size() - 1);
+            boolean startFound = false;
+            for(int i = 0; i  <path.size(); i++){//find furthest node from start on same floor
+                Node n = path.get(i);
+                System.out.print(n.getNodeID() + "-> ");
+                if(n.getFloor().equals(floor)){
+                    if(!startFound) {
+                        start = n;
+                        startFound = true;
+                    }
+                    else{
+                        end = n;
+                    }
+                }
+            }
+            System.out.println();
+            System.out.println("End node is: " + end.getNodeID());
+        }
+        else{//if no path, do nothing
+            return;
+        }
+
+        double xDiff = Math.abs(start.getXcoord() - end.getXcoord());
+        double yDiff = Math.abs(start.getYcoord() - end.getYcoord());
+        double maxDiff = Math.max(Math.abs(xDiff), Math.abs(yDiff));
+        double m = -.0006401;
+        maxDiff = 1.2 + m * (maxDiff - 255);
+
+        Point2D p = new Point2D((start.getXcoord() + end.getXcoord()) / 2.0, (start.getYcoord() + end.getYcoord()) / 2.0);
+        gPane.zoomTo(maxDiff, p);
+
         gPane.animate(Duration.millis(200))
                 .interpolateWith(Interpolator.EASE_BOTH)
                 .beforeStart(() -> System.out.println("Starting..."))
                 .afterFinished(() -> System.out.println("Done!"))
-                .centreOn(new Point2D(node.getXcoord(), node.getYcoord()));
+                .centreOn(p);
 
-        //System.out.println("current floor = " + event.getFloor() + " background = " + floor1.getBackground());
+        System.out.println("X -> " + xDiff + " Y -> " + yDiff);
+        System.out.println("Zoom = " + maxDiff);
+        System.out.println("Centering between nodes");
+    }
+
+    private void scrollTo(Node node) {
+        // animation scroll to new position
+            gPane.animate(Duration.millis(200))
+                    .interpolateWith(Interpolator.EASE_BOTH)
+                    .beforeStart(() -> System.out.println("Starting..."))
+                    .afterFinished(() -> System.out.println("Done!"))
+                    .centreOn(new Point2D(node.getXcoord(), node.getYcoord()));
+
+            System.out.println("Centering on single node");
     }
 
     public void sendHelp(ActionEvent actionEvent) {
