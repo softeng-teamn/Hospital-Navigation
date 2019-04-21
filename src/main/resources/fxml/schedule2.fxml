@@ -267,7 +267,7 @@
                         </AnchorPane>
                      </content>
                   </Tab>
-                  <Tab fx:id="calendarTab" text="Calendar">
+                  <Tab fx:id="calendarTab" onSelectionChanged="#setCalInset" text="Calendar">
                      <content>
                         <AnchorPane fx:id="subSceneHolder" prefHeight="915.0" prefWidth="1485.0" />
                      </content>

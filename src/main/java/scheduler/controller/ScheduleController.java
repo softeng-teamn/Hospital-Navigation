@@ -575,9 +575,6 @@ public class ScheduleController {
         updateTimeThread.setDaemon(true);
         updateTimeThread.start();    // todo: when does this end?
 
-        //calendarView.setPadding(new Insets(30,0,5,0));  // todo: when not fullscreen
-
-        // todo
         //calendarView.setShowSourceTray(true);
         //calendarView.setShowSourceTrayButton(false);    // todo
 
@@ -619,6 +616,48 @@ public class ScheduleController {
             }
         }
         System.out.println("populated...");
+    }
+
+    // todo
+    private static class MyEntryPopOverContentProvider implements Callback<DateControl.EntryDetailsPopOverContentParameter, javafx.scene.Node> {
+        @Override
+        public javafx.scene.Node call(DateControl.EntryDetailsPopOverContentParameter param) {
+            PopOver popOver = param.getPopOver();
+            Entry entry = param.getEntry();
+
+            return new MyCustomPopOverContentNode(entry, param.getDateControl().getCalendars());
+        }
+    }
+
+    private static class MyCustomPopOverContentNode extends PopOverContentPane {
+        public MyCustomPopOverContentNode(Entry entry, ObservableList<Calendar> allCalendars) {
+            requireNonNull(entry);
+
+            EntryHeaderView header = new EntryHeaderView(entry, allCalendars);
+            MyEntryDetailsView details = new MyEntryDetailsView(entry);
+
+            PopOverTitledPane detailsPane = new PopOverTitledPane("Details", details);
+            getPanes().addAll(detailsPane);
+
+            setHeader(header);
+            setExpandedPane(detailsPane);
+        }
+    }
+
+    private static class MyEntryDetailsView extends EntryPopOverPane {
+        private final Label summaryLabel;
+
+        private Entry entry;
+
+        public MyEntryDetailsView(Entry entry) {
+            // super(requireNonNull(entry));
+
+            this.entry = entry;
+
+            this.summaryLabel = new Label("Location: " + this.entry.getLocation());
+
+            VBox center = new VBox();
+        }
     }
 
     /**
@@ -902,6 +941,16 @@ public class ScheduleController {
             }
             showRoomSchedule(false);
             repopulateMap();
+        }
+    }
+
+    @FXML
+    private void setCalInset() {
+        if (!((Stage)makeReservationBtn.getScene().getWindow()).isFullScreen()) {
+            calendarView.setPadding(new Insets(30,0,5,0));
+        }
+        else {
+            calendarView.setPadding(new Insets(0,0,5,0));
         }
     }
 
