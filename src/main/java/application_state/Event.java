@@ -33,7 +33,7 @@ public class Event {
     ArrayList<Node> path = null;    // The currently drawn path
     ResourceBundle currentBundle = dfBundle;
 
-    // for scheduling an event. todo what are these used for?
+    // for scheduling an event.
     ArrayList<GregorianCalendar> startAndEndTimes = null ;    // times.
     String roomId = "" ;    // room
 

@@ -608,10 +608,11 @@
 
 }
 
-/*
- * --------------------------------------------------------------------------------------------------------------
- * Base colors for the predefined styles
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView base colors                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 * {
     -style1-color: rgba(65.0, 49.0, 129.0, 0.9);
@@ -641,10 +642,11 @@
     -usage-very-high-text-color: white;
 }
 
-/*
- * --------------------------------------------------------------------------------------------------------------
- * Styles needed for calendar type 1 (green).
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-1 calendar (purple; amphitheater)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style1-icon, .style1-icon-small {
     -fx-fill: -style1-color;
@@ -699,10 +701,11 @@
     -fx-background-color: derive(-style1-color, 70.0%);
 }
 
-/*
- * --------------------------------------------------------------------------------------------------------------
- * Styles needed for calendar type 2 (blue).
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-2 calendar (blue; classroom)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style2-icon, .style2-icon-small {
     -fx-fill: -style2-color;
@@ -757,10 +760,11 @@
     -fx-background-color: derive(-style2-color, 70.0%);
 }
 
-/*
- * --------------------------------------------------------------------------------------------------------------
- * Styles needed for calendar type 3 (yellow).
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-3 calendar (blue; classroom)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style3-icon, .style3-icon-small {
     -fx-fill: -style3-color;
@@ -815,10 +819,11 @@
     -fx-background-color: derive(-style3-color, 70.0%);
 }
 
-/*
- * --------------------------------------------------------------------------------------------------------------
- * Styles needed for calendar type 4 (purple).
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-4 calendar (blue; classroom)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style4-icon, .style4-icon-small {
     -fx-fill: -style4-color;
@@ -873,10 +878,11 @@
     -fx-background-color: derive(-style4-color, 70.0%);
 }
 
-/*
- * --------------------------------------------------------------------------------------------------------------
- * Styles needed for calendar type 5 (red).
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-5 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style5-icon, .style5-icon-small {
     -fx-fill: -style5-color;
@@ -930,11 +936,11 @@
 .style5-calendar-header {
     -fx-background-color: derive(-style5-color, 70.0%);
 }
-
-/*
- * --------------------------------------------------------------------------------------------------------------
- * Styles needed for calendar type 6 (orange).
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-6 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style6-icon, .style6-icon-small {
     -fx-fill: -style6-color;
@@ -989,10 +995,11 @@
     -fx-background-color: derive(-style6-color, 70.0%);
 }
 
-/*
- * --------------------------------------------------------------------------------------------------------------
- * Styles needed for calendar type 7 (brown).
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-7 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style7-icon, .style7-icon-small {
     -fx-fill: -style7-color;
@@ -1047,9 +1054,11 @@
     -fx-background-color: derive(-style7-color, 70.0%);
 }
 
-/***
-*
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-8 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style8-icon, .style8-icon-small {
     -fx-fill: -style8-color;
@@ -1104,9 +1113,11 @@
     -fx-background-color: derive(-style8-color, 70.0%);
 }
 
-/***
-*
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-9 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style9-icon, .style9-icon-small {
     -fx-fill: -style9-color;
@@ -1161,9 +1172,11 @@
     -fx-background-color: derive(-style9-color, 70.0%);
 }
 
-/***
-*
- */
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-10 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 .style10-icon, .style10-icon-small {
     -fx-fill: -style10-color;

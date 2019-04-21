@@ -11,7 +11,6 @@ import application_state.Event;
 import com.calendarfx.model.Entry;
 import com.calendarfx.model.Interval;
 import com.calendarfx.view.DateControl;
-import com.calendarfx.view.DayEntryView;
 import com.calendarfx.view.popover.*;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
@@ -28,10 +27,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.TextAlignment;
@@ -470,7 +467,6 @@ public class ScheduleController {
 
         // Populate tables
         showRoomSchedule(false);
-        System.out.println("done showing schedule");
 
         // Show map spaces
         populateMap();
@@ -478,7 +474,6 @@ public class ScheduleController {
         randomWorkstations();
         runner = new WorkStationRunner();
         randomizeSpaces(true);
-        System.out.println("done randomizing spaces");
 
         // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -500,14 +495,15 @@ public class ScheduleController {
      */
     private void setUpCalendar() throws IOException {
 
+        // Create calendarView and settings
         calendarView = new CalendarView();
-
         calendarView.setPrefWidth(1485);
         calendarView.setPrefHeight(915);
         calendarView.setShowPrintButton(false);
         calendarView.setShowAddCalendarButton(false);
         calendarView.getStylesheets().add("theme.css");
 
+        // Create calendar for each room and set style
         Calendar amphitheaterCal = new Calendar("Amphitheater");
         Calendar classroom1Cal = new Calendar("Classroom 1");
         Calendar classroom2Cal = new Calendar("Classroom 2");
@@ -533,22 +529,23 @@ public class ScheduleController {
         computer2Cal.setShortName("COMPU00002");
         computer3Cal.setStyle(Style.STYLE7);
         computer3Cal.setShortName("COMPU00003");
-        computer4Cal.setStyle("style8");    // todo
+        computer4Cal.setStyle("style8");
         computer4Cal.setShortName("COMPU00004");
         computer5Cal.setStyle("style9");
         computer5Cal.setShortName("COMPU00005");
         computer6Cal.setStyle("style10");
         computer6Cal.setShortName("COMPU00006");
 
+        // Group calendars by source and add to calendarView
         CalendarSource myCalendarSource = new CalendarSource("Amphitheater");
         myCalendarSource.getCalendars().addAll(amphitheaterCal);
         CalendarSource classRoomSource = new CalendarSource("Classrooms");
         classRoomSource.getCalendars().addAll(classroom1Cal, classroom2Cal, classroom3Cal);
         CalendarSource computerRoomSource = new CalendarSource("Computer Rooms");
         computerRoomSource.getCalendars().addAll(computer1Cal, computer2Cal, computer3Cal, computer4Cal, computer5Cal, computer6Cal);
+        calendarView.getCalendarSources().setAll(myCalendarSource, classRoomSource, computerRoomSource);
 
-        calendarView.getCalendarSources().setAll(myCalendarSource, classRoomSource, computerRoomSource); // todo
-
+        // Keep the calendarView updated
         Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
             @Override
             public void run() {
@@ -569,13 +566,11 @@ public class ScheduleController {
                 }
             };
         };
-
         updateTimeThread.setPriority(Thread.MIN_PRIORITY);
         updateTimeThread.setDaemon(true);
         updateTimeThread.start();    // todo: when does this end?
 
-        //calendarView.setShowSourceTray(true);
-        //calendarView.setShowSourceTrayButton(false);    // todo
+        // Set the calendarView details-popup (on double-click of event)
         calendarView.setEntryDetailsPopOverContentCallback(new MyEntryPopOverContentProvider());
 
         populateCalendar();
@@ -583,7 +578,6 @@ public class ScheduleController {
         Platform.runLater(() -> {    // In order to speed up switching scenes
             subSceneHolder.getChildren().add(calendarView);
         });
-        System.out.println("done adding calView");
     }
 
     /**
@@ -591,18 +585,17 @@ public class ScheduleController {
      */
     private void populateCalendar() {
         System.out.println("    STARTING TO POPULATE");
-        for (int s = 0; s < calendarView.getCalendarSources().size(); s++) {
+        for (int s = 0; s < calendarView.getCalendarSources().size(); s++) {    // For each calendar source
             CalendarSource source = calendarView.getCalendarSources().get(s);
-            for (int i = 0; i < source.getCalendars().size(); i++) {
+            for (int i = 0; i < source.getCalendars().size(); i++) {    // For each calendar
                 Calendar currCal = source.getCalendars().get(i);
-                currCal.setReadOnly(true);
-                System.out.println(currCal.getStyle());
+                currCal.setReadOnly(true);    // Don't let users edit it
                 ArrayList<Reservation> roomRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currCal.getShortName());
-                for (Reservation r : roomRes) {
+                for (Reservation r : roomRes) {     // Get each reservation for that calendar
                     GregorianCalendar startCal = r.getStartTime();
                     GregorianCalendar endCal = r.getEndTime();
-                    LocalDateTime startLDT = startCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time
-                    LocalDateTime endLDT = endCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time
+                    LocalDateTime startLDT = startCal.toZonedDateTime().toLocalDateTime();
+                    LocalDateTime endLDT = endCal.toZonedDateTime().toLocalDateTime();
                     LocalDate startDate = startLDT.toLocalDate();
                     LocalDate endDate = endLDT.toLocalDate();
                     LocalTime startTime = startLDT.toLocalTime();
@@ -612,17 +605,18 @@ public class ScheduleController {
                     if (r.getPrivacyLevel() != 0) {
                         name = "Booked";
                     }
-                    Entry e = new Entry(name, time);
+                    Entry e = new Entry(name, time);    // Create an entry for that reservation and add it to the calendar
                     e.setLocation(currCal.getName());
                     e.setId(Integer.toString(r.getEventID()));
                     currCal.addEntry(e);
                 }
             }
         }
-        System.out.println("populated...");
     }
 
-    // todo
+    /**
+     * Provide a customized popover for calendar entries.
+     */
     private static class MyEntryPopOverContentProvider implements Callback<DateControl.EntryDetailsPopOverContentParameter, javafx.scene.Node> {
         @Override
         public javafx.scene.Node call(DateControl.EntryDetailsPopOverContentParameter param) {
@@ -631,6 +625,9 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * Customized popover with customized details pane.
+     */
     private static class MyCustomPopOverContentNode extends PopOverContentPane {
         public MyCustomPopOverContentNode(Entry entry, ObservableList<Calendar> allCalendars) {
             requireNonNull(entry);
@@ -646,20 +643,29 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * Customized details pane for popover.
+     * Provides event name, location, start and end times, and contact information
+     * for public events.
+     */
     private static class MyEntryDetailsView extends EntryPopOverPane {
         private Entry entry;
 
         public MyEntryDetailsView(Entry entry) {
             this.entry = entry;
 
+            // Get the reservation associated with this entry
             Reservation res = myDBS.getReservation(Integer.parseInt(entry.getId()));
+
+            // Get the name and contact info depending on privacy level
             String nameStr = res.getEventName();
-            String contactStr = myDBS.getEmployee(res.getEmployeeId()).getUsername();    // todo: I want a real first and last name
+            String contactStr = myDBS.getEmployee(res.getEmployeeId()).getUsername();    // todo: real first and last name or email
             if (res.getPrivacyLevel() > 0) {
                 nameStr = "Private Event";
                 contactStr = "Private Organizer";
             }
 
+            // Get the start time
             String startTimeStr = res.getStartTime().toInstant().toString();
             int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
             String startMinutes = Integer.toString((int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60);
@@ -674,6 +680,8 @@ public class ScheduleController {
             if (endMinutes.equals("0")) {
                 endMinutes = "00";
             }
+
+            // Correct dates
             String startDate = startTimeStr.substring(5,7) + "/" + startTimeStr.substring(8,10) + "/" + startTimeStr.substring(0,4);
             String endDate = endTimeStr.substring(5,7) + "/" + endTimeStr.substring(8,10) + "/" + endTimeStr.substring(0,4);
             if (endHour >= 21) {
@@ -683,6 +691,7 @@ public class ScheduleController {
                 startDate = startDate.substring(0,3) + (Integer.parseInt(startDate.substring(3,5)) - 1) + startDate.substring(5);
             }
 
+            // Create labels for all info
             startTimeStr = startHour + ":" + startMinutes + " on " + startDate;
             endTimeStr = endHour + ":"  + endMinutes + " on " + endDate;
             Label leftName = new Label("Event: ");
@@ -696,11 +705,11 @@ public class ScheduleController {
             Label leftLoc = new Label("Location: ");
             Label rightLoc = new Label(this.entry.getLocation());
 
+            // Add labels to vbox and hbox and put into pane
             VBox left = new VBox();
             left.getChildren().addAll(leftName, leftLoc, leftStartTime, leftEndTime, leftContact);
             VBox right = new VBox();
             right.getChildren().addAll(rightName, rightLoc, rightStartTime, rightEndTime, rightContact);
-
             HBox both = new HBox();
             both.getChildren().addAll(left, right);
             this.getChildren().add(both);
@@ -979,7 +988,6 @@ public class ScheduleController {
      * @param value whether it is focused or not
      */
     private void focusState(boolean value) {
-        System.out.println("clicked");
         // If this was selected and loses selection, show the room schedule based on the current filters
         if (!value && validTimes(false)) {
             if (availRoomsBtn.getText().contains("ear")) {
