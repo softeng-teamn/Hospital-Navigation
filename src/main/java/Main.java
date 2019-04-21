@@ -23,6 +23,7 @@ public class Main extends Application {
         DatabaseService.getDatabaseService().loadFromCSVsIfNecessary();
         HashMap<String, ImageView> imageCache = new HashMap<>();
         try {
+            imageCache.put("FL", new ImageView(new Image(ResourceLoader.fullerLowerFloor.openStream())));
             imageCache.put("4", new ImageView(new Image(ResourceLoader.fourthFloor.openStream())));
             imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
             imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
