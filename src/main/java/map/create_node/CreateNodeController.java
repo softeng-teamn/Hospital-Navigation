@@ -2,6 +2,7 @@ package map.create_node;
 
 import application_state.ApplicationState;
 import com.jfoenix.controls.*;
+import database.DatabaseService;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -9,13 +10,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,7 +20,6 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import map.Edge;
 import map.Node;
-import database.DatabaseService;
 import net.kurobako.gesturefx.GesturePane;
 import service.ResourceLoader;
 import service.StageManager;
@@ -99,8 +95,8 @@ public class CreateNodeController {
         zoomGroupInit();
         imagesInit();
 
-        nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV");
-        building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis", "FLEX");
+        nodeType_combo.getItems().addAll("HALL", "ELEV", "REST", "STAI", "DEPT", "LABS", "INFO", "CONF", "EXIT", "RETL", "SERV", "AR");
+        building_combo.getItems().addAll("BTM", "Shapiro", "Tower", "45 Francis", "15 Francis", "FLEX", "Fuller Lower");
 
         // start state at 0
         stateIterator = 0;
@@ -198,6 +194,10 @@ public class CreateNodeController {
     void floorChangeAction(ActionEvent e) throws IOException {
         JFXButton clickedBtn = (JFXButton) e.getSource();
         switch (clickedBtn.getText()) {
+            case "FL":
+                if(stateIterator == 0) {node_floor = "FL";}
+                else if(stateIterator == 2) {showAllNodes("FL");}
+                break;
             case "4":
                 if(stateIterator == 0) {node_floor = "4";}
                 else if(stateIterator == 2) {showAllNodes("4");}
