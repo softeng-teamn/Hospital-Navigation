@@ -34,7 +34,7 @@ public class StageManager {
     public static Stage changeExistingWindow(Stage primaryStage, Parent root, String title) throws Exception {
         primaryStage.setTitle(title);
         primaryStage.getScene().setRoot(root);
-        primaryStage.setFullScreen(true);
+        // todo uncomment primaryStage.setFullScreen(true);
         primaryStage.show();
         return primaryStage;
     }

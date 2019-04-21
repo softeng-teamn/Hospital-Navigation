@@ -549,11 +549,10 @@ public class ScheduleController {
 
         calendarView.getCalendarSources().setAll(myCalendarSource, classRoomSource, computerRoomSource); // todo
 
-        calendarView.setRequestedTime(LocalTime.now());
-
         Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
             @Override
             public void run() {
+                calendarView.setRequestedTime(LocalTime.now());
                 while (true) {
                     Platform.runLater(() -> {
                         calendarView.setToday(LocalDate.now());
@@ -580,7 +579,10 @@ public class ScheduleController {
 
         populateCalendar();
 
-        subSceneHolder.getChildren().add(calendarView);
+        Platform.runLater(() -> {    // In order to speed up switching scenes
+            subSceneHolder.getChildren().add(calendarView);
+        });
+        System.out.println("done adding calView");
     }
 
     /**
@@ -611,7 +613,6 @@ public class ScheduleController {
                     Entry e = new Entry(name, time);
                     e.setLocation(currCal.getName());
                     currCal.addEntry(e);
-                    System.out.println(r);
                 }
             }
         }
@@ -932,6 +933,7 @@ public class ScheduleController {
      * @param value whether it is focused or not
      */
     private void focusState(boolean value) {
+        System.out.println("clicked");
         // If this was selected and loses selection, show the room schedule based on the current filters
         if (!value && validTimes(false)) {
             if (availRoomsBtn.getText().contains("ear")) {

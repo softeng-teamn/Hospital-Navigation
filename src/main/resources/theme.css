@@ -425,20 +425,6 @@
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
-/**todo hmm*/
-.calendar-view {
-    -style1-color: rgba(119.0, 192.0, 75.0, 0.9);
-    -style2-color: rgba(65.0, 143.0, 203.0, 0.9);
-    -style3-color: rgba(247.0, 209.0, 91.0, 0.9);
-    -style4-color: rgba(157.0, 91.0, 159.0, 0.9);
-    -style5-color: rgba(208.0, 82.0, 95.0, 0.9);
-    -style6-color: rgba(249.0, 132.0, 75.0, 0.9);
-    -style7-color: rgba(174.0, 102.0, 62.0, 0.9);
-    -style8-color: rgba(174.0, 102.0, 62.0, 0.9);
-    -style9-color: rgba(174.0, 102.0, 62.0, 0.9);
-    -style10-color: rgba(119.0, 192.0, 75.0, 0.9);
-}
-
 
 /*******************************************************************************
  *                                                                             *
@@ -620,4 +606,134 @@
 .text-field-table-cell > .text-field {
     -fx-text-fill: black;
 
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Styles needed for calendar type 1 (green).
+ */
+
+/**todo hmm*/
+* {
+    -style1-color: rgba(160.0, 130.0, 242.0, 0.9);
+    -style2-color: rgba(65.0, 143.0, 203.0, 0.9);
+    -style3-color: rgba(247.0, 209.0, 91.0, 0.9);
+    -style4-color: rgba(157.0, 91.0, 159.0, 0.9);
+    -style5-color: rgba(208.0, 82.0, 95.0, 0.9);
+    -style6-color: rgba(249.0, 132.0, 75.0, 0.9);
+    -style7-color: rgba(174.0, 102.0, 62.0, 0.9);
+    -style8-color: rgba(174.0, 102.0, 62.0, 0.9);
+    -style9-color: rgba(174.0, 102.0, 62.0, 0.9);
+    -style10-color: rgba(119.0, 192.0, 75.0, 0.9);
+}
+
+/*
+ * --------------------------------------------------------------------------------------------------------------
+ * Styles needed for calendar type 1 (green).
+ */
+
+.style1-icon, .style1-icon-small {
+    -fx-fill: -style1-color;
+    -fx-stroke: -style1-color;
+}
+
+.style1-entry {
+    -fx-background-color: derive(-style1-color, 70.0%);
+    -fx-border-color: -style1-color;
+}
+
+.style1-entry:selected {
+    -fx-background-color: -style1-color;
+}
+
+.style1-entry-time-label, .style1-entry-title-label {
+    -fx-text-fill: derive(-style1-color, -30.0%);
+}
+
+.style1-entry-small:selected {
+    -fx-background-color: -style1-color;
+}
+
+.style1-entry-small-full-day {
+    -fx-background-color: derive(-style1-color, 70.0%);
+}
+
+.style1-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style1-color, -30.0%);
+}
+
+.style1-entry-small-full-day:selected {
+    -fx-background-color: -style1-color;
+}
+
+.style1-visibility-checkbox > .box,
+.style1-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style1-color, 70.0%);
+}
+
+.style1-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style1-color, 70.0%);
+}
+
+.style1-entry-popover-title {
+    -fx-text-fill: derive(-style1-color, -50.0%) !important;
+}
+
+.style1-calendar-header {
+    -fx-background-color: derive(-style1-color, 70.0%);
+}
+
+.style8-icon, .style8-icon-small {
+    -fx-fill: -style8-color;
+    -fx-stroke: -style8-color;
+}
+
+.style8-entry {
+    -fx-background-color: derive(-style8-color, 70.0%);
+    -fx-border-color: -style8-color;
+}
+
+.style8-entry:selected {
+    -fx-background-color: -style8-color;
+}
+
+.style8-entry-time-label, .style8-entry-title-label {
+    -fx-text-fill: derive(-style8-color, -30.0%);
+}
+
+.style8-entry-small:selected {
+    -fx-background-color: -style8-color;
+}
+
+.style8-entry-small-full-day {
+    -fx-background-color: derive(-style8-color, 70.0%);
+}
+
+.style8-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style8-color, -30.0%);
+}
+
+.style8-entry-small-full-day:selected {
+    -fx-background-color: -style8-color;
+}
+
+.style8-visibility-checkbox > .box,
+.style8-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style8-color, 70.0%);
+}
+
+.style8-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style8-color, 70.0%);
+}
+
+.style8-entry-popover-title {
+    -fx-text-fill: derive(-style8-color, -50.0%) !important;
+}
+
+.style8-calendar-header {
+    -fx-background-color: derive(-style8-color, 70.0%);
 }

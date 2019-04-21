@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXDrawer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import map.MapController;
 import application_state.Event;
