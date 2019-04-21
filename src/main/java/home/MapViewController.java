@@ -374,7 +374,7 @@ public class MapViewController implements Observer {
      * Clear the navigation floor labels from any previous searches
      */
     private void clearFloorChangeLabels() {
-        ArrayList<Label> floorLbls = new ArrayList<Label>(Arrays.asList(show1, show2, show3, show4, showG, showL1, showL2));
+        floorLbls = new ArrayList<Label>(Arrays.asList(show1, show2, show3, show4, showG, showL1, showL2));
 
         // set the orginal floor name text back on the labels & hide
         show1.setText("1");
