@@ -25,8 +25,6 @@ public class QRService {
     public static Image generateQRCode(String url, boolean shorten) throws IOException, WriterException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
 
-        url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
-
         if (shorten) {
             url = shortenURL(url);
         }
@@ -41,6 +39,7 @@ public class QRService {
     }
 
     public static String shortenURL(String url) {
+        if (url.length() > 2000) return url;
         BitlyClient client = new BitlyClient("bcba608ae5c6045d223241662c704f38c52930e4");
         Response<ShortenResponse> resp = client.shorten()
                 .setLongUrl(url)
