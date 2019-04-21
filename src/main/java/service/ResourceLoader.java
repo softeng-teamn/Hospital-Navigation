@@ -23,6 +23,7 @@ public class  ResourceLoader {
     public static final URL searchResults = service.ResourceLoader.class.getResource("/fxml/home/searchResults.fxml");
     public static final URL adminServices = service.ResourceLoader.class.getResource("/fxml/home/adminServices.fxml");
     public static final URL confirmScheduler = service.ResourceLoader.class.getResource("/fxml/confirmReservation.fxml");
+    public static final URL calendarPane = service.ResourceLoader.class.getResource("/fxml/calendarPane.fxml");
 
     public static final URL superSecretPasswords = service.ResourceLoader.class.getResource("SuperSecretPasswords.txt");
 

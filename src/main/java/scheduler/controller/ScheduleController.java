@@ -1,5 +1,6 @@
 package scheduler.controller;
 
+import java.io.IOException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -24,6 +25,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -392,7 +394,7 @@ public class ScheduleController {
     private SVGPath ws120;
 
     @FXML
-    private Pane subSceneHolder;
+    private AnchorPane subSceneHolder;
 
     @FXML
     private Tab weeklyScheduleTab, dailyScheduleTab;
@@ -448,7 +450,14 @@ public class ScheduleController {
         setUpArrayLists();
         setUpWeeklyTable();
         setUpAllRoomsTable();
-        setUpCalendar();    // todo: why does this take so long to load?
+        Platform.runLater(() -> {
+            try {
+                setUpCalendar();    // todo: why does this take so long to load?
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("done setting up calendar");
+        });
 
         // Don't show errors yet
         inputErrorLbl.setVisible(false);
@@ -457,6 +466,7 @@ public class ScheduleController {
 
         // Populate tables
         showRoomSchedule(false);
+        System.out.println("done showing schedule");
 
         // Show map spaces
         populateMap();
@@ -464,6 +474,7 @@ public class ScheduleController {
         randomWorkstations();
         runner = new WorkStationRunner();
         randomizeSpaces(true);
+        System.out.println("done randomizing spaces");
 
         // Set listeners to update listview and label
         reservableList.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -483,9 +494,16 @@ public class ScheduleController {
     /**
      * Set up calendar tab.
      */
-    private void setUpCalendar() {
+    private void setUpCalendar() throws IOException {
 
         calendarView = new CalendarView();
+
+        calendarView.setPrefWidth(1485);
+        calendarView.setPrefHeight(915);
+        calendarView.setShowPrintButton(false);
+        calendarView.setShowAddCalendarButton(false);
+        calendarView.getStylesheets().clear();
+        calendarView.getStylesheets().add("theme.css");
 
         Calendar amphitheaterCal = new Calendar("Amphitheater");
         Calendar classroom1Cal = new Calendar("Classroom 1");
@@ -512,11 +530,11 @@ public class ScheduleController {
         computer2Cal.setShortName("COMPU00002");
         computer3Cal.setStyle(Style.STYLE7);
         computer3Cal.setShortName("COMPU00003");
-        computer4Cal.setStyle(Style.STYLE7);
+        computer4Cal.setStyle("style-8-color");
         computer4Cal.setShortName("COMPU00004");
-        computer5Cal.setStyle(Style.STYLE7);
+        computer5Cal.setStyle("style-9-color");
         computer5Cal.setShortName("COMPU00005");
-        computer6Cal.setStyle(Style.STYLE7);
+        computer6Cal.setStyle("style-10-color");
         computer6Cal.setShortName("COMPU00006");
 
         CalendarSource myCalendarSource = new CalendarSource("Room Calendars");
@@ -550,20 +568,14 @@ public class ScheduleController {
         updateTimeThread.setDaemon(true);
         updateTimeThread.start();    // todo: when does this end?
 
-        calendarView.setPrefWidth(1485);
-        calendarView.setPrefHeight(915);
-        //calendarView.setShowSourceTray(true);
-        //calendarView.setShowSourceTrayButton(false);    // todo
-        calendarView.setShowPrintButton(false);
-        calendarView.setShowAddCalendarButton(false);
-
         //calendarView.setPadding(new Insets(30,0,5,0));  // todo: when not fullscreen
         //calendarView.setEntryDetailsPopOverContentCallback(param -> new EntryPopOverContentPane(param.getPopOver(), param.getDateControl(), param.getEntry()));
         // todo
+        //calendarView.setShowSourceTray(true);
+        //calendarView.setShowSourceTrayButton(false);    // todo
 
         populateCalendar();
 
-        subSceneHolder.getChildren().clear();
         subSceneHolder.getChildren().add(calendarView);
     }
 
@@ -573,14 +585,10 @@ public class ScheduleController {
     private void populateCalendar() {
         System.out.println("    STARTING TO POPULATE");
         CalendarSource source = calendarView.getCalendarSources().get(0);
-        //System.out.println(source);
         for (int i = 0; i < source.getCalendars().size(); i++) {
             Calendar currCal = source.getCalendars().get(i);
-            //System.out.println(currCal);
             ArrayList<Reservation> roomRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currCal.getShortName());
-            System.out.println(roomRes + " " + currCal.getShortName());
             for (Reservation r: roomRes) {
-                //System.out.println(r);
                 GregorianCalendar startCal = r.getStartTime();
                 GregorianCalendar endCal = r.getEndTime();
                 LocalDateTime startLDT = startCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time

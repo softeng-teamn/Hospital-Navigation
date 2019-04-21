@@ -14,7 +14,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
@@ -270,11 +269,7 @@
                   </Tab>
                   <Tab fx:id="calendarTab" text="Calendar">
                      <content>
-                        <AnchorPane prefHeight="915.0" prefWidth="1485.0">
-                           <children>
-                              <Pane fx:id="subSceneHolder" prefHeight="915.0" prefWidth="1485.0" />
-                           </children>
-                        </AnchorPane>
+                        <AnchorPane fx:id="subSceneHolder" prefHeight="915.0" prefWidth="1485.0" />
                      </content>
                   </Tab>
                </tabs>
