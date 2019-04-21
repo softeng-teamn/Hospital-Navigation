@@ -215,8 +215,8 @@ dependencies {
             [group: 'com.google.zxing', name: 'javase', version: '3.3.0'],
             [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
             [group: 'com.calendarfx', name: 'calendar', version: '8.5.0', ext: 'pom'],
-
-            files('/libs/view-8.5.0.jar', '/libs/recurrence-11.5.0.jar', '/libs/controlsfx-8.40.11.jar')
+            [group: 'com.calendarfx', name: 'recurrence', version: '8.5.0'],
+            [group: 'com.calendarfx', name: 'view', version: '8.5.0']
     )
 
     compileApi (

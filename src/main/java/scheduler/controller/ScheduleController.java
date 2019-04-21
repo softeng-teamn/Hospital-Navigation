@@ -9,6 +9,8 @@ import application_state.Event;
 
 import com.calendarfx.model.Entry;
 import com.calendarfx.model.Interval;
+import com.calendarfx.view.DayEntryView;
+import com.calendarfx.view.popover.EntryPopOverContentPane;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -18,6 +20,7 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -496,7 +499,7 @@ public class ScheduleController {
         Calendar computer6Cal = new Calendar("Computer Room 6");
 
         amphitheaterCal.setStyle(Style.STYLE1); // todo - colors? etc?
-        amphitheaterCal.setShortName("AMPHI00001");
+        amphitheaterCal.setShortName("AMPHI00001");    // todo; Hardcoded - should probaly not be
         classroom1Cal.setStyle(Style.STYLE2);
         classroom1Cal.setShortName("CLASS00001");
         classroom2Cal.setStyle(Style.STYLE3);
@@ -549,6 +552,14 @@ public class ScheduleController {
 
         calendarView.setPrefWidth(1485);
         calendarView.setPrefHeight(915);
+        //calendarView.setShowSourceTray(true);
+        //calendarView.setShowSourceTrayButton(false);    // todo
+        calendarView.setShowPrintButton(false);
+        calendarView.setShowAddCalendarButton(false);
+
+        //calendarView.setPadding(new Insets(30,0,5,0));  // todo: when not fullscreen
+        //calendarView.setEntryDetailsPopOverContentCallback(param -> new EntryPopOverContentPane(param.getPopOver(), param.getDateControl(), param.getEntry()));
+        // todo
 
         populateCalendar();
 
@@ -565,11 +576,11 @@ public class ScheduleController {
         //System.out.println(source);
         for (int i = 0; i < source.getCalendars().size(); i++) {
             Calendar currCal = source.getCalendars().get(i);
-            System.out.println(currCal);
+            //System.out.println(currCal);
             ArrayList<Reservation> roomRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currCal.getShortName());
             System.out.println(roomRes + " " + currCal.getShortName());
             for (Reservation r: roomRes) {
-                System.out.println(r);
+                //System.out.println(r);
                 GregorianCalendar startCal = r.getStartTime();
                 GregorianCalendar endCal = r.getEndTime();
                 LocalDateTime startLDT = startCal.toZonedDateTime().toLocalDateTime();    // todo: verify is correct date and time
@@ -579,7 +590,13 @@ public class ScheduleController {
                 LocalTime startTime = startLDT.toLocalTime();
                 LocalTime endTime = endLDT.toLocalTime();
                 Interval time = new Interval(startDate, startTime, endDate, endTime);
-                currCal.addEntry(new Entry(r.getEventName(), time));
+                String name = r.getEventName();
+                if (r.getPrivacyLevel() != 0) {
+                    name = "Booked";
+                }
+                Entry e = new Entry(name, time);
+                e.setLocation(currCal.getName());
+                currCal.addEntry(e);
                 System.out.println(r);
             }
         }
@@ -592,6 +609,8 @@ public class ScheduleController {
      */
     private void randomizeSpaces(boolean start) {
         randStationsThread = new Thread(runner, "T1");
+        randStationsThread.setPriority(Thread.MIN_PRIORITY);
+        randStationsThread.setDaemon(true);
         if (start) {
             randStationsThread.start();
         }
