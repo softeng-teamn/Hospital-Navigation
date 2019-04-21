@@ -1476,7 +1476,6 @@ public class ScheduleController {
         bookedRoomsBtn.setDisable(false);
     }
 
-
     /**
      * Get the nodes that are booked for the selected date and time.
      * @return the list of booked nodes for the selected date and time
