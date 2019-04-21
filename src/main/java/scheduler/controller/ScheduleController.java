@@ -505,7 +505,6 @@ public class ScheduleController {
         calendarView.setPrefHeight(915);
         calendarView.setShowPrintButton(false);
         calendarView.setShowAddCalendarButton(false);
-        calendarView.getStylesheets().clear();
         calendarView.getStylesheets().add("theme.css");
 
         Calendar amphitheaterCal = new Calendar("Amphitheater");
@@ -533,11 +532,11 @@ public class ScheduleController {
         computer2Cal.setShortName("COMPU00002");
         computer3Cal.setStyle(Style.STYLE7);
         computer3Cal.setShortName("COMPU00003");
-        computer4Cal.setStyle("style-8-color");    // todo
+        computer4Cal.setStyle("style8");    // todo
         computer4Cal.setShortName("COMPU00004");
-        computer5Cal.setStyle("style-9-color");
+        computer5Cal.setStyle("style9");
         computer5Cal.setShortName("COMPU00005");
-        computer6Cal.setStyle("style-10-color");
+        computer6Cal.setStyle("style10");
         computer6Cal.setShortName("COMPU00006");
 
         CalendarSource myCalendarSource = new CalendarSource("Amphitheater");
@@ -595,6 +594,7 @@ public class ScheduleController {
             for (int i = 0; i < source.getCalendars().size(); i++) {
                 Calendar currCal = source.getCalendars().get(i);
                 currCal.setReadOnly(true);
+                System.out.println(currCal.getStyle());
                 ArrayList<Reservation> roomRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currCal.getShortName());
                 for (Reservation r : roomRes) {
                     GregorianCalendar startCal = r.getStartTime();
