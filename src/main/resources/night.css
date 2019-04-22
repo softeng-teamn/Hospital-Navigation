@@ -1,18 +1,20 @@
 * {
-    -fx-primary: #FFFFFF;
-    -fx-complementary: #000000;
-    -fx-secondary: #FFFFFF;
-    -fx-primarytext: #000000;
-    -fx-complementarytext: #FFFFFF;
-    -fx-unfocusedtext: #888888;
-    -fx-red: #F44336;
-    -fx-mapText: #FFFFFF;
-    -fx-interactioncolor: #FFFFFF;
-    -fx-listCell: #00FFFF;
-    -fx-scrollBorder: #D9D9D9;
-    -fx-tableheader: #000000;
-    -fx-tableviewborder: #F3F3F3;
-    -fx-tableerror: #D34336;
+    -fx-primary: #ffeab2;
+    -fx-complementary: #012b40;
+    -fx-secondary: #ffb827;
+    -fx-primarytext: #372d20;
+    -fx-complementarytext: #fff8bd;
+    -fx-unfocusedtext: #7c6a50;
+    -fx-red: #ff4126;
+    -fx-mapText: #fff8bd;
+    -fx-interactioncolor: #e3c396;
+    -fx-listCell: #887f7e;
+    -fx-scrollBorder: #f9d3a0;
+    -fx-tableheader: #aa906c;
+    -fx-tableviewborder: #ffecb4;
+    -fx-tableerror: #f24125;
+    -fx-tablerowcellcolor: #5f6181;
+    -fx-tablecolor: rgba(95, 97, 129, 0.4);;
 
 }
 
@@ -130,7 +132,7 @@
 .jfx-text-area {
     -fx-font-family: Roboto;
     -jfx-focus-color: -fx-complementary;
-    -jfx-unfocus-color: -fx-complementary;
+    -jfx-unfocus-color: -fx-unfocusedtext;
     -fx-padding: 0.333333em 0 0 0 ;
     -fx-font-size: 16pt;
 }
@@ -142,7 +144,7 @@
 
 .jfx-text-area,
 .jfx-text-area:focused {
-    -fx-prompt-text-fill: -fx-complementary;
+    -fx-prompt-text-fill: -fx-unfocusedtext;
 }
 
 .jfx-text-area,
@@ -180,9 +182,9 @@
 }
 
 .button:hover{
-    -fx-text-fill: -fx-complementary;
-    -fx-border-color: -fx-complementary;
-    -fx-background-color: -fx-primary;
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
     -fx-border-radius: 5px;
 }
 
@@ -200,7 +202,7 @@
 }
 
 .glyph-button:hover .glyph-icon{
-    -fx-fill: -fx-complementary;
+    -fx-fill: -fx-primary;
 }
 
 .node-button{
@@ -213,7 +215,7 @@
 }
 
 .node-button:hover .glyph-icon{
-    -fx-fill: -fx-complementary;
+    -fx-fill: -fx-primary;
 }
 
 .confirm-button {
@@ -231,7 +233,7 @@
 }
 
 .confirm-button:hover .glyph-icon {
-    -fx-fill: -fx-complementary;
+    -fx-fill: -fx-primary;
 }
 
 .floor-map-button {
@@ -249,12 +251,10 @@
     -fx-font-family: Roboto;
     -fx-background-color: -fx-complementary;
     -fx-text-fill: -fx-complementarytext;
-    -fx-background-radius: 5px;
+    -fx-background-radius: 7px;
     -fx-font-size: 16pt;
     -fx-content-display: top;
     -fx-graphic-text-gap: 12px;
-    -fx-border-width: 3px;
-    -fx-border-radius: 7px;
 }
 
 .request-toggle-node .glyph-icon{
@@ -262,23 +262,23 @@
 }
 
 .request-toggle-node:hover{
-    -fx-text-fill: -fx-complementary;
-    -fx-border-color: -fx-complementary;
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
     -fx-background-color: -fx-secondary;
 }
 
 .request-toggle-node:hover .glyph-icon{
-    -fx-fill: -fx-complementary;
+    -fx-fill: -fx-primary;
 }
 
 .request-toggle-node:selected{
-    -fx-text-fill: -fx-complementary;
-    -fx-border-color: -fx-complementary;
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
     -fx-background-color: -fx-secondary;
 }
 
 .request-toggle-node:selected .glyph-icon{
-    -fx-fill: -fx-complementary;
+    -fx-fill: -fx-primary;
 }
 
 .accessiblity-toggle-node {
@@ -290,7 +290,7 @@
 }
 
 .accessiblity-toggle-node:selected .glyph-icon{
-    -fx-fill: -fx-complementary;
+    -fx-fill: -fx-primary;
 }
 
 .enum-toggle-node {
@@ -304,9 +304,9 @@
 }
 
 .enum-toggle-node:hover{
-    -fx-text-fill: -fx-complementary;
-    -fx-border-color: -fx-complementary;
-    -fx-background-color: -fx-primary;
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
     -fx-background-radius: 7px;
     -fx-border-radius: 5px;
     -fx-font-size: 16pt;
@@ -314,9 +314,9 @@
 }
 
 .enum-toggle-node:selected{
-    -fx-text-fill: -fx-complementary;
-    -fx-border-color: -fx-complementary;
-    -fx-background-color: -fx-primary;
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
     -fx-background-radius: 7px;
     -fx-border-radius: 5px;
     -fx-font-size: 16pt;
@@ -525,8 +525,8 @@
  *                                                                             *
  ******************************************************************************/
 .table-view {
-    -fx-table-color: #666666;
-    -fx-table-rippler-color: #888888;
+    -fx-table-color: -fx-tablecolor;
+    -fx-table-rippler-color: rgba(82, 100, 174, 0.6);
 }
 
 .table-view:focused {
@@ -594,7 +594,7 @@
 }
 
 .table-row-cell .jfx-text-field {
-    -fx-focus-color: #666666;
+    -fx-focus-color: -fx-tablerowcellcolor;
 }
 
 .table-row-cell .jfx-text-field .error-label {

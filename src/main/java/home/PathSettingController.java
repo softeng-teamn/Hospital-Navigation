@@ -7,7 +7,11 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import application_state.Event;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
 import service.ResourceLoader;
+import service.StageManager;
 
 /**
  * Path drawing settings
@@ -29,7 +33,7 @@ public class PathSettingController {
     void initialize() {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         accessibilityButton.setSelected(event.isAccessiblePath());
-        theme.setItems(FXCollections.observableArrayList("Default", "High-Contrast"));
+        theme.setItems(FXCollections.observableArrayList("Default", "High-Contrast", "Night"));
         //theme.getSelectionModel().select(0);
     }
 
@@ -131,13 +135,19 @@ public class PathSettingController {
     /** changes the current theme in use by the application
      * @param actionEvent FXML event that calls this method
      */
-    public void switchTheme(ActionEvent actionEvent){
+    public void switchTheme(ActionEvent actionEvent) throws Exception{
         // get the selected theme
         String newTheme = theme.getSelectionModel().getSelectedItem();
         if(newTheme.equals("Default")){
             ApplicationState.getApplicationState().setCurrentTheme(ResourceLoader.default_style);
         } else if(newTheme.equals("High-Contrast")) {
             ApplicationState.getApplicationState().setCurrentTheme(ResourceLoader.high_contrast_style);
+        } else if (newTheme.equals("Night")){
+            ApplicationState.getApplicationState().setCurrentTheme(ResourceLoader.night_style);
         }
+        Stage stage = (Stage) accessibilityButton.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.home);
+        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
+
 }

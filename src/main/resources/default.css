@@ -33,6 +33,10 @@
     -fx-border-color: transparent transparent -fx-unfocusedtext transparent;
 }
 
+.drawer-background{
+    -fx-background-color: -fx-primary;
+}
+
 .jfx-hamburger StackPane {
     -fx-background-color: -fx-primary;
 }
