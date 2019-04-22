@@ -5,6 +5,8 @@ import employee.model.Employee;
 import javafx.stage.Stage;
 import map.Edge;
 import map.Node;
+
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -151,6 +153,10 @@ public class ApplicationState {
 
     public InactivityManager getIM() {
         return IM;
+    }
+
+    public void setIM(String num){
+        IM = new InactivityManager(Integer.parseInt(num));
     }
 
     public Stage getPrimaryStage() {
