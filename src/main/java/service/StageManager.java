@@ -25,7 +25,8 @@ public class StageManager {
      */
     public static Stage changeWindow(Stage primaryStage, Parent root, String title) throws Exception {
         primaryStage.setTitle(title);
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
         primaryStage.getScene().setOnMouseMoved(e -> {
             Event ev = ApplicationState.getApplicationState().getObservableBus().getEvent();
             ev.setEventName("reset-timer");

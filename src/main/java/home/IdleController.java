@@ -49,7 +49,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import static application_state.ApplicationState.getApplicationState;
 
-public class idleController {
+public class IdleController {
 
     @FXML
     private JFXButton homeBtn ;
