@@ -10,12 +10,18 @@ import java.util.Objects;
  */
 public class ApiInternalTransportRequest {
 
+    /**
+     * possible types of internal transportation
+     */
     public enum TransportType {
         Wheelchair,
         MotorScooter,
         Stretcher
     }
 
+    /**
+     * urgency level
+     */
     public enum Urgency {
         NOT,
         SOMEWHAT,

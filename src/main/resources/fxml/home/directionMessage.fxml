@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Polygon?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="5.0" stylesheets="@../../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.DirectionsController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" spacing="5.0" stylesheets="@../../default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.DirectionsController">
     <children>
         <HBox alignment="TOP_CENTER">
             <children>
@@ -49,7 +49,7 @@
             <Insets />
          </VBox.margin>
       </VBox>
-      <JFXTextField fx:id="phoneNumber" labelFloat="true" onInputMethodTextChanged="#validPhone" onKeyReleased="#validPhone" promptText="Enter Phone Number" stylesheets="@../../theme.css">
+      <JFXTextField fx:id="phoneNumber" labelFloat="true" onInputMethodTextChanged="#validPhone" onKeyReleased="#validPhone" promptText="Enter Phone Number" stylesheets="@../../default.css">
          <VBox.margin>
             <Insets bottom="12.0" left="48.0" right="48.0" />
          </VBox.margin>
@@ -60,7 +60,7 @@
          </VBox.margin>
          <children>
               <JFXButton fx:id="textingButton" onAction="#sendMapToPhone" prefHeight="50.0" styleClass="confirm-button" text="Send via Text " />
-            <JFXButton fx:id="viewQRCodeBtn" minHeight="50.0" onAction="#showQRCode" prefHeight="50.0" styleClass="confirm-button" stylesheets="@../../theme.css" text="Scan QR Code" />
+            <JFXButton fx:id="viewQRCodeBtn" minHeight="50.0" onAction="#showQRCode" prefHeight="50.0" styleClass="confirm-button" stylesheets="@../../default.css" text="Scan QR Code" />
          </children>
       </HBox>
     </children>
