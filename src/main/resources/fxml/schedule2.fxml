@@ -11,6 +11,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -260,7 +261,7 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab fx:id="dailyScheduleTab" text="Daily Schedule All Rooms">
+                  <Tab fx:id="dailyScheduleTab" text="Day Schedule All Rooms">
                      <content>
                         <AnchorPane prefHeight="915.0" prefWidth="1485.0">
                            <children>
@@ -272,6 +273,23 @@
                   <Tab fx:id="calendarTab" onSelectionChanged="#setCalInset" text="Calendar">
                      <content>
                         <AnchorPane fx:id="subSceneHolder" prefHeight="915.0" prefWidth="1485.0" />
+                     </content>
+                  </Tab>
+                  <Tab fx:id="allResTab" text="List of All Reservations">
+                     <content>
+                        <AnchorPane fx:id="subSceneHolder1" prefHeight="915.0" prefWidth="1485.0">
+                           <children>
+                              <TableView fx:id="resTable" prefWidth="1480.0" AnchorPane.topAnchor="20.0">
+                                <columns>
+                                  <TableColumn fx:id="eventCol" prefWidth="290.0" text="Event Name" />
+                                  <TableColumn fx:id="locationCol" prefWidth="290.0" text="Location" />
+                                    <TableColumn fx:id="reserverCol" prefWidth="290.0" text="Reserver" />
+                                    <TableColumn fx:id="eventStartCol" prefWidth="290.0" text="Event Start" />
+                                    <TableColumn fx:id="eventEndCol" prefWidth="290.0" text="Event End" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
                      </content>
                   </Tab>
                   <Tab fx:id="settingsTab" onSelectionChanged="#setCalInset" text="Settings">

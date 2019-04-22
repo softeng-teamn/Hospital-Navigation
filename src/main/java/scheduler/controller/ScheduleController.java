@@ -25,6 +25,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -355,6 +356,12 @@ public class ScheduleController {
     private TableView<ScheduleWrapper> scheduleTable, dailyScheduleAllRooms;
 
     @FXML
+    private TableView<Reservation> resTable;
+
+    @FXML
+    private TableColumn<Reservation, String> eventCol, reserverCol, locationCol, eventStartCol, eventEndCol;
+
+    @FXML
     public JFXListView reservableList;
 
     @FXML
@@ -406,7 +413,7 @@ public class ScheduleController {
     private JFXTabPane tabPane;
 
     @FXML
-    private Tab weeklyScheduleTab, dailyScheduleTab, settingsTab;
+    private Tab weeklyScheduleTab, dailyScheduleTab, settingsTab, allResTab;
 
     private Event event ;    // The current event
     private Thread randStationsThread;    // Random stations thread
@@ -482,9 +489,12 @@ public class ScheduleController {
 
         // Only allow admin to change settings. Note: doesn't change past reservations.
         tabPane.getTabs().remove(settingsTab);
+        tabPane.getTabs().remove(allResTab);
         if (ApplicationState.getApplicationState().getEmployeeLoggedIn() != null && ApplicationState.getApplicationState().getEmployeeLoggedIn().isAdmin()) {
+            tabPane.getTabs().add(allResTab);
             tabPane.getTabs().add(settingsTab);
-            displaySettings();
+            displaySettings();     // todo: make settings persist
+            fillResTable();
         }
 
         // Populate tables
@@ -1080,6 +1090,69 @@ public class ScheduleController {
     }
 
     /**
+     * Fill the table of all reservations.
+     */
+    private void fillResTable() {
+        ArrayList<Reservation> allRes = myDBS.getAllReservations();
+        ObservableList<Reservation> observRes = FXCollections.observableArrayList();
+
+        eventCol.setCellValueFactory(new PropertyValueFactory<>("eventName"));
+        locationCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Reservation, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Reservation, String> p) {
+                return new ReadOnlyStringWrapper(myDBS.getReservableSpace(p.getValue().getLocationID()).getSpaceName());
+            }
+        });
+        reserverCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Reservation, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Reservation, String> p) {
+                Employee emp = myDBS.getEmployee(p.getValue().getEmployeeId());
+                return new ReadOnlyStringWrapper(emp.getFirstName() + " " + emp.getLastName());
+            }
+        });
+        eventStartCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Reservation, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Reservation, String> p) {
+                // Get the start time
+                Reservation res = p.getValue();
+                String startTimeStr = res.getStartTime().toInstant().toString();
+                int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+                String startMinutes = Integer.toString((int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60);
+                if (startMinutes.equals("0")) {
+                    startMinutes = "00";
+                }
+                String startDate = startTimeStr.substring(5,7) + "/" + startTimeStr.substring(8,10) + "/" + startTimeStr.substring(0,4);
+                if (startHour >= 21) {
+                    startDate = startDate.substring(0,3) + (Integer.parseInt(startDate.substring(3,5)) - 1) + startDate.substring(5);
+                }
+                startTimeStr = startHour + ":" + startMinutes + " on " + startDate;
+                return new ReadOnlyStringWrapper(startTimeStr);
+            }
+        });
+        eventEndCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Reservation, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Reservation, String> p) {
+                // Get the end time
+                Reservation res = p.getValue();
+                String endTimeStr = res.getEndTime().toInstant().toString();
+                int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+                String endMinutes = Integer.toString((int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60);
+                if (endMinutes.equals("0")) {
+                    endMinutes = "00";
+                }
+                // Correct dates
+                String endDate = endTimeStr.substring(5,7) + "/" + endTimeStr.substring(8,10) + "/" + endTimeStr.substring(0,4);
+                if (endHour >= 21) {
+                    endDate = endDate.substring(0,3) + (Integer.parseInt(endDate.substring(3,5)) - 1) + endDate.substring(5);
+                }
+                endTimeStr = endHour + ":"  + endMinutes + " on " + endDate;
+                return new ReadOnlyStringWrapper(endTimeStr);
+            }
+        });
+
+
+        observRes.addAll(allRes);
+        resTable.setItems(observRes);
+        resTable.setEditable(false);
+    }
+
+    /**
      * On room button click, show the schedule for that room and date.
      */
     @FXML
@@ -1299,7 +1372,7 @@ public class ScheduleController {
         dailyScheduleAllRooms.setItems(wrap);
         String month = datePicker.getValue().getMonth() + "";
         month = month.substring(0,1) + month.substring(1).toLowerCase();
-        dailyScheduleTab.setText("Daily Schedule for All Rooms on " + month + " " + datePicker.getValue().getDayOfMonth() + ", " + datePicker.getValue().getYear());
+        dailyScheduleTab.setText("Day Schedule All Rooms: " + month + " " + datePicker.getValue().getDayOfMonth() + ", " + datePicker.getValue().getYear());
     }
 
     /**
