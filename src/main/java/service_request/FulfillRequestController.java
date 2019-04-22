@@ -25,6 +25,8 @@ import service_request.model.Request;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static employee.model.JobType.*;
+
 /**
  * controller for the request fulfilling FXML
  */
