@@ -431,6 +431,7 @@ public class ScheduleController {
     // Admin settings
     private int openTime = 9;   // hour to start schedule display
     private String openTimeStr = "09:00";
+    private int openTimeMinutes = 0;
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private String closeTimeString = "22:00";
     private int timeStep = 2;    // Fractions of an hour
@@ -1236,7 +1237,11 @@ public class ScheduleController {
             }
 
             // For each time step in that hour, create a time label and activity label
-            for (int j = 0; j < timeStep; j++) {
+            int j = 0;
+            if (i == openTime) {
+                j = openTimeMinutes;
+            }
+            for (;j < timeStep; j++) {
                 String minutes = String.format("%d", timeStepMinutes * j);
                 if (Integer.parseInt(minutes) == 0) {
                     minutes = "00";
@@ -1282,7 +1287,7 @@ public class ScheduleController {
                 // For every time between the start and end of the reservation,
                 // Mark it as booked, color it red, and display the event name
                 // or "Booked" depending on its privacy level
-                for (int box = (startHour - openTime) * timeStep + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
+                for (int box = (startHour - openTime) * timeStep - openTimeMinutes + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
                     // gets the time slot?
                     ScheduleWrapper time = schedToAdd.get(box);
                     if (res.getPrivacyLevel() == 0) {
@@ -1332,7 +1337,11 @@ public class ScheduleController {
             }
 
             // For each time step in that hour, create a time label and activity label
-            for (int j = 0; j < timeStep; j++) {
+            int j = 0;
+            if (i == openTime) {
+                j = openTimeMinutes;
+            }
+            for (;j < timeStep; j++) {
                 String minutes = String.format("%d", timeStepMinutes * j);
                 if (Integer.parseInt(minutes) == 0) {
                     minutes = "00";
@@ -1372,7 +1381,7 @@ public class ScheduleController {
                 // For every time between the start and end of the reservation,
                 // Mark it as booked, color it red, and display the event name
                 // or "Booked" depending on its privacy level
-                for (int box = (startHour - openTime) * timeStep + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
+                for (int box = (startHour - openTime) * timeStep - openTimeMinutes + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
                     // gets the time slot?
                     ScheduleWrapper time = schedToAdd.get(box);
                     if (res.getPrivacyLevel() == 0) {
@@ -1846,6 +1855,21 @@ public class ScheduleController {
         if (valid) {
             openTimeStr = time;
             openTime = Integer.parseInt(openTimeStr.substring(0,2));
+            if (snapToMinutes) {
+                if (Integer.parseInt(time.substring(3)) % (timeStepMinutes) != 0) {
+                    // Then round them down to the nearest timeStep
+                    int minutes = ((int) Integer.parseInt(time.substring(3)) / (timeStepMinutes)) * (timeStepMinutes);
+                    String minutesSt = "" + minutes;
+                    if (minutesSt.length() < 2) {
+                        minutesSt += "0";
+                    }
+                    openTimeStr = openTimeStr.substring(0,3) + minutesSt;
+                }
+                openTimeMinutes = (int) (Integer.parseInt(openTimeStr.substring(3)) / timeStepMinutes);
+                System.out.println(openTime);
+            }
+
+
             showRoomSchedule(true);
 
             // todo: save a valid value - esp minutes
@@ -1853,8 +1877,8 @@ public class ScheduleController {
         }
         else {
             errorMessage.setVisible(true);
-            openTimeTextField.setText(openTimeStr);
         }
+        openTimeTextField.setText(openTimeStr);
     }
 
 }
