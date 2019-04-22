@@ -36,7 +36,6 @@ public class StageManager {
      * @throws Exception if the FXML fails to load
      */
     public static Stage changeExistingWindow(Stage primaryStage, Parent root, String title) throws Exception {
-        getApplicationState().getIM().startTheTimer();
         primaryStage.setTitle(title);
         addMouseMotionListener(getApplicationState().getIM());
         primaryStage.getScene().setRoot(root);
