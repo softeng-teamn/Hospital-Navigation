@@ -5,8 +5,9 @@ import employee.model.Employee;
 import javafx.stage.Stage;
 import map.Edge;
 import map.Node;
+import service.ResourceLoader;
 
-import java.awt.event.MouseMotionListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -30,24 +31,8 @@ public class ApplicationState {
     private boolean isInactive;
     private InactivityManager IM = new InactivityManager(10000);
     private Stage primaryStage;
-    private Employee employeeToDelete;
-    private boolean confirmReservation;
-
-    public Employee getEmployeeToDelete() {
-        return employeeToDelete;
-    }
-
-    public void setEmployeeToDelete(Employee employeeToDelete) {
-        this.employeeToDelete = employeeToDelete;
-    }
-
-    public boolean getConfirmReservation() {
-        return confirmReservation;
-    }
-
-    public void setConfirmReservation(boolean confirmReservation) {
-        this.confirmReservation = confirmReservation;
-    }
+    // sets the current theme
+    private URL currentTheme = ResourceLoader.default_style;
 
     //******************************************
 
@@ -103,6 +88,16 @@ public class ApplicationState {
     public void setEmployeeLoggedIn(Employee employeeLoggedIn) {
         this.employeeLoggedIn = employeeLoggedIn;
     }
+
+    // methods for controlling the current theme
+    public URL getCurrentTheme() {
+        return currentTheme;
+    }
+
+    public void setCurrentTheme(URL currentTheme) {
+        this.currentTheme = currentTheme;
+    }
+
 
     /**
      * Return the current path's start node.

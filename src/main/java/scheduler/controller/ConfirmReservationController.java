@@ -6,11 +6,11 @@ import application_state.Observer;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.google.zxing.WriterException;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import database.DatabaseService;
-import employee.model.Employee;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,15 +18,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import scheduler.model.Reservation;
+import service.QRService;
 import service.ResourceLoader;
 import service.StageManager;
 
 import javax.xml.crypto.Data;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -46,8 +48,6 @@ public class ConfirmReservationController {
     public JFXComboBox<String> privacyLvlBox;
     @FXML
     public JFXTextField employeeID, eventName;
-    @FXML
-    public VBox vbox;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -162,14 +162,12 @@ public class ConfirmReservationController {
         // If the user has not entered an event name, has entered an invalid ID,
         // or has not chosen a privacy level, display an error message
         if (eventName.getText().length() < 1 || id.length() < 1 || privacyLvlBox.getValue() == null) {
-            inputErrorLbl.setTextFill(Color.RED);
             inputErrorLbl.setText("Error: Please complete all fields to make a reservation.");
             inputErrorLbl.setVisible(true);
             valid = false;
         }
         // If the event name is too long, show an error
         if (eventName.getText().length() > 50) {
-            inputErrorLbl.setTextFill(Color.RED);
             inputErrorLbl.setText("Error: Please enter a shorter reservation name.");
             inputErrorLbl.setVisible(true);
             valid = false;
@@ -177,7 +175,6 @@ public class ConfirmReservationController {
 
         // If the ID number is bad, display an error message.
         if (myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null) {
-            inputErrorLbl.setTextFill(Color.RED);
             inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
             inputErrorLbl.setVisible(true);
             valid = false;
@@ -185,24 +182,13 @@ public class ConfirmReservationController {
 
         // If everything is okay, create the reservation
         if (valid) {
-            Parent parent = FXMLLoader.load(ResourceLoader.reservationConfirm);
-            Stage stage = new Stage();
-            stage.setScene(new Scene(parent));
-            stage.setTitle("Confirm Reservation");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(vbox.getScene().getWindow());
-            stage.showAndWait();
-            if(ApplicationState.getApplicationState().getConfirmReservation() == true){
-                System.out.println("IS VALID - CREATING RESERVATION");
-                createReservation();
-                ApplicationState.getApplicationState().setConfirmReservation(false);
-                Stage home = (Stage) makeReservationBtn.getScene().getWindow();
-                Parent root = FXMLLoader.load(ResourceLoader.scheduler);
-                StageManager.changeExistingWindow(home, root, "Scheduler");
-            }
+            System.out.println("IS VALID - CREATING RESERVATION");
+            createReservation();
 
             // Return to schedule main page
-
+            Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
+            Parent root = FXMLLoader.load(ResourceLoader.scheduler);
+            StageManager.changeExistingWindow(stage, root, "Scheduler");
         }
     }
 
@@ -210,7 +196,7 @@ public class ConfirmReservationController {
      * Create the reservation and send it to the database.
      */
     @FXML
-    public void createReservation() {
+    public void createReservation() throws IOException, WriterException {
         Event event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
         // Get the privacy level
         int privacy = 0;
@@ -225,6 +211,18 @@ public class ConfirmReservationController {
         // create new reservation and add to database
         Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
         myDBS.insertReservation(newRes);
+
+        // Create QR code popup
+        // TODO: figure out adding some sort of label
+        Stage stage = (Stage) privacyLvlBox.getScene().getWindow();
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(stage);
+        VBox dialogVbox = new VBox(20);
+        dialogVbox.getChildren().add(new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + eventName.getText() + "&eventLocation=" + myDBS.getReservableSpace(roomID).getSpaceName() + "&eventOrganizer=" + myDBS.getEmployee(Integer.parseInt(employeeID.getText())).getUsername() + "&startTime=" + cals.get(0).getTimeInMillis()/1000 + "&endTime=" + cals.get(1).getTimeInMillis()/1000, true)));
+        Scene dialogScene = new Scene(dialogVbox, 350, 350);
+        dialog.setScene(dialogScene);
+        dialog.show();
 
         // Reset the screen
         resetView();

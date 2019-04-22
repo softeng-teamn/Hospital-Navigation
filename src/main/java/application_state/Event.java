@@ -1,7 +1,9 @@
 package application_state;
 
 import map.Node;
+import service.ResourceLoader;
 
+import java.net.URL;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
@@ -32,6 +34,10 @@ public class Event {
    // floor
     ArrayList<Node> path = null;    // The currently drawn path
     ResourceBundle currentBundle = dfBundle;
+
+
+
+    URL theme = ResourceLoader.default_style;
 
     // for scheduling an event. todo what are these used for?
     ArrayList<GregorianCalendar> startAndEndTimes = null ;    // times.
@@ -132,5 +138,13 @@ public class Event {
 
     public void setDirectionsNode(Node directionsNode) {
         this.directionsNode = directionsNode;
+    }
+
+    public URL getTheme() {
+        return theme;
+    }
+
+    public void setTheme(URL theme) {
+        this.theme = theme;
     }
 }
