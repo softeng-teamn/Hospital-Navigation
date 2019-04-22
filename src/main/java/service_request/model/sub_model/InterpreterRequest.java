@@ -16,7 +16,19 @@ import static employee.model.JobType.*;
 public class InterpreterRequest extends Request {
 
     public enum Language{
-        SPANISH, FRENCH, MANDARIN, ENGLISH;
+        SPANISH("Spanish"),
+        FRENCH("French"),
+        MANDARIN("Mandarin"),
+        ENGLISH("English");
+
+        private String string;
+
+        Language(String name){string = name;}
+
+        @Override
+        public String toString() {
+            return string;
+        }
     }
 
 

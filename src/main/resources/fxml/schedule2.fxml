@@ -19,7 +19,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.controller.ScheduleController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.controller.ScheduleController">
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="128.0" prefWidth="200.0" spacing="5.0" styleClass="header">
          <children>
@@ -66,7 +66,7 @@
                   <Insets bottom="48.0" top="24.0" />
                </padding>
             </VBox>
-            <JFXTabPane prefWidth="1536.0" stylesheets="@../theme.css">
+            <JFXTabPane prefWidth="1536.0" stylesheets="@../default.css">
                <tabs>
                   <Tab fx:id="mapAvailRooms" text="Map of Available Rooms">
                     <content>
@@ -90,7 +90,7 @@
                               <SVGPath fx:id="classroom1" content="M 69.350913,216.18402 H 33.0791 v -20.93054 h 29.513233 v 3.32082 h -1.052372 v 1.77734 h 0.982212 v 9.752 h 6.75858 z" fill="#25e24e9e" layoutX="922.0" layoutY="372.0" scaleX="4.0" scaleY="4.0" />
                               <SVGPath fx:id="classroom2" content="m 139.44736,176.91279 c 0.1323,0 16.30495,-6.08542 16.30495,-6.08542 l 0.95912,2.57969 0.59531,-0.23151 9.19427,25.63151 -0.59349,0.21999 0.4612,1.136 -1.15755,0.46302 0.83851,2.01544 0.9805,-0.36179 0.26458,0.66145 -16.37109,5.92006 z" fill="#25e24e9e" layoutX="1010.0" layoutY="229.0" scaleX="4.0" scaleY="4.0" />
                               <SVGPath fx:id="auditorium" content="m 155.79484,209.86287 12.63385,-4.46485 3.90261,10.71563 -0.56224,0.23151 1.5875,4.23333 0.52916,-0.23151 1.42214,3.86953 -0.59531,0.29766 0.26458,0.85989 -1.15755,0.42995 0.62838,2.05052 1.2237,-0.46302 1.19063,3.07578 2.3151,-0.79375 c 0,0 6.28385,19.31459 -14.78359,27.68203 -0.72761,-2.48047 -0.72761,-2.48047 -0.72761,-2.48047 l -24.34166,0.0992 v -9.62422 h 2.44739 v -1.55442 l 13.32839,-25.4 3.27422,-1.15755 z" fill="#25e24e9e" layoutX="1029.0" layoutY="342.0" scaleX="4.0" scaleY="4.0" />
-                              <Label layoutX="863.0" layoutY="20.0" styleClass="small-label" stylesheets="@../theme.css" text="Classroom 2 " />
+                              <Label layoutX="863.0" layoutY="20.0" styleClass="small-label" stylesheets="@../default.css" text="Classroom 2 " />
                               <Label layoutX="774.0" layoutY="260.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="C6" />
                               <Label layoutX="942.0" layoutY="288.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="C4" />
                               <Label layoutX="851.0" layoutY="288.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="C5" />
@@ -99,7 +99,7 @@
                               <Label layoutX="1110.0" layoutY="408.0" mouseTransparent="true" pickOnBounds="false" rotate="69.4" style="-fx-font-size: 10pt;" styleClass="map-label" text="Computer Room 2 " />
                               <Label layoutX="906.0" layoutY="575.0" mouseTransparent="true" pickOnBounds="false" prefHeight="26.0" prefWidth="140.0" style="-fx-font-size: 10pt;" styleClass="map-label" text="Computer Room 1" />
                               <Label layoutX="1139.0" layoutY="586.0" mouseTransparent="true" pickOnBounds="false" styleClass="map-label" text="Amphitheater" />
-                              <Label layoutX="748.0" layoutY="20.0" styleClass="small-label" stylesheets="@../theme.css" text="Classroom 3" />
+                              <Label layoutX="748.0" layoutY="20.0" styleClass="small-label" stylesheets="@../default.css" text="Classroom 3" />
                               <SVGPath fx:id="ws4" content="m 74.451386,35.430586 h 7.256041 v 9.13701 h -7.419098 z" fill="#25e24e" layoutX="308.0" layoutY="184.0" scaleX="3.0" scaleY="3.0" />
                               <SVGPath fx:id="ws5" content="m 74.451386,35.430586 h 7.256041 v 9.13701 h -7.419098 z" fill="#25e24e" layoutX="308.0" layoutY="214.0" scaleX="3.0" scaleY="3.0" />
                               <SVGPath fx:id="ws6" content="m 74.451386,35.430586 h 7.256041 v 9.13701 h -7.419098 z" fill="#25e24e" layoutX="308.0" layoutY="242.0" scaleX="3.0" scaleY="3.0" />
