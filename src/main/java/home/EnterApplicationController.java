@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import map.MapController;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -57,7 +58,7 @@ public class EnterApplicationController {
         Stage stage = (Stage) sp.getScene().getWindow();
         Parent root = load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home");
-
+        MapController.initConnections();
     }
 
     public void gameStart() throws Exception{

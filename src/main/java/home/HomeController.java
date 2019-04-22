@@ -37,7 +37,6 @@ public class HomeController implements Observer {
         currState.setDefaultStartNode();    // Set the default start
         currState.setEndNode(null);
 
-        MapController.initConnections();
 
         drawer.setSidePane(drawerPane);
         drawer.setDefaultDrawerSize(480);
