@@ -84,7 +84,7 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Get and Populate fields
         JFXTextArea description = GuiTest.find("#description");
-        JFXComboBox type = GuiTest.find("#getType");
+        JFXComboBox type = GuiTest.find("#type");
         JFXButton submit = GuiTest.find("#submit");
         clickOn(description).write("A description here...");
         clickOn(type).type(KeyCode.DOWN).type(KeyCode.ENTER);
@@ -256,7 +256,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         verifyThat(req, is(notNullValue()), informedErrorMessage(this));
         verifyThat(req.getFirstName(), is("John"));
         verifyThat(req.getLastName(), is("Doe"));
-        verifyThat(req.getBirthDay(), is("20190409"));
+        verifyThat(req.getBirthDay(), is("04/09/2019"));
         verifyThat(req.getNotes(), is("A description here..."));
     }
 
