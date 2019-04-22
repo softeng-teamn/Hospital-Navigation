@@ -16,7 +16,7 @@ class ITRequestDatabase {
      * @return true if the insert succeeds and false if otherwise
      */
     boolean insertITRequest(ITRequest req) {
-        String insertQuery = ("INSERT INTO ITREQUEST(notes, locationNodeID, completed, getType, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
+        String insertQuery = ("INSERT INTO ITREQUEST(notes, locationNodeID, completed, type, assignedEmployee) VALUES(?, ?, ?, ?, ?)");
         return databaseService.executeInsert(insertQuery, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getItRequestType().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null));
     }
 
@@ -44,7 +44,7 @@ class ITRequestDatabase {
      * @return true if the update succeeds and false if otherwise
      */
     boolean updateITRequest(ITRequest req) {
-        String query = "UPDATE ITREQUEST SET notes=?, locationNodeID=?, completed=?, getType=?, assignedEmployee=? WHERE (serviceID = ?)";
+        String query = "UPDATE ITREQUEST SET notes=?, locationNodeID=?, completed=?, type=?, assignedEmployee=? WHERE (serviceID = ?)";
         return databaseService.executeUpdate(query, req.getNotes(), req.getLocation().getNodeID(), req.isCompleted(), req.getItRequestType().name(), ((req.getAssignedTo() != -1 && req.getAssignedTo() != 0) ? req.getAssignedTo() : null), req.getId());
     }
 

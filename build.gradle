@@ -250,7 +250,7 @@ task apiJar(type: Jar) {
     }
     from(sourceSets.main.resources) {
         include "/fxml/api/api.fxml"
-        include "theme.css"
+        include "default.css"
         include "strings.properties"
     }
     baseName 'TeamN-InternalTransportAPI'

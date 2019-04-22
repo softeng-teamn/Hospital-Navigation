@@ -1961,7 +1961,7 @@ public class DatabaseService {
         String notes = rs.getString("notes");
         Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
-        String type = rs.getString("getType");
+        String type = rs.getString("type");
         int assignedEmployee = rs.getInt("assignedEmployee");
 
         ITRequest req = new ITRequest(serviceID, notes, locationNode, completed, ITRequest.ITRequestType.valueOf(type));
