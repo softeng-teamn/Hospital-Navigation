@@ -34,7 +34,7 @@
          <VBox.margin>
             <Insets bottom="12.0" />
          </VBox.margin></FontAwesomeIconView>
-      <Label fx:id="adminServicesTitle" styleClass="big-label" stylesheets="@/theme.css" text="Time to Logout" />
+      <Label fx:id="adminServicesTitle" styleClass="big-label" stylesheets="@../../default.css" text="Time to Logout" />
       <HBox alignment="CENTER" prefHeight="22.0" prefWidth="480.0">
          <children>
             <JFXTextField fx:id="autoLogout" />
@@ -43,7 +43,7 @@
             <Insets bottom="10.0" />
          </padding>
       </HBox>
-      <JFXButton fx:id="autoLogoutSet" onAction="#updateLogout" stylesheets="@../../theme.css" text="Confirm" />
+      <JFXButton fx:id="autoLogoutSet" onAction="#updateLogout" stylesheets="@../../default.css" text="Confirm" />
       <JFXButton fx:id="fulfillRequestBtn" graphicTextGap="8.0" onAction="#showFulfillRequest" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" text="Fulfill Requests">
          <VBox.margin>
             <Insets />
