@@ -13,6 +13,7 @@ import com.calendarfx.model.Interval;
 import com.calendarfx.view.DateControl;
 import com.calendarfx.view.popover.*;
 import com.jfoenix.controls.*;
+import employee.model.Employee;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
@@ -680,7 +681,8 @@ public class ScheduleController {
 
             // Get the name and contact info depending on privacy level
             String nameStr = res.getEventName();
-            String contactStr = myDBS.getEmployee(res.getEmployeeId()).getUsername();    // todo: real first and last name or email
+            Employee emp = myDBS.getEmployee(res.getEmployeeId());
+            String contactStr = emp.getFirstName() + " " + emp.getLastName();
             if (res.getPrivacyLevel() > 0) {
                 nameStr = "Private Event";
                 contactStr = "Private Organizer";
