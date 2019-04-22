@@ -26,7 +26,7 @@ public class ApplicationState {
     private Employee employeeLoggedIn;
     private String startEnd = "end";    // Whether the currently selected node in the listView is the start or end node
     private boolean isInactive;
-    private InactivityManager IM = new InactivityManager(50000);
+    private InactivityManager IM = new InactivityManager(30000);
     private Stage primaryStage;
     private Employee employeeToDelete;
     private boolean confirmReservation;

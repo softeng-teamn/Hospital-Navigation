@@ -9,12 +9,16 @@ import service.StageManager;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+
 
 import static application_state.ApplicationState.getApplicationState;
 
 public class InactivityManager implements MouseMotionListener {
+
+    private Event event;
 
     int inactivityLimit;
     Timer timer = new Timer();
@@ -33,28 +37,26 @@ public class InactivityManager implements MouseMotionListener {
     }
 
     TimerTask task = new TimerTask() {
-        public void run(){
-            getApplicationState().setInactive(true);
-            Stage stage = getApplicationState().getPrimaryStage();
-            try {
-                Parent root = FXMLLoader.load(ResourceLoader.idle);
-                StageManager.changeExistingWindow(stage, root, "idle");
-            }
-            catch(Exception exception){
-                System.out.println("big sad");
-            }
+        public void run() {
+            System.out.println("Timer Task Running");
+            event = ApplicationState.getApplicationState().getObservableBus().getEvent();
+            event.setAdmin(false);
+            event.setLoggedIn(false);
+            event.setEventName("logout");
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
+            ApplicationState.getApplicationState().setEmployeeLoggedIn(null);
         }
     };
 
     @Override
     public void mouseDragged(MouseEvent e) {
         timer.cancel();
-        timer.schedule(task, 5000l);
+        timer.schedule(task, inactivityLimit);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         timer.cancel();
-        timer.schedule(task, 5000l);
+        timer.schedule(task, inactivityLimit);
     }
 }

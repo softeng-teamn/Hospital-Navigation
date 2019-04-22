@@ -245,6 +245,14 @@ public class TopNavController implements Observer {
                     }
                 });
                 break;
+            case "logout":
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        resetBtn();
+                    }
+                });
+                break;
             default:
                 break;
         }
