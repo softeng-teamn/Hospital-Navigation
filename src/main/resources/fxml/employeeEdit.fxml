@@ -53,9 +53,12 @@
                         <Insets top="48.0" />
                      </VBox.margin>
                   </MaterialIconView>
-                  <Region prefHeight="72.0" prefWidth="660.0" />
-                  <JFXTextField fx:id="new_username" disable="false" labelFloat="true" maxWidth="-Infinity" prefHeight="38.0" prefWidth="295.0" promptText="Set Username" />
-                  <HBox alignment="CENTER" layoutX="10.0" layoutY="660.0" prefHeight="141.0" prefWidth="660.0">
+                  <JFXTextField fx:id="new_username" disable="false" labelFloat="true" maxWidth="-Infinity" prefHeight="40.0" prefWidth="295.0" promptText="Set Username">
+                     <VBox.margin>
+                        <Insets bottom="24.0" top="24.0" />
+                     </VBox.margin>
+                  </JFXTextField>
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="660.0" prefHeight="108.0" prefWidth="660.0">
                      <children>
                         <JFXComboBox fx:id="new_job" prefHeight="38.0" prefWidth="160.0" promptText="Job">
                            <HBox.margin>
@@ -65,7 +68,7 @@
                         <JFXCheckBox fx:id="new_is_admin" prefHeight="37.0" prefWidth="111.0" text="Is Admin" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                  <HBox alignment="CENTER" prefHeight="92.0" prefWidth="660.0">
                      <children>
                         <JFXPasswordField fx:id="new_password" labelFloat="true" promptText="Password">
                            <HBox.margin>
@@ -79,7 +82,7 @@
                         </JFXPasswordField>
                      </children>
                   </HBox>
-                  <Region prefHeight="78.0" prefWidth="660.0" />
+                  <Region prefHeight="90.0" prefWidth="660.0" />
                   <JFXButton onAction="#addNewEmployee" prefHeight="69.0" prefWidth="400.0" styleClass="confirm-button" text="Add New">
                      <VBox.margin>
                         <Insets bottom="72.0" />

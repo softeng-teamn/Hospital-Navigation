@@ -151,12 +151,17 @@ public class InternalTransportRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Internal Transport Request %d, Description: %s, Type: %s, Urgency: %s Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getTransport().name(), this.getUrgency(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Description: %s, Transport Vehicle: %s, %s urgent", this.getNotes(), this.getTransport().name(), this.getUrgency());
     }
 
     @Override
     public boolean isOfType(String typeString) {
         return typeString.equals("Internal Transport");
+    }
+
+
+    @Override
+    public String getType(){
+        return "Internal Transport";
     }
 }

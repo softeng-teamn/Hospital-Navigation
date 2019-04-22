@@ -102,12 +102,17 @@ public class MaintenanceRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Maintenance Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getMaintenanceType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Description: %s, Type: %s", this.getNotes(), this.getMaintenanceType().name());
     }
 
     @Override
     public boolean isOfType(String typeString) {
         return typeString.equals("Maintenance");
     }
+
+    @Override
+    public String getType(){
+        return "Maintenance";
+    }
+
 }

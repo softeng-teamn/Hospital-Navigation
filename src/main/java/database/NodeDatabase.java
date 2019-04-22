@@ -117,7 +117,7 @@ class NodeDatabase {
     }
 
     /**
-     * get nodes filtered by specific type
+     * get nodes filtered by specific getType
      *
      * @param filterOut the parameter to exclude specific nodes by
      * @return an arraylist of nodes that do not include the specified parameter

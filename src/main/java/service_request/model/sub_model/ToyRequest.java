@@ -100,12 +100,16 @@ public class ToyRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Toy Request %d, Description: %s, Toy Name: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getToyName(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Description: %s, Toy Name: %s", this.getNotes(), this.getToyName());
     }
 
     @Override
     public boolean isOfType(String typeString) {
         return typeString.equals("Toy");
+    }
+
+    @Override
+    public String getType(){
+        return "Toy";
     }
 }

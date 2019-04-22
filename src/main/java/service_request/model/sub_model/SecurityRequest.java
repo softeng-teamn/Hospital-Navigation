@@ -104,12 +104,17 @@ public class SecurityRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Security Request %d, Description: %s, Urgency: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getUrgency().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Description: %s, %s urgent", this.getNotes(), this.getUrgency().name());
     }
 
     @Override
     public boolean isOfType(String typeString) {
         return typeString.equals("Security");
     }
+
+    @Override
+    public String getType(){
+        return "Security";
+    }
+
 }

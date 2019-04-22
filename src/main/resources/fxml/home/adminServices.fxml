@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.AdminServiceController">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" stylesheets="@../../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.AdminServiceController">
    <children>
       <HBox alignment="TOP_RIGHT" spacing="40.0">
          <children>
@@ -103,7 +103,7 @@
                         <FontAwesomeIconView glyphName="TROPHY" size="48" styleClass="request-glyph" />
                      </graphic>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="dijsktraToggle" onAction="#dijsktraSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Dijsktra" textAlignment="CENTER" toggleGroup="$algorithm">
+                  <JFXToggleNode fx:id="dijsktraToggle" onAction="#dijsktraSwitch" prefHeight="120.0" prefWidth="120.0" styleClass="request-toggle-node" text="Dijkstra" textAlignment="CENTER" toggleGroup="$algorithm">
                      <graphic>
                         <EmojiOneView glyphName="REGIONAL_INDICATOR_D" size="48" styleClass="request-glyph" />
                      </graphic>

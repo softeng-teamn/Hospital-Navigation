@@ -166,37 +166,6 @@ public class MapViewController implements Observer {
         setFloor("1"); // DEFAULT
     }
 
-    /*
-    void pingTiming() {
-
-        Task task = new Task<Void>() {
-            @Override
-            public Void call() throws Exception {
-                while (true) {
-                    Thread.sleep(1000);
-//                    System.out.println("shit was fired");
-                    TimeUnit.SECONDS.sleep(1);
-//                    System.out.println("Elevator At: " + elevatorCon.getFloor("S"));
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-//                                System.out.println("Showing at: " + elevatorCon.getFloor("S"));
-                                cur_el_floor.setText(elevatorCon.getFloor("S"));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            }
-        };
-
-        new Thread(task).start();
-
-    }
-    */
-
     /** switch floor to new map image
      * @param floor the floor to switch the map image to
      */

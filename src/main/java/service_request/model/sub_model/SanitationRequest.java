@@ -107,12 +107,16 @@ public class SanitationRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Sanitation Request %d, Description: %s, Urgency: %s, Assigned To: %s, Fulfilled: %s, Material State: %s",
-                this.getId(), this.getNotes(), this.getUrgency(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getMaterialState());
+        return String.format("Description: %s, %s urgent, Material State: %s", this.getNotes(), this.getUrgency(), this.getMaterialState());
     }
 
     @Override
     public boolean isOfType(String typeString) {
         return typeString.equals("Sanitation");
+    }
+
+    @Override
+    public String getType(){
+        return "Sanitation";
     }
 }

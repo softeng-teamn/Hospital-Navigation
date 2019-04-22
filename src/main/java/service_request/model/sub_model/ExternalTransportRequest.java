@@ -130,13 +130,17 @@ public class ExternalTransportRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("External Transport Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getTransportationType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Description: %s, Vehicle: %s", this.getNotes(), this.getTransportationType().name());
     }
 
     @Override
     public boolean isOfType(String typeString) {
         return typeString.equals("External Transport");
+    }
+
+
+    @Override
+    public String getType(){
+        return "External Transport";
     }
 }

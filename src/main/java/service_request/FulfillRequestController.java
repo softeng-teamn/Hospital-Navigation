@@ -2,31 +2,27 @@ package service_request;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXRadioButton;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import employee.model.Employee;
 import database.DatabaseService;
+import javafx.util.StringConverter;
 import service.ResourceLoader;
 import service.StageManager;
 import service_request.model.Request;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-
-import static employee.model.JobType.*;
 
 /**
  * controller for the request fulfilling FXML
@@ -34,45 +30,93 @@ import static employee.model.JobType.*;
 public class FulfillRequestController implements Initializable {
 
     @FXML
-    public JFXRadioButton completedRadio;
-    @FXML
     private JFXButton homeBtn;
-    @FXML
-    private JFXButton adminBtn;
-    @FXML
-    private JFXListView<Request> requestListView;
-    @FXML
-    private JFXListView<Employee> employeeListView;
+
     @FXML
     private JFXComboBox<String> typeCombo;
-    @FXML
-    private JFXRadioButton allRadio;
-    @FXML
-    private JFXRadioButton uncRadio;
-    @FXML
-    private VBox typeVBox;
 
-    ArrayList<Employee> employees;
-    ArrayList<Request> requests;
+    @FXML
+    private JFXComboBox<Employee> employeeCombo;
+
+    @FXML
+    private ToggleGroup filterGroup;
+
+    @FXML
+    private TableView<Request> requestTable;
+
+    @FXML
+    private TableColumn<Request, String> colID, colType, colLocation, colDescription, colEmployee, colFufilled;
+
+    private ObservableList<Request> requests;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     /**
-     * switches window to home screen
+     * initialize the list of requests
      *
-     * @throws Exception if the FXML fails to load
+     * @param location required parameter for the abstract method this overrides
+     * @param resources required parameter for the abstract method this overrides
      */
-    @FXML
-    public void showHome() throws Exception {
-        Stage stage = (Stage) homeBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
-        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        String[] requestTypes = {"All", "AV Service", "External Transport", "Florist", "Gift Store", "Internal Transport", "Interpreter", "IT", "Maintenance", "Patient Info", "Religious", "Sanitation", "Security", "Toy", "Help"};
+        typeCombo.setItems(FXCollections.observableArrayList(requestTypes));
+        typeCombo.getSelectionModel().select(0);
+
+        Callback<ListView<Employee>, ListCell<Employee>> factory = lv -> new ListCell<Employee>() {
+
+            @Override
+            protected void updateItem(Employee item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? "" : item.getUsername());
+            }
+
+        };
+
+        employeeCombo.setCellFactory(factory);
+        employeeCombo.setButtonCell(factory.call(null));
+        ObservableList<Employee> employees = FXCollections.observableArrayList();
+        employees.setAll(myDBS.getAllEmployees());
+        employeeCombo.setItems(employees);
+        employeeCombo.getSelectionModel().select(0);
+
+        //selected value showed in combo box
+        employeeCombo.setConverter(new StringConverter<Employee>() {
+            @Override
+            public String toString(Employee employee) {
+                if (employee == null){
+                    return null;
+                } else {
+                    return employee.getUsername();
+                }
+            }
+
+            @Override
+            public Employee fromString(String userId) {
+                return null;
+            }
+        });
+
+        requests = FXCollections.observableArrayList();
+        requestTable.setItems(requests);
+        setRequestsAll();
+        initCols();
+    }
+
+    private void initCols() {
+        colType.setCellValueFactory(param -> new SimpleStringProperty("" + param.getValue().getType()));
+        colID.setCellValueFactory(param -> new SimpleStringProperty("" + param.getValue().getId()));
+        colLocation.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getLocation().getLongName()));
+        colDescription.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().toDisplayString()));
+        colEmployee.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getAssignedTo() > 0 ? myDBS.getEmployee(param.getValue().getAssignedTo()).getUsername() : ""));
+        colFufilled.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().isCompleted() ? "Yes" : "No"));
     }
 
     @FXML
     void typeFilterSwitch(ActionEvent event) {
         String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
 
+        /*
         employeeListView.getItems().clear();
         for (Employee employee : employees) {
             if (requestTypeSelected.equals("All") || employee.getJob() == ADMINISTRATOR) {
@@ -116,75 +160,7 @@ public class FulfillRequestController implements Initializable {
                 requestListView.getItems().add(request);
             }
         }
-    }
-
-
-    /**
-     * initialize the list of requests
-     *
-     * @param location required parameter for the abstract method this overrides
-     * @param resources required parameter for the abstract method this overrides
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        String[] requestTypes = {"All", "AV Service", "External Transport", "Florist", "Gift Store", "Internal Transport", "Interpreter", "IT", "Maintenance", "Patient Info", "Religious", "Sanitation", "Security", "Toy", "Help"};
-        typeCombo.setItems(FXCollections.observableArrayList(requestTypes));
-        typeCombo.getSelectionModel().select(0);
-
-        employees = (ArrayList<Employee>) myDBS.getAllEmployees();
-
-        employeeListView.setItems(FXCollections.observableArrayList(myDBS.getAllEmployees()));
-        employeeListView.setCellFactory(new Callback<ListView<Employee>, ListCell<Employee>>() {
-            @Override
-            public ListCell<Employee> call(ListView<Employee> param) {
-                ListCell<Employee> cell = new ListCell<Employee>() {
-
-                    @Override
-                    protected void updateItem(Employee item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item.getUsername() + " (" + item.getID() + ")");
-                        } else {
-                            setText("");
-                        }
-                    }
-                };
-                return cell;
-            }
-        });
-
-        requests = new ArrayList<>();
-
-        setRequestsAll();
-
-        requestListView.setItems(FXCollections.observableArrayList(requests));
-        requestListView.setCellFactory(new Callback<ListView<Request>, ListCell<Request>>() {
-            @Override
-            public ListCell<Request> call(ListView<Request> param) {
-                ListCell<Request> cell = new ListCell<Request>() {
-
-                    @Override
-                    protected void updateItem(Request item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item.toDisplayString());
-                        } else {
-                            setText("");
-                        }
-                    }
-                };
-                return cell;
-            }
-        });
-
-        requestListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Request> observable, Request oldValue, Request newValue) -> {
-            employeeListView.getItems().clear();
-            for(Employee employee : employees) {
-                if (newValue == null || newValue.fulfillableByType(employee.getJob())) {
-                    employeeListView.getItems().add(employee);
-                }
-            }
-        });
+        */
     }
 
     private void setRequestsAll() {
@@ -245,6 +221,7 @@ public class FulfillRequestController implements Initializable {
     }
 
     public void reqStateChange(ActionEvent actionEvent) {
+        /*
         if (allRadio.isSelected()) {
             setRequestsAll();
         } else if(uncRadio.isSelected()) {
@@ -259,11 +236,12 @@ public class FulfillRequestController implements Initializable {
             if (requestTypeSelected.equals("All") || request.isOfType(requestTypeSelected)) {
                 requestListView.getItems().add(request);
             }
-        }
+        }*/
     }
 
+    @FXML
     public void fulfillRequest(ActionEvent actionEvent) {
-        Request selectedRequest = requestListView.getSelectionModel().getSelectedItem();
+/*        Request selectedRequest = requestListView.getSelectionModel().getSelectedItem();
 
         if (selectedRequest != null) {
             if (selectedRequest.getAssignedTo() == 0) {
@@ -271,17 +249,31 @@ public class FulfillRequestController implements Initializable {
             }
             selectedRequest.fillRequest();
             reqStateChange(null);
-        }
+        }*/
     }
 
+    @FXML
     public void assignRequest(ActionEvent actionEvent) {
-        Request selectedRequest = requestListView.getSelectionModel().getSelectedItem();
+/*        Request selectedRequest = requestListView.getSelectionModel().getSelectedItem();
         Employee selectedEmployee = employeeListView.getSelectionModel().getSelectedItem();
 
         if (selectedEmployee != null && selectedRequest != null) {
             selectedRequest.setAssignedTo(selectedEmployee.getID());
             selectedRequest.updateEmployee(selectedRequest, selectedEmployee);
             reqStateChange(null);
-        }
+        }*/
     }
+
+    /**
+     * switches window to home screen
+     *
+     * @throws Exception if the FXML fails to load
+     */
+    @FXML
+    public void showHome() throws Exception {
+        Stage stage = (Stage) homeBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.home);
+        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
+    }
+
 }

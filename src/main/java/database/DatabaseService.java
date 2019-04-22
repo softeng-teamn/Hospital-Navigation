@@ -359,7 +359,7 @@ public class DatabaseService {
     }
 
     /**
-     * get nodes filtered by specific type
+     * get nodes filtered by specific getType
      *
      * @param filterOut the parameter to exclude specific nodes by
      * @return an arraylist of nodes that do not include the specified parameter
@@ -1525,7 +1525,7 @@ public class DatabaseService {
      * @param query      the query to use as the prepared statement.
      * @param cls        the class that the method should return
      * @param parameters the parameters for the prepared statement. There must be an equal number of ?s in the query and parameters in here for the query to run properly.
-     * @return a list of the given object type, based on the database query
+     * @return a list of the given object getType, based on the database query
      */
     <T> List<Object> executeGetMultiple(String query, Class<T> cls, Object... parameters) {
         ArrayList<Object> reqs = new ArrayList();
@@ -1614,7 +1614,7 @@ public class DatabaseService {
      * @param query the query to execute
      * @param cls   the class of object to return
      * @param id    the id that functions as the key to retrieve
-     * @return an object of type cls
+     * @return an object of getType cls
      */
     <T> Object executeGetById(String query, Class<T> cls, Object id) {
         PreparedStatement stmt = null;
@@ -1950,7 +1950,7 @@ public class DatabaseService {
         String notes = rs.getString("notes");
         Node locationNode = nodeDatabase.getNode(rs.getString("locationNodeID"));
         boolean completed = rs.getBoolean("completed");
-        String type = rs.getString("type");
+        String type = rs.getString("getType");
         int assignedEmployee = rs.getInt("assignedEmployee");
 
         ITRequest req = new ITRequest(serviceID, notes, locationNode, completed, ITRequest.ITRequestType.valueOf(type));

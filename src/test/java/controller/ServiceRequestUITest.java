@@ -65,7 +65,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     @Test
     @Category(SlowTest.class)
     public void itTest() {
-        // Verify no service_request of this type exist
+        // Verify no service_request of this getType exist
         assertThat(myDBS.getAllITRequests().size(), is(0));
 
         // Get and click on a location
@@ -75,7 +75,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
 
-        // Click on the service_request type
+        // Click on the service_request getType
         Node tgNode = GuiTest.find("#itSelectNode");
         clickOn(tgNode);
 
@@ -84,7 +84,7 @@ public class ServiceRequestUITest extends ApplicationTest {
 
         // Get and Populate fields
         JFXTextArea description = GuiTest.find("#description");
-        JFXComboBox type = GuiTest.find("#type");
+        JFXComboBox type = GuiTest.find("#getType");
         JFXButton submit = GuiTest.find("#submit");
         clickOn(description).write("A description here...");
         clickOn(type).type(KeyCode.DOWN).type(KeyCode.ENTER);
@@ -102,7 +102,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     @Test
     @Category(SlowTest.class)
     public void toyTest() {
-        // Verify no service_request of this type exist
+        // Verify no service_request of this getType exist
         assertThat(myDBS.getAllToyRequests().size(), is(0));
 
         // Get and click on a location
@@ -112,7 +112,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
 
-        // Click on the service_request type
+        // Click on the service_request getType
         Node tgNode = GuiTest.find("#toySelectNode");
         clickOn(tgNode);
 
@@ -138,7 +138,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     @Test
     @Category(SlowTest.class)
     public void securityTest() {
-        // Verify no service_request of this type exist
+        // Verify no service_request of this getType exist
         assertThat(myDBS.getAllSecurityRequests().size(), is(0));
 
         // Get and click on a location
@@ -148,7 +148,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
 
-        // Click on the service_request type
+        // Click on the service_request getType
         Node tgNode = GuiTest.find("#securitySelectNode");
         clickOn(tgNode);
 
@@ -176,7 +176,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     @Ignore
     @Category(SlowTest.class)
     public void sanitationTest() {
-        // Verify no service_request of this type exist
+        // Verify no service_request of this getType exist
         assertThat(myDBS.getAllSanitationRequests().size(), is(0));
 
         // Get and click on a location
@@ -186,7 +186,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
 
-        // Click on the service_request type
+        // Click on the service_request getType
         Node tgNode = GuiTest.find("#sanitationSelectNode");
         clickOn(tgNode);
 
@@ -216,7 +216,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     @Test
     @Category(SlowTest.class)
     public void patientInfoTest() {
-        // Verify no service_request of this type exist
+        // Verify no service_request of this getType exist
         assertThat(myDBS.getAllPatientInfoRequests().size(), is(0));
 
         // Get and click on a location
@@ -226,7 +226,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
 
-        // Click on the service_request type
+        // Click on the service_request getType
         Node tgNode = GuiTest.find("#patientSelectNode");
         clickOn(tgNode);
 
@@ -263,7 +263,7 @@ public class ServiceRequestUITest extends ApplicationTest {
     @Test
     @Category(SlowTest.class)
     public void medicineRequestTest() {
-        // Verify no service_request of this type exist
+        // Verify no service_request of this getType exist
         assertThat(myDBS.getAllMedicineRequests().size(), is(0));
 
         // Get and click on a location
@@ -273,7 +273,7 @@ public class ServiceRequestUITest extends ApplicationTest {
         // Get the subscene
         Pane subSceneHolder = GuiTest.find("#subSceneHolder");
 
-        // Click on the service_request type
+        // Click on the service_request getType
         Node tgNode = GuiTest.find("#medicineSelectNode");
         clickOn(tgNode);
 

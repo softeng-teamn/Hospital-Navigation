@@ -26,7 +26,7 @@ public class ObservableBus {
 
     /**
      * Register this object as an observer. For a given observer, give it a name
-     * so that when a new observer of the same type is added it replaces the old one in the
+     * so that when a new observer of the same getType is added it replaces the old one in the
      * HashMap, allowing the old object to be garbage collected.
      * @param name the name of the observer
      * @param o the observer
