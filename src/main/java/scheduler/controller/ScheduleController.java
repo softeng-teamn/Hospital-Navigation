@@ -534,7 +534,7 @@ public class ScheduleController {
         calendarView.setPrefHeight(915);
         calendarView.setShowPrintButton(false);
         calendarView.setShowAddCalendarButton(false);
-        calendarView.getStylesheets().add("theme.css");
+        calendarView.getStylesheets().add("default.css");
 
         // Create calendar for each room and set style
         Calendar amphitheaterCal = new Calendar("Amphitheater");
