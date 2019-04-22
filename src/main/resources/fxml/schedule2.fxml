@@ -253,7 +253,7 @@
                     <content>
                       <AnchorPane prefHeight="915.0" prefWidth="1485.0">
                            <children>
-                              <TableView fx:id="scheduleTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="915.0" prefWidth="1485.0" />
+                              <TableView fx:id="scheduleTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="1485.0" />
                            </children>
                            <padding>
                               <Insets top="5.0" />
@@ -265,7 +265,7 @@
                      <content>
                         <AnchorPane prefHeight="915.0" prefWidth="1485.0">
                            <children>
-                              <TableView fx:id="dailyScheduleAllRooms" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="915.0" prefWidth="1485.0" />
+                              <TableView fx:id="dailyScheduleAllRooms" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="1485.0" />
                            </children>
                         </AnchorPane>
                      </content>
@@ -330,7 +330,7 @@
                               <VBox prefHeight="915.0" prefWidth="191.0" spacing="20.0">
                                  <children>
                                     <JFXTextField fx:id="openTimeTextField" onAction="#validOpenTime" prefHeight="50.0" />
-                                    <JFXTextField fx:id="closeTimeTextField" prefHeight="50.0" />
+                                    <JFXTextField fx:id="closeTimeTextField" onAction="#validCloseTime" prefHeight="50.0" />
                                     <JFXTextField fx:id="minResTextField" prefHeight="50.0" />
                                     <Label fx:id="errorMessage" prefHeight="50.0" wrapText="true" />
                                  </children>

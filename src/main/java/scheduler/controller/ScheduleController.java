@@ -433,6 +433,7 @@ public class ScheduleController {
     private int openTimeMinutes = 0;
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private String closeTimeString = "22:00";
+    private int closeTimeMinutes = 0;
     private int timeStep = 2;    // Fractions of an hour
     private int timeStepMinutes = 60 / timeStep;    // In Minutes
     private static final int NUM_ROOMS = 10;
@@ -456,7 +457,7 @@ public class ScheduleController {
     // List of all reservable spaces
     private ObservableList<ReservableSpace> allResSpaces;
     // Error messages
-    private String timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";
+    private String timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";    // todo: use variables
     private String availRoomsText = "Show Available Spaces";
     private String bookedRoomsText = "Show Booked Spaces";
     private String clearFilterText = "Clear Filter";
@@ -717,10 +718,10 @@ public class ScheduleController {
             // Correct dates
             String startDate = startTimeStr.substring(5,7) + "/" + startTimeStr.substring(8,10) + "/" + startTimeStr.substring(0,4);
             String endDate = endTimeStr.substring(5,7) + "/" + endTimeStr.substring(8,10) + "/" + endTimeStr.substring(0,4);
-            if (endHour >= 21) {
+            if (endHour >= 20) {
                 endDate = endDate.substring(0,3) + (Integer.parseInt(endDate.substring(3,5)) - 1) + endDate.substring(5);
             }
-            if (startHour >= 21) {
+            if (startHour >= 20) {
                 startDate = startDate.substring(0,3) + (Integer.parseInt(startDate.substring(3,5)) - 1) + startDate.substring(5);
             }
 
@@ -1145,7 +1146,7 @@ public class ScheduleController {
                     startMinutes = "00";
                 }
                 String startDate = startTimeStr.substring(5,7) + "/" + startTimeStr.substring(8,10) + "/" + startTimeStr.substring(0,4);
-                if (startHour >= 21) {
+                if (startHour >= 20) {
                     startDate = startDate.substring(0,3) + (Integer.parseInt(startDate.substring(3,5)) - 1) + startDate.substring(5);
                 }
                 startTimeStr = startHour + ":" + startMinutes + " on " + startDate;
@@ -1164,7 +1165,7 @@ public class ScheduleController {
                 }
                 // Correct dates
                 String endDate = endTimeStr.substring(5,7) + "/" + endTimeStr.substring(8,10) + "/" + endTimeStr.substring(0,4);
-                if (endHour >= 21) {
+                if (endHour >= 20) {
                     endDate = endDate.substring(0,3) + (Integer.parseInt(endDate.substring(3,5)) - 1) + endDate.substring(5);
                 }
                 endTimeStr = endHour + ":"  + endMinutes + " on " + endDate;
@@ -1224,28 +1225,26 @@ public class ScheduleController {
         ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
 
         // For every hour between the time the room closes and the time it opens
-        for (int i = openTime; i < closeTime; i++) {
-            String amPm = "AM";    // Half of the day
-            if (((int) i / 12) == 1) {    // If in the afternoon, use PM
-                amPm = "PM";
-            }
-
-            int time = i % 12;    // The hour, from 24 hours
-            if (time == 0) {    // If the hour was 12, make it display as 12
-                time = 12;
-            }
-
+        int closeOnHour = closeTime;
+        if (closeTimeMinutes > 0) {
+            closeOnHour = closeTime + 1;
+        }
+        for (int i = openTime; i < closeOnHour; i++) {
             // For each time step in that hour, create a time label and activity label
             int j = 0;
             if (i == openTime) {
                 j = openTimeMinutes;
             }
-            for (;j < timeStep; j++) {
+            int bound = timeStep;
+            if (i == closeTime) {
+                bound = closeTimeMinutes;
+            }
+            for (;j < bound; j++) {
                 String minutes = String.format("%d", timeStepMinutes * j);
                 if (Integer.parseInt(minutes) == 0) {
                     minutes = "00";
                 }
-                String timeInc = time + ":" + minutes + " " + amPm;
+                String timeInc = i + ":" + minutes;
 
                 // Add the labels to the lists
                 ScheduleWrapper toAdd = new ScheduleWrapper(timeInc);
@@ -1323,28 +1322,26 @@ public class ScheduleController {
         ArrayList<ScheduleWrapper> schedToAdd = new ArrayList<>();
 
         // For every hour between the time the room closes and the time it opens
-        for (int i = openTime; i < closeTime; i++) {
-            String amPm = "AM";    // Half of the day
-            if (((int) i / 12) == 1) {    // If in the afternoon, use PM
-                amPm = "PM";
-            }
-
-            int time = i % 12;    // The hour, from 24 hours
-            if (time == 0) {    // If the hour was 12, make it display as 12
-                time = 12;
-            }
-
+        int closeOnHour = closeTime;
+        if (closeTimeMinutes > 0) {
+            closeOnHour = closeTime + 1;
+        }
+        for (int i = openTime; i < closeOnHour; i++) {
             // For each time step in that hour, create a time label and activity label
             int j = 0;
             if (i == openTime) {
                 j = openTimeMinutes;
             }
-            for (;j < timeStep; j++) {
+            int bound = timeStep;
+            if (i == closeTime) {
+                bound = closeTimeMinutes;
+            }
+            for (;j < bound; j++) {
                 String minutes = String.format("%d", timeStepMinutes * j);
                 if (Integer.parseInt(minutes) == 0) {
                     minutes = "00";
                 }
-                String timeInc = time + ":" + minutes + " " + amPm;
+                String timeInc = i + ":" + minutes;
 
                 // Add the labels to the lists
                 ScheduleWrapper toAdd = new ScheduleWrapper(timeInc);
@@ -1785,12 +1782,16 @@ public class ScheduleController {
     }
 
     @FXML
-    private void setCloseTime() {    // todo: other things related to close time
+    private void setCloseTime() {
         if (boundCloseTime) {
             boundCloseTime = false;
             closeTimeCheckBox.setSelected(false);
             closeTimeCheckBox.setText("Unbound");
             closeTimeTextField.setVisible(false);
+            closeTime = 23;
+            closeTimeMinutes = timeStep;
+            closeTimeString = "23:59";
+            showRoomSchedule(true);
         }
         else {
             boundCloseTime = true;
@@ -1798,8 +1799,43 @@ public class ScheduleController {
             closeTimeCheckBox.setText("Bound");
             closeTimeTextField.setVisible(true);
             closeTimeTextField.setText(closeTimeString);
+            showRoomSchedule(true);
         }
         // todo: check if valid close time: greater than open time
+    }
+
+    @FXML
+    private void validCloseTime() {    // todo: all the display stuff; ex w box, minutes, etc.
+        String valid = validFieldTime(closeTimeTextField.getText());
+
+        if (valid.length() > 0) {
+            if (Integer.parseInt(valid.substring(0,2)) <= openTime) {
+                valid = "";
+            }
+        }
+
+        if (valid.length() > 0) {
+            closeTimeString = valid;
+            closeTime = Integer.parseInt(closeTimeString.substring(0,2));
+            if (snapToMinutes) {
+                if (Integer.parseInt(valid.substring(3)) % (timeStepMinutes) != 0) {
+                    // Then round them down to the nearest timeStep
+                    int minutes = ((int) Integer.parseInt(valid.substring(3)) / (timeStepMinutes)) * (timeStepMinutes);
+                    String minutesSt = "" + minutes;
+                    if (minutesSt.length() < 2) {
+                        minutesSt += "0";
+                    }
+                    closeTimeString = closeTimeString.substring(0,3) + minutesSt;
+                }
+                closeTimeMinutes = (int) (Integer.parseInt(closeTimeString.substring(3)) / timeStepMinutes);
+                System.out.println(openTime);
+            }
+            showRoomSchedule(true);
+        }
+        else {
+            errorMessage.setVisible(true);
+        }
+        closeTimeTextField.setText(closeTimeString);
     }
 
     @FXML
@@ -1827,8 +1863,14 @@ public class ScheduleController {
     }
 
     @FXML
-    private void validOpenTime() {    // todo: abstract for closetime
+    private void validOpenTime() {
         String valid = validFieldTime(openTimeTextField.getText());
+
+        if (valid.length() > 0) {
+            if (Integer.parseInt(valid.substring(0,2)) >= closeTime) {
+                valid = "";
+            }
+        }
 
         if (valid.length() > 0) {
             openTimeStr = valid;
@@ -1843,7 +1885,7 @@ public class ScheduleController {
                     }
                     openTimeStr = openTimeStr.substring(0,3) + minutesSt;
                 }
-                openTimeMinutes = (int) (Integer.parseInt(openTimeStr.substring(3)) / timeStepMinutes);    // todo: dammit I broke it - w/r/t reservations?
+                openTimeMinutes = (int) (Integer.parseInt(openTimeStr.substring(3)) / timeStepMinutes);
                 System.out.println(openTime);
             }
 
@@ -1886,11 +1928,6 @@ public class ScheduleController {
             }
             if (!"0123456789".contains(fifth)) {
                 valid = false;
-            }
-            if (valid) {
-                if (Integer.parseInt(time.substring(0,2)) >= closeTime) {
-                    valid = false;
-                }
             }
         }
 
