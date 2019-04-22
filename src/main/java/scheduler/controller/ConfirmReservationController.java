@@ -6,6 +6,7 @@ import application_state.Observer;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.google.zxing.WriterException;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -15,13 +16,19 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import scheduler.model.Reservation;
+import service.QRService;
 import service.ResourceLoader;
 import service.StageManager;
 
 import javax.xml.crypto.Data;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -189,7 +196,7 @@ public class ConfirmReservationController {
      * Create the reservation and send it to the database.
      */
     @FXML
-    public void createReservation() {
+    public void createReservation() throws IOException, WriterException {
         Event event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
         // Get the privacy level
         int privacy = 0;
@@ -204,6 +211,18 @@ public class ConfirmReservationController {
         // create new reservation and add to database
         Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
         myDBS.insertReservation(newRes);
+
+        // Create QR code popup
+        // TODO: figure out adding some sort of label
+        Stage stage = (Stage) privacyLvlBox.getScene().getWindow();
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(stage);
+        VBox dialogVbox = new VBox(20);
+        dialogVbox.getChildren().add(new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + eventName.getText() + "&eventLocation=" + myDBS.getReservableSpace(roomID).getSpaceName() + "&eventOrganizer=" + myDBS.getEmployee(Integer.parseInt(employeeID.getText())).getUsername() + "&startTime=" + cals.get(0).getTimeInMillis()/1000 + "&endTime=" + cals.get(1).getTimeInMillis()/1000, true)));
+        Scene dialogScene = new Scene(dialogVbox, 350, 350);
+        dialog.setScene(dialogScene);
+        dialog.show();
 
         // Reset the screen
         resetView();
