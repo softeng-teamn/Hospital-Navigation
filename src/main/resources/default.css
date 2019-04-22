@@ -644,7 +644,9 @@
 
 }
 
-
+.table-view .table-column {
+    -fx-alignment: CENTER-LEFT;
+}
 
 .tooltip {
     -fx-background-color: -fx-complementary;
