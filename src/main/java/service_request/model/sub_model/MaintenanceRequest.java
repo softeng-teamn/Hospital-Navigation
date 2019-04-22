@@ -14,9 +14,18 @@ import static employee.model.JobType.*;
 
 public class MaintenanceRequest extends Request {
     public enum MaintenanceType {
-        Electrical,
-        Plumbing,
-        Other
+        Electrical("Electrical"),
+        Plumbing("Plumbing"),
+        Other("Other");
+
+        private String string;
+
+        MaintenanceType(String name){string = name;}
+
+        @Override
+        public String toString() {
+            return string;
+        }
     }
 
     MaintenanceType maintenanceType;

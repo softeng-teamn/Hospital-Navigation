@@ -4,7 +4,7 @@ import service_request.model.sub_model.FloristRequest;
 
 import java.util.List;
 
-public class FloristRequestDatabase {
+class FloristRequestDatabase {
     private final DatabaseService databaseService;
 
     public FloristRequestDatabase(DatabaseService databaseService) {

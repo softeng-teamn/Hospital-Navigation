@@ -383,6 +383,13 @@ public class DatabaseService {
         return nodeDatabase.getNumNodeTypeByFloor(nodeType, floor);
     }
 
+    /** method name
+     * @param floor the floor
+     * @param type the node type
+     * @return all nodes on the floor of the given type
+     */
+    ArrayList<Node> getNodesByFloorByType(String floor, String type){ return nodeDatabase.getNodesByFloorByType(floor, type);}
+
     // EDGE FUNCTIONS
 
     /**
@@ -763,6 +770,10 @@ public class DatabaseService {
         return floristRequestDatabase.insertFloristRequest(req);
     }
 
+    /**
+     * @param req
+     * @return
+     */
     public boolean updateFloristRequest(FloristRequest req) {
         return floristRequestDatabase.updateFloristRequest(req);
     }

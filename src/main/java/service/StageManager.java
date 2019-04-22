@@ -1,9 +1,14 @@
 package service;
 
+import application_state.ApplicationState;
+import application_state.Observer;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * controls scene switching
+ */
 public class StageManager {
 
     /**
@@ -16,8 +21,13 @@ public class StageManager {
      */
     public static Stage changeWindow(Stage primaryStage, Parent root, String title) throws Exception {
         primaryStage.setTitle(title);
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
         primaryStage.setFullScreen(true);
+        //set the style here
+        scene.getStylesheets().clear();
+        //setUserAgentStylesheets(null);
+        scene.getStylesheets().add(ApplicationState.getApplicationState().getCurrentTheme().toString());
+        primaryStage.setScene(scene);
         primaryStage.show();
         return primaryStage;
     }
@@ -35,6 +45,9 @@ public class StageManager {
         primaryStage.setTitle(title);
         primaryStage.getScene().setRoot(root);
         primaryStage.setFullScreen(true);
+        //set the style sheet here
+        root.getStylesheets().removeAll();
+        root.getStylesheets().add(ApplicationState.getApplicationState().getCurrentTheme().toString());
         primaryStage.show();
         return primaryStage;
     }

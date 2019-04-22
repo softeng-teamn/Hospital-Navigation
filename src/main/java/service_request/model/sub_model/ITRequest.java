@@ -15,10 +15,19 @@ import static employee.model.JobType.*;
 public class ITRequest extends Request {
 
     public enum ITRequestType {
-        Maintenance,
-        New_Computer,
-        Accessories,
-        Assistance
+        Maintenance("Maintenance"),
+        New_Computer("New Computer"),
+        Accessories("Accessories"),
+        Assistance("Assistance");
+
+        private String string;
+
+        ITRequestType(String name){string = name;}
+
+        @Override
+        public String toString() {
+            return string;
+        }
     }
 
     ITRequestType itRequestType;

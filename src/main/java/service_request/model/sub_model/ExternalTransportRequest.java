@@ -16,9 +16,18 @@ import static employee.model.JobType.*;
 public class ExternalTransportRequest extends Request {
 
     public enum TransportationType{
-        BUS,
-        TAXI,
-        CAR
+        BUS("Bus"),
+        TAXI("Taxi"),
+        CAR("Car");
+
+        private String string;
+
+        TransportationType(String name){string = name;}
+
+        @Override
+        public String toString() {
+            return string;
+        }
     }
 
     private String description;

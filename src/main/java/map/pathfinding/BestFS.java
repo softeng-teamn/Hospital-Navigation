@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+/**
+ * Best first search implementation
+ */
 public class BestFS extends AlgorithmContext implements Algorithm {
     private MapNode start;
     private MapNode dest;
