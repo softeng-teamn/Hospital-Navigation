@@ -1755,11 +1755,15 @@ public class ScheduleController {
             snapToMinutes = false;
             snapToCheckBox.setSelected(false);
             snapToCheckBox.setText("Off");
+            timeStep = 60;    // todo: test
+            timeStepMinutes = 60 / timeStep;
         }
         else {
             snapToMinutes = true;
             snapToCheckBox.setSelected(true);
             snapToCheckBox.setText("On");
+            timeStep = 2;    // todo: test
+            timeStepMinutes = 60 / timeStep;
         }
     }
 

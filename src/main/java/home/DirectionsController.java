@@ -74,7 +74,8 @@ public class DirectionsController implements Observer {
 
         // Get the current path and display it
         path = event.getPath();
-        printDirections(makeDirections(path));
+        ArrayList<String> allDirs = (makeDirections(path));
+        printDirections(allDirs);
 
         // Set whether the send-text button is enabled
         if (getApplicationState().getEmployeeLoggedIn() != null) {
@@ -89,7 +90,7 @@ public class DirectionsController implements Observer {
 
         ((Runnable) () -> {
             try {
-                generateQRCode(makeDirections(path));
+                generateQRCode(allDirs);
             } catch (WriterException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -184,10 +185,11 @@ public class DirectionsController implements Observer {
         }
 
         // Make startNodes correspond to directions
+        startNodes.clear();
+        startNodes.add(path.get(0));
         for (int i = 0; i < path.size(); i++) {
             startNodes.add(path.get(i));
         }
-        startNodes.add(path.get(path.size()-1));
 
         boolean afterFloorChange = false;    // If we've just changed floors, give a cardinal direction
         for (int i = 0; i < path.size() - 2; i++) {    // For each node in the path, make a direction
@@ -215,7 +217,7 @@ public class DirectionsController implements Observer {
             }
         }
 
-        //System.out.println("before simplifying: " + directions);
+        System.out.println("before simplifying: path: " + path.size() + "dirs: " + directions.size() + " startnodes: " + startNodes.size());
         // Simplify directions that continue approximately straight from each other
         for (int i = 1; i < directions.size(); i++) {
             String currDir = directions.get(i);
@@ -247,6 +249,8 @@ public class DirectionsController implements Observer {
         // Add the final direction
         directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
         ApplicationState.getApplicationState().setEndNode(path.get(path.size() - 1));
+        System.out.println("after simplifying: path: " + path.size() + "dirs: " + directions.size() + " startnodes: " + startNodes.size());
+
         //System.out.println(directions);
         return directions;
     }
@@ -306,8 +310,19 @@ public class DirectionsController implements Observer {
         ObservableList<HBox> dirs = FXCollections.observableArrayList();
         ArrayList<HBox> labels = new ArrayList<>();
 
+        // starting floor
+        String floor = startNodes.get(0).getFloor();
+        startNodes.add(0,startNodes.get(0));
+        HBox firstFloorBox = new HBox();
+        Label first = new Label("Floor " + floor + ":");
+        first.setWrapText(true);
+        first.setTextFill(Color.WHITE);
+        first.setStyle("-fx-font-weight: bold");
+        firstFloorBox.getChildren().add(first);
+        labels.add(firstFloorBox);
+
         HBox firstBox = new HBox();
-        Label first = new Label(ds.get(0));
+        first = new Label(ds.get(0));
         first.setWrapText(true);
         first.setTextFill(Color.WHITE);
         firstBox.getChildren().add(first);
@@ -510,6 +525,22 @@ public class DirectionsController implements Observer {
             l.setTextFill(Color.WHITE);
             box.getChildren().add(l);
             labels.add(box);
+
+            // starting floor
+            if ("NOPQ".contains(ds.get(i).substring(0,1))) {
+                startNodes.add(i+2, startNodes.get(i+2));
+                System.out.println(startNodes);
+                System.out.println("startnodes added this guy: " + startNodes.get(i+1));
+                String newFloor = backToFloors.get(ds.get(i).substring(2, 3));
+                HBox newFloorBox = new HBox();
+                Label newFloorLabel = new Label("Floor " + newFloor + ":");
+                newFloorLabel.setWrapText(true);
+                newFloorLabel.setTextFill(Color.WHITE);
+                newFloorLabel.setStyle("-fx-font-weight: bold");
+                newFloorBox.getChildren().add(newFloorLabel);
+                labels.add(newFloorBox);
+            }
+
             directions.add(direct);
         }
         directions.add(ds.get(ds.size() -1));
@@ -523,6 +554,7 @@ public class DirectionsController implements Observer {
 
         dirs.addAll(labels);
         directionsView.setItems(dirs);
+        System.out.println("in print: path: " + path.size() + "dirs: " + dirs.size() + " startnodes: " + startNodes.size());
 
         // Return the directions
         directions.add(ds.get(ds.size() -1));
@@ -763,6 +795,7 @@ public class DirectionsController implements Observer {
 
     public void directionClicked() {
         Node directionStart = startNodes.get(directionsView.getSelectionModel().getSelectedIndex());
+        System.out.println(directionStart);
         Event e = ApplicationState.getApplicationState().getObservableBus().getEvent();
         e.setEventName("scroll-to-direction");
         e.setDirectionsNode(directionStart);
