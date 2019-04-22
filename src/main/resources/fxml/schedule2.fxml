@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTimePicker?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
@@ -66,7 +68,7 @@
                   <Insets bottom="48.0" top="24.0" />
                </padding>
             </VBox>
-            <JFXTabPane prefWidth="1536.0" stylesheets="@../theme.css">
+            <JFXTabPane fx:id="tabPane" prefWidth="1536.0" stylesheets="@../theme.css">
                <tabs>
                   <Tab fx:id="mapAvailRooms" text="Map of Available Rooms">
                     <content>
@@ -270,6 +272,55 @@
                   <Tab fx:id="calendarTab" onSelectionChanged="#setCalInset" text="Calendar">
                      <content>
                         <AnchorPane fx:id="subSceneHolder" prefHeight="915.0" prefWidth="1485.0" />
+                     </content>
+                  </Tab>
+                  <Tab fx:id="settingsTab" onSelectionChanged="#setCalInset" text="Settings">
+                     <content>
+                        <HBox spacing="30.0">
+                           <children>
+                              <VBox prefHeight="915.0" prefWidth="740.0" spacing="20.0">
+                                 <children>
+                                    <Label prefHeight="50.0" text="Open Time: " />
+                                    <Label prefHeight="50.0" text="Close Time:" />
+                                    <Label prefHeight="50.0" text="Minimum Reservation (minutes):" />
+                                    <Label prefHeight="50.0" text="Snap Minutes to Regular Timestep:" />
+                                    <Label prefHeight="50.0" text="Allow Multi-day Reservations:" />
+                                    <Label prefHeight="50.0" text="Allow Recurring Reservations:" />
+                                    <Label prefHeight="50.0" text="Show Event Contact Info:" />
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets top="20.0" />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="450.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox prefHeight="915.0" prefWidth="191.0" spacing="20.0">
+                                 <children>
+                                    <JFXCheckBox fx:id="openTimeCheckBox" onAction="#setOpenTime" prefHeight="50.0" text="No Bound" />
+                                    <JFXCheckBox fx:id="closeTimeCheckBox" onAction="#setCloseTime" prefHeight="50.0" text="No Bound" />
+                                    <JFXCheckBox fx:id="minResCheckBox" onAction="#setMinRes" prefHeight="50.0" text="No Bound" />
+                                    <JFXCheckBox fx:id="snapToCheckBox" onAction="#setSnapTo" prefHeight="50.0" text="Off" />
+                                    <JFXCheckBox fx:id="multidayCheckBox" onAction="#setMultidayRes" prefHeight="50.0" text="Off" />
+                                    <JFXCheckBox fx:id="recurringCheckBox" onAction="#setRecurringRes" prefHeight="50.0" text="Off" />
+                                    <JFXCheckBox fx:id="showContactCheckBox" onAction="#setShowContact" prefHeight="50.0" text="Off" />
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets top="20.0" />
+                                 </HBox.margin>
+                              </VBox>
+                              <VBox prefHeight="915.0" prefWidth="191.0" spacing="20.0">
+                                 <children>
+                                    <JFXTextField fx:id="openTimeTextField" prefHeight="50.0" />
+                                    <JFXTextField fx:id="closeTimeTextField" prefHeight="50.0" />
+                                    <JFXTextField fx:id="minResTextField" prefHeight="50.0" />
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets top="20.0" />
+                                 </HBox.margin>
+                              </VBox>
+                           </children>
+                        </HBox>
                      </content>
                   </Tab>
                </tabs>

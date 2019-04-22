@@ -345,7 +345,10 @@ public class ScheduleController {
     public JFXButton submitBtn;
 
     @FXML
-    public JFXTextField eventName, searchBar, employeeID;
+    public JFXTextField eventName, searchBar, employeeID, closeTimeTextField, openTimeTextField, minResTextField;
+
+    @FXML
+    private JFXCheckBox closeTimeCheckBox, openTimeCheckBox, minResCheckBox, snapToCheckBox, recurringCheckBox, multidayCheckBox, showContactCheckBox;
 
     @FXML
     private TableView<ScheduleWrapper> scheduleTable, dailyScheduleAllRooms;
@@ -399,7 +402,10 @@ public class ScheduleController {
     private AnchorPane subSceneHolder;
 
     @FXML
-    private Tab weeklyScheduleTab, dailyScheduleTab;
+    private JFXTabPane tabPane;
+
+    @FXML
+    private Tab weeklyScheduleTab, dailyScheduleTab, settingsTab;
 
     private Event event ;    // The current event
     private Thread randStationsThread;    // Random stations thread
@@ -414,14 +420,22 @@ public class ScheduleController {
     ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
     ArrayList<SVGPath> workStations = new ArrayList<>();
 
-    // Table display information
+    // Admin settings
     private int openTime = 9;   // hour to start schedule display
+    private String openTimeStr = "09:00";
     private int closeTime = 22;    // 24-hours hour to end schedule display
+    private String closeTimeString = "22:00";
     private int timeStep = 2;    // Fractions of an hour
     private int timeStepMinutes = 60 / timeStep;    // In Minutes
     private static final int NUM_ROOMS = 10;
     private static final int NUM_DAYS_IN_WEEK = 7;
-
+    private boolean boundOpenTime = true;
+    private boolean boundCloseTime = true;
+    private boolean boundMinRes = true;
+    private boolean snapToMinutes = true;
+    private boolean allowMultidayRes = false;
+    private boolean allowRecurringRes = false;
+    private static boolean showContactInfo = true;
 
     // Currently selected location
     public ReservableSpace currentSelection;
@@ -464,6 +478,13 @@ public class ScheduleController {
         inputErrorLbl.setVisible(false);
         inputErrorLbl.setWrapText(true);
         inputErrorLbl.setPrefWidth(450);
+
+        // Only allow admin to change settings. Note: doesn't change past reservations.
+        tabPane.getTabs().remove(settingsTab);
+        if (ApplicationState.getApplicationState().getEmployeeLoggedIn() != null && ApplicationState.getApplicationState().getEmployeeLoggedIn().isAdmin()) {
+            tabPane.getTabs().add(settingsTab);
+            displaySettings();
+        }
 
         // Populate tables
         showRoomSchedule(false);
@@ -707,13 +728,37 @@ public class ScheduleController {
 
             // Add labels to vbox and hbox and put into pane
             VBox left = new VBox();
-            left.getChildren().addAll(leftName, leftLoc, leftStartTime, leftEndTime, leftContact);
+            left.getChildren().addAll(leftName, leftLoc, leftStartTime, leftEndTime);
             VBox right = new VBox();
-            right.getChildren().addAll(rightName, rightLoc, rightStartTime, rightEndTime, rightContact);
+            right.getChildren().addAll(rightName, rightLoc, rightStartTime, rightEndTime);
+            if (showContactInfo) {
+                left.getChildren().add(leftContact);
+                right.getChildren().add(rightContact);
+            }
             HBox both = new HBox();
             both.getChildren().addAll(left, right);
             this.getChildren().add(both);
         }
+    }
+
+    private void displaySettings() {
+        showContactCheckBox.setSelected(true);
+        showContactCheckBox.setText("On");
+        recurringCheckBox.setSelected(false);
+        recurringCheckBox.setText("Off");
+        multidayCheckBox.setSelected(false);
+        multidayCheckBox.setText("Off");
+        snapToCheckBox.setSelected(true);
+        snapToCheckBox.setText("On");
+        minResCheckBox.setSelected(true);
+        minResCheckBox.setText("Bound");
+        closeTimeCheckBox.setSelected(true);
+        closeTimeCheckBox.setText("Bound");
+        openTimeCheckBox.setSelected(true);
+        openTimeCheckBox.setText("Bound");
+        openTimeTextField.setText(openTimeStr);
+        closeTimeTextField.setText(closeTimeString);
+        minResTextField.setText(timeStepMinutes + "");
     }
 
     /**
@@ -1553,27 +1598,107 @@ public class ScheduleController {
     }
 
     // Admin functionality, ideally
-    public int getOpenTime() {
-        return openTime;
+    @FXML
+    private void setShowContact() {
+        if (showContactInfo) {
+            showContactInfo = false;
+            showContactCheckBox.setSelected(false);
+            showContactCheckBox.setText("Off");
+        }
+        else {
+            showContactInfo = true;
+            showContactCheckBox.setSelected(true);
+            showContactCheckBox.setText("On");
+        }
     }
 
-    public void setOpenTime(int openTime) {
-        this.openTime = openTime;
+    @FXML
+    private void setRecurringRes() {    // todo: other things related to recurring reservations
+        if (allowRecurringRes) {
+            allowRecurringRes = false;
+            recurringCheckBox.setSelected(false);
+            recurringCheckBox.setText("Off");
+        }
+        else {
+            allowRecurringRes = true;
+            recurringCheckBox.setSelected(true);
+            recurringCheckBox.setText("On");
+        }
     }
 
-    public int getCloseTime() {
-        return closeTime;
+    @FXML
+    private void setMultidayRes() {    // todo: other things related to multi-day reservations
+        if (allowMultidayRes) {
+            allowMultidayRes = false;
+            multidayCheckBox.setSelected(false);
+            multidayCheckBox.setText("Off");
+        }
+        else {
+            allowMultidayRes = true;
+            multidayCheckBox.setSelected(true);
+            multidayCheckBox.setText("On");
+        }
     }
 
-    public void setCloseTime(int closeTime) {
-        this.closeTime = closeTime;
+    @FXML
+    private void setSnapTo() {    // todo: other things related to snapping minutes
+        if (snapToMinutes) {
+            snapToMinutes = false;
+            snapToCheckBox.setSelected(false);
+            snapToCheckBox.setText("Off");
+        }
+        else {
+            snapToMinutes = true;
+            snapToCheckBox.setSelected(true);
+            snapToCheckBox.setText("On");
+        }
     }
 
-    public int getTimeStep() {
-        return timeStep;
+    @FXML
+    private void setMinRes() {    // todo: other things related to minimum reservations
+        if (boundMinRes) {
+            boundMinRes = false;
+            minResCheckBox.setSelected(false);
+            minResCheckBox.setText("Unbound");
+            minResTextField.setVisible(false);
+        }
+        else {
+            boundMinRes = true;
+            minResCheckBox.setSelected(true);
+            minResCheckBox.setText("Bound");
+            minResTextField.setVisible(true);
+        }
     }
 
-    public void setTimeStep(int timeStep) {
-        this.timeStep = timeStep;
+    @FXML
+    private void setCloseTime() {    // todo: other things related to close time
+        if (boundCloseTime) {
+            boundCloseTime = false;
+            closeTimeCheckBox.setSelected(false);
+            closeTimeCheckBox.setText("Unbound");
+            closeTimeTextField.setVisible(false);
+        }
+        else {
+            boundCloseTime = true;
+            closeTimeCheckBox.setSelected(true);
+            closeTimeCheckBox.setText("Bound");
+            closeTimeTextField.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void setOpenTime() {    // todo: other things related to open time
+        if (boundOpenTime) {
+            boundOpenTime = false;
+            openTimeCheckBox.setSelected(false);
+            openTimeCheckBox.setText("Unbound");
+            openTimeTextField.setVisible(false);
+        }
+        else {
+            boundOpenTime = true;
+            openTimeCheckBox.setSelected(true);
+            openTimeCheckBox.setText("Bound");
+            openTimeTextField.setVisible(true);
+        }
     }
 }

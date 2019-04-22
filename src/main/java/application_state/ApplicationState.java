@@ -70,8 +70,6 @@ public class ApplicationState {
         return observableBus;
     }
 
-    public Employee getCurrentEmployee() { return employeeLoggedIn ; }
-
     public Employee getEmployeeLoggedIn() {
         return employeeLoggedIn;
     }
