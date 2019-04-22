@@ -1,10 +1,13 @@
 package home;
 
 import application_state.ApplicationState;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXToggleNode;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import application_state.Event;
+import service.ResourceLoader;
 
 /**
  * Path drawing settings
@@ -16,6 +19,9 @@ public class PathSettingController {
     @FXML
     private JFXToggleNode accessibilityButton;
 
+    @FXML
+    private JFXComboBox<String> theme;
+
     /**
      * initializes the FXML
      */
@@ -23,6 +29,8 @@ public class PathSettingController {
     void initialize() {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         accessibilityButton.setSelected(event.isAccessiblePath());
+        theme.setItems(FXCollections.observableArrayList("Default", "High-Contrast"));
+        //theme.getSelectionModel().select(0);
     }
 
     /** controls the search results bar
@@ -117,6 +125,19 @@ public class PathSettingController {
         } else {
             event.setAccessiblePath(true);
             accessibilityButton.setSelected(true);
+        }
+    }
+
+    /** changes the current theme in use by the application
+     * @param actionEvent FXML event that calls this method
+     */
+    public void switchTheme(ActionEvent actionEvent){
+        // get the selected theme
+        String newTheme = theme.getSelectionModel().getSelectedItem();
+        if(newTheme.equals("Default")){
+            ApplicationState.getApplicationState().setCurrentTheme(ResourceLoader.default_style);
+        } else if(newTheme.equals("High-Contrast")) {
+            ApplicationState.getApplicationState().setCurrentTheme(ResourceLoader.high_contrast_style);
         }
     }
 }
