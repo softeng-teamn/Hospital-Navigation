@@ -23,6 +23,7 @@ import service.StageManager;
 import service_request.model.Request;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import static employee.model.JobType.*;
@@ -50,7 +51,7 @@ public class FulfillRequestController implements Initializable {
     @FXML
     private TableColumn<Request, String> colID, colType, colLocation, colDescription, colEmployee, colFufilled;
 
-    private ObservableList<Request> requests;
+    private ArrayList<Request> requests;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -83,27 +84,17 @@ public class FulfillRequestController implements Initializable {
         employeeCombo.setItems(employees);
         employeeCombo.getSelectionModel().select(0);
 
-        //selected value showed in combo box
-        employeeCombo.setConverter(new StringConverter<Employee>() {
-            @Override
-            public String toString(Employee employee) {
-                if (employee == null){
-                    return null;
-                } else {
-                    return employee.getUsername();
-                }
-            }
-
-            @Override
-            public Employee fromString(String userId) {
-                return null;
-            }
-        });
-
-        requests = FXCollections.observableArrayList();
-        requestTable.setItems(requests);
-        setRequestsAll();
         initCols();
+        requests = new ArrayList<>();
+        setRequestsAll();
+
+        requestTable.getItems().clear();
+        String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
+        for (Request request : requests) {
+            if (requestTypeSelected.equals("All") || request.isOfType(requestTypeSelected)) {
+                requestTable.getItems().add(request);
+            }
+        }
     }
 
     private void initCols() {
@@ -155,6 +146,8 @@ public class FulfillRequestController implements Initializable {
                 employeeCombo.getItems().add(employee);
             }
         }
+
+        employeeCombo.getSelectionModel().select(0);
 
         requestTable.getItems().clear();
         for (Request request : requests) {
@@ -224,22 +217,25 @@ public class FulfillRequestController implements Initializable {
     @FXML
     public void reqStateChange(ActionEvent actionEvent) {
         JFXToggleNode selected = (JFXToggleNode) filterGroup.getSelectedToggle();
+        String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
 
         if(selected != null) {
             switch (selected.getText()) {
                 case "Show All":
                     setRequestsAll();
-                case "Show Fufilled":
+                    break;
+                case "Show Fulfilled":
                     setRequestsComplete();
-                case "Show Show Unfufilled":
+                    break;
+                case "Show Unfulfilled":
                     setRequestsIncomplete();
+                    break;
                 default:
-                    setRequestsAll();
+                    break;
             }
         }
 
         requestTable.getItems().clear();
-        String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
         for (Request request : requests) {
             if (requestTypeSelected.equals("All") || request.isOfType(requestTypeSelected)) {
                 requestTable.getItems().add(request);

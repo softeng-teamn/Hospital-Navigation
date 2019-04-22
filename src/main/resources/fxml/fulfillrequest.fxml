@@ -50,12 +50,12 @@
                               <ToggleGroup fx:id="filterGroup" />
                            </toggleGroup>
                         </JFXToggleNode>
-                        <JFXToggleNode onAction="#reqStateChange" prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show Fufilled" toggleGroup="$filterGroup">
+                        <JFXToggleNode onAction="#reqStateChange" prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show Fulfilled" toggleGroup="$filterGroup">
                            <graphic>
                               <MaterialDesignIconView glyphName="CHECKBOX_MULTIPLE_MARKED" size="100" />
                            </graphic>
                         </JFXToggleNode>
-                        <JFXToggleNode onAction="#reqStateChange" prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show Unfufilled" toggleGroup="$filterGroup">
+                        <JFXToggleNode onAction="#reqStateChange" prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show Unfulfilled" toggleGroup="$filterGroup">
                            <graphic>
                               <MaterialDesignIconView glyphName="CHECKBOX_MULTIPLE_BLANK" size="100" />
                            </graphic>
@@ -71,7 +71,7 @@
                      </VBox.margin>
                      <children>
                         <JFXButton fx:id="assignBtn" onAction="#assignRequest" prefHeight="69.0" prefWidth="320.0" styleClass="confirm-button" text="Assign Employee To Request" />
-                        <JFXComboBox fx:id="employeeCombo" labelFloat="true" onAction="#typeFilterSwitch" prefHeight="69.0" prefWidth="308.0" promptText="Select Employee To Assign" />
+                        <JFXComboBox fx:id="employeeCombo" labelFloat="true" prefHeight="69.0" prefWidth="308.0" promptText="Select Employee To Assign" />
                      </children>
                   </HBox>
                         <JFXButton fx:id="fullfillBtn" onAction="#fulfillRequest" prefHeight="69.0" prefWidth="200.0" styleClass="confirm-button" text="Fullfill Request">

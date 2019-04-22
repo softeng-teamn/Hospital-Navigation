@@ -597,8 +597,8 @@
 
 .table-view .table-cell {
     -fx-border-width: 0 0 0 0;
-    -fx-padding: 16 0 16 0;
-    -fx-alignment: top-center;
+    -fx-padding: 16 16 16 16;
+    -fx-alignment: center-left;
 }
 
 .table-view .column-overlay {
@@ -608,7 +608,6 @@
 .table-view .column-resize-line, .table-view .column-drag-header {
     -fx-background-color: -fx-table-rippler-color;
 }
-
 
 .table-row-cell > .disclosure-node > .arrow {
     -fx-background-color: -fx-text-fill;
@@ -641,11 +640,6 @@
 
 .text-field-table-cell > .text-field {
     -fx-text-fill: black;
-
-}
-
-.table-view .table-column {
-    -fx-alignment: CENTER-LEFT;
 }
 
 .tooltip {
