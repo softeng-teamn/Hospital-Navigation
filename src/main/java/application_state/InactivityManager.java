@@ -100,13 +100,8 @@ public class InactivityManager implements Observer {
 
     private void goToIdleScreen() {
         Stage stage = ApplicationState.getApplicationState().getPrimaryStage();
-        Parent root = null;
         try {
-            root = FXMLLoader.load(ResourceLoader.idle);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
+            Parent root = FXMLLoader.load(ResourceLoader.idle);
             StageManager.changeExistingWindow(stage, root, "Kiosk Application");
         } catch (Exception e) {
             e.printStackTrace();
