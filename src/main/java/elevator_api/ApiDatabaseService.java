@@ -399,7 +399,7 @@ class ApiDatabaseService {
         int empID = rs.getInt("employeeID");
         String username = rs.getString("username");
 
-        Employee emp = new Employee(empID, username, null, false, null);
+        Employee emp = new Employee(empID, username, null, null,null, false, null);
         return emp;
     }
 

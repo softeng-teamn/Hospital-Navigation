@@ -27,7 +27,7 @@ public class CSVService {
     private static final String NODE_HEADER = "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName\n";
     private static final String EDGES_HEADER = "edgeID,startNode,endNode\n";
     private static final String SPACE_HEADER = "spaceID,spaceName,spaceType,locationNodeID,timeOpen,timeClosed\n";
-    private static final String EMPLOYEE_HEADER ="ID,username,job,isAdmin,password\n";
+    private static final String EMPLOYEE_HEADER ="ID,username,firstname,lastname,job,isAdmin,password\n";
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -153,6 +153,8 @@ public class CSVService {
             for (Employee emp : myDBS.getAllEmployees()) {
                 writer.write(emp.getID() + ",");
                 writer.write(emp.getUsername() + ",");
+                writer.write(emp.getFirstName() + ",");
+                writer.write(emp.getLastName() + ",");
                 writer.write(emp.getJob().name() + ",");
                 writer.write(emp.isAdmin() + ",");
                 writer.write(emp.getPassword() + "\n");
@@ -357,9 +359,9 @@ public class CSVService {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
-                JobType job = JobType.valueOf(data[2]);
+                JobType job = JobType.valueOf(data[4]);
 
-                Employee emp = new Employee(Integer.parseInt(data[0]), data[1], job, Boolean.parseBoolean(data[3]),data[4]);
+                Employee emp = new Employee(Integer.parseInt(data[0]), data[1], data[2], data[3], job, Boolean.parseBoolean(data[5]),data[6]);
 
                 //Add edge to the database
                 myDBS.insertEmployee(emp);

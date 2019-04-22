@@ -467,7 +467,7 @@ public class DatabaseServiceTest {
         // First verify that these reservations are null
         value = myDBS.getReservation(1);
         assertThat(value, is(nullValue()));
-        Employee testEmployee = new Employee(23,"JJohnson", JobType.DOCTOR,false,"douglas");
+        Employee testEmployee = new Employee(23,"JJohnson", "Jack", "Johnson", JobType.DOCTOR,false,"douglas");
 
         // Create a reservation
         GregorianCalendar reservationStart = new GregorianCalendar();
@@ -499,7 +499,7 @@ public class DatabaseServiceTest {
         reservationList = myDBS.getAllReservations();
         assertThat(reservationList.size(), is(0));
 
-        Employee testEmployee = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        Employee testEmployee = new Employee(23,"CatPlanet","Cat", "Planet", JobType.DOCTOR,false,"douglas");
         assertTrue(myDBS.insertEmployee(testEmployee));
 
         // Create some reservations
@@ -550,7 +550,7 @@ public class DatabaseServiceTest {
         Reservation reservation = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
 
 
-        Employee testEmployee = new Employee(23,"CatPlanet", JobType.DOCTOR,false,"douglas");
+        Employee testEmployee = new Employee(23,"CatPlanet", "Cat", "Planet", JobType.DOCTOR,false,"douglas");
         assertTrue(myDBS.insertEmployee(testEmployee));
 
         assertTrue(myDBS.insertReservation(reservation));
@@ -575,7 +575,7 @@ public class DatabaseServiceTest {
         reservationEnd.add(Calendar.HOUR, 1);
         Reservation reservation = new Reservation(0, 0, 23, "Event 0", "None", reservationStart, reservationEnd);
 
-        Employee testEmployee = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        Employee testEmployee = new Employee(23,"CatPlanet","Cat", "Planet",JobType.DOCTOR,false,"douglas");
         assertTrue(myDBS.insertEmployee(testEmployee));
 
         assertTrue(myDBS.insertReservation(reservation));
@@ -614,13 +614,13 @@ public class DatabaseServiceTest {
         Reservation res2 = new Reservation(2, 2, 12, "Event 2", "ABCD", res3Start, res3End);
 
 
-        Employee testEmployee1 = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        Employee testEmployee1 = new Employee(23,"CatPlanet","Cat", "Planet",JobType.DOCTOR,false,"douglas");
         assertTrue(myDBS.insertEmployee(testEmployee1));
 
-        Employee testEmployee2 = new Employee(43,"CatPlanet1",JobType.DOCTOR,false,"douglas");
+        Employee testEmployee2 = new Employee(43,"CatPlanet1","Cat", "Planet",JobType.DOCTOR,false,"douglas");
         assertTrue(myDBS.insertEmployee(testEmployee2));
 
-        Employee testEmployee3 = new Employee(12,"CatPlanet2",JobType.DOCTOR,false,"douglas");
+        Employee testEmployee3 = new Employee(12,"CatPlanet2","Cat", "Planet",JobType.DOCTOR,false,"douglas");
         assertTrue(myDBS.insertEmployee(testEmployee3));
 
         // Insert two
@@ -667,10 +667,10 @@ public class DatabaseServiceTest {
         Reservation res2 = new Reservation(2, 0, 43, "Event 1", "LMNO", res2Start, res2End);
 
 
-        Employee testEmployee1 = new Employee(23,"CatPlanet",JobType.DOCTOR,false,"douglas");
+        Employee testEmployee1 = new Employee(23,"CatPlanet","Cat", "Planet",JobType.DOCTOR,false,"douglas");
         assertTrue(myDBS.insertEmployee(testEmployee1));
 
-        Employee testEmployee2 = new Employee(43,"CatPlanet1",JobType.DOCTOR,false,"douglas");
+        Employee testEmployee2 = new Employee(43,"CatPlanet1","Cat", "Planet",JobType.DOCTOR,false,"douglas");
         assertTrue(myDBS.insertEmployee(testEmployee2));
 
         // Insert two
@@ -710,7 +710,7 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee = new Employee(0, "mrdoctor", JobType.DOCTOR, false, "douglas");
+        Employee employee = new Employee(0, "mrdoctor", "Mr.", "Doctor", JobType.DOCTOR, false, "douglas");
         employee.setPhone("1234567890");
         employee.setEmail("test@example.com");
 
@@ -738,10 +738,10 @@ public class DatabaseServiceTest {
         assertThat(value, is(nullValue()));
 
         // Create an employee
-        Employee employee1 = new Employee(0, "douglas", JobType.DOCTOR, false, "douglas");
-        Employee employee2 = new Employee(1, "tferrara", JobType.NURSE, false, "tyler");
-        Employee employee3 = new Employee(2, "josh", JobType.ADMINISTRATOR, true, "joshua");
-        Employee tylerImpersonator = new Employee(3, "tferrara", JobType.NURSE, true, "tyler");
+        Employee employee1 = new Employee(0, "douglas", "Edward", "Douglas", JobType.DOCTOR, false, "douglas");
+        Employee employee2 = new Employee(1, "tferrara", "Tim", "Ferarra", JobType.NURSE, false, "tyler");
+        Employee employee3 = new Employee(2, "josh", "Josh", "Smith", JobType.ADMINISTRATOR, true, "joshua");
+        Employee tylerImpersonator = new Employee(3, "tferrara", "Tom", "Ferrara", JobType.NURSE, true, "tyler");
 
         // Verify successful insertion
         boolean insertRes = myDBS.insertEmployee(employee1);
@@ -769,7 +769,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void updateEmployee() {
-        Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "123456");
+        Employee employee = new Employee(0, "doc", "Don", "Oc", JobType.DOCTOR, false, "123456");
         employee.setPhone("1234567890");
         employee.setEmail("test@example.com");
 
@@ -787,7 +787,7 @@ public class DatabaseServiceTest {
     @Test
     @Category(FastTest.class)
     public void deleteEmployee() {
-        Employee employee = new Employee(0, "doc", JobType.DOCTOR, false, "password");
+        Employee employee = new Employee(0, "doc","Don", "Oc", JobType.DOCTOR, false, "password");
 
         assertTrue(myDBS.insertEmployee(employee));
         assertEquals(employee, myDBS.getEmployee(0));
@@ -802,8 +802,8 @@ public class DatabaseServiceTest {
         assertThat(myDBS.getEmployeeByUsername("doc"), is(nullValue()));
         assertThat(myDBS.getEmployeeByUsername("brown"), is(nullValue()));
 
-        Employee employee1 = new Employee(0, "doc", JobType.DOCTOR, false, "password");
-        Employee employee2 = new Employee(1, "brown", JobType.DOCTOR, false, "password");
+        Employee employee1 = new Employee(0, "doc", "Don", "Oc", JobType.DOCTOR, false, "password");
+        Employee employee2 = new Employee(1, "brown","Don", "Brown", JobType.DOCTOR, false, "password");
         assertTrue(myDBS.insertEmployee(employee1));
         assertTrue(myDBS.insertEmployee(employee2));
 
@@ -915,7 +915,7 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void getBookedReservableSpacesBetween() {
         // Create employee
-        Employee emp = new Employee(1234, "JOe", JobType.DOCTOR, false, "pass");
+        Employee emp = new Employee(1234, "JOe", "Jo", "E", JobType.DOCTOR, false, "pass");
         myDBS.insertEmployee(emp);
 
         // Create a ReservableSpace
@@ -988,7 +988,7 @@ public class DatabaseServiceTest {
     @Category(FastTest.class)
     public void getAvailableReservableSpacesBetween() {
         // Create employee
-        Employee emp = new Employee(1234, "JOe", JobType.DOCTOR, false, "pass");
+        Employee emp = new Employee(1234, "JOe","Jo", "E", JobType.DOCTOR, false, "pass");
         myDBS.insertEmployee(emp);
 
         // Create a ReservableSpace

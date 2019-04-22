@@ -33,16 +33,16 @@ import static org.hamcrest.CoreMatchers.is;
 
 
 public class EmployeeEditControllerTest extends ApplicationTest {
-    private Employee testEmployee1 = new Employee(0, "staff", JobType.ADMINISTRATOR, true, "1234");
-    private Employee testEmployee2 = new Employee(1, "admin", JobType.ADMINISTRATOR, true, "1234");
-    private Employee testEmployee3 = new Employee(2, "doc1", JobType.DOCTOR, false, "1234");
-    private Employee testEmployee4 = new Employee(3, "nurse1", JobType.NURSE, false, "1234");
-    private Employee testEmployee5 = new Employee(4, "nurse2", JobType.NURSE, false, "1234");
-    private Employee testEmployee6 = new Employee(5, "worker1", JobType.MAINTENANCE_WORKER, false, "1234");
-    private Employee testEmployee7 = new Employee(6, "worker2", JobType.MAINTENANCE_WORKER, false, "1234");
-    private Employee testEmployee8 = new Employee(7, "worker3", JobType.MAINTENANCE_WORKER, false, "1234");
-    private Employee testEmployee9 = new Employee(8, "worker4", JobType.SECURITY_PERSONNEL, false, "1234");
-    private Employee testEmployee10 = new Employee(9, "worker5", JobType.JANITOR, false, "1234");
+    private Employee testEmployee1 = new Employee(0, "staff", "Staff", "Staff", JobType.ADMINISTRATOR, true, "1234");
+    private Employee testEmployee2 = new Employee(1, "admin","Admin", "Admin",  JobType.ADMINISTRATOR, true, "1234");
+    private Employee testEmployee3 = new Employee(2, "doc1", "Doc", "1", JobType.DOCTOR, false, "1234");
+    private Employee testEmployee4 = new Employee(3, "nurse1","Nurse", "1",  JobType.NURSE, false, "1234");
+    private Employee testEmployee5 = new Employee(4, "nurse2", "Nurse", "2", JobType.NURSE, false, "1234");
+    private Employee testEmployee6 = new Employee(5, "worker1","Worker", "1",  JobType.MAINTENANCE_WORKER, false, "1234");
+    private Employee testEmployee7 = new Employee(6, "worker2","Worker", "2",  JobType.MAINTENANCE_WORKER, false, "1234");
+    private Employee testEmployee8 = new Employee(7, "worker3", "Worker", "3", JobType.MAINTENANCE_WORKER, false, "1234");
+    private Employee testEmployee9 = new Employee(8, "worker4", "Worker", "4", JobType.SECURITY_PERSONNEL, false, "1234");
+    private Employee testEmployee10 = new Employee(9, "worker5","Worker", "5",  JobType.JANITOR, false, "1234");
 
     private List<Employee> testEmployees = Arrays.asList(testEmployee1, testEmployee2, testEmployee3, testEmployee4, testEmployee5, testEmployee6, testEmployee7, testEmployee8, testEmployee9, testEmployee10);
 

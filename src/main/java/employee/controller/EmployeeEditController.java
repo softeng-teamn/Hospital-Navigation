@@ -40,13 +40,19 @@ public class EmployeeEditController {
     private TableColumn<Employee, String> col_username;
 
     @FXML
+    private TableColumn<Employee, String> col_firstname;
+
+    @FXML
+    private TableColumn<Employee, String> col_lastname;
+
+    @FXML
     private TableColumn<Employee, JobType> col_job;
 
     @FXML
     private TableColumn<Employee, String> col_admin, col_email, col_phone;
 
     @FXML
-    private JFXTextField new_username;
+    private JFXTextField new_username, new_firstname, new_lastname;
 
     @FXML
     private JFXComboBox<JobType> new_job;
@@ -77,6 +83,8 @@ public class EmployeeEditController {
        col_admin.setCellValueFactory(new PropertyValueFactory<>("isAdmin"));
        col_phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
        col_email.setCellValueFactory(new PropertyValueFactory<>("email"));
+       col_firstname.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+       col_lastname.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
        editableCols();
     }
@@ -90,6 +98,28 @@ public class EmployeeEditController {
         col_username.setOnEditCommit(e -> {
             Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
             employee.setUsername(e.getNewValue());
+            myDBS.updateEmployee(employee);
+            if(ApplicationState.getApplicationState().getEmployeeLoggedIn().getID() == employee.getID()) {
+                ApplicationState.getApplicationState().setEmployeeLoggedIn(employee);
+            }
+            loadData();
+        });
+
+        col_firstname.setCellFactory(TextFieldTableCell.forTableColumn());
+        col_firstname.setOnEditCommit(e -> {
+            Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
+            employee.setFirstName(e.getNewValue());
+            myDBS.updateEmployee(employee);
+            if(ApplicationState.getApplicationState().getEmployeeLoggedIn().getID() == employee.getID()) {
+                ApplicationState.getApplicationState().setEmployeeLoggedIn(employee);
+            }
+            loadData();
+        });
+
+        col_lastname.setCellFactory(TextFieldTableCell.forTableColumn());
+        col_lastname.setOnEditCommit(e -> {
+            Employee employee = e.getTableView().getItems().get(e.getTablePosition().getRow());
+            employee.setLastName(e.getNewValue());
             myDBS.updateEmployee(employee);
             if(ApplicationState.getApplicationState().getEmployeeLoggedIn().getID() == employee.getID()) {
                 ApplicationState.getApplicationState().setEmployeeLoggedIn(employee);
@@ -170,8 +200,8 @@ public class EmployeeEditController {
         for (Employee e : employee_table.getItems()) {
             max = e.getID() > max ? e.getID() : max;
         }
-
-        Employee employee = new Employee(max+1, new_username.getText(), new_job.getValue(), new_is_admin.isSelected(), new_password.getText());
+        // todo: error check for empty fields
+        Employee employee = new Employee(max+1, new_username.getText(), new_firstname.getText(), new_lastname.getText(),new_job.getValue(), new_is_admin.isSelected(), new_password.getText());
         boolean inserted = myDBS.insertEmployee(employee);
         loadData();
 
@@ -179,6 +209,8 @@ public class EmployeeEditController {
             new_password.setText("");
             new_password_conf.setText("");
             new_username.setText("");
+            new_firstname.setText("");
+            new_lastname.setText("");
             new_job.getSelectionModel().select(1);
             new_is_admin.setSelected(false);
 

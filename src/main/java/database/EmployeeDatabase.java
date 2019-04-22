@@ -35,8 +35,8 @@ public class EmployeeDatabase {
      * @return true if the update succeeds and false if otherwise
      */
     boolean updateEmployee(Employee employee) {
-        String query = "UPDATE EMPLOYEE SET username=?, job=?, isAdmin=?, phone=?, email=? WHERE (employeeID = ?)";
-        return databaseService.executeUpdate(query, employee.getUsername(), employee.getJob().name(), employee.isAdmin(), employee.getPhone(), employee.getEmail(), employee.getID());
+        String query = "UPDATE EMPLOYEE SET username=?, firstname=?, lastname=?, job=?, isAdmin=?, phone=?, email=? WHERE (employeeID = ?)";
+        return databaseService.executeUpdate(query, employee.getUsername(), employee.getFirstName(), employee.getLastName(), employee.getJob().name(), employee.isAdmin(), employee.getPhone(), employee.getEmail(), employee.getID());
     }
 
     /**

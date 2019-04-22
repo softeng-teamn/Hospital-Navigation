@@ -41,6 +41,8 @@
                      <columns>
                         <TableColumn fx:id="col_id" editable="false" prefWidth="70.0" resizable="false" text="ID" />
                         <TableColumn fx:id="col_username" editable="true" prefWidth="210.0" resizable="false" text="Username" />
+                        <TableColumn fx:id="col_firstname" editable="true" prefWidth="210.0" resizable="false" text="First Name" />
+                        <TableColumn fx:id="col_lastname" editable="true" prefWidth="210.0" resizable="false" text="Last Name" />
                         <TableColumn fx:id="col_job" editable="true" prefWidth="260.0" resizable="false" text="Job" />
                         <TableColumn fx:id="col_phone" editable="true" prefWidth="200.0" resizable="false" text="Phone" />
                         <TableColumn fx:id="col_email" editable="true" prefWidth="300.0" resizable="false" text="Email" />
@@ -52,6 +54,8 @@
                   </TableView>
                   <HBox alignment="CENTER" layoutX="10.0" layoutY="660.0" prefHeight="100.0" prefWidth="200.0">
                      <children>
+                        <JFXTextField fx:id="new_firstname" disable="false" promptText="First Name" />
+                        <JFXTextField fx:id="new_lastname" disable="false" promptText="Last Name" />
                         <JFXTextField fx:id="new_username" disable="false" promptText="Username">
                            <HBox.margin>
                               <Insets right="20.0" />

@@ -23,7 +23,7 @@ public class Employee {
         return password;
     }
 
-    public Employee(int ID, String lastName, String firstName, String username, JobType job, boolean isAdmin, String password) {
+    public Employee(int ID, String username, String firstName, String lastName, JobType job, boolean isAdmin, String password) {
         this.username = username;
         this.ID = ID;
         this.job = job;
