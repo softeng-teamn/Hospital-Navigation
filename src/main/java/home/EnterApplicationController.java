@@ -58,7 +58,7 @@ public class EnterApplicationController {
         Stage stage = (Stage) sp.getScene().getWindow();
         Parent root = load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home");
-        MapController.initConnections();
+
     }
 
     public void gameStart() throws Exception{
