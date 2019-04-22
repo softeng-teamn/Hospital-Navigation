@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<StackPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/10.0.1" fx:id="sp" fx:controller="home.EnterApplicationController" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.172-ea" fx:id="sp" fx:controller="home.EnterApplicationController" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitWidth="1920.0" opacity="0.65" pickOnBounds="true" preserveRatio="true">
          <image>

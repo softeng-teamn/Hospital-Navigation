@@ -18,6 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import service.ResourceLoader;
 import service.StageManager;
+import Game.*;
 
 import java.io.IOException;
 
@@ -39,7 +40,7 @@ public class EnterApplicationController{
             @Override
             public void handle(MouseEvent event){
                 try {
-                    enter();
+                    gameStart();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -61,7 +62,7 @@ public class EnterApplicationController{
     }
 
     public void gameStart() throws Exception{
-
+        Stage stage = (Stage) sp.getScene().getWindow();
     }
 
     //USELESS IGNORE (but may come in handy idk, probably won't)
