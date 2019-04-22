@@ -96,7 +96,7 @@ public class ConfirmReservationController {
     public void setID() {
         int idNum = ApplicationState.getApplicationState().getEmployeeLoggedIn().getID();
         String id = Integer.toString(idNum);
-        employeeID.setText(id);
+        employeeID.setText("Employee ID: " + id);
     }
 
 
@@ -137,6 +137,12 @@ public class ConfirmReservationController {
         // check employee id
         // parse around prompt text
         String id = employeeID.getText();
+
+        if (id.contains("Employee ID: ")) {
+            id = id.substring(13) ;
+            System.out.println("ID = " + "'" +id +"'");
+        }
+
         boolean badId = false;
 
         // Check whether the ID is a number
@@ -167,7 +173,7 @@ public class ConfirmReservationController {
         }
 
         // If the ID number is bad, display an error message.
-        if (myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null) {
+        if (myDBS.getEmployee(Integer.parseInt(employeeID.getText().substring(13))) == null) {
             inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
             inputErrorLbl.setVisible(true);
             valid = false;
@@ -202,7 +208,7 @@ public class ConfirmReservationController {
         String roomID = event.getRoomId();
 
         // create new reservation and add to database
-        Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
+        Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText().substring(13)), eventName.getText(), roomID, cals.get(0), cals.get(1));
         myDBS.insertReservation(newRes);
 
         // Reset the screen
