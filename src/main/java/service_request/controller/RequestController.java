@@ -24,6 +24,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import application_state.Event;
 import map.Node;
+import requests.giftrequests.RunGiftRequest;
 import scheduler.model.Reservation;
 import service_request.controller.sub_controller.InternalTransportController;
 import service_request.model.Request;
@@ -299,9 +300,9 @@ public class RequestController implements Initializable {
     }
 
     @FXML
-    public void giftSelect (ActionEvent actionEvent) throws IOException {
-        subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.giftStoreRequest,event.getCurrentBundle()));
+    public void giftSelect (ActionEvent actionEvent) throws Exception {
+        RunGiftRequest rgr = new RunGiftRequest();
+        rgr.run(0,0, 1920, 1080, null, null, null);
     }
 
     @FXML
