@@ -32,6 +32,11 @@ public class StageManager {
             ev.setEventName("reset-timer");
             ApplicationState.getApplicationState().getObservableBus().updateEvent(ev);
         });
+        primaryStage.getScene().setOnKeyPressed(e-> {
+            Event ev = ApplicationState.getApplicationState().getObservableBus().getEvent();
+            ev.setEventName("reset-timer");
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(ev);
+        });
         System.out.println("1st time Scene: " + primaryStage.getScene());
         primaryStage.setFullScreen(true);
         //set the style here

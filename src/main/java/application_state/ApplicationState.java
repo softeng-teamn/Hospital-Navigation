@@ -29,7 +29,7 @@ public class ApplicationState {
     private Employee employeeLoggedIn;
     private String startEnd = "end";    // Whether the currently selected node in the listView is the start or end node
     private boolean isInactive;
-    private InactivityManager IM = new InactivityManager(10000);
+    private InactivityManager IM = new InactivityManager(30000);
     private Stage primaryStage;
     // sets the current theme
     private URL currentTheme = ResourceLoader.default_style;
