@@ -1,12 +1,9 @@
 package home;
 
 import application_state.ApplicationState;
+import application_state.Event;
 import application_state.Observer;
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
@@ -20,27 +17,16 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import application_state.Event;
 import map.MapController;
 import map.Node;
+import service.QRService;
 import service.ResourceLoader;
-import net.swisstech.bitly.BitlyClient;
-import net.swisstech.bitly.model.Response;
-import net.swisstech.bitly.model.v3.ShortenResponse;
 import service.TextingService;
 
 import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import static application_state.ApplicationState.getApplicationState;
@@ -809,10 +795,12 @@ public class DirectionsController implements Observer {
         if(!(phoneNumber.getText().equals(""))){
             String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(makeDirections(path));
             url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
-            textSender.textMap(phoneNumber.getText(), url);
+            textSender.textMap(phoneNumber.getText(), QRService.shortenURL(url));
         }
         else if(!(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""))) {
-            textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(), printDirections(makeDirections(path)));
+            String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(makeDirections(path));
+            url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
+            textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(), QRService.shortenURL(url));
         }
         else{
             System.out.println("NO PHONE NUMBER");
@@ -843,22 +831,8 @@ public class DirectionsController implements Observer {
      * @throws IOException if the file is not found or cannot be written
      */
     public void generateQRCode(ArrayList<String> directions) throws WriterException, IOException {
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-
-        // Uncomment and use resp.data.url in the QR to shorten the URL
-//        BitlyClient client = new BitlyClient("bcba608ae5c6045d223241662c704f38c52930e4");
-//        Response<ShortenResponse> resp = client.shorten()
-//                .setLongUrl("https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions))
-//                .call();
         String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions);
-        url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
-        BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, 350, 350);
-
-        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
-        byte[] pngData = pngOutputStream.toByteArray();
-        Image qr = new Image(new ByteArrayInputStream(pngData));
-        qrView.setImage(qr);
+        qrView.setImage(QRService.generateQRCode(url, true));
     }
 
     /**
