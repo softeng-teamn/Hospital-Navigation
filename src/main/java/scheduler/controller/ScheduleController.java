@@ -371,7 +371,7 @@ public class ScheduleController {
     public JFXTimePicker startTimePicker, endTimePicker;
 
     @FXML
-    public Label resInfoLbl, inputErrorLbl, schedLbl;
+    public Label resInfoLbl, inputErrorLbl, schedLbl, errorMessage;
 
     @FXML
     private SVGPath classroom1, classroom2, classroom3, classroom4, classroom5, classroom6, classroom7, classroom8, classroom9, auditorium;
@@ -769,8 +769,34 @@ public class ScheduleController {
         openTimeCheckBox.setSelected(true);
         openTimeCheckBox.setText("Bound");
         openTimeTextField.setText(openTimeStr);
+        openTimeTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            timeListener(newValue);
+        });
         closeTimeTextField.setText(closeTimeString);
+        closeTimeTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            timeListener(newValue);
+        });
         minResTextField.setText(timeStepMinutes + "");
+        minResTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            timeListener(newValue);
+        });
+        errorMessage.setVisible(false);
+        errorMessage.setText("Please enter a valid time in the format hh:mm");
+    }
+
+    /**
+     * Listener to update setting times
+     *
+     * @param value whether it is focused or not
+     */
+    private void timeListener(boolean value) {
+        // If this was selected and loses selection, show the room schedule based on the current filters
+        if (!value) {
+            closeTimeTextField.setText(closeTimeString);
+            openTimeTextField.setText(openTimeStr);
+            minResTextField.setText(timeStepMinutes + "");
+            errorMessage.setVisible(false);
+        }
     }
 
     /**
@@ -1164,7 +1190,6 @@ public class ScheduleController {
         }
         reservableList.getSelectionModel().select(currentSelection);
 
-        // todo: collaborate the same functionality between these two
         showWeeklySchedule();
         showDailySchedule();
     }
@@ -1762,6 +1787,7 @@ public class ScheduleController {
             closeTimeCheckBox.setSelected(true);
             closeTimeCheckBox.setText("Bound");
             closeTimeTextField.setVisible(true);
+            closeTimeTextField.setText(closeTimeString);
         }
     }
 
@@ -1778,6 +1804,57 @@ public class ScheduleController {
             openTimeCheckBox.setSelected(true);
             openTimeCheckBox.setText("Bound");
             openTimeTextField.setVisible(true);
+            openTimeTextField.setText(openTimeStr);
         }
     }
+
+    @FXML
+    private void validOpenTime() {    // todo: abstract for closetime
+        errorMessage.setVisible(false);
+        String time = openTimeTextField.getText();
+        boolean valid = true;
+        if (time.length() != 5) {
+            valid = false;
+        }
+        else {
+            time = time.substring(0, 5);
+            String first = time.substring(0, 1);
+            String second = time.substring(1, 2);
+            String third = time.substring(2, 3);
+            String fourth = time.substring(3, 4);
+            String fifth = time.substring(4, 5);
+            if (!"012".contains(first)) {
+                valid = false;
+            }
+            if (first.equals("2") && !"0123".contains(second)) {
+                valid = false;
+            } else if (!"0123456789".contains(second)) {
+                valid = false;
+            }
+            if (!":".equals(third)) {
+                valid = false;
+            }
+            if (!"012345".contains(fourth)) {
+                valid = false;
+            }
+            if (!"0123456789".contains(fifth)) {
+                valid = false;
+            }
+        }
+
+
+        if (valid) {
+            openTimeStr = time;
+            openTime = Integer.parseInt(openTimeStr.substring(0,2));
+            showRoomSchedule(true);
+
+            // todo: save a valid value - esp minutes
+            // todo: check if valid open time: less than close time
+        }
+        else {
+            errorMessage.setVisible(true);
+            openTimeTextField.setText(openTimeStr);
+        }
+    }
+
 }
