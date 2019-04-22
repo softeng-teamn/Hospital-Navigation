@@ -1288,18 +1288,17 @@ public class ScheduleController {
                 // Mark it as booked, color it red, and display the event name
                 // or "Booked" depending on its privacy level
                 for (int box = (startHour - openTime) * timeStep - openTimeMinutes + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
-                    // gets the time slot?
-                    ScheduleWrapper time = schedToAdd.get(box);
-                    if (res.getPrivacyLevel() == 0) {
-                        //time.setAvailability(res.getEventName());
-                        //if (res.getStartTime().get(Calendar.DAY_OF_WEEK)
-                        time.setDayAvailability(dailySchedule, res.getEventName());
-                        // if private event
-                    } else {
-                        time.setDayAvailability(dailySchedule, "Booked");
+                    if (box >= 0 && box < schedToAdd.size()) {
+                        ScheduleWrapper time = schedToAdd.get(box);
+                        if (res.getPrivacyLevel() == 0) {
+                            time.setDayAvailability(dailySchedule, res.getEventName());
+                            // if private event
+                        } else {
+                            time.setDayAvailability(dailySchedule, "Booked");
+                        }
+                        // what does this do (set to booked?)
+                        weeklySchedule.get(dailySchedule).set(box, 1);
                     }
-                    // what does this do (set to booked?)
-                    weeklySchedule.get(dailySchedule).set(box, 1);
                 }
             }
             startDate = startDate.plus(1, ChronoUnit.DAYS);
@@ -1382,18 +1381,17 @@ public class ScheduleController {
                 // Mark it as booked, color it red, and display the event name
                 // or "Booked" depending on its privacy level
                 for (int box = (startHour - openTime) * timeStep - openTimeMinutes + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
-                    // gets the time slot?
-                    ScheduleWrapper time = schedToAdd.get(box);
-                    if (res.getPrivacyLevel() == 0) {
-                        //time.setAvailability(res.getEventName());
-                        //if (res.getStartTime().get(Calendar.DAY_OF_WEEK)
-                        time.setRoomAvailability(roomSchedule, res.getEventName());
-                        // if private event
-                    } else {
-                        time.setRoomAvailability(roomSchedule, "Booked");
+                    if (box >= 0 && box < schedToAdd.size()) {
+                        ScheduleWrapper time = schedToAdd.get(box);
+                        if (res.getPrivacyLevel() == 0) {
+                            time.setRoomAvailability(roomSchedule, res.getEventName());
+                            // if private event
+                        } else {
+                            time.setRoomAvailability(roomSchedule, "Booked");
+                        }
+                        // what does this do (set to booked?)
+                        dailyScheduleAllRoomsInts.get(roomSchedule).set(box, 1);
                     }
-                    // what does this do (set to booked?)
-                    dailyScheduleAllRoomsInts.get(roomSchedule).set(box, 1);
                 }
             }
         }
@@ -1798,10 +1796,11 @@ public class ScheduleController {
             closeTimeTextField.setVisible(true);
             closeTimeTextField.setText(closeTimeString);
         }
+        // todo: check if valid close time: greater than open time
     }
 
     @FXML
-    private void setOpenTime() {    // todo: other things related to open time
+    private void setOpenTime() {
         if (boundOpenTime) {
             boundOpenTime = false;
             openTimeCheckBox.setSelected(false);
@@ -1815,12 +1814,43 @@ public class ScheduleController {
             openTimeTextField.setVisible(true);
             openTimeTextField.setText(openTimeStr);
         }
+
+        // todo: what if minutes are snapTo? - maybe don't have to worry bc will just display really badly but logic still works?
     }
 
     @FXML
     private void validOpenTime() {    // todo: abstract for closetime
+        String valid = validFieldTime(openTimeTextField.getText());
+
+        if (valid.length() > 0) {
+            openTimeStr = valid;
+            openTime = Integer.parseInt(openTimeStr.substring(0,2));
+            if (snapToMinutes) {
+                if (Integer.parseInt(valid.substring(3)) % (timeStepMinutes) != 0) {
+                    // Then round them down to the nearest timeStep
+                    int minutes = ((int) Integer.parseInt(valid.substring(3)) / (timeStepMinutes)) * (timeStepMinutes);
+                    String minutesSt = "" + minutes;
+                    if (minutesSt.length() < 2) {
+                        minutesSt += "0";
+                    }
+                    openTimeStr = openTimeStr.substring(0,3) + minutesSt;
+                }
+                openTimeMinutes = (int) (Integer.parseInt(openTimeStr.substring(3)) / timeStepMinutes);    // todo: dammit I broke it - w/r/t reservations?
+                System.out.println(openTime);
+            }
+
+
+            showRoomSchedule(true);
+        }
+        else {
+            errorMessage.setVisible(true);
+        }
+        openTimeTextField.setText(openTimeStr);
+    }
+
+    @FXML
+    private String validFieldTime(String time) {    // todo: abstract for closetime
         errorMessage.setVisible(false);
-        String time = openTimeTextField.getText();
         boolean valid = true;
         if (time.length() != 5) {
             valid = false;
@@ -1849,36 +1879,19 @@ public class ScheduleController {
             if (!"0123456789".contains(fifth)) {
                 valid = false;
             }
+            if (valid) {
+                if (Integer.parseInt(time.substring(0,2)) >= closeTime) {
+                    valid = false;
+                }
+            }
         }
-
 
         if (valid) {
-            openTimeStr = time;
-            openTime = Integer.parseInt(openTimeStr.substring(0,2));
-            if (snapToMinutes) {
-                if (Integer.parseInt(time.substring(3)) % (timeStepMinutes) != 0) {
-                    // Then round them down to the nearest timeStep
-                    int minutes = ((int) Integer.parseInt(time.substring(3)) / (timeStepMinutes)) * (timeStepMinutes);
-                    String minutesSt = "" + minutes;
-                    if (minutesSt.length() < 2) {
-                        minutesSt += "0";
-                    }
-                    openTimeStr = openTimeStr.substring(0,3) + minutesSt;
-                }
-                openTimeMinutes = (int) (Integer.parseInt(openTimeStr.substring(3)) / timeStepMinutes);
-                System.out.println(openTime);
-            }
-
-
-            showRoomSchedule(true);
-
-            // todo: save a valid value - esp minutes
-            // todo: check if valid open time: less than close time
+            return time;
         }
         else {
-            errorMessage.setVisible(true);
+            return "";
         }
-        openTimeTextField.setText(openTimeStr);
     }
 
 }
