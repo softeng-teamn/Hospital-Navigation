@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.AdminServiceController">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="480.0" stylesheets="@/default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.AdminServiceController">
    <children>
       <HBox alignment="TOP_RIGHT" spacing="40.0">
          <children>
-            <JFXButton fx:id="showHomeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showSearchResults" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button" stylesheets="@/theme.css">
+            <JFXButton fx:id="showHomeBtn" contentDisplay="GRAPHIC_ONLY" onAction="#showSearchResults" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button" stylesheets="@/default.css">
                <HBox.margin>
                   <Insets right="5.0" top="5.0" />
                </HBox.margin>
@@ -24,7 +24,7 @@
             </JFXButton>
          </children>
       </HBox>
-      <Label fx:id="adminServicesTitle" styleClass="big-label" stylesheets="@/theme.css" text="Administrator Services">
+      <Label fx:id="adminServicesTitle" styleClass="big-label" stylesheets="@/default.css" text="Administrator Services">
          <VBox.margin>
             <Insets top="24.0" />
          </VBox.margin>
@@ -57,7 +57,7 @@
             <FontAwesomeIconView glyphName="USER" />
          </graphic>
       </JFXButton>
-      <JFXButton fx:id="exportCSVBtn" graphicTextGap="8.0" onAction="#exportCSV" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" stylesheets="@/theme.css" text="Export CSV">
+      <JFXButton fx:id="exportCSVBtn" graphicTextGap="8.0" onAction="#exportCSV" prefHeight="53.0" prefWidth="330.0" styleClass="confirm-button" stylesheets="@/default.css" text="Export CSV">
          <VBox.margin>
             <Insets top="20.0" />
          </VBox.margin>
