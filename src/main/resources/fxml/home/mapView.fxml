@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import net.kurobako.gesturefx.GesturePane?>
 
-<StackPane alignment="CENTER_RIGHT" prefHeight="952.0" prefWidth="1920.0" stylesheets="@../../theme.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
+<StackPane alignment="CENTER_RIGHT" prefHeight="952.0" prefWidth="1920.0" stylesheets="@/default.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
     <children>
         <GesturePane fx:id="gPane" HBarEnabled="false" VBarEnabled="false" />
       <Region maxWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" />
@@ -29,7 +29,7 @@
                         <Label fx:id="show1" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="1" />
                         <Label fx:id="showG" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="G" />
                         <Label fx:id="showL1" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="L1" />
-                        <Label fx:id="showL2" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" stylesheets="@../../theme.css" text="L2" />
+                        <Label fx:id="showL2" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="L2" />
                         <Region maxHeight="-Infinity" prefHeight="142.0" prefWidth="200.0" />
                      </children>
                   </VBox>

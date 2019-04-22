@@ -36,6 +36,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Controls the main navigation bar
+ */
 public class TopNavController implements Observer {
 
     public HBox top_nav;
@@ -155,7 +158,7 @@ public class TopNavController implements Observer {
                             String day = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
                             int date = calendar.get(Calendar.DAY_OF_MONTH);
                             String month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
-                            String curTime = String.format(formattedDate + "\n" + day + ", the %02dth of " + month, date);
+                            String curTime = String.format(formattedDate + "\n" + day + ", " + month +  " %02dth", date);
                             time_label.setText(curTime);
                             time_label.setTextAlignment(TextAlignment.CENTER);
                         }

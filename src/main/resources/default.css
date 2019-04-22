@@ -6,7 +6,16 @@
     -fx-complementarytext: #FFFFFF;
     -fx-unfocusedtext: #6B6D6F;
     -fx-red: #F44336;
-    -fx-mapText: #FFFFFF
+    -fx-mapText: #FFFFFF;
+    -fx-interactioncolor: #C6C9CC;
+    -fx-listCell: #7683ac;
+    -fx-scrollBorder: #D9D9D9;
+    -fx-tableheader: #949494;
+    -fx-tableviewborder: #F3F3F3;
+    -fx-tableerror: #D34336;
+    -fx-tablerowcellcolor: rgb(82, 100, 174);
+    -fx-tablecolor: rgba(82, 100, 174, 0.4);;
+
 }
 
 /*******************************************************************************
@@ -24,12 +33,16 @@
     -fx-border-color: transparent transparent -fx-unfocusedtext transparent;
 }
 
+.drawer-background{
+    -fx-background-color: -fx-primary;
+}
+
 .jfx-hamburger StackPane {
     -fx-background-color: -fx-primary;
 }
 
 .interaction-area {
-    -fx-background-color: #C6C9CC;
+    -fx-background-color: -fx-interactioncolor;
 }
 
 .header-label{
@@ -146,12 +159,12 @@
 .jfx-text-area .scroll-pane,
 .jfx-text-area:focused,
 .jfx-text-area:focused .scroll-pane{
-    -fx-background-color: #D9D9D9;
+    -fx-background-color: -fx-scrollBorder;
 }
 
 .jfx-text-area .content,
 .jfx-text-area:focused .content{
-    -fx-background-color: #D9D9D9;
+    -fx-background-color: -fx-scrollBorder;
     -fx-padding: 0 0 0 0;
 }
 
@@ -358,11 +371,11 @@
 }
 
 .list-view .list-cell:hover {
-    -fx-background-color: #7683ac;
+    -fx-background-color: -fx-listCell;
 }
 
 .list-view .list-cell:selected {
-    -fx-background-color: #7683ac;
+    -fx-background-color: -fx-listCell;
 }
 
 .list-view .label{
@@ -381,7 +394,7 @@
  ******************************************************************************/
 
 .scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
-    -fx-background-color: #D9D9D9;
+    -fx-background-color: -fx-scrollBorder;
     -fx-background-insets: 0.0;
 }
 
@@ -535,7 +548,7 @@
  *                                                                             *
  ******************************************************************************/
 .table-view {
-    -fx-table-color: rgba(82, 100, 174, 0.4);
+    -fx-table-color: -fx-tablecolor;
     -fx-table-rippler-color: rgba(82, 100, 174, 0.6);
 }
 
@@ -565,21 +578,21 @@
 
 .table-view .column-header {
     -fx-border-width: 0 1 0 1;
-    -fx-border-color: #F3F3F3;
+    -fx-border-color: -fx-tableviewborder;
 }
 
 .table-view .column-header .label {
-    -fx-text-fill: #949494;
+    -fx-text-fill: -fx-tableheader;
     -fx-padding: 16 0 16 0;
 }
 
 .table-view .column-header .arrow, .table-view .column-header .sort-order-dot {
-    -fx-background-color: #949494;
+    -fx-background-color: -fx-tableheader;
 }
 
 .table-view .column-header-background {
     -fx-border-width: 0 0.0 1 0;
-    -fx-border-color: #F3F3F3;
+    -fx-border-color: -fx-tableviewborder;
 }
 
 .table-view .table-cell {
@@ -604,16 +617,16 @@
 }
 
 .table-row-cell .jfx-text-field {
-    -fx-focus-color: rgb(82, 100, 174);
+    -fx-focus-color: -fx-tablerowcellcolor;
 }
 
 .table-row-cell .jfx-text-field .error-label {
-    -fx-text-fill: #D34336;
+    -fx-text-fill: -fx-tableerror;
     -fx-font-size: 0.75em;
 }
 
 .table-row-cell .jfx-text-field .error-icon {
-    -fx-fill: #D34336;
+    -fx-fill: -fx-tableerror;
     -fx-font-size: 1.0em;
 }
 

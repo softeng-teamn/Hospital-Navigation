@@ -5,7 +5,7 @@ import map.Edge;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EdgeDatabase {
+class EdgeDatabase {
     private final DatabaseService databaseService;
 
     public EdgeDatabase(DatabaseService databaseService) {
