@@ -301,6 +301,9 @@ public class MapViewController implements Observer {
             if (floorBtns.get(i).getText().equals(currFloor)) {
                 // change color of button to yellow
                 floorBtns.get(i).setBackground(yellowBackground);
+                floorBtns.get(i).requestFocus();
+                System.out.println("FOCUS REQUESTED");
+                System.out.println("FOCUS = " + floorBtns.get(i).isFocused());
             }
 
             // if i is not the current floor
