@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.FulfillRequestController">
+<VBox prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.FulfillRequestController">
     <children>
       <HBox alignment="CENTER_RIGHT" prefHeight="128.0" prefWidth="200.0" styleClass="header">
          <children>
@@ -42,7 +42,7 @@
                      </VBox.margin></JFXComboBox>
                   <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="36.0">
                      <children>
-                        <JFXToggleNode prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show All">
+                        <JFXToggleNode onAction="#reqStateChange" prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show All">
                            <graphic>
                               <MaterialDesignIconView glyphName="EYE" size="100" />
                            </graphic>
@@ -50,12 +50,12 @@
                               <ToggleGroup fx:id="filterGroup" />
                            </toggleGroup>
                         </JFXToggleNode>
-                        <JFXToggleNode prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show Fufilled" toggleGroup="$filterGroup">
+                        <JFXToggleNode onAction="#reqStateChange" prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show Fufilled" toggleGroup="$filterGroup">
                            <graphic>
                               <MaterialDesignIconView glyphName="CHECKBOX_MULTIPLE_MARKED" size="100" />
                            </graphic>
                         </JFXToggleNode>
-                        <JFXToggleNode prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show Unfufilled" toggleGroup="$filterGroup">
+                        <JFXToggleNode onAction="#reqStateChange" prefHeight="200.0" prefWidth="200.0" styleClass="request-toggle-node" text="Show Unfufilled" toggleGroup="$filterGroup">
                            <graphic>
                               <MaterialDesignIconView glyphName="CHECKBOX_MULTIPLE_BLANK" size="100" />
                            </graphic>
