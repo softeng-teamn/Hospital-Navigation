@@ -205,7 +205,6 @@ public class EmployeeEditController {
 
     @FXML
     void onRemoveEmployee(ActionEvent event) throws IOException {
-        Employee e = employee_table.getSelectionModel().getSelectedItem();
         Parent parent = FXMLLoader.load(ResourceLoader.deleteEmployeeConfirm);
         Stage stage = new Stage();
         stage.setScene(new Scene(parent));
