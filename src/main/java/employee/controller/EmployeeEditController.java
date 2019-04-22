@@ -200,7 +200,7 @@ public class EmployeeEditController {
         for (Employee e : employee_table.getItems()) {
             max = e.getID() > max ? e.getID() : max;
         }
-        // todo: error check for empty fields
+
         Employee employee = new Employee(max+1, new_username.getText(), new_firstname.getText(), new_lastname.getText(),new_job.getValue(), new_is_admin.isSelected(), new_password.getText());
         boolean inserted = myDBS.insertEmployee(employee);
         loadData();
