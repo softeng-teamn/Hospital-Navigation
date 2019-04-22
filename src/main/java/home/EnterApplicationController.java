@@ -61,7 +61,7 @@ public class EnterApplicationController {
     }
 
     public void gameStart() throws Exception{
-        Stage stage = (Stage) sp.getScene().getWindow();
+        //Stage stage = (Stage) sp.getScene().getWindow();
 
     }
 

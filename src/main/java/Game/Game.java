@@ -1,3 +1,4 @@
+package Game;
 import game.Enemy;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -28,9 +29,9 @@ public class Game extends Application
     double up = 0;
     boolean moveDown = false;
     boolean scoreDidTrigger = false;
-    final int HEIGHT = 700;
-    final int WIDTH = 1000;
-    final int JUMPVALUE = 8;
+    static final int HEIGHT = 700;
+    static final int WIDTH = 1000;
+    static final int JUMPVALUE = 8;
     int JUMPTIME = 50;
     double speedCounter = 3;
     int score = 0;
