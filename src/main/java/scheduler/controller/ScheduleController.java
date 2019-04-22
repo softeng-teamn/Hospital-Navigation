@@ -1,18 +1,20 @@
 package scheduler.controller;
 
-import java.io.IOException;
-import java.time.*;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-
 import application_state.ApplicationState;
 import application_state.Event;
-
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.Calendar.Style;
+import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.model.Interval;
+import com.calendarfx.view.CalendarView;
 import com.calendarfx.view.DateControl;
-import com.calendarfx.view.popover.*;
+import com.calendarfx.view.popover.EntryHeaderView;
+import com.calendarfx.view.popover.EntryPopOverPane;
+import com.calendarfx.view.popover.PopOverContentPane;
+import com.calendarfx.view.popover.PopOverTitledPane;
 import com.jfoenix.controls.*;
+import database.DatabaseService;
 import employee.model.Employee;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -39,16 +41,13 @@ import javafx.util.Callback;
 import map.Node;
 import scheduler.model.ReservableSpace;
 import scheduler.model.Reservation;
-import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
-import com.calendarfx.model.Calendar;
-import com.calendarfx.model.Calendar.Style;
-import com.calendarfx.model.CalendarSource;
-import com.calendarfx.view.CalendarView;
-import org.controlsfx.control.*;
 
-import javax.xml.crypto.Data;
+import java.io.IOException;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -1810,6 +1809,10 @@ public class ScheduleController {
             openTimeCheckBox.setSelected(false);
             openTimeCheckBox.setText("Unbound");
             openTimeTextField.setVisible(false);
+            openTime = 0;
+            openTimeMinutes = 0;
+            openTimeStr = "00:00";
+            showRoomSchedule(true);
         }
         else {
             boundOpenTime = true;
@@ -1817,9 +1820,10 @@ public class ScheduleController {
             openTimeCheckBox.setText("Bound");
             openTimeTextField.setVisible(true);
             openTimeTextField.setText(openTimeStr);
+            showRoomSchedule(true);
         }
 
-        // todo: what if minutes are snapTo? - maybe don't have to worry bc will just display really badly but logic still works?
+        // todo: what if minutes aren't snapTo? - maybe don't have to worry bc will just display really badly but logic still works?
     }
 
     @FXML
