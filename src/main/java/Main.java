@@ -48,9 +48,9 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        addMouseMotionListener(getApplicationState().getIM());
         ApplicationState.getApplicationState().setPrimaryStage(primaryStage);
         Parent root = FXMLLoader.load(ResourceLoader.idle);
+        getApplicationState().getObservableBus().register("InactivityManager", ApplicationState.getApplicationState().getIM());
         //
         // Closes all threads
         primaryStage.setOnCloseRequest((ae) -> {

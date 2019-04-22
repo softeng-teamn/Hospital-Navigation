@@ -1,5 +1,7 @@
 package service;
 
+import application_state.ApplicationState;
+import application_state.Event;
 import application_state.InactivityManager;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,6 +23,12 @@ public class StageManager {
     public static Stage changeWindow(Stage primaryStage, Parent root, String title) throws Exception {
         primaryStage.setTitle(title);
         primaryStage.setScene(new Scene(root));
+        primaryStage.getScene().setOnMouseMoved(e -> {
+            Event ev = ApplicationState.getApplicationState().getObservableBus().getEvent();
+            ev.setEventName("reset-timer");
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(ev);
+        });
+        System.out.println("1st time Scene: " + primaryStage.getScene());
         primaryStage.setFullScreen(true);
         primaryStage.show();
         return primaryStage;
@@ -37,7 +45,6 @@ public class StageManager {
      */
     public static Stage changeExistingWindow(Stage primaryStage, Parent root, String title) throws Exception {
         primaryStage.setTitle(title);
-        addMouseMotionListener(getApplicationState().getIM());
         primaryStage.getScene().setRoot(root);
         primaryStage.setFullScreen(true);
         primaryStage.show();
