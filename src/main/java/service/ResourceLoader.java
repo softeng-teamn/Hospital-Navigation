@@ -19,6 +19,7 @@ public class  ResourceLoader {
     public static final URL idle = service.ResourceLoader.class.getResource("/fxml/login.fxml");
 
     public static final URL about = service.ResourceLoader.class.getResource("/fxml/home/aboutPage.fxml");
+    public static final URL credit = service.ResourceLoader.class.getResource("/fxml/home/creditsPage.fxml");
     public static final URL directionMessage = service.ResourceLoader.class.getResource("/fxml/home/directionMessage.fxml");
     public static final URL pathFindingSettings = service.ResourceLoader.class.getResource("/fxml/home/pathfindingSettings.fxml");
     public static final URL searchResults = service.ResourceLoader.class.getResource("/fxml/home/searchResults.fxml");
