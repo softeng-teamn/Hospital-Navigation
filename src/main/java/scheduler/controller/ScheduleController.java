@@ -1359,7 +1359,9 @@ public class ScheduleController {
         // reset label
         inputErrorLbl.setText("");
 
-        makeMinutesValid();
+        if (snapToMinutes) {
+            makeMinutesValid();
+        }
         // Get the selected times
         int start = startTimePicker.getValue().getHour();
         int mins = startTimePicker.getValue().getMinute() / (timeStepMinutes);
@@ -1641,7 +1643,7 @@ public class ScheduleController {
     }
 
     @FXML
-    private void setSnapTo() {    // todo: other things related to snapping minutes
+    private void setSnapTo() {
         if (snapToMinutes) {
             snapToMinutes = false;
             snapToCheckBox.setSelected(false);
@@ -1655,18 +1657,20 @@ public class ScheduleController {
     }
 
     @FXML
-    private void setMinRes() {    // todo: other things related to minimum reservations
+    private void setMinRes() {    // todo: other things related to minimum reservations - esp w/r/t displaying
         if (boundMinRes) {
             boundMinRes = false;
             minResCheckBox.setSelected(false);
             minResCheckBox.setText("Unbound");
             minResTextField.setVisible(false);
+            timeStep = 60;
         }
         else {
             boundMinRes = true;
             minResCheckBox.setSelected(true);
             minResCheckBox.setText("Bound");
             minResTextField.setVisible(true);
+            minResTextField.setText(timeStepMinutes + "");
         }
     }
 
