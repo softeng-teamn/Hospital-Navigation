@@ -50,12 +50,14 @@ public class InactivityManager implements MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        System.out.println("mouse dragged");
         timer.cancel();
         timer.schedule(task, inactivityLimit);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        System.out.println("mouse moved");
         timer.cancel();
         timer.schedule(task, inactivityLimit);
     }
