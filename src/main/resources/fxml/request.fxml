@@ -20,7 +20,7 @@
    <children>
       <HBox alignment="CENTER" prefHeight="128.0" styleClass="header">
          <children>
-            <JFXTextField fx:id="search_bar" labelFloat="true" onAction="#searchBarEnter" promptText="%SearchRoom" styleClass="header-text-field" />
+            <JFXTextField fx:id="search_bar" labelFloat="true" onInputMethodTextChanged="#searchBarEnter" onKeyReleased="#searchBarEnter" promptText="%SearchRoom" styleClass="header-text-field" />
             <Region prefHeight="118.0" prefWidth="491.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />

@@ -40,7 +40,7 @@ public class InternalTransportRequestApi {
      * @param cssPath path to custom css to use
      * @param destination unused
      * @param origin the node where you want the service request to be fulfilled
-     * @throws ServiceException
+     * @throws ServiceException never
      */
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
     public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin) throws ServiceException {
@@ -84,7 +84,7 @@ public class InternalTransportRequestApi {
      *               corresponding to the floor the elevator will be called to.
      * @param useElev true if you want the elevator to be active
      * @param team "L", "M", "N", "O", "P" corresponding to your team name
-     * @throws ServiceException
+     * @throws ServiceException never
      */
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
     public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin, boolean useElev, String team) throws ServiceException {
@@ -132,8 +132,8 @@ public class InternalTransportRequestApi {
     }
 
     /**
-     * Insert an employee into the API database - you need at least one. Only username and ID are used, ID must be > 0 (-1 and 0 are forbidden)
-     * @param e
+     * Insert an employee into the API database - you need at least one. Only username and ID are used, ID must be &gt; 0 (-1 and 0 are forbidden)
+     * @param e The employee to insert
      * @return true if the employee was successfully inserted
      */
     public boolean insertEmployee(Employee e) {

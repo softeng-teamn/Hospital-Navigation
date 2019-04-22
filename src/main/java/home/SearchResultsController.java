@@ -38,7 +38,7 @@ public class SearchResultsController implements Observer {
     private Event event;    // The current event
 
     @FXML
-    private JFXListView<HBox> list_view;    // Changed to HBox TODO: put in requests pane, too
+    private JFXListView<HBox> list_view;    // Changed to HBox
 
     private HashMap<String, String> buildingAbbrev = new HashMap<>();    // Abbreviate buildings to fit in listview
 
