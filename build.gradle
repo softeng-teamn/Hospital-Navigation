@@ -192,7 +192,10 @@ dependencies {
             [group: 'edu.wpi.cs3733.b17.teamG', name: 'FoodRequest', version:'1.0.0'],
             [group: 'com.google.zxing', name: 'core', version: '3.3.3'],
             [group: 'com.google.zxing', name: 'javase', version: '3.3.0'],
-            [group: 'net.swisstech', name: 'bitly-api-client', version: '+']
+            [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
+            [group: 'edu.wpi.cs3733.d19.teamM', name: 'LanguageRequest', version:'1.0.0'],
+            [group: 'edu.wpi.cs3733.d19.teamP', name: 'BWHGiftRequest', version:'1.0.1'],
+            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1']
     )
     compile(
             [group: 'net.kurobako', name: 'gesturefx', version: '0.3.0'],
@@ -213,7 +216,11 @@ dependencies {
             [group: 'edu.wpi.cs3733.b17.teamG', name: 'FoodRequest', version:'1.0.0'],
             [group: 'com.google.zxing', name: 'core', version: '3.3.3'],
             [group: 'com.google.zxing', name: 'javase', version: '3.3.0'],
-            [group: 'net.swisstech', name: 'bitly-api-client', version: '+']
+            [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
+            [group: 'edu.wpi.cs3733.d19.teamM', name: 'LanguageRequest', version:'1.0.0'],
+            [group: 'edu.wpi.cs3733.d19.teamP', name: 'BWHGiftRequest', version:'1.0.1'],
+            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1']
+
     )
 
     compileApi (
