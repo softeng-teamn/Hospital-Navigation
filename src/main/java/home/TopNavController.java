@@ -343,11 +343,22 @@ public class TopNavController implements Observer {
     public void startNavigation(ActionEvent actionEvent) {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         ApplicationState currState = ApplicationState.getApplicationState();
+        //if(currState == null) System.out.println("currState is null!");
+        //else System.out.println("currState is NOT null!");
         //if(callElev.isSelected()){
             event.setCallElev(true);
         //}
 
         event.setEventName("navigation");
+        /*if(startSearch == null) System.out.println("startSearch is null!");
+        else System.out.println("startSearch is NOT null!");
+        if(currState.getStartNode() == null) System.out.println("getStartNode is null!");
+        else System.out.println("getStartNode is NOT null!");
+        if(currState.getStartNode().getLongName() == null) System.out.println("longName is null!");
+        else System.out.println("longName is NOT null!");*/
+        if(currState.getStartNode() == null){
+            currState.setStartNode(new Node("ARETL00101",1619,2522,"1","BTM","RETL","Cafe","Cafe"));
+        }
         startSearch.setText(currState.getStartNode().getLongName());
         search_bar.setText(currState.getEndNode().getLongName());
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
