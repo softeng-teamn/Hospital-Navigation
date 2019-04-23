@@ -15,9 +15,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.CreditPageController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@/default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.CreditPageController">
     <children>
-        <HBox alignment="CENTER_RIGHT" prefHeight="128.0" prefWidth="200.0" spacing="5.0" styleClass="header" stylesheets="@../../theme.css">
+        <HBox alignment="CENTER_RIGHT" prefHeight="128.0" prefWidth="200.0" spacing="5.0" styleClass="header">
             <children>
                 <Label styleClass="header-label" text="Credits" textFill="WHITE">
                     <font>
@@ -41,10 +41,10 @@
         </HBox>
         <VBox alignment="CENTER" prefHeight="300.0" prefWidth="100.0" spacing="20.0">
             <children>
-                <Label styleClass="big-label" stylesheets="@../../../../../build/resources/main/theme.css" text="CS3733-D19 Software Engineering" />
-                <Label styleClass="big-label" stylesheets="@../../theme.css" text="WPI Computer Science Department" />
-                <Label styleClass="big-label" stylesheets="@../../theme.css" text="Prof. Wilson Wong" />
-                <Label styleClass="big-label" stylesheets="@../../theme.css" text="Team Coach: Dan Duff" />
+                <Label styleClass="big-label"  text="CS3733-D19 Software Engineering" />
+                <Label styleClass="big-label"  text="WPI Computer Science Department" />
+                <Label styleClass="big-label"  text="Prof. Wilson Wong" />
+                <Label styleClass="big-label"  text="Team Coach: Dan Duff" />
             </children>
             <VBox.margin>
                 <Insets />
@@ -52,7 +52,7 @@
         </VBox>
         <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
             <children>
-                <Label styleClass="big-label" stylesheets="@../../theme.css" text="APIs: " />
+                <Label styleClass="big-label" text="APIs: " />
             </children>
         </HBox>
         <HBox alignment="CENTER" prefHeight="350.0" prefWidth="200.0" spacing="50.0">

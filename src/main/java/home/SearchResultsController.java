@@ -30,6 +30,9 @@ import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * Controls the search bar
+ */
 public class SearchResultsController implements Observer {
 
     private Event event;    // The current event
