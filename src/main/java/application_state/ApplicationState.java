@@ -30,6 +30,21 @@ public class ApplicationState {
     // sets the current theme
     private URL currentTheme = ResourceLoader.default_style;
 
+    private int openTime = 9;   // hour to start schedule display
+    private String openTimeStr = "09:00";
+    private int openTimeMinutes = 0;
+    private int closeTime = 22;    // 24-hours hour to end schedule display
+    private String closeTimeString = "22:00";
+    private int closeTimeMinutes = 0;
+    private int timeStep = 2;    // Fractions of an hour
+    private boolean boundOpenTime = true;
+    private boolean boundCloseTime = true;
+    private boolean boundMinRes = true;
+    private boolean snapToMinutes = true;
+    private boolean allowMultidayRes = false;
+    private boolean allowRecurringRes = false;
+    private static boolean showContactInfo = true;
+
     //******************************************
 
     private static class SingletonHelper {
@@ -131,4 +146,115 @@ public class ApplicationState {
         return DEFAULT_NODE;
     }
 
+    public int getOpenTime() {
+        return openTime;
+    }
+
+    public void setOpenTime(int openTime) {
+        this.openTime = openTime;
+    }
+
+    public String getOpenTimeStr() {
+        return openTimeStr;
+    }
+
+    public void setOpenTimeStr(String openTimeStr) {
+        this.openTimeStr = openTimeStr;
+    }
+
+    public int getOpenTimeMinutes() {
+        return openTimeMinutes;
+    }
+
+    public void setOpenTimeMinutes(int openTimeMinutes) {
+        this.openTimeMinutes = openTimeMinutes;
+    }
+
+    public int getCloseTime() {
+        return closeTime;
+    }
+
+    public void setCloseTime(int closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public String getCloseTimeString() {
+        return closeTimeString;
+    }
+
+    public void setCloseTimeString(String closeTimeString) {
+        this.closeTimeString = closeTimeString;
+    }
+
+    public int getCloseTimeMinutes() {
+        return closeTimeMinutes;
+    }
+
+    public void setCloseTimeMinutes(int closeTimeMinutes) {
+        this.closeTimeMinutes = closeTimeMinutes;
+    }
+
+    public int getTimeStep() {
+        return timeStep;
+    }
+
+    public void setTimeStep(int timeStep) {
+        this.timeStep = timeStep;
+    }
+
+    public boolean isBoundOpenTime() {
+        return boundOpenTime;
+    }
+
+    public void setBoundOpenTime(boolean boundOpenTime) {
+        this.boundOpenTime = boundOpenTime;
+    }
+
+    public boolean isBoundCloseTime() {
+        return boundCloseTime;
+    }
+
+    public void setBoundCloseTime(boolean boundCloseTime) {
+        this.boundCloseTime = boundCloseTime;
+    }
+
+    public boolean isBoundMinRes() {
+        return boundMinRes;
+    }
+
+    public void setBoundMinRes(boolean boundMinRes) {
+        this.boundMinRes = boundMinRes;
+    }
+
+    public boolean isSnapToMinutes() {
+        return snapToMinutes;
+    }
+
+    public void setSnapToMinutes(boolean snapToMinutes) {
+        this.snapToMinutes = snapToMinutes;
+    }
+
+    public boolean isAllowMultidayRes() {
+        return allowMultidayRes;
+    }
+
+    public void setAllowMultidayRes(boolean allowMultidayRes) {
+        this.allowMultidayRes = allowMultidayRes;
+    }
+
+    public boolean isAllowRecurringRes() {
+        return allowRecurringRes;
+    }
+
+    public void setAllowRecurringRes(boolean allowRecurringRes) {
+        this.allowRecurringRes = allowRecurringRes;
+    }
+
+    public static boolean isShowContactInfo() {
+        return showContactInfo;
+    }
+
+    public static void setShowContactInfo(boolean showContactInfo) {
+        ApplicationState.showContactInfo = showContactInfo;
+    }
 }

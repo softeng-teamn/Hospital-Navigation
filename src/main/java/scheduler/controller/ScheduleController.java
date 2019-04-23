@@ -485,6 +485,7 @@ public class ScheduleController {
         setUpArrayLists();
         setUpWeeklyTable();
         setUpAllRoomsTable();
+        getSettings();
         Platform.runLater(() -> {    // In order to speed up switching scenes
             try {
                 setUpCalendar();
@@ -497,6 +498,16 @@ public class ScheduleController {
         inputErrorLbl.setVisible(false);
         inputErrorLbl.setWrapText(true);
         inputErrorLbl.setPrefWidth(450);
+
+        endDatePicker = new JFXDatePicker(LocalDate.now());
+        endDatePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            focusState(newValue);
+        });
+        endDatePicker.setPrefWidth(256);
+        if (allowMultidayRes) {
+            sidePaneVBox.getChildren().add(3, endDatePicker);
+            sidePaneRegion.setPrefHeight(98);
+        }
 
         // Only allow admin to change settings. Note: doesn't change past reservations.
         tabPane.getTabs().remove(settingsTab);
@@ -531,16 +542,47 @@ public class ScheduleController {
         endTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             focusState(newValue);
         });
+    }
 
-       endDatePicker = new JFXDatePicker(LocalDate.now());
-       endDatePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            focusState(newValue);
-        });
-       endDatePicker.setPrefWidth(256);
-        if (allowMultidayRes) {
-            sidePaneVBox.getChildren().add(3, endDatePicker);
-            sidePaneRegion.setPrefHeight(98);
-        }
+    /**
+     * Get settings from Application state.
+     */
+    private void getSettings() {
+        openTime = ApplicationState.getApplicationState().getOpenTime();   // hour to start schedule display
+        openTimeStr = ApplicationState.getApplicationState().getOpenTimeStr();
+        openTimeMinutes = ApplicationState.getApplicationState().getOpenTimeMinutes();
+        closeTime = ApplicationState.getApplicationState().getCloseTime();    // 24-hours hour to end schedule display
+        closeTimeString = ApplicationState.getApplicationState().getCloseTimeString();
+        closeTimeMinutes = ApplicationState.getApplicationState().getCloseTimeMinutes();
+        timeStep = ApplicationState.getApplicationState().getTimeStep();    // Fractions of an hour
+        timeStepMinutes = 60 / timeStep;    // In Minutes
+        boundOpenTime = ApplicationState.getApplicationState().isBoundOpenTime();
+        boundCloseTime = ApplicationState.getApplicationState().isBoundCloseTime();
+        boundMinRes = ApplicationState.getApplicationState().isBoundMinRes();
+        snapToMinutes = ApplicationState.getApplicationState().isSnapToMinutes();
+        allowMultidayRes = ApplicationState.getApplicationState().isAllowMultidayRes();
+        allowRecurringRes = ApplicationState.getApplicationState().isAllowRecurringRes();
+        showContactInfo = ApplicationState.getApplicationState().isShowContactInfo();
+    }
+
+    /**
+     * Get settings from Application state.
+     */
+    private void saveSettings() {
+        ApplicationState.getApplicationState().setOpenTime(openTime);   // hour to start schedule display
+        ApplicationState.getApplicationState().setOpenTimeStr(openTimeStr);
+        ApplicationState.getApplicationState().setOpenTimeMinutes(openTimeMinutes);
+        ApplicationState.getApplicationState().setCloseTime(closeTime);    // 24-hours hour to end schedule display
+        ApplicationState.getApplicationState().setCloseTimeString(closeTimeString);
+        ApplicationState.getApplicationState().setCloseTimeMinutes(closeTimeMinutes);
+        ApplicationState.getApplicationState().setTimeStep(timeStep);    // Fractions of an hour
+        ApplicationState.getApplicationState().setBoundOpenTime(boundOpenTime);
+        ApplicationState.getApplicationState().setBoundCloseTime(boundCloseTime);
+        ApplicationState.getApplicationState().setBoundMinRes(boundMinRes);
+        ApplicationState.getApplicationState().setSnapToMinutes(snapToMinutes);
+        ApplicationState.getApplicationState().setAllowMultidayRes(allowMultidayRes);
+        ApplicationState.getApplicationState().setAllowRecurringRes(allowRecurringRes);
+        ApplicationState.getApplicationState().setShowContactInfo(showContactInfo);
     }
 
     /**
@@ -775,20 +817,58 @@ public class ScheduleController {
     }
 
     private void displaySettings() {
-        showContactCheckBox.setSelected(true);
-        showContactCheckBox.setText("On");
-        recurringCheckBox.setSelected(false);
-        recurringCheckBox.setText("Off");
-        multidayCheckBox.setSelected(false);
-        multidayCheckBox.setText("Off");
-        snapToCheckBox.setSelected(true);
-        snapToCheckBox.setText("On");
-        minResCheckBox.setSelected(true);
-        minResCheckBox.setText("Bound");
-        closeTimeCheckBox.setSelected(true);
-        closeTimeCheckBox.setText("Bound");
-        openTimeCheckBox.setSelected(true);
-        openTimeCheckBox.setText("Bound");
+        showContactCheckBox.setSelected(showContactInfo);
+        if (showContactInfo) {
+            showContactCheckBox.setText("On");
+        }
+        else {
+            showContactCheckBox.setText("Off");
+        }
+        recurringCheckBox.setSelected(allowRecurringRes);
+        if (allowRecurringRes) {
+            recurringCheckBox.setText("On");
+        }
+        else {
+            recurringCheckBox.setText("Off");
+        }
+        multidayCheckBox.setSelected(allowMultidayRes);
+        if (allowMultidayRes) {
+            multidayCheckBox.setText("On");
+        }
+        else {
+            multidayCheckBox.setText("Off");
+        }
+        snapToCheckBox.setSelected(snapToMinutes);
+        if (snapToMinutes) {
+            snapToCheckBox.setText("On");
+        }
+        else {
+            snapToCheckBox.setText("Off");
+        }
+        minResCheckBox.setSelected(boundMinRes);
+        if (boundMinRes) {
+            minResCheckBox.setText("Bound");
+        }
+        else {
+            minResCheckBox.setText("Unbound");
+            minResTextField.setVisible(false);
+        }
+        closeTimeCheckBox.setSelected(boundCloseTime);
+        if (boundCloseTime) {
+            closeTimeCheckBox.setText("Bound");
+        }
+        else {
+            closeTimeCheckBox.setText("Unbound");
+            closeTimeTextField.setVisible(false);
+        }
+        openTimeCheckBox.setSelected(boundOpenTime);
+        if (boundOpenTime) {
+            openTimeCheckBox.setText("Bound");
+        }
+        else {
+            openTimeCheckBox.setText("Unbound");
+            openTimeTextField.setVisible(false);
+        }
         openTimeTextField.setText(openTimeStr);
         openTimeTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             timeListener(newValue);
@@ -1134,6 +1214,7 @@ public class ScheduleController {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
+        saveSettings();
     }
 
     /**
@@ -1477,6 +1558,7 @@ public class ScheduleController {
 
             // switch screen to final stage of scheduler
             randomizeSpaces(false);
+            saveSettings();
             Stage stage = (Stage) makeReservationBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(ResourceLoader.confirmScheduler);
             StageManager.changeExistingWindow(stage, root, "Confirm Reservations");
