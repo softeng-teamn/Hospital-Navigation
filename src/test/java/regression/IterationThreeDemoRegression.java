@@ -87,22 +87,22 @@ public class IterationThreeDemoRegression extends ApplicationTest {
     @Test
     public void iterationThreeDemoRegression() {
         // 1. Pathfind BTM Conference Center to Amphitheater - expect 6
-        testPathfind("BTM Conference Center", "Flexible Amphitheater", 46);
+        testPathfind("BTM Conference Center", "Flexible Amphitheater", 48);
 
         // 2. Login to staff
         login("staff", "staff");
 
         // 2.1. Switch to Best First, pathfind to Obstetrics
         switchPathfinding("BEST");
-        testPathfind("Cafe", "Obstetrics", 62);
+        testPathfind("Cafe", "Obstetrics", 64);
 
         // 2.2. Switch to Dijktra's, pathfind to Obstetrics
         switchPathfinding("DIJSKTRA");
-        testPathfind("Cafe", "Obstetrics", 62);
+        testPathfind("Cafe", "Obstetrics", 64);
 
         // 2.3. Switch to A*, pathfind to Obstetrics
         switchPathfinding("ASTAR");
-        testPathfind("Cafe", "Obstetrics", 63);
+        testPathfind("Cafe", "Obstetrics", 65);
 
         // 3. Set Dan's phone to (1234567890)
         clickOn("#fulfillBtn");
@@ -125,7 +125,7 @@ public class IterationThreeDemoRegression extends ApplicationTest {
         assertThat(ApplicationState.getApplicationState().getEmployeeLoggedIn().getPhone(), is("1234567890"));
 
         // 6. Navigate BTM Conference Center to Amphitheater
-        testPathfind("BTM Conference Center", "Flexible Amphitheater", 46);
+        testPathfind("BTM Conference Center", "Flexible Amphitheater", 48);
         // 6.1. Text directions -- omitted - no way to test that texts are sent
         // 6.2. Show QR Code
         clickOn("#viewQRCodeBtn");
