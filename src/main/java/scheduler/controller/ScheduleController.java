@@ -48,14 +48,12 @@ import scheduler.model.Reservation;
 import service.QRService;
 import service.ResourceLoader;
 import service.StageManager;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Objects.requireNonNull;
 
@@ -69,333 +67,42 @@ import static java.util.Objects.requireNonNull;
  * and end time. Reservations must be valid and not conflict with any other reservations.
  */
 public class ScheduleController {
-
-    /**
-     * Wrapper to display times in tables.
-     */
-    private static class ScheduleWrapper {
-        private String time;
-        private String sunAvailability;
-        private String monAvailability;
-        private String tuesAvailability;
-        private String wedAvailability;
-        private String thursAvailability;
-        private String friAvailability;
-        private String satAvailability;
-        private String cla1Availability, cla2Availability, cla3Availability, comp1Availability, comp2Availability, comp3Availability, comp4Availability, comp5Availability, comp6Availability, auditoriumAvailability;
-
-        /**
-         * Initialize all availabilities to "-", ie available.
-         * @param time the time of this scheduleWrapper
-         */
-        public ScheduleWrapper(String time) {
-            this.time = time;
-            this.sunAvailability = "-";
-            this.monAvailability = "-";
-            this.tuesAvailability = "-";
-            this.wedAvailability = "-";
-            this.thursAvailability = "-";
-            this.friAvailability = "-";
-            this.satAvailability = "-";
-            this.auditoriumAvailability = "-";
-            this.cla1Availability = "-";
-            this.cla2Availability = "-";
-            this.cla3Availability = "-";
-            this.comp1Availability = "-";
-            this.comp2Availability = "-";
-            this.comp3Availability = "-";
-            this.comp4Availability = "-";
-            this.comp5Availability = "-";
-            this.comp6Availability = "-";
-        }
-
-        public void setTime(String value) {
-            this.time = value;
-        }
-
-        public String getTime() {
-            return time;
-        }
-
-        /**
-         * Set the availability for the given day to the given value.
-         * @param day  the day to set the availability for
-         * @param value  the availability or event name
-         */
-        public void setDayAvailability(int day, String value) {
-            switch(day) {
-                case 0:
-                    setSunAvailability(value);
-                    break;
-                case 1:
-                    setMonAvailability(value);
-                    break;
-                case 2:
-                    setTuesAvailability(value);
-                    break;
-                case 3:
-                    setWedAvailability(value);
-                    break;
-                case 4:
-                    setThursAvailability(value);
-                    break;
-                case 5:
-                    setFriAvailability(value);
-                    break;
-                case 6:
-                    setSatAvailability(value);
-                    break;
-                default:
-                    System.out.println("You passed an invalid day while setting availability");
-                    break;
-            }
-        }
-
-        /**
-         * Set the availability for the given room to the given value.
-         * @param day  the room to set the availability for
-         * @param value  the availability or event name
-         */
-        public void setRoomAvailability(int day, String value) {
-            switch(day) {
-                case 0:
-                    auditoriumAvailability = value;
-                    break;
-                case 1:
-                    cla1Availability = value;
-                    break;
-                case 2:
-                    cla2Availability = value;
-                    break;
-                case 3:
-                    cla3Availability = value;
-                    break;
-                case 4:
-                    comp1Availability = value;
-                    break;
-                case 5:
-                    comp2Availability = value;
-                    break;
-                case 6:
-                    comp3Availability = value;
-                    break;
-                case 7:
-                    comp4Availability = value;
-                    break;
-                case 8:
-                    comp5Availability = value;
-                    break;
-                case 9:
-                    comp6Availability = value;
-                    break;
-                default:
-                    System.out.println("You passed an invalid room while setting availability");
-                    break;
-            }
-        }
-
-        public String getDayAvailability(int day) {
-            switch(day) {
-                case 1:
-                    return sunAvailability;
-                case 2:
-                    return monAvailability;
-                case 3:
-                    return tuesAvailability;
-                case 4:
-                    return wedAvailability;
-                case 5:
-                    return thursAvailability;
-                case 6:
-                    return friAvailability;
-                case 7:
-                    return satAvailability;
-                default:
-                    return "You passed an invalid day while setting availability";
-            }
-        }
-
-        public String getRoomAvailability(int day) {
-            switch(day) {
-                case 1:
-                    return auditoriumAvailability;
-                case 2:
-                    return cla1Availability;
-                case 3:
-                    return cla2Availability;
-                case 4:
-                    return cla3Availability;
-                case 5:
-                    return comp1Availability;
-                case 6:
-                    return comp2Availability;
-                case 7:
-                    return comp3Availability;
-                case 8:
-                    return comp4Availability;
-                case 9:
-                    return comp5Availability;
-                case 10:
-                    return comp6Availability;
-                default:
-                    return "You passed an invalid room while setting availability";
-            }
-        }
-
-        public String getSunAvailability() {
-            return sunAvailability;
-        }
-
-        public void setSunAvailability(String value) {
-            this.sunAvailability = value;
-        }
-
-        public String getMonAvailability() {
-            return monAvailability;
-        }
-
-        public void setMonAvailability(String monAvailability) {
-            this.monAvailability = monAvailability;
-        }
-
-        public String getTuesAvailability() {
-            return tuesAvailability;
-        }
-
-        public void setTuesAvailability(String tuesAvailability) {
-            this.tuesAvailability = tuesAvailability;
-        }
-
-        public String getWedAvailability() {
-            return wedAvailability;
-        }
-
-        public void setWedAvailability(String wedAvailability) {
-            this.wedAvailability = wedAvailability;
-        }
-
-        public String getThursAvailability() {
-            return thursAvailability;
-        }
-
-        public void setThursAvailability(String thursAvailability) {
-            this.thursAvailability = thursAvailability;
-        }
-
-        public String getFriAvailability() {
-            return friAvailability;
-        }
-
-        public void setFriAvailability(String friAvailability) {
-            this.friAvailability = friAvailability;
-        }
-
-        public String getSatAvailability() {
-            return satAvailability;
-        }
-
-        public void setSatAvailability(String satAvailability) {
-            this.satAvailability = satAvailability;
-        }
-    }
-
-    /**
-     * Randomly color workstations while running.
-     */
-    private class WorkStationRunner implements Runnable{
-        private volatile boolean exit = false;    // Whether to stop running
-
-        public void run() {    // Note that these numbers are all adjustable: sleep time, rem, bound
-            int rem = 0;
-            while(!exit){    // Whil running
-                final int r = rem;
-                try {
-                    Thread.sleep(2000);    // Wait a little
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        Random rand = new Random();
-                        for (int i = 0; i < workStations.size(); i++) {   // For each workstation,
-                            if (i % 5 == r) {
-                                int n = rand.nextInt(5);
-                                SVGPath ws = workStations.get(i);
-                                if (n < 1) {
-                                    if (ws.getFill().equals(AVAILABLE_COLOR)) {
-                                        ws.setFill(UNAVAILABLE_COLOR);    // Set it as whatever it was not available
-                                    } else {
-                                        ws.setFill(AVAILABLE_COLOR);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-                rem++;
-                if (rem == 5) {
-                    rem = 0;
-                }
-            }
-        }
-
-        public void stop(){
-            exit = true;
-        }
-    }
-
-
     @FXML
     public JFXButton homeBtn, makeReservationBtn, availRoomsBtn, bookedRoomsBtn, deleteReservationBtn;
-
     @FXML
-    public JFXButton submitBtn;
-
-    @FXML
-    public JFXTextField eventName, searchBar, employeeID, closeTimeTextField, openTimeTextField, minResTextField;
-
+    public JFXTextField closeTimeTextField, openTimeTextField, minResTextField;
     @FXML
     private JFXCheckBox closeTimeCheckBox, openTimeCheckBox, minResCheckBox, snapToCheckBox, recurringCheckBox, multidayCheckBox, showContactCheckBox;
-
     private JFXCheckBox sidePaneRecurrenceCheckBox;
-
     @FXML
     private TableView<ScheduleWrapper> scheduleTable, dailyScheduleAllRooms;
-
     @FXML
     private TableView<Reservation> resTable;
-
     @FXML
     private TableColumn<Reservation, String> eventCol, reserverCol, locationCol, eventStartCol, eventEndCol;
-
     @FXML
     public JFXListView reservableList;
-
     @FXML
     public JFXDatePicker datePicker;
-
     private JFXDatePicker endDatePicker, recurrenceDatePicker;
-
-    private JFXComboBox recurrenceComboBox = new JFXComboBox();
-
     @FXML
     public JFXTimePicker startTimePicker, endTimePicker;
-
     @FXML
     public Label resInfoLbl, inputErrorLbl, schedLbl, errorMessage;
-
     @FXML
     private SVGPath classroom1, classroom2, classroom3, classroom4, classroom5, classroom6, classroom7, classroom8, classroom9, auditorium;
-
     @FXML
     private VBox sidePaneVBox;
-
     @FXML
     private Region sidePaneRegion;
-
+    @FXML
+    private AnchorPane subSceneHolder;
+    @FXML
+    private JFXTabPane tabPane;
+    @FXML
+    private Tab weeklyScheduleTab, dailyScheduleTab, settingsTab, allResTab;
     private CalendarView calendarView;
-
+    private JFXComboBox recurrenceComboBox = new JFXComboBox();
     // Workstations
     @FXML
     private SVGPath ws1, ws2, ws3, ws4, ws5, ws6, ws7, ws8, ws9;
@@ -423,29 +130,17 @@ public class ScheduleController {
     private SVGPath ws110, ws111, ws112, ws113, ws114, ws115, ws116, ws117, ws118, ws119;
     @FXML
     private SVGPath ws120;
-
-    @FXML
-    private AnchorPane subSceneHolder;
-
-    @FXML
-    private JFXTabPane tabPane;
-
-    @FXML
-    private Tab weeklyScheduleTab, dailyScheduleTab, settingsTab, allResTab;
-
-    private Event event ;    // The current event
-    private Thread randStationsThread;    // Random stations thread
-    private WorkStationRunner runner;    // Stoppable part
-
-    // Map Stuff
+    // Map Display items
     public static final Color AVAILABLE_COLOR = Color.rgb(0, 160, 100,0.6);
     public static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 30, 0.8);
     public static final Color SELECT_AVAILABLE_COLOR = Color.rgb(13, 160, 100,0.9);
     public static final Color SELECT_UNAVAILABLE_COLOR = Color.rgb(255, 82, 30, 0.9);
-    ArrayList<Node> nodeCollection = new ArrayList<Node>();
-    ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
-    ArrayList<SVGPath> workStations = new ArrayList<>();
-
+    private ArrayList<Node> nodeCollection = new ArrayList<Node>();
+    private ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
+    private static ArrayList<SVGPath> workStations = new ArrayList<>();
+    private Event event ;    // The current event
+    private Thread randStationsThread;    // Random stations thread
+    private WorkStationRunner runner;    // Stoppable part
     // Admin settings
     private int openTime = 9;   // hour to start schedule display
     private String openTimeStr = "09:00";
@@ -464,7 +159,6 @@ public class ScheduleController {
     private boolean allowMultidayRes = false;
     private boolean allowRecurringRes = false;
     private static boolean showContactInfo = true;
-
     // Currently selected location
     public ReservableSpace currentSelection;
     // Hashmap connecting reservable spaces to their location nodes
@@ -510,6 +204,7 @@ public class ScheduleController {
         inputErrorLbl.setWrapText(true);
         inputErrorLbl.setPrefWidth(450);
 
+        // Set multiday components
         endDatePicker = new JFXDatePicker(LocalDate.now());
         endDatePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             focusState(newValue);
@@ -520,6 +215,7 @@ public class ScheduleController {
             sidePaneRegion.setPrefHeight(98);
         }
 
+        // Set recurrence components
         sidePaneRecurrenceCheckBox = new JFXCheckBox("Repeat Event");
         sidePaneRecurrenceCheckBox.setOnAction(e -> {
             boolean vis = recurrenceDatePicker.isVisible();
@@ -604,7 +300,7 @@ public class ScheduleController {
     }
 
     /**
-     * Get settings from Application state.
+     * Save settings to Application state.
      */
     private void saveSettings() {
         ApplicationState.getApplicationState().setOpenTime(openTime);   // hour to start schedule display
@@ -627,7 +323,6 @@ public class ScheduleController {
      * Set up calendar tab.
      */
     private void setUpCalendar() throws IOException {
-
         // Create calendarView and settings
         calendarView = new CalendarView();
         calendarView.setPrefWidth(1485);
@@ -647,7 +342,6 @@ public class ScheduleController {
         Calendar computer4Cal = new Calendar("Computer Room 4");
         Calendar computer5Cal = new Calendar("Computer Room 5");
         Calendar computer6Cal = new Calendar("Computer Room 6");
-
         amphitheaterCal.setStyle(Style.STYLE1);
         amphitheaterCal.setShortName("AMPHI00001");
         classroom1Cal.setStyle(Style.STYLE2);
@@ -705,9 +399,7 @@ public class ScheduleController {
 
         // Set the calendarView details-popup (on double-click of event)
         calendarView.setEntryDetailsPopOverContentCallback(new MyEntryPopOverContentProvider());
-
         populateCalendar();
-
         Platform.runLater(() -> {    // In order to speed up switching scenes
             subSceneHolder.getChildren().add(calendarView);
         });
@@ -747,131 +439,8 @@ public class ScheduleController {
     }
 
     /**
-     * Provide a customized popover for calendar entries.
+     * If admin, display settings tab.
      */
-    private static class MyEntryPopOverContentProvider implements Callback<DateControl.EntryDetailsPopOverContentParameter, javafx.scene.Node> {
-        @Override
-        public javafx.scene.Node call(DateControl.EntryDetailsPopOverContentParameter param) {
-            Entry entry = param.getEntry();
-            return new MyCustomPopOverContentNode(entry, param.getDateControl().getCalendars());
-        }
-    }
-
-    /**
-     * Customized popover with customized details pane.
-     */
-    private static class MyCustomPopOverContentNode extends PopOverContentPane {
-        public MyCustomPopOverContentNode(Entry entry, ObservableList<Calendar> allCalendars) {
-            requireNonNull(entry);
-
-            EntryHeaderView header = new EntryHeaderView(entry, allCalendars);
-            MyEntryDetailsView details = new MyEntryDetailsView(entry);
-
-            PopOverTitledPane detailsPane = new PopOverTitledPane("Details", details);
-            getPanes().addAll(detailsPane);
-
-            setHeader(header);
-            setExpandedPane(detailsPane);
-        }
-    }
-
-    /**
-     * Customized details pane for popover.
-     * Provides event name, location, start and end times, and contact information
-     * for public events.
-     */
-    private static class MyEntryDetailsView extends EntryPopOverPane {
-        private Entry entry;
-
-        public MyEntryDetailsView(Entry entry) {
-            this.entry = entry;
-
-            // Get the reservation associated with this entry
-            Reservation res = myDBS.getReservation(Integer.parseInt(entry.getId()));
-
-            // Get the name and contact info depending on privacy level
-            String nameStr = res.getEventName();
-            Employee emp = myDBS.getEmployee(res.getEmployeeId());
-            String contactStr = emp.getFirstName() + " " + emp.getLastName();
-            if (res.getPrivacyLevel() > 0) {
-                nameStr = "Private Event";
-                contactStr = "Private Organizer";
-            }
-
-            // Get the start time
-            String startTimeStr = res.getStartTime().toInstant().toString();
-            int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
-            String startMinutes = Integer.toString((int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60);
-            if (startMinutes.length() < 2) {
-                startMinutes = "0" + startMinutes;
-            }
-
-            // Get the end time
-            String endTimeStr = res.getEndTime().toInstant().toString();
-            int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
-            String endMinutes = Integer.toString((int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60);
-            if (endMinutes.length() < 2) {
-                endMinutes = "0" + endMinutes;
-            }
-
-            // Correct dates
-            String startDate = startTimeStr.substring(5,7) + "/" + startTimeStr.substring(8,10) + "/" + startTimeStr.substring(0,4);
-            String endDate = endTimeStr.substring(5,7) + "/" + endTimeStr.substring(8,10) + "/" + endTimeStr.substring(0,4);
-            if (endHour >= 20) {
-                endDate = endDate.substring(0,3) + (Integer.parseInt(endDate.substring(3,5)) - 1) + endDate.substring(5);
-            }
-            if (startHour >= 20) {
-                startDate = startDate.substring(0,3) + (Integer.parseInt(startDate.substring(3,5)) - 1) + startDate.substring(5);
-            }
-
-            // Create labels for all info
-            startTimeStr = startHour + ":" + startMinutes + " on " + startDate;
-            endTimeStr = endHour + ":"  + endMinutes + " on " + endDate;
-            Label leftName = new Label("Event: ");
-            Label rightName = new Label(nameStr);
-            Label leftStartTime = new Label("Start Time: ");
-            Label rightStartTime = new Label(startTimeStr);
-            Label leftEndTime = new Label("End Time: ");
-            Label rightEndTime = new Label(endTimeStr);
-            Label leftContact = new Label("Contact: ");
-            Label rightContact = new Label(contactStr);
-            Label leftLoc = new Label("Location: ");
-            Label rightLoc = new Label(this.entry.getLocation());
-
-            // Add labels to vbox and hbox and put into pane
-            VBox left = new VBox();
-            left.getChildren().addAll(leftName, leftLoc, leftStartTime, leftEndTime);
-            VBox right = new VBox();
-            right.getChildren().addAll(rightName, rightLoc, rightStartTime, rightEndTime);
-            if (showContactInfo) {
-                left.getChildren().add(leftContact);
-                right.getChildren().add(rightContact);
-            }
-            HBox both = new HBox();
-            both.getChildren().addAll(left, right);
-            VBox total = new VBox();
-            total.getChildren().add(both);
-
-            // Create QR code popup if public event
-            if (res.getPrivacyLevel() == 0) {
-                ImageView QRcode = null;
-                try {
-                    QRcode = new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + res.getEventName() +
-                            "&eventLocation=" + myDBS.getReservableSpace(res.getLocationID()).getSpaceName() + "&eventOrganizer="
-                            + myDBS.getEmployee(res.getEmployeeId()).getFirstName() + "&" + myDBS.getEmployee(res.getEmployeeId()).getLastName()
-                            + "&startTime=" + res.getStartTime().getTimeInMillis() / 1000 + "&endTime=" + res.getEndTime().getTimeInMillis() / 1000, true));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
-                total.getChildren().add(QRcode);
-            }
-
-            this.getChildren().add(total);
-        }
-    }
-
     private void displaySettings() {
         showContactCheckBox.setSelected(showContactInfo);
         if (showContactInfo) {
@@ -925,6 +494,7 @@ public class ScheduleController {
             openTimeCheckBox.setText("Unbound");
             openTimeTextField.setVisible(false);
         }
+        // Set listeners for time to show current settings
         openTimeTextField.setText(openTimeStr);
         openTimeTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             timeListener(newValue);
@@ -943,7 +513,6 @@ public class ScheduleController {
 
     /**
      * Listener to update setting times
-     *
      * @param value whether it is focused or not
      */
     private void timeListener(boolean value) {
@@ -1240,6 +809,9 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * If not full screen, set the calendar so that the top edge can be seen.
+     */
     @FXML
     private void setCalInset() {
         if (!((Stage)makeReservationBtn.getScene().getWindow()).isFullScreen()) {
@@ -1329,7 +901,6 @@ public class ScheduleController {
                 return new ReadOnlyStringWrapper(endTimeStr);
             }
         });
-
 
         observRes.addAll(allRes);
         resTable.setItems(observRes);
@@ -1599,8 +1170,9 @@ public class ScheduleController {
         boolean valid = validTimes(true);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
 
-        if (valid && allowRecurringRes && recurrenceDatePicker.isVisible()) {
+        if (valid && allowRecurringRes && recurrenceDatePicker.isVisible()) {    // Check whether recurrences are valid
             ArrayList<Reservation> conflicts = new ArrayList<>();
+            // Set the chosen reservation
             ArrayList<Reservation> existingReservations = (ArrayList) myDBS.getReservationsBySpaceId(currentSelection.getSpaceID());
             LocalDate origEndDate = datePicker.getValue();
             if (allowMultidayRes) {
@@ -1608,31 +1180,26 @@ public class ScheduleController {
             }
             LocalDate currentDate = datePicker.getValue();
             long differece = DAYS.between(currentDate, origEndDate);
-            while(!currentDate.isAfter(recurrenceDatePicker.getValue())) {
+            while(!currentDate.isAfter(recurrenceDatePicker.getValue())) {    // For each repeat reservation
                 LocalDate currentEndDate = currentDate.plus(differece, ChronoUnit.DAYS);
                 LocalDateTime startDateTime = LocalDateTime.of(currentDate, startTimePicker.getValue());
                 LocalDateTime endDateTime = LocalDateTime.of(currentEndDate, endTimePicker.getValue());
                 boolean conflict = false;
-                System.out.println("Existing res: " + existingReservations);
-                for (Reservation res: existingReservations) {
-                    System.out.println("res start: " + res.getStartTime().toInstant()
-                    + "\ndesired start: " + startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()
-                    + "res end: " + res.getEndTime().toInstant()
-                            + "\ndesired end: " + endDateTime.atZone(ZoneId.of("America/New_York")).toInstant());
+                for (Reservation res: existingReservations) { // Check whether it conflicts with existing reservations
                     if (!res.getStartTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getEndTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) ||
                             (!res.getStartTime().toInstant().isBefore(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getStartTime().toInstant().isBefore(endDateTime.atZone(ZoneId.of("America/New_York")).toInstant()))) {
-                        conflicts.add(res);
-                        System.out.println("CONFLICTS111");
+                        conflicts.add(res);    // If there is a conflict, save the conflicting reservation
                         conflict = true;
                     }
                 }
-                if (!conflict) {
+                if (!conflict) {    // If there isn't a conflict, save this reservation
                     LocalTime startTime = startTimePicker.getValue();
                     LocalTime endTime = endTimePicker.getValue();
                     GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((currentDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
                     GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(currentEndDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
                     event.getRepeatReservations().add(new Reservation(-1,0,0,"",currentSelection.getSpaceID(),gcalStart,gcalEnd));
                 }
+                // Go to the next repeat event
                 if (recurrenceComboBox.getSelectionModel().getSelectedIndex() == 0) {
                     currentDate = currentDate.plus(1, DAYS);
                 }
@@ -1647,9 +1214,7 @@ public class ScheduleController {
                 }
             }
 
-
-            if (conflicts.size() > 0) {
-                System.out.println("conflicts: " + conflicts);
+            if (conflicts.size() > 0) {    // If there are conflicts, print them and don't allow the reservation
                 valid = false;
                 String conflictStr = "Your reservation conflicts on dates: ";
                 for (Reservation conflictRes : conflicts) {
@@ -1669,7 +1234,7 @@ public class ScheduleController {
             // Get the times and dates and turn them into gregorian calendars
             ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
 
-            if (recurrenceDatePicker.isVisible()) {
+            if (recurrenceDatePicker.isVisible()) {    // If recurring event, tell the event/application state
                 GregorianCalendar gcalRec = GregorianCalendar.from(ZonedDateTime.from((recurrenceDatePicker.getValue().atTime(endTimePicker.getValue())).atZone(ZoneId.of("America/New_York"))));
                 cals.add(gcalRec);
                 event.setActuallyRecurring(true);
@@ -1726,7 +1291,7 @@ public class ScheduleController {
         // reset label
         inputErrorLbl.setText("");
 
-        if (snapToMinutes) {
+        if (snapToMinutes) {    // Snap to minutes if that setting is on
             makeMinutesValid();
         }
         // Get the selected times
@@ -1759,6 +1324,7 @@ public class ScheduleController {
             return false;
         }
 
+        // If the recurring date is in the past, show an error
         if (allowRecurringRes && recurrenceDatePicker.isVisible()) {
             if (allowMultidayRes && recurrenceDatePicker.getValue().isBefore(endDatePicker.getValue())) {
                 inputErrorLbl.setVisible(true);
@@ -1774,24 +1340,24 @@ public class ScheduleController {
 
         if (forRes) {    // If this is for a reservation, check whether it conflicts with any current reservations
             ArrayList<GregorianCalendar> gcals = gCalsFromCurrTimes();
-            ArrayList<ReservableSpace> freeSpace = (ArrayList) myDBS.getBookedReservableSpacesBetween(gcals.get(0), gcals.get(1));
-            if (freeSpace.contains(currentSelection)) {
+            ArrayList<ReservableSpace> bookedSpace = (ArrayList) myDBS.getBookedReservableSpacesBetween(gcals.get(0), gcals.get(1));
+            if (bookedSpace.contains(currentSelection)) {    // Make sure this space is available
                 inputErrorLbl.setVisible(true);
                 inputErrorLbl.setText(conflictErrorText);
                 return false;
             }
+            // Make sure this reservation exceeds the minimum reservation time
             if (boundMinRes && gcals.get(0).toZonedDateTime().getDayOfYear() == gcals.get(1).toZonedDateTime().getDayOfYear()) {
-                System.out.println("In check for min res");
                 if((gcals.get(0).toZonedDateTime().getHour() == gcals.get(1).toZonedDateTime().getHour()
                         && (gcals.get(1).toZonedDateTime().getMinute() - gcals.get(0).toZonedDateTime().getMinute() < timeStepMinutes))
                 || (gcals.get(0).toZonedDateTime().getHour() == gcals.get(1).toZonedDateTime().getHour() -1
                         && (60 - gcals.get(0).toZonedDateTime().getMinute() + gcals.get(1).toZonedDateTime().getMinute() < timeStepMinutes))) {
-                        System.out.println("In minutes for min res");
                         inputErrorLbl.setVisible(true);
                         inputErrorLbl.setText(minResErrorText);
                         return false;
                 }
             }
+            // Don't allow multi-day reservations to repeat daily
             if (gcals.get(0).toZonedDateTime().getDayOfYear() != gcals.get(1).toZonedDateTime().getDayOfYear()) {
                 if (recurrenceComboBox.isVisible() && recurrenceComboBox.getSelectionModel().getSelectedIndex() == 0) {
                     inputErrorLbl.setVisible(true);
@@ -2019,7 +1585,9 @@ public class ScheduleController {
         }
     }
 
-    // Admin functionality, ideally
+    /**
+     * Set whether the calednar displays contact info for reservers.
+     */
     @FXML
     private void setShowContact() {
         if (showContactInfo) {
@@ -2034,6 +1602,9 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * Set whether recurring reservations are allowed.
+     */
     @FXML
     private void setRecurringRes() {
         if (allowRecurringRes) {
@@ -2063,6 +1634,10 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * Set whether multiday reservations are allowed.
+     * If they are, open and close times are unbound.
+     */
     @FXML
     private void setMultidayRes() {
         if (allowMultidayRes) {
@@ -2099,6 +1674,9 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * Set whether to snap minutes to the closest timestep.
+     */
     @FXML
     private void setSnapTo() {
         if (snapToMinutes) {
@@ -2117,6 +1695,9 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * Set whether there is a minimum reservation time.
+     */
     @FXML
     private void setMinRes() {
         if (boundMinRes) {
@@ -2136,12 +1717,16 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * On text field enter, if input is valid, set it as the new
+     * minimum reservation time.
+     */
     @FXML
     private void changeMinimumReservation() {
         errorMessage.setVisible(false);
         String min = minResTextField.getText();
         boolean valid = true;
-        if (min.length() != 2) {
+        if (min.length() != 2) {    // Check whether this is minutes in the form mm from 00 to 60.
             valid = false;
         }
         if (min.length() == 2) {
@@ -2169,6 +1754,9 @@ public class ScheduleController {
 
     }
 
+    /**
+     * Set whether close time is bound.
+     */
     @FXML
     private void setCloseTime() {
         if (boundCloseTime) {
@@ -2193,10 +1781,14 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * On close time text field enter, if inpus is valid,
+     * set close time to input.
+     */
     @FXML
     private void validCloseTime() {
+        // Validate input
         String valid = validFieldTime(closeTimeTextField.getText());
-
         if (valid.length() > 0) {
             if (Integer.parseInt(valid.substring(0,2)) <= openTime) {
                 valid = "";
@@ -2206,7 +1798,7 @@ public class ScheduleController {
         if (valid.length() > 0) {
             closeTimeString = valid;
             closeTime = Integer.parseInt(closeTimeString.substring(0,2));
-            if (snapToMinutes) {
+            if (snapToMinutes) {    // Snap to minutes if setting on
                 if (Integer.parseInt(valid.substring(3)) % (timeStepMinutes) != 0) {
                     // Then round them down to the nearest timeStep
                     int minutes = ((int) Integer.parseInt(valid.substring(3)) / (timeStepMinutes)) * (timeStepMinutes);
@@ -2226,6 +1818,9 @@ public class ScheduleController {
         closeTimeTextField.setText(closeTimeString);
     }
 
+    /**
+     * Set whether open time is bound.
+     */
     @FXML
     private void setOpenTime() {
         if (boundOpenTime) {
@@ -2250,10 +1845,14 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * On open time text field enter,
+     * if valid input set open time to input
+     */
     @FXML
     private void validOpenTime() {
+        // Validate input
         String valid = validFieldTime(openTimeTextField.getText());
-
         if (valid.length() > 0) {
             if (Integer.parseInt(valid.substring(0,2)) >= closeTime) {
                 valid = "";
@@ -2263,7 +1862,7 @@ public class ScheduleController {
         if (valid.length() > 0) {
             openTimeStr = valid;
             openTime = Integer.parseInt(openTimeStr.substring(0,2));
-            if (snapToMinutes) {
+            if (snapToMinutes) {    // Snap to minutes if setting on
                 if (Integer.parseInt(valid.substring(3)) % (timeStepMinutes) != 0) {
                     // Then round them down to the nearest timeStep
                     int minutes = ((int) Integer.parseInt(valid.substring(3)) / (timeStepMinutes)) * (timeStepMinutes);
@@ -2275,8 +1874,6 @@ public class ScheduleController {
                 }
                 openTimeMinutes = (int) (Integer.parseInt(openTimeStr.substring(3)) / timeStepMinutes);
             }
-
-
             showRoomSchedule(true);
         }
         else {
@@ -2285,14 +1882,19 @@ public class ScheduleController {
         openTimeTextField.setText(openTimeStr);
     }
 
+    /**
+     * Check whether this input text is a valid time in the format hh:mm.
+     * @param time  the input
+     * @return true if valid input format, false otherwise
+     */
     @FXML
     private String validFieldTime(String time) {
         errorMessage.setVisible(false);
         boolean valid = true;
-        if (time.length() != 5) {
+        if (time.length() != 5) {    // Verify length
             valid = false;
         }
-        else {
+        else {    // Make sure the hours are in 24 hour time and minutes are 00 < mm < 60
             time = time.substring(0, 5);
             String first = time.substring(0, 1);
             String second = time.substring(1, 2);
@@ -2317,7 +1919,6 @@ public class ScheduleController {
                 valid = false;
             }
         }
-
         if (valid) {
             return time;
         }
@@ -2326,6 +1927,9 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * Save current settings to file for next run.
+     */
     @FXML
     @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     private void saveSettingsToFile() {
@@ -2339,6 +1943,7 @@ public class ScheduleController {
             // Always wrap FileWriter in BufferedWriter.
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
+            // Get settings to save.
             ArrayList<String> args = new ArrayList<>();
             args.add(Integer.toString(openTime));
             args.add(openTimeStr);
@@ -2355,7 +1960,7 @@ public class ScheduleController {
             args.add(Boolean.toString(allowRecurringRes));
             args.add(Boolean.toString(showContactInfo));
 
-            for (int i = 0; i < args.size()-1; i++) {
+            for (int i = 0; i < args.size()-1; i++) {    // Write settings to file.
                 bufferedWriter.write(args.get(i));
                 bufferedWriter.write(",");
 
@@ -2374,6 +1979,9 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * Delete a reservation from the table and database.
+     */
     @FXML
     private void deleteReservation() {
         Reservation res = resTable.getSelectionModel().getSelectedItem();
@@ -2381,6 +1989,466 @@ public class ScheduleController {
         myDBS.deleteReservation(res);
         populateCalendar();
         showRoomSchedule(true);
+    }
+
+
+    /************************************************************************************************************
+     * Nested classes
+     ************************************************************************************************************/
+
+    /**
+     * Wrapper to display times in tables.
+     */
+    private static class ScheduleWrapper {
+        private String time;
+        private String sunAvailability;
+        private String monAvailability;
+        private String tuesAvailability;
+        private String wedAvailability;
+        private String thursAvailability;
+        private String friAvailability;
+        private String satAvailability;
+        private String cla1Availability, cla2Availability, cla3Availability, comp1Availability, comp2Availability, comp3Availability, comp4Availability, comp5Availability, comp6Availability, auditoriumAvailability;
+
+        /**
+         * Initialize all availabilities to "-", ie available.
+         * @param time the time of this scheduleWrapper
+         */
+        public ScheduleWrapper(String time) {
+            this.time = time;
+            this.sunAvailability = "-";
+            this.monAvailability = "-";
+            this.tuesAvailability = "-";
+            this.wedAvailability = "-";
+            this.thursAvailability = "-";
+            this.friAvailability = "-";
+            this.satAvailability = "-";
+            this.auditoriumAvailability = "-";
+            this.cla1Availability = "-";
+            this.cla2Availability = "-";
+            this.cla3Availability = "-";
+            this.comp1Availability = "-";
+            this.comp2Availability = "-";
+            this.comp3Availability = "-";
+            this.comp4Availability = "-";
+            this.comp5Availability = "-";
+            this.comp6Availability = "-";
+        }
+
+        public void setTime(String value) {
+            this.time = value;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        /**
+         * Set the availability for the given day to the given value.
+         * @param day  the day to set the availability for
+         * @param value  the availability or event name
+         */
+        public void setDayAvailability(int day, String value) {
+            switch(day) {
+                case 0:
+                    setSunAvailability(value);
+                    break;
+                case 1:
+                    setMonAvailability(value);
+                    break;
+                case 2:
+                    setTuesAvailability(value);
+                    break;
+                case 3:
+                    setWedAvailability(value);
+                    break;
+                case 4:
+                    setThursAvailability(value);
+                    break;
+                case 5:
+                    setFriAvailability(value);
+                    break;
+                case 6:
+                    setSatAvailability(value);
+                    break;
+                default:
+                    System.out.println("You passed an invalid day while setting availability");
+                    break;
+            }
+        }
+
+        /**
+         * Set the availability for the given room to the given value.
+         * @param day  the room to set the availability for
+         * @param value  the availability or event name
+         */
+        public void setRoomAvailability(int day, String value) {
+            switch(day) {
+                case 0:
+                    auditoriumAvailability = value;
+                    break;
+                case 1:
+                    cla1Availability = value;
+                    break;
+                case 2:
+                    cla2Availability = value;
+                    break;
+                case 3:
+                    cla3Availability = value;
+                    break;
+                case 4:
+                    comp1Availability = value;
+                    break;
+                case 5:
+                    comp2Availability = value;
+                    break;
+                case 6:
+                    comp3Availability = value;
+                    break;
+                case 7:
+                    comp4Availability = value;
+                    break;
+                case 8:
+                    comp5Availability = value;
+                    break;
+                case 9:
+                    comp6Availability = value;
+                    break;
+                default:
+                    System.out.println("You passed an invalid room while setting availability");
+                    break;
+            }
+        }
+
+        /**
+         * Get the availability for the given day.
+         * @param day  the room to get the availability for
+         */
+        public String getDayAvailability(int day) {
+            switch(day) {
+                case 1:
+                    return sunAvailability;
+                case 2:
+                    return monAvailability;
+                case 3:
+                    return tuesAvailability;
+                case 4:
+                    return wedAvailability;
+                case 5:
+                    return thursAvailability;
+                case 6:
+                    return friAvailability;
+                case 7:
+                    return satAvailability;
+                default:
+                    return "You passed an invalid day while setting availability";
+            }
+        }
+
+        /**
+         * Randomly color workstations while running.
+         */
+        private class WorkStationRunner implements Runnable{
+            private volatile boolean exit = false;    // Whether to stop running
+
+            public void run() {    // Note that these numbers are all adjustable: sleep time, rem, bound
+                int rem = 0;
+                while(!exit){    // Whil running
+                    final int r = rem;
+                    try {
+                        Thread.sleep(2000);    // Wait a little
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Random rand = new Random();
+                            for (int i = 0; i < workStations.size(); i++) {   // For each workstation,
+                                if (i % 5 == r) {
+                                    int n = rand.nextInt(5);
+                                    SVGPath ws = workStations.get(i);
+                                    if (n < 1) {
+                                        if (ws.getFill().equals(AVAILABLE_COLOR)) {
+                                            ws.setFill(UNAVAILABLE_COLOR);    // Set it as whatever it was not available
+                                        } else {
+                                            ws.setFill(AVAILABLE_COLOR);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    rem++;
+                    if (rem == 5) {
+                        rem = 0;
+                    }
+                }
+            }
+
+            public void stop(){
+                exit = true;
+            }
+        }
+
+        /**
+         * Get the availability for the given room.
+         * @param day  the room to get the availability for
+         */
+        public String getRoomAvailability(int day) {
+            switch(day) {
+                case 1:
+                    return auditoriumAvailability;
+                case 2:
+                    return cla1Availability;
+                case 3:
+                    return cla2Availability;
+                case 4:
+                    return cla3Availability;
+                case 5:
+                    return comp1Availability;
+                case 6:
+                    return comp2Availability;
+                case 7:
+                    return comp3Availability;
+                case 8:
+                    return comp4Availability;
+                case 9:
+                    return comp5Availability;
+                case 10:
+                    return comp6Availability;
+                default:
+                    return "You passed an invalid room while setting availability";
+            }
+        }
+
+        public String getSunAvailability() {
+            return sunAvailability;
+        }
+
+        public void setSunAvailability(String value) {
+            this.sunAvailability = value;
+        }
+
+        public String getMonAvailability() {
+            return monAvailability;
+        }
+
+        public void setMonAvailability(String monAvailability) {
+            this.monAvailability = monAvailability;
+        }
+
+        public String getTuesAvailability() {
+            return tuesAvailability;
+        }
+
+        public void setTuesAvailability(String tuesAvailability) {
+            this.tuesAvailability = tuesAvailability;
+        }
+
+        public String getWedAvailability() {
+            return wedAvailability;
+        }
+
+        public void setWedAvailability(String wedAvailability) {
+            this.wedAvailability = wedAvailability;
+        }
+
+        public String getThursAvailability() {
+            return thursAvailability;
+        }
+
+        public void setThursAvailability(String thursAvailability) {
+            this.thursAvailability = thursAvailability;
+        }
+
+        public String getFriAvailability() {
+            return friAvailability;
+        }
+
+        public void setFriAvailability(String friAvailability) {
+            this.friAvailability = friAvailability;
+        }
+
+        public String getSatAvailability() {
+            return satAvailability;
+        }
+
+        public void setSatAvailability(String satAvailability) {
+            this.satAvailability = satAvailability;
+        }
+    }
+
+    /**
+     * Randomly color workstations while running.
+     */
+    private class WorkStationRunner implements Runnable{
+        private volatile boolean exit = false;    // Whether to stop running
+
+        public void run() {    // Note that these numbers are all adjustable: sleep time, rem, bound
+            int rem = 0;
+            while(!exit){    // Whil running
+                final int r = rem;
+                try {
+                    Thread.sleep(2000);    // Wait a little
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Random rand = new Random();
+                        for (int i = 0; i < workStations.size(); i++) {   // For each workstation,
+                            if (i % 5 == r) {
+                                int n = rand.nextInt(5);
+                                SVGPath ws = workStations.get(i);
+                                if (n < 1) {
+                                    if (ws.getFill().equals(AVAILABLE_COLOR)) {
+                                        ws.setFill(UNAVAILABLE_COLOR);    // Set it as whatever it was not available
+                                    } else {
+                                        ws.setFill(AVAILABLE_COLOR);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                rem++;
+                if (rem == 5) {
+                    rem = 0;
+                }
+            }
+        }
+
+        public void stop(){
+            exit = true;
+        }
+    }
+
+    /**
+     * Provide a customized popover for calendar entries.
+     */
+    private static class MyEntryPopOverContentProvider implements Callback<DateControl.EntryDetailsPopOverContentParameter, javafx.scene.Node> {
+        @Override
+        public javafx.scene.Node call(DateControl.EntryDetailsPopOverContentParameter param) {
+            Entry entry = param.getEntry();
+            return new MyCustomPopOverContentNode(entry, param.getDateControl().getCalendars());
+        }
+    }
+
+    /**
+     * Customized popover with customized details pane.
+     */
+    private static class MyCustomPopOverContentNode extends PopOverContentPane {
+        public MyCustomPopOverContentNode(Entry entry, ObservableList<Calendar> allCalendars) {
+            requireNonNull(entry);
+
+            EntryHeaderView header = new EntryHeaderView(entry, allCalendars);
+            MyEntryDetailsView details = new MyEntryDetailsView(entry);
+
+            PopOverTitledPane detailsPane = new PopOverTitledPane("Details", details);
+            getPanes().addAll(detailsPane);
+
+            setHeader(header);
+            setExpandedPane(detailsPane);
+        }
+    }
+
+    /**
+     * Customized details pane for popover.
+     * Provides event name, location, start and end times, and contact information
+     * for public events.
+     */
+    private static class MyEntryDetailsView extends EntryPopOverPane {
+        private Entry entry;
+
+        public MyEntryDetailsView(Entry entry) {
+            this.entry = entry;
+
+            // Get the reservation associated with this entry
+            Reservation res = myDBS.getReservation(Integer.parseInt(entry.getId()));
+
+            // Get the name and contact info depending on privacy level
+            String nameStr = res.getEventName();
+            Employee emp = myDBS.getEmployee(res.getEmployeeId());
+            String contactStr = emp.getFirstName() + " " + emp.getLastName();
+            if (res.getPrivacyLevel() > 0) {
+                nameStr = "Private Event";
+                contactStr = "Private Organizer";
+            }
+
+            // Get the start time
+            String startTimeStr = res.getStartTime().toInstant().toString();
+            int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+            String startMinutes = Integer.toString((int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60);
+            if (startMinutes.length() < 2) {
+                startMinutes = "0" + startMinutes;
+            }
+
+            // Get the end time
+            String endTimeStr = res.getEndTime().toInstant().toString();
+            int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+            String endMinutes = Integer.toString((int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60);
+            if (endMinutes.length() < 2) {
+                endMinutes = "0" + endMinutes;
+            }
+
+            // Correct dates
+            String startDate = startTimeStr.substring(5,7) + "/" + startTimeStr.substring(8,10) + "/" + startTimeStr.substring(0,4);
+            String endDate = endTimeStr.substring(5,7) + "/" + endTimeStr.substring(8,10) + "/" + endTimeStr.substring(0,4);
+            if (endHour >= 20) {
+                endDate = endDate.substring(0,3) + (Integer.parseInt(endDate.substring(3,5)) - 1) + endDate.substring(5);
+            }
+            if (startHour >= 20) {
+                startDate = startDate.substring(0,3) + (Integer.parseInt(startDate.substring(3,5)) - 1) + startDate.substring(5);
+            }
+
+            // Create labels for all info
+            startTimeStr = startHour + ":" + startMinutes + " on " + startDate;
+            endTimeStr = endHour + ":"  + endMinutes + " on " + endDate;
+            Label leftName = new Label("Event: ");
+            Label rightName = new Label(nameStr);
+            Label leftStartTime = new Label("Start Time: ");
+            Label rightStartTime = new Label(startTimeStr);
+            Label leftEndTime = new Label("End Time: ");
+            Label rightEndTime = new Label(endTimeStr);
+            Label leftContact = new Label("Contact: ");
+            Label rightContact = new Label(contactStr);
+            Label leftLoc = new Label("Location: ");
+            Label rightLoc = new Label(this.entry.getLocation());
+
+            // Add labels to vbox and hbox and put into pane
+            VBox left = new VBox();
+            left.getChildren().addAll(leftName, leftLoc, leftStartTime, leftEndTime);
+            VBox right = new VBox();
+            right.getChildren().addAll(rightName, rightLoc, rightStartTime, rightEndTime);
+            if (showContactInfo) {
+                left.getChildren().add(leftContact);
+                right.getChildren().add(rightContact);
+            }
+            HBox both = new HBox();
+            both.getChildren().addAll(left, right);
+            VBox total = new VBox();
+            total.getChildren().add(both);
+
+            // Create QR code popup if public event
+            if (res.getPrivacyLevel() == 0) {
+                ImageView QRcode = null;
+                try {
+                    QRcode = new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + res.getEventName() +
+                            "&eventLocation=" + myDBS.getReservableSpace(res.getLocationID()).getSpaceName() + "&eventOrganizer="
+                            + myDBS.getEmployee(res.getEmployeeId()).getFirstName() + "&" + myDBS.getEmployee(res.getEmployeeId()).getLastName()
+                            + "&startTime=" + res.getStartTime().getTimeInMillis() / 1000 + "&endTime=" + res.getEndTime().getTimeInMillis() / 1000, true));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+                total.getChildren().add(QRcode);
+            }
+
+            this.getChildren().add(total);
+        }
     }
 
 }

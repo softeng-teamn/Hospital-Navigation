@@ -1,7 +1,6 @@
 package service;
 
 import application_state.ApplicationState;
-import application_state.Observer;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -47,7 +46,7 @@ public class StageManager {
         //set the style sheet here
         root.getStylesheets().removeAll();
         root.getStylesheets().add(ApplicationState.getApplicationState().getCurrentTheme().toString());
-        // todo uncomment primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(true);
         primaryStage.show();
         return primaryStage;
     }
