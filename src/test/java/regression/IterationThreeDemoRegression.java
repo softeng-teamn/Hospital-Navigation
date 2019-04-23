@@ -71,7 +71,6 @@ public class IterationThreeDemoRegression extends ApplicationTest {
         this.stage = stage;
     }
 
-
     @Test
     public void iterationThreeDemoRegression() {
         // 1. Pathfind BTM Conference Center to Amphitheater - expect 6
