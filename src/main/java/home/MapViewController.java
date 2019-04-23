@@ -206,9 +206,19 @@ public class MapViewController implements Observer {
             floorLbls.get(i).setVisible(false);
         }
 
+
         // update current floor to be yellow (does not work)
-        changeCurrentFloorButton();
-        floor1.setBackground(yellowBackground);
+        //changeCurrentFloorButton();
+        //floor1.setBackground(yellowBackground);
+/*
+        System.out.println("FLOOR RIGHT NOW = " + event.getFloor());
+        floor1.requestFocus();
+        System.out.println("floor one focus = " + floor1.isFocused());
+        if (floor1.isFocused()) {
+            floor1.setBackground(yellowBackground);
+            System.out.println("FLOOR ONE IS YELLOW! " + floor1.getBackground().toString());
+        }
+*/
 
     }
 
@@ -264,18 +274,30 @@ public class MapViewController implements Observer {
 
         for (int i = 0; i < floorBtns.size(); i++) {
 
+            //System.out.println("floor = " + floorBtns.get(i).getText());
+
             // if i is the current floor
             if (floorBtns.get(i).getText().equals(currFloor)) {
+               // System.out.println("floor # " + floorBtns.get(i).getText() + " is the current floor, will be changed to yellow ") ;
+
                 // change color of button to yellow
                 floorBtns.get(i).setBackground(yellowBackground);
+                floorBtns.get(i).requestFocus();
+               // System.out.println("FOCUS REQUESTED");
+               // System.out.println("FOCUS = " + floorBtns.get(i).isFocused());
+               // System.out.println("background color of floor " + floorBtns.get(i).getText() + " is " + floorBtns.get(i).getBackground().toString());
             }
 
             // if i is not the current floor
             else {
+                //System.out.println("floor #" + floorBtns.get(i).getText() + " is not the current floor");
                 // but is yellow
                 if (floorBtns.get(i).getBackground() == yellowBackground) {
+                    //System.out.println("but is yellow! changing to blue");
+
                     // change i to blue
                     floorBtns.get(i).setBackground(blueBackground);
+
                 }
             }
         }
@@ -395,6 +417,7 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        changeCurrentFloorButton();
                         deletePolyLine();
                         drawIcon(currState.getEndNode());
                         scrollTo(currState.getEndNode());
@@ -405,6 +428,7 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        changeCurrentFloorButton();
                         deletePolyLine();
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
                         scrollTo(currState.getStartNode());
