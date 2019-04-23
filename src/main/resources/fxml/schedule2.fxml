@@ -333,8 +333,8 @@
                                        <children>
                                           <JFXTextField fx:id="openTimeTextField" onAction="#validOpenTime" prefHeight="50.0" />
                                           <JFXTextField fx:id="closeTimeTextField" onAction="#validCloseTime" prefHeight="50.0" />
-                                          <JFXTextField fx:id="minResTextField" prefHeight="50.0" />
-                                          <Label fx:id="errorMessage" prefHeight="50.0" wrapText="true" />
+                                          <JFXTextField fx:id="minResTextField" onAction="#changeMinimumReservation" prefHeight="50.0" />
+                                          <Label fx:id="errorMessage" wrapText="true" />
                                        </children>
                                        <HBox.margin>
                                           <Insets top="20.0" />

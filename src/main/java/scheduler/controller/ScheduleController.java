@@ -333,7 +333,6 @@ public class ScheduleController {
                     rem = 0;
                 }
             }
-            //System.out.println("Thread is stopped....");     can cut
         }
 
         public void stop(){
@@ -517,7 +516,7 @@ public class ScheduleController {
         if (ApplicationState.getApplicationState().getEmployeeLoggedIn() != null && ApplicationState.getApplicationState().getEmployeeLoggedIn().isAdmin()) {
             tabPane.getTabs().add(allResTab);
             tabPane.getTabs().add(settingsTab);
-            displaySettings();     // todo: make settings persist
+            displaySettings();
             fillResTable();
         }
 
@@ -665,7 +664,7 @@ public class ScheduleController {
         };
         updateTimeThread.setPriority(Thread.MIN_PRIORITY);
         updateTimeThread.setDaemon(true);
-        updateTimeThread.start();    // todo: when does this end?
+        updateTimeThread.start();
 
         // Set the calendarView details-popup (on double-click of event)
         calendarView.setEntryDetailsPopOverContentCallback(new MyEntryPopOverContentProvider());
@@ -681,7 +680,6 @@ public class ScheduleController {
      * Show reservations in calendar.
      */
     private void populateCalendar() {
-        System.out.println("    STARTING TO POPULATE");
         for (int s = 0; s < calendarView.getCalendarSources().size(); s++) {    // For each calendar source
             CalendarSource source = calendarView.getCalendarSources().get(s);
             for (int i = 0; i < source.getCalendars().size(); i++) {    // For each calendar
@@ -767,16 +765,16 @@ public class ScheduleController {
             String startTimeStr = res.getStartTime().toInstant().toString();
             int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
             String startMinutes = Integer.toString((int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60);
-            if (startMinutes.equals("0")) {
-                startMinutes = "00";
+            if (startMinutes.length() < 2) {
+                startMinutes = "0" + startMinutes;
             }
 
             // Get the end time
             String endTimeStr = res.getEndTime().toInstant().toString();
             int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
             String endMinutes = Integer.toString((int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60);
-            if (endMinutes.equals("0")) {
-                endMinutes = "00";
+            if (endMinutes.length() < 2) {
+                endMinutes = "0" + endMinutes;
             }
 
             // Correct dates
@@ -884,7 +882,7 @@ public class ScheduleController {
             timeListener(newValue);
         });
         errorMessage.setVisible(false);
-        errorMessage.setText("Please enter a valid time in the format hh:mm");
+        errorMessage.setText("Please enter a valid time in the format hh:mm.\nFor minimum reservation, enter a number of minutes\nthat is a divisor of 60 as mm.");
     }
 
     /**
@@ -1245,8 +1243,8 @@ public class ScheduleController {
                 String startTimeStr = res.getStartTime().toInstant().toString();
                 int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
                 String startMinutes = Integer.toString((int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60);
-                if (startMinutes.equals("0")) {
-                    startMinutes = "00";
+                if (startMinutes.length() < 2) {
+                    startMinutes = "0" + startMinutes;
                 }
                 String startDate = startTimeStr.substring(5,7) + "/" + startTimeStr.substring(8,10) + "/" + startTimeStr.substring(0,4);
                 if (startHour >= 20) {
@@ -1263,8 +1261,8 @@ public class ScheduleController {
                 String endTimeStr = res.getEndTime().toInstant().toString();
                 int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
                 String endMinutes = Integer.toString((int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60);
-                if (endMinutes.equals("0")) {
-                    endMinutes = "00";
+                if (endMinutes.length() < 2) {
+                    endMinutes = "0" + endMinutes;
                 }
                 // Correct dates
                 String endDate = endTimeStr.substring(5,7) + "/" + endTimeStr.substring(8,10) + "/" + endTimeStr.substring(0,4);
@@ -1344,8 +1342,8 @@ public class ScheduleController {
             }
             for (;j < bound; j++) {
                 String minutes = String.format("%d", timeStepMinutes * j);
-                if (Integer.parseInt(minutes) == 0) {
-                    minutes = "00";
+                if (Integer.parseInt(minutes) < 10) {
+                    minutes = "0" + minutes;
                 }
                 String timeInc = i + ":" + minutes;
 
@@ -1373,8 +1371,6 @@ public class ScheduleController {
 
             // Get reservations for this day
             ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currentSelection.getSpaceID());
-            System.out.println(gcalStartDay.toInstant() + " " + gcalEndDay.toInstant());
-            System.out.println("weekly sched for : " + currentSelection.getSpaceName() + reservations);
 
             for (Reservation res : reservations) {
                 boolean sameDay = false;
@@ -1458,8 +1454,8 @@ public class ScheduleController {
             }
             for (;j < bound; j++) {
                 String minutes = String.format("%d", timeStepMinutes * j);
-                if (Integer.parseInt(minutes) == 0) {
-                    minutes = "00";
+                if (Integer.parseInt(minutes) < 10) {
+                    minutes = "0" + minutes;
                 }
                 String timeInc = i + ":" + minutes;
 
@@ -1925,7 +1921,7 @@ public class ScheduleController {
     }
 
     @FXML
-    private void setMinRes() {    // todo: other things related to minimum reservations - esp w/r/t displaying
+    private void setMinRes() {
         if (boundMinRes) {
             boundMinRes = false;
             minResCheckBox.setSelected(false);
@@ -1940,6 +1936,39 @@ public class ScheduleController {
             minResTextField.setVisible(true);
             minResTextField.setText(timeStepMinutes + "");
         }
+    }
+
+    @FXML
+    private void changeMinimumReservation() {
+        errorMessage.setVisible(false);
+        String min = minResTextField.getText();
+        boolean valid = true;
+        if (min.length() != 2) {
+            valid = false;
+        }
+        if (min.length() == 2) {
+            String first = min.substring(0,1);
+            String second = min.substring(1,2);
+            if (!"0123456".contains(first) || !"0123456789".contains(second)) {
+                valid = false;
+            }
+        }
+        if (valid) {
+            int mins = Integer.parseInt(min);
+            if (60 % mins != 0) {
+                valid = false;
+            }
+            else {
+                timeStep = 60 / mins;
+                timeStepMinutes = 60 / timeStep;
+                showRoomSchedule(true);
+            }
+        }
+        if (!valid) {
+            errorMessage.setVisible(true);
+        }
+        minResTextField.setText("" + timeStepMinutes);
+
     }
 
     @FXML
@@ -1988,7 +2017,6 @@ public class ScheduleController {
                     closeTimeString = closeTimeString.substring(0,3) + minutesSt;
                 }
                 closeTimeMinutes = (int) (Integer.parseInt(closeTimeString.substring(3)) / timeStepMinutes);
-                System.out.println(openTime);
             }
             showRoomSchedule(true);
         }
@@ -2046,7 +2074,6 @@ public class ScheduleController {
                     openTimeStr = openTimeStr.substring(0,3) + minutesSt;
                 }
                 openTimeMinutes = (int) (Integer.parseInt(openTimeStr.substring(3)) / timeStepMinutes);
-                System.out.println(openTime);
             }
 
 
@@ -2133,7 +2160,8 @@ public class ScheduleController {
                 bufferedWriter.write(",");
 
             }
-            bufferedWriter.write(args.get(args.size() -1));    // todo: make sure to overwrite old settings
+            bufferedWriter.write(args.get(args.size() -1));
+            bufferedWriter.newLine();
 
             // Close files.
             bufferedWriter.close();
