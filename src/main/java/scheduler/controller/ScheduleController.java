@@ -45,14 +45,12 @@ import scheduler.model.ReservableSpace;
 import scheduler.model.Reservation;
 import service.ResourceLoader;
 import service.StageManager;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Objects.requireNonNull;
 
