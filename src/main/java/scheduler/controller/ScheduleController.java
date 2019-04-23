@@ -347,7 +347,7 @@ public class ScheduleController {
 
 
     @FXML
-    public JFXButton homeBtn, makeReservationBtn, availRoomsBtn, bookedRoomsBtn;
+    public JFXButton homeBtn, makeReservationBtn, availRoomsBtn, bookedRoomsBtn, deleteReservationBtn;
 
     @FXML
     public JFXButton submitBtn;
@@ -2372,6 +2372,15 @@ public class ScheduleController {
                     "Error writing to file '"
                             + fileName + "'");
         }
+    }
+
+    @FXML
+    private void deleteReservation() {
+        Reservation res = resTable.getSelectionModel().getSelectedItem();
+        resTable.getItems().remove(res);
+        myDBS.deleteReservation(res);
+        populateCalendar();
+        showRoomSchedule(true);
     }
 
 }
