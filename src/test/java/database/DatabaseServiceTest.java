@@ -1,11 +1,9 @@
 package database;
 
-import database.DatabaseService;
 import employee.model.Employee;
 import employee.model.JobType;
 import map.Edge;
 import map.Node;
-
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -694,6 +692,71 @@ public class DatabaseServiceTest {
         // Check that both are retrieved (large time block)
         reservationList = myDBS.getReservationsBySpaceIdBetween("ABCD", gapStart, gapEnd);
         assertThat(reservationList.size(), is(2));
+        assertEquals(res0, reservationList.get(0));
+        assertEquals(res1, reservationList.get(1));
+    }
+
+    @Test
+    @Category(FastTest.class)
+    public void getConflictingReservationBySpaceIdBetween() {
+        long now = 100000000000l;
+
+        List<Reservation> reservationList;
+
+        // No reservations should exist yet
+        reservationList = myDBS.getAllReservations();
+        assertThat(reservationList.size(), is(0));
+
+        // Create some reservations
+        GregorianCalendar res1Start = new GregorianCalendar();
+        GregorianCalendar res1End = new GregorianCalendar();
+        GregorianCalendar res2Start = new GregorianCalendar();
+        GregorianCalendar res2End = new GregorianCalendar();
+        GregorianCalendar res5start = new GregorianCalendar();
+        GregorianCalendar res5End = new GregorianCalendar();
+        res1Start.setTime(new Date(now - 5000));
+        res1End.setTime(new Date(now + 100));
+        res2Start.setTime(new Date(now - 420000));
+        res2End.setTime(new Date(now + 110000));
+        Reservation res0 = new Reservation(0, 1, 23, "Event 0", "ABCD", res1Start, res1End);
+        Reservation res1 = new Reservation(1, 0, 43, "Event 1", "ABCD", res2Start, res2End);
+        Reservation res2 = new Reservation(2, 0, 43, "Event 1", "LMNO", res2Start, res2End);
+
+        Employee testEmployee1 = new Employee(23,"CatPlanet","Cat", "Planet",JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee1));
+
+        Employee testEmployee2 = new Employee(43,"CatPlanet1","Cat", "Planet",JobType.DOCTOR,false,"douglas");
+        assertTrue(myDBS.insertEmployee(testEmployee2));
+
+        // Insert two
+        assertTrue(myDBS.insertReservation(res0));
+        assertTrue(myDBS.insertReservation(res1));
+        assertTrue(myDBS.insertReservation(res2));
+
+        GregorianCalendar gapStart = new GregorianCalendar();
+        GregorianCalendar gapEnd = new GregorianCalendar();
+        gapStart.setTime(new Date(now - 6000));
+        gapEnd.setTime(new Date(now + 200));
+
+        // Check that only one is retrieved (small time block)
+        reservationList = myDBS.getConflictingReservationsBySpaceIdBetween("ABCD", gapStart, gapEnd);
+        assertThat(reservationList.size(), is(2));
+        assertEquals(res0, reservationList.get(0));
+        assertEquals(res1, reservationList.get(1));
+
+        gapStart.setTime(new Date(now - 1000000));
+        gapEnd.setTime(new Date(now + 1100000));
+
+        // todo: why does this fail? something to do with endTime being so much bigger and start time not
+        res5start.setTime(new Date(now - 1000*60*16));
+        res5End.setTime(new Date(now + 2000*60*60*24));
+        System.out.println(res5start.toInstant() +" " +  res5End.toInstant() + "\ngap:" + gapStart.toInstant() + " " +gapEnd.toInstant());
+        Reservation res5 = new Reservation(2, 0, 43, "Event 5", "ABCD", res5start, res5End);
+        assertTrue(myDBS.insertReservation(res5));
+
+        // Check that both are retrieved (large time block)
+        reservationList = myDBS.getConflictingReservationsBySpaceIdBetween("ABCD", gapStart, gapEnd);
+        assertThat(reservationList.size(), is(3));
         assertEquals(res0, reservationList.get(0));
         assertEquals(res1, reservationList.get(1));
     }

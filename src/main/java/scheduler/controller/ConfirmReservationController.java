@@ -2,10 +2,6 @@ package scheduler.controller;
 
 import application_state.ApplicationState;
 import application_state.Event;
-import application_state.Observer;
-import com.google.common.eventbus.DeadEvent;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.google.zxing.WriterException;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -27,9 +23,7 @@ import service.QRService;
 import service.ResourceLoader;
 import service.StageManager;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 

@@ -100,10 +100,9 @@ class ReservationDatabase {
      * @param from start of the window
      * @param to   end of the window
      * @return a list of the requested reservations
-     */ // todo test
+     */
     List<Reservation> getConflictingReservationsBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
-        String query = "SELECT * From RESERVATION Where (spaceID = ? and (STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and STARTTIME < ?))";
-
+        String query = "SELECT * FROM RESERVATION WHERE (spaceID = ? and ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and ENDTIME < ?)))";
         return (List<Reservation>) (List<?>) databaseService.executeGetMultiple(query, Reservation.class, id, from, from, from, to);
     }
 

@@ -1285,11 +1285,13 @@ public class ScheduleController {
         // Populate each day's availability in the weekly schedule
         for (int dailySchedule = 0; dailySchedule < NUM_DAYS_IN_WEEK; dailySchedule++) {
             LocalDate secondDate = startDate.plus(1, ChronoUnit.DAYS);
-            GregorianCalendar gcalStartDay = GregorianCalendar.from(startDate.atStartOfDay(ZoneId.systemDefault()));
-            GregorianCalendar gcalEndDay = GregorianCalendar.from(secondDate.atStartOfDay(ZoneId.systemDefault()));
+            GregorianCalendar gcalStartDay = GregorianCalendar.from(startDate.atStartOfDay(ZoneId.of("America/New_York")));
+            GregorianCalendar gcalEndDay = GregorianCalendar.from(secondDate.atStartOfDay(ZoneId.of("America/New_York")));
 
             // Get reservations for this day
             ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getConflictingReservationsBySpaceIdBetween(currentSelection.getSpaceID(), gcalStartDay, gcalEndDay);
+            System.out.println(gcalStartDay.toInstant() + " " + gcalEndDay.toInstant());
+            System.out.println("weekly sched for : " + currentSelection.getSpaceName() + reservations);
 
             for (Reservation res : reservations) {
                 // todo: figure out how to display multiday reservations that fall across this time. also do this for other loop
@@ -1304,10 +1306,11 @@ public class ScheduleController {
 
                 // Get the end time
                 int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
-                if (res.getEndTime().toInstant().isAfter(gcalEndDay.toInstant())) {
-                    endHour = 23;    // todo: end minutes
-                }
                 int endMinutes = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60;
+                if (res.getEndTime().toInstant().isAfter(gcalEndDay.toInstant())) {
+                    endHour = 24;
+                    endMinutes = 0;
+                }
                 int endFrac = endMinutes / (int) (timeStepMinutes);
 
                 // For every time between the start and end of the reservation,
@@ -1381,24 +1384,33 @@ public class ScheduleController {
         }
 
         // Start date is start of the selected date, end date is the beginning of the next day
-        GregorianCalendar gcalStartDay = GregorianCalendar.from(datePicker.getValue().atStartOfDay(ZoneId.systemDefault()));
-        GregorianCalendar gcalEndDay = GregorianCalendar.from((datePicker.getValue().plus(1, ChronoUnit.DAYS)).atStartOfDay(ZoneId.systemDefault()));
+        GregorianCalendar gcalStartDay = GregorianCalendar.from(datePicker.getValue().atStartOfDay(ZoneId.of("America/New_York")));
+        GregorianCalendar gcalEndDay = GregorianCalendar.from((datePicker.getValue().plus(1, ChronoUnit.DAYS)).atStartOfDay(ZoneId.of("America/New_York")));
 
         // Populate each day's availability in the weekly schedule
         for (int roomSchedule = 0; roomSchedule < NUM_ROOMS; roomSchedule++) {
 
             // Get reservations for this day
-            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(allResSpaces.get(roomSchedule).getSpaceID(), gcalStartDay, gcalEndDay);
+            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getConflictingReservationsBySpaceIdBetween(allResSpaces.get(roomSchedule).getSpaceID(), gcalStartDay, gcalEndDay);
+            System.out.println("daily sched for : " + allResSpaces.get(roomSchedule).getSpaceName() + reservations);
 
             for (Reservation res : reservations) {
                 // Get the start time
                 int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
                 int startMinutes = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60;
+                if (res.getStartTime().toInstant().isBefore(gcalStartDay.toInstant())) {
+                    startHour = 0;
+                    startMinutes = 0;
+                }
                 int startFrac = startMinutes / (int) (timeStepMinutes);
 
                 // Get the end time
                 int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
                 int endMinutes = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60;
+                if (res.getEndTime().toInstant().isAfter(gcalEndDay.toInstant())) {
+                    endHour = 24;
+                    endMinutes = 0;
+                }
                 int endFrac = endMinutes / (int) (timeStepMinutes);
 
                 // For every time between the start and end of the reservation,
