@@ -124,7 +124,6 @@ public class ApiController implements Initializable {
         employeeComboBox.setCellFactory(factory);
         employeeComboBox.setButtonCell(factory.call(null));
 
-
         ObservableList<Employee> employees = FXCollections.observableArrayList();
         employees.setAll(myDBS.getAllEmployees());
         employeeComboBox.setItems(employees);

@@ -113,8 +113,7 @@ public class ReligiousRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Religious Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getReligion().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Description: %s, Type: %s", this.getNotes(), this.getReligion().name());
     }
 
     @Override
@@ -122,4 +121,8 @@ public class ReligiousRequest extends Request {
         return typeString.equals("Religious");
     }
 
+    @Override
+    public String getType(){
+        return "Religious";
+    }
 }

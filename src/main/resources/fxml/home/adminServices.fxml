@@ -104,7 +104,8 @@
                      </graphic>
                   </JFXToggleNode>
                   <JFXToggleNode fx:id="dijsktraToggle" onAction="#dijsktraSwitch" prefHeight="80.0" prefWidth="75.0" styleClass="request-toggle-node" text="Dijsktra" textAlignment="CENTER" toggleGroup="$algorithm">
-                     <graphic>
+
+                    <graphic>
                         <EmojiOneView glyphName="REGIONAL_INDICATOR_D" size="48" styleClass="request-glyph" />
                      </graphic>
                   </JFXToggleNode>
