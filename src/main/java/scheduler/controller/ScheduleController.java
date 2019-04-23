@@ -2450,7 +2450,6 @@ public class ScheduleController {
                 }
                 total.getChildren().add(QRcode);
             }
-
             this.getChildren().add(total);
         }
     }
