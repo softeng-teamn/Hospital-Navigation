@@ -476,7 +476,6 @@ public class ScheduleController {
     // List of all reservable spaces
     private ObservableList<ReservableSpace> allResSpaces;
     // Error messages
-    private String timeErrorText = "Please enter a valid time - note that rooms are only available for booking " + openTimeStr + " to " + closeTimeString;
     private String availRoomsText = "Show Available Spaces";
     private String bookedRoomsText = "Show Booked Spaces";
     private String clearFilterText = "Clear Filter";
@@ -539,11 +538,12 @@ public class ScheduleController {
         recurrenceDatePicker.setPrefWidth(256);
         if (allowRecurringRes) {
             sidePaneVBox.setSpacing(20);
+            int insert = sidePaneVBox.getChildren().indexOf(sidePaneRegion);
             sidePaneVBox.getChildren().remove(sidePaneRegion);
-            sidePaneVBox.getChildren().add(4, sidePaneRecurrenceCheckBox);
-            sidePaneVBox.getChildren().add(5, recurrenceDatePicker);
+            sidePaneVBox.getChildren().add(insert, sidePaneRecurrenceCheckBox);
+            sidePaneVBox.getChildren().add(insert + 1, recurrenceDatePicker);
             recurrenceDatePicker.setVisible(false);
-            sidePaneVBox.getChildren().add(6, recurrenceComboBox);
+            sidePaneVBox.getChildren().add(insert + 2, recurrenceComboBox);
             recurrenceComboBox.setVisible(false);
         }
 
@@ -1613,9 +1613,14 @@ public class ScheduleController {
                 LocalDateTime startDateTime = LocalDateTime.of(currentDate, startTimePicker.getValue());
                 LocalDateTime endDateTime = LocalDateTime.of(currentEndDate, endTimePicker.getValue());
                 boolean conflict = false;
+                System.out.println("Existing res: " + existingReservations);
                 for (Reservation res: existingReservations) {
-                    if (res.getStartTime().toInstant().isBefore(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getEndTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) ||
-                            (res.getStartTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getStartTime().toInstant().isBefore(endDateTime.atZone(ZoneId.of("America/New_York")).toInstant()))) {
+                    System.out.println("res start: " + res.getStartTime().toInstant()
+                    + "\ndesired start: " + startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()
+                    + "res end: " + res.getEndTime().toInstant()
+                            + "\ndesired end: " + endDateTime.atZone(ZoneId.of("America/New_York")).toInstant());
+                    if (!res.getStartTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getEndTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) ||
+                            (!res.getStartTime().toInstant().isBefore(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getStartTime().toInstant().isBefore(endDateTime.atZone(ZoneId.of("America/New_York")).toInstant()))) {
                         conflicts.add(res);
                         System.out.println("CONFLICTS111");
                         conflict = true;
@@ -1627,7 +1632,6 @@ public class ScheduleController {
                     GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((currentDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
                     GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(currentEndDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
                     event.getRepeatReservations().add(new Reservation(-1,0,0,"",currentSelection.getSpaceID(),gcalStart,gcalEnd));
-                    System.out.println(event.getRepeatReservations());
                 }
                 if (recurrenceComboBox.getSelectionModel().getSelectedIndex() == 0) {
                     currentDate = currentDate.plus(1, DAYS);
@@ -1647,6 +1651,16 @@ public class ScheduleController {
             if (conflicts.size() > 0) {
                 System.out.println("conflicts: " + conflicts);
                 valid = false;
+                String conflictStr = "Your reservation conflicts on dates: ";
+                for (Reservation conflictRes : conflicts) {
+                    String conflictDate = "" + conflictRes.getStartTime().getTime();
+                    conflictDate = conflictDate.substring(0, 10) + ", " + conflictDate.substring(24);
+                    conflictStr += conflictDate;
+                    conflictStr += ", ";
+                }
+                conflictStr = conflictStr.substring(0, conflictStr.length() - 2);
+                inputErrorLbl.setVisible(true);
+                inputErrorLbl.setText(conflictStr);
             }
         }
 
@@ -1741,7 +1755,7 @@ public class ScheduleController {
         // or end is greater than start, the times are invalid
         if ((!allowMultidayRes || (allowMultidayRes && endDatePicker.getValue().equals(datePicker.getValue()))) && (endIndex <= index || start < openTime || closeTime < end)) {
             inputErrorLbl.setVisible(true);
-            inputErrorLbl.setText(timeErrorText);
+            inputErrorLbl.setText("Please enter a valid time - note that rooms are only available for booking " + openTimeStr + " to " + closeTimeString);
             return false;
         }
 
@@ -1769,7 +1783,7 @@ public class ScheduleController {
             if (boundMinRes && gcals.get(0).toZonedDateTime().getDayOfYear() == gcals.get(1).toZonedDateTime().getDayOfYear()) {
                 System.out.println("In check for min res");
                 if((gcals.get(0).toZonedDateTime().getHour() == gcals.get(1).toZonedDateTime().getHour()
-                        && (gcals.get(0).toZonedDateTime().getMinute() - gcals.get(1).toZonedDateTime().getMinute() < timeStepMinutes))
+                        && (gcals.get(1).toZonedDateTime().getMinute() - gcals.get(0).toZonedDateTime().getMinute() < timeStepMinutes))
                 || (gcals.get(0).toZonedDateTime().getHour() == gcals.get(1).toZonedDateTime().getHour() -1
                         && (60 - gcals.get(0).toZonedDateTime().getMinute() + gcals.get(1).toZonedDateTime().getMinute() < timeStepMinutes))) {
                         System.out.println("In minutes for min res");
@@ -1998,7 +2012,8 @@ public class ScheduleController {
             recurringCheckBox.setSelected(false);
             recurringCheckBox.setText("Off");
             sidePaneVBox.setSpacing(48);
-            sidePaneVBox.getChildren().add(4, sidePaneRegion);
+            int index = sidePaneVBox.getChildren().indexOf(sidePaneRecurrenceCheckBox);
+            sidePaneVBox.getChildren().add(index, sidePaneRegion);
             sidePaneVBox.getChildren().remove( sidePaneRecurrenceCheckBox);
             sidePaneVBox.getChildren().remove( recurrenceDatePicker);
             sidePaneVBox.getChildren().remove( recurrenceComboBox);
@@ -2009,11 +2024,12 @@ public class ScheduleController {
             recurringCheckBox.setText("On");
             sidePaneRecurrenceCheckBox.setSelected(false);
             sidePaneVBox.setSpacing(20);
+            int index = sidePaneVBox.getChildren().indexOf(sidePaneRegion);
             sidePaneVBox.getChildren().remove(sidePaneRegion);
-            sidePaneVBox.getChildren().add(4, sidePaneRecurrenceCheckBox);
-            sidePaneVBox.getChildren().add(5, recurrenceDatePicker);
+            sidePaneVBox.getChildren().add(index, sidePaneRecurrenceCheckBox);
+            sidePaneVBox.getChildren().add(index + 1, recurrenceDatePicker);
             recurrenceDatePicker.setVisible(false);
-            sidePaneVBox.getChildren().add(6, recurrenceComboBox);
+            sidePaneVBox.getChildren().add(index + 2, recurrenceComboBox);
             recurrenceComboBox.setVisible(false);
         }
     }
@@ -2024,7 +2040,7 @@ public class ScheduleController {
             allowMultidayRes = false;
             multidayCheckBox.setSelected(false);
             multidayCheckBox.setText("Off");
-            sidePaneVBox.getChildren().remove(3);
+            sidePaneVBox.getChildren().remove(endDatePicker);
             sidePaneRegion.setPrefHeight(139);
         }
         else {
@@ -2080,6 +2096,7 @@ public class ScheduleController {
             minResCheckBox.setText("Unbound");
             minResTextField.setVisible(false);
             timeStep = 60;
+            timeStepMinutes = 60 / timeStep;
         }
         else {
             boundMinRes = true;
@@ -2142,6 +2159,8 @@ public class ScheduleController {
             closeTimeTextField.setVisible(true);
             closeTimeTextField.setText(closeTimeString);
             showRoomSchedule(true);
+            allowMultidayRes = true;
+            setMultidayRes();
         }
     }
 
@@ -2197,6 +2216,8 @@ public class ScheduleController {
             openTimeTextField.setVisible(true);
             openTimeTextField.setText(openTimeStr);
             showRoomSchedule(true);
+            allowMultidayRes = true;
+            setMultidayRes();
         }
     }
 

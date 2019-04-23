@@ -65,14 +65,14 @@ public class ConfirmReservationController {
         // Get the start time
         int startHour = (int) (cals.get(0).getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
         String startMinutes = Integer.toString((int) (cals.get(0).getTimeInMillis() / (1000 * 60)) % 60);
-        if (startMinutes.equals("0")) {
-            startMinutes = "00";
+        if (startMinutes.length() < 2) {
+            startMinutes = "0" + startMinutes;
         }
         // Get the end time
         int endHour = (int) (cals.get(1).getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
         String endMinutes = Integer.toString((int) (cals.get(1).getTimeInMillis() / (1000 * 60)) % 60);
-        if (endMinutes.equals("0")) {
-            endMinutes = "00";
+        if (endMinutes.length() < 2) {
+            endMinutes = "0" + endMinutes;
         }
 
         String date = "" + cals.get(0).getTime();
