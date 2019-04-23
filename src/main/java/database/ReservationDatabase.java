@@ -92,18 +92,4 @@ class ReservationDatabase {
         String query = "SELECT * FROM RESERVATION WHERE (spaceID = ? and (STARTTIME between ? and ?) and (ENDTIME between ? and ?))";
         return (List<Reservation>) (List<?>) databaseService.executeGetMultiple(query, Reservation.class, id, from, to, from, to);
     }
-
-    /**
-     * Get all reservations made for the given space ID that conflict with from and to.
-     *
-     * @param id   the spaceID of the reservable space being requested for
-     * @param from start of the window
-     * @param to   end of the window
-     * @return a list of the requested reservations
-     */
-    List<Reservation> getConflictingReservationsBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
-        String query = "SELECT * FROM RESERVATION WHERE (spaceID = ? and ((STARTTIME <= ? and ENDTIME > ?) or (STARTTIME >= ? and ENDTIME < ?)))";
-        return (List<Reservation>) (List<?>) databaseService.executeGetMultiple(query, Reservation.class, id, from, from, from, to);
-    }
-
 }

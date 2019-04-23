@@ -279,7 +279,7 @@
                      <content>
                         <AnchorPane fx:id="subSceneHolder1" prefHeight="915.0" prefWidth="1485.0">
                            <children>
-                              <TableView fx:id="resTable" prefWidth="1480.0" AnchorPane.topAnchor="20.0">
+                              <TableView fx:id="resTable" prefHeight="900.0" prefWidth="1480.0" AnchorPane.topAnchor="20.0">
                                 <columns>
                                   <TableColumn fx:id="eventCol" prefWidth="290.0" text="Event Name" />
                                   <TableColumn fx:id="locationCol" prefWidth="290.0" text="Location" />

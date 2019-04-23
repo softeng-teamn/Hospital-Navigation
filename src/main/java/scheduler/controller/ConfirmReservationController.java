@@ -83,10 +83,14 @@ public class ConfirmReservationController {
         String date = "" + cals.get(0).getTime();
         date = date.substring(0, 10) + ", " + date.substring(24);
 
+        String endDate = "" + cals.get(1).getTime();
+        endDate = endDate.substring(0, 10) + ", " + endDate.substring(24);
+
 
         resInfoLbl.setText("Location:      " + myDBS.getReservableSpace(e.getRoomId()).getSpaceName()
-                + "\n\nDate:            " + date
+                + "\n\nStart Date:   " + date
                 + "\n\nStart Time:   " + startHour + ":" + startMinutes
+                + "\n\nEnd Date:     " + endDate
                 + "\n\nEnd Time:    " + endHour + ":" + endMinutes);
     }
 
