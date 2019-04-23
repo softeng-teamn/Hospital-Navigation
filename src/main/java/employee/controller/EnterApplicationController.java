@@ -26,11 +26,11 @@ public class EnterApplicationController{
     //private Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
     @FXML
-    AnchorPane ap = new AnchorPane();
+    StackPane sp = new StackPane();
 
     @FXML
     public void initialize() throws Exception{
-        ap.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        sp.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event){
                 try {
@@ -40,7 +40,7 @@ public class EnterApplicationController{
                 }
             }
         });
-        ap.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        sp.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
 
@@ -49,7 +49,7 @@ public class EnterApplicationController{
     }
 
     public void enter() throws Exception {
-        Stage stage = (Stage) ap.getScene().getWindow();
+        Stage stage = (Stage) sp.getScene().getWindow();
         Parent root = load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home");
     }
