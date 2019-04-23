@@ -28,7 +28,6 @@ public class  ResourceLoader {
 
     public static final URL superSecretPasswords = service.ResourceLoader.class.getResource("SuperSecretPasswords.txt");
 
-
     public static final URL maintenanceRequest = service.ResourceLoader.class.getResource("/fxml/request/maintenance_requests.fxml");
     public static final URL avServiceRequest = service.ResourceLoader.class.getResource("/fxml/request/avservice_requests.fxml");
     public static final URL floristRequest = service.ResourceLoader.class.getResource("/fxml/request/floristRequest.fxml");

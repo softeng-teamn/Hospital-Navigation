@@ -45,6 +45,8 @@ import scheduler.model.Reservation;
 import service.ResourceLoader;
 import service.StageManager;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -466,7 +468,7 @@ public class ScheduleController {
     // List of all reservable spaces
     private ObservableList<ReservableSpace> allResSpaces;
     // Error messages
-    private String timeErrorText = "Please enter a valid time - note that rooms are only available for booking 9 AM - 10 PM";    // todo: use variables
+    private String timeErrorText = "Please enter a valid time - note that rooms are only available for booking " + openTimeStr + " to " + closeTimeString;
     private String availRoomsText = "Show Available Spaces";
     private String bookedRoomsText = "Show Booked Spaces";
     private String clearFilterText = "Clear Filter";
@@ -1869,7 +1871,7 @@ public class ScheduleController {
     }
 
     @FXML
-    private void setMultidayRes() {    // todo: other things related to multi-day reservations
+    private void setMultidayRes() {
         if (allowMultidayRes) {
             allowMultidayRes = false;
             multidayCheckBox.setSelected(false);
@@ -2094,6 +2096,53 @@ public class ScheduleController {
         }
         else {
             return "";
+        }
+    }
+
+    @FXML
+    private void saveSettingsToFile() {
+        saveSettings();
+        // The name of the file to open.
+        String fileName = "./src/main/resources/schedulerSettings.txt";
+
+        try {
+            // Assume default encoding.
+            FileWriter fileWriter = new FileWriter(fileName);
+
+            // Always wrap FileWriter in BufferedWriter.
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            ArrayList<String> args = new ArrayList<>();
+            args.add(Integer.toString(openTime));
+            args.add(openTimeStr);
+            args.add(Integer.toString(openTimeMinutes));
+            args.add(Integer.toString(closeTime));
+            args.add(closeTimeString);
+            args.add(Integer.toString(closeTimeMinutes));
+            args.add(Integer.toString(timeStep));
+            args.add(Boolean.toString(boundOpenTime));
+            args.add(Boolean.toString(boundCloseTime));
+            args.add(Boolean.toString(boundMinRes));
+            args.add(Boolean.toString(snapToMinutes));
+            args.add(Boolean.toString(allowMultidayRes));
+            args.add(Boolean.toString(allowRecurringRes));
+            args.add(Boolean.toString(showContactInfo));
+
+            for (int i = 0; i < args.size()-1; i++) {
+                bufferedWriter.write(args.get(i));
+                bufferedWriter.write(",");
+
+            }
+            bufferedWriter.write(args.get(args.size() -1));    // todo: make sure to overwrite old settings
+
+            // Close files.
+            bufferedWriter.close();
+            fileWriter.close();
+        }
+        catch(IOException ex) {
+            System.out.println(
+                    "Error writing to file '"
+                            + fileName + "'");
         }
     }
 

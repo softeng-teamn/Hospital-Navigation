@@ -59,7 +59,7 @@
                   <JFXTimePicker fx:id="startTimePicker" maxWidth="256.0" prefWidth="256.0" promptText="Start Time" />
                   <JFXTimePicker fx:id="endTimePicker" maxWidth="256.0" prefWidth="256.0" promptText="End Time" />
                   <Region fx:id="sidePaneRegion" prefHeight="139.0" prefWidth="419.0" />
-                  <Label fx:id="inputErrorLbl" styleClass="small-label" wrapText="true" />
+                  <Label fx:id="inputErrorLbl" maxWidth="300.0" minHeight="-Infinity" styleClass="small-label" wrapText="true" />
                   <JFXButton fx:id="makeReservationBtn" maxWidth="1.7976931348623157E308" onAction="#makeReservation" styleClass="confirm-button" text="Make Reservation" />
                </children>
                <HBox.margin>
@@ -294,52 +294,57 @@
                   </Tab>
                   <Tab fx:id="settingsTab" onSelectionChanged="#setCalInset" text="Settings">
                      <content>
-                        <HBox spacing="30.0">
+                        <VBox alignment="TOP_CENTER" prefHeight="900.0" prefWidth="1480.0" spacing="20.0">
                            <children>
-                              <VBox prefHeight="915.0" prefWidth="740.0" spacing="20.0">
+                              <HBox spacing="30.0">
                                  <children>
-                                    <Label prefHeight="50.0" text="Open Time: " />
-                                    <Label prefHeight="50.0" text="Close Time:" />
-                                    <Label prefHeight="50.0" text="Minimum Reservation (minutes):" />
-                                    <Label prefHeight="50.0" text="Snap Minutes to Regular Timestep:" />
-                                    <Label prefHeight="50.0" text="Multi-day Reservations:" />
-                                    <Label prefHeight="50.0" text="Recurring Reservations:" />
-                                    <Label prefHeight="50.0" text="Show Event Contact Info:" />
+                                    <VBox prefHeight="500.0" prefWidth="740.0" spacing="20.0">
+                                       <children>
+                                          <Label prefHeight="50.0" text="Open Time: " />
+                                          <Label prefHeight="50.0" text="Close Time:" />
+                                          <Label prefHeight="50.0" text="Minimum Reservation (minutes):" />
+                                          <Label prefHeight="50.0" text="Snap Minutes to Regular Timestep:" />
+                                          <Label prefHeight="50.0" text="Multi-day Reservations:" />
+                                          <Label prefHeight="50.0" text="Recurring Reservations:" />
+                                          <Label prefHeight="50.0" text="Show Event Contact Info:" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="20.0" />
+                                       </HBox.margin>
+                                       <padding>
+                                          <Insets left="450.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox prefHeight="500.0" prefWidth="191.0" spacing="20.0">
+                                       <children>
+                                          <JFXCheckBox fx:id="openTimeCheckBox" onAction="#setOpenTime" prefHeight="50.0" text="No Bound" />
+                                          <JFXCheckBox fx:id="closeTimeCheckBox" onAction="#setCloseTime" prefHeight="50.0" text="No Bound" />
+                                          <JFXCheckBox fx:id="minResCheckBox" onAction="#setMinRes" prefHeight="50.0" text="No Bound" />
+                                          <JFXCheckBox fx:id="snapToCheckBox" onAction="#setSnapTo" prefHeight="50.0" text="Off" />
+                                          <JFXCheckBox fx:id="multidayCheckBox" onAction="#setMultidayRes" prefHeight="50.0" text="Off" />
+                                          <JFXCheckBox fx:id="recurringCheckBox" onAction="#setRecurringRes" prefHeight="50.0" text="Off" />
+                                          <JFXCheckBox fx:id="showContactCheckBox" onAction="#setShowContact" prefHeight="50.0" text="Off" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="20.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <VBox prefHeight="500.0" prefWidth="191.0" spacing="20.0">
+                                       <children>
+                                          <JFXTextField fx:id="openTimeTextField" onAction="#validOpenTime" prefHeight="50.0" />
+                                          <JFXTextField fx:id="closeTimeTextField" onAction="#validCloseTime" prefHeight="50.0" />
+                                          <JFXTextField fx:id="minResTextField" prefHeight="50.0" />
+                                          <Label fx:id="errorMessage" prefHeight="50.0" wrapText="true" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="20.0" />
+                                       </HBox.margin>
+                                    </VBox>
                                  </children>
-                                 <HBox.margin>
-                                    <Insets top="20.0" />
-                                 </HBox.margin>
-                                 <padding>
-                                    <Insets left="450.0" />
-                                 </padding>
-                              </VBox>
-                              <VBox prefHeight="915.0" prefWidth="191.0" spacing="20.0">
-                                 <children>
-                                    <JFXCheckBox fx:id="openTimeCheckBox" onAction="#setOpenTime" prefHeight="50.0" text="No Bound" />
-                                    <JFXCheckBox fx:id="closeTimeCheckBox" onAction="#setCloseTime" prefHeight="50.0" text="No Bound" />
-                                    <JFXCheckBox fx:id="minResCheckBox" onAction="#setMinRes" prefHeight="50.0" text="No Bound" />
-                                    <JFXCheckBox fx:id="snapToCheckBox" onAction="#setSnapTo" prefHeight="50.0" text="Off" />
-                                    <JFXCheckBox fx:id="multidayCheckBox" onAction="#setMultidayRes" prefHeight="50.0" text="Off" />
-                                    <JFXCheckBox fx:id="recurringCheckBox" onAction="#setRecurringRes" prefHeight="50.0" text="Off" />
-                                    <JFXCheckBox fx:id="showContactCheckBox" onAction="#setShowContact" prefHeight="50.0" text="Off" />
-                                 </children>
-                                 <HBox.margin>
-                                    <Insets top="20.0" />
-                                 </HBox.margin>
-                              </VBox>
-                              <VBox prefHeight="915.0" prefWidth="191.0" spacing="20.0">
-                                 <children>
-                                    <JFXTextField fx:id="openTimeTextField" onAction="#validOpenTime" prefHeight="50.0" />
-                                    <JFXTextField fx:id="closeTimeTextField" onAction="#validCloseTime" prefHeight="50.0" />
-                                    <JFXTextField fx:id="minResTextField" prefHeight="50.0" />
-                                    <Label fx:id="errorMessage" prefHeight="50.0" wrapText="true" />
-                                 </children>
-                                 <HBox.margin>
-                                    <Insets top="20.0" />
-                                 </HBox.margin>
-                              </VBox>
+                              </HBox>
+                              <JFXButton onAction="#saveSettingsToFile" styleClass="confirm-button" text="Save Settings" />
                            </children>
-                        </HBox>
+                        </VBox>
                      </content>
                   </Tab>
                </tabs>

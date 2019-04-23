@@ -1,18 +1,18 @@
 package home;
 
 import application_state.ApplicationState;
+import application_state.Event;
 import application_state.Observer;
 import com.jfoenix.controls.JFXDrawer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import map.MapController;
-import application_state.Event;
 import service.ResourceLoader;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 
 /**
  * Controls the main screen of the application
@@ -43,6 +43,8 @@ public class HomeController implements Observer {
         drawer.setDefaultDrawerSize(480);
         drawer.setResizeContent(true);
         drawer.setOverLayVisible(false);
+
+        readSchedulerSettings();
     }
 
     /** handles an observed event and changes the screen as appropriate
@@ -175,5 +177,64 @@ public class HomeController implements Observer {
         drawerPane.getChildren().clear();
         drawerPane.getChildren().add(FXMLLoader.load(ResourceLoader.pathFindingSettings));
         drawer.open();
+    }
+
+    private void readSchedulerSettings() {
+        // The name of the file to open.
+        String fileName = "./src/main/resources/schedulerSettings.txt";
+        ArrayList<String> args = new ArrayList<>();
+        String line = null;
+
+        try {
+            FileReader fileReader = new FileReader(fileName);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while((line = bufferedReader.readLine()) != null) {
+                String currArg = "";
+                for (int i = 0; i < line.length(); i++) {
+                    String lett = line.substring(i, i+1);
+                    if (lett.equals(",")) {
+                        args.add(currArg);
+                        currArg = "";
+                    }
+                    else {
+                        currArg += lett;
+                    }
+                }
+                args.add(currArg);
+            }
+            System.out.println(args);
+
+            // Close files.
+            bufferedReader.close();
+            fileReader.close();
+        }
+        catch(FileNotFoundException ex) {
+            ex.printStackTrace();
+            System.out.println(
+                    "Unable to open file '" +
+                            fileName + "'");
+        }
+        catch(IOException ex) {
+            ex.printStackTrace();
+            System.out.println(
+                    "Error reading file '"
+                            + fileName + "'");
+        }
+
+        ApplicationState currState = ApplicationState.getApplicationState();
+        currState.setOpenTime(Integer.parseInt(args.get(0)));
+        currState.setOpenTimeStr(args.get(1));
+        currState.setOpenTimeMinutes(Integer.parseInt(args.get(2)));
+        currState.setCloseTime(Integer.parseInt(args.get(3)));
+        currState.setCloseTimeString(args.get(4));
+        currState.setCloseTimeMinutes(Integer.parseInt(args.get(5)));
+        currState.setTimeStep(Integer.parseInt(args.get(6)));
+        currState.setBoundOpenTime(Boolean.parseBoolean(args.get(7)));
+        currState.setBoundCloseTime(Boolean.parseBoolean(args.get(8)));
+        currState.setBoundMinRes(Boolean.parseBoolean(args.get(9)));
+        currState.setSnapToMinutes(Boolean.parseBoolean(args.get(10)));
+        currState.setAllowMultidayRes(Boolean.parseBoolean(args.get(11)));
+        currState.setAllowRecurringRes(Boolean.parseBoolean(args.get(12)));
+        currState.setShowContactInfo(Boolean.parseBoolean(args.get(13)));
     }
 }
