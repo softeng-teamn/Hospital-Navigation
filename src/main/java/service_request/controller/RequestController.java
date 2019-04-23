@@ -1,6 +1,7 @@
 package service_request.controller;
 
 import application_state.ApplicationState;
+import bishopfishapi.Emergency;
 import com.jfoenix.controls.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import foodRequest.FoodRequest;
@@ -24,6 +25,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import application_state.Event;
 import map.Node;
+import requests.giftrequests.RunGiftRequest;
 import scheduler.model.Reservation;
 import service_request.controller.sub_controller.InternalTransportController;
 import service_request.model.Request;
@@ -299,9 +301,9 @@ public class RequestController implements Initializable {
     }
 
     @FXML
-    public void giftSelect (ActionEvent actionEvent) throws IOException {
-        subSceneHolder.getChildren().clear();
-        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.giftStoreRequest,event.getCurrentBundle()));
+    public void giftSelect (ActionEvent actionEvent) throws Exception {
+        RunGiftRequest rgr = new RunGiftRequest();
+        rgr.run(0,0, 1920, 1080, null, null, null);
     }
 
     @FXML
@@ -344,5 +346,13 @@ public class RequestController implements Initializable {
     public void foodSelect(ActionEvent actionEvent) throws ServiceException {
         FoodRequest req = new FoodRequest();
         req.run(0, 0, 1920, 1080, null, null, null);
+    }
+
+    public void emergencySelect(ActionEvent actionEvent) throws Exception {
+        Emergency emergency = new Emergency();
+        Emergency.setSender("neonnarwhalsd19");
+        Emergency.setSenderPassword("neonnarwhalsD19!");
+        Emergency.setRecipient(ApplicationState.getApplicationState().getEmployeeLoggedIn().getEmail());
+        emergency.run(50,50, 1500, 1000, null, "destNode", "originNode");
     }
 }
