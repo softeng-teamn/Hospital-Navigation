@@ -113,7 +113,7 @@
 
 .jfx-combo-box{
     -fx-font-family: Roboto;
-    -fx-font-size: 15pt;
+    -fx-font-size: 16pt;
     -fx-prompt-text-fill: -fx-unfocusedtext;
     -jfx-focus-color: -fx-complementary;
     -jfx-unfocus-color: -fx-unfocusedtext;
@@ -299,7 +299,7 @@
     -fx-text-fill: -fx-complementarytext;
     -fx-background-radius: 7px;
     -fx-border-radius: 5px;
-    -fx-font-size: 16pt;
+    -fx-font-size: 14pt;
     -fx-content-display: text_only;
 }
 
@@ -309,7 +309,7 @@
     -fx-background-color: -fx-secondary;
     -fx-background-radius: 7px;
     -fx-border-radius: 5px;
-    -fx-font-size: 16pt;
+    -fx-font-size: 14pt;
     -fx-content-display: text_only;
 }
 
@@ -319,7 +319,7 @@
     -fx-background-color: -fx-secondary;
     -fx-background-radius: 7px;
     -fx-border-radius: 5px;
-    -fx-font-size: 16pt;
+    -fx-font-size: 14pt;
     -fx-content-display: text_only;
 }
 
@@ -328,6 +328,11 @@
     -fx-text-fill: -fx-primaryText;
     -fx-font-size: 16pt;
     -jfx-selected-color: -fx-secondary;
+}
+
+.jfx-check-box {
+    -fx-font-size: 14pt;
+    -jfx-checked-color: -fx-complementary;
 }
 
 /*******************************************************************************
@@ -558,9 +563,10 @@
     -fx-border-color: -fx-tableviewborder;
 }
 
-.table-view .column-header .label {
-    -fx-text-fill: -fx-tableheader;
-    -fx-padding: 16 0 16 0;
+.table-view .table-cell {
+    -fx-border-width: 0 0 0 0;
+    -fx-padding: 16 16 16 16;
+    -fx-alignment: left-center;
 }
 
 .table-view .column-header .arrow, .table-view .column-header .sort-order-dot {
@@ -574,8 +580,8 @@
 
 .table-view .table-cell {
     -fx-border-width: 0 0 0 0;
-    -fx-padding: 16 0 16 0;
-    -fx-alignment: top-center;
+    -fx-padding: 16 16 16 16;
+    -fx-alignment: center-left;
 }
 
 .table-view .column-overlay {
@@ -619,4 +625,17 @@
 .text-field-table-cell > .text-field {
     -fx-text-fill: black;
 
+}
+
+.tooltip {
+    -fx-background-color: -fx-complementary;
+    -fx-font-family: Roboto;
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 0.85em;
+}
+
+.tooltip.label {
+    -fx-font-family: Roboto;
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 20pt;
 }
