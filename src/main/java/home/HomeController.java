@@ -4,6 +4,7 @@ import application_state.ApplicationState;
 import application_state.Event;
 import application_state.Observer;
 import com.jfoenix.controls.JFXDrawer;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -179,6 +180,7 @@ public class HomeController implements Observer {
         drawer.open();
     }
 
+    @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     private void readSchedulerSettings() {
         // The name of the file to open.
         String fileName = "./src/main/resources/schedulerSettings.txt";

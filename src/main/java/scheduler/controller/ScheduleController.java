@@ -15,6 +15,7 @@ import com.calendarfx.view.popover.PopOverContentPane;
 import com.calendarfx.view.popover.PopOverTitledPane;
 import com.jfoenix.controls.*;
 import database.DatabaseService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import employee.model.Employee;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -2254,6 +2255,7 @@ public class ScheduleController {
     }
 
     @FXML
+    @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     private void saveSettingsToFile() {
         saveSettings();
         // The name of the file to open.
