@@ -255,11 +255,8 @@ public class MapViewController implements Observer {
 
         showAllNodes();
 
-        centerOnPath(event.getPath(), floor);
-
-        showAllNodes();
-
-        centerOnPath(event.getPath(), floor);
+        if (hasPath)
+            centerOnPath(event.getPath(), floor);
 
         // update current floor to be yellow
         changeCurrentFloorButton();
@@ -419,6 +416,7 @@ public class MapViewController implements Observer {
                     public void run() {
                         changeCurrentFloorButton();
                         deletePolyLine();
+                        clearFloorChangeLabels();
                         drawIcon(currState.getEndNode());
                         scrollTo(currState.getEndNode());
                     }
@@ -430,6 +428,7 @@ public class MapViewController implements Observer {
                     public void run() {
                         changeCurrentFloorButton();
                         deletePolyLine();
+                        clearFloorChangeLabels();
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
                         scrollTo(currState.getStartNode());
                     }
@@ -467,6 +466,7 @@ public class MapViewController implements Observer {
                     @Override
                     public void run() {
                         deletePolyLine();
+                        clearFloorChangeLabels();
                         if (zoomGroup.getChildren().contains(startNodeLabel)) {
                             zoomGroup.getChildren().remove(startNodeLabel);
                         }
@@ -484,6 +484,7 @@ public class MapViewController implements Observer {
                         zoomGroup.getChildren().removeAll(circleCollection);
                         circleCollection.clear();
                         deletePolyLine();
+                        clearFloorChangeLabels();
                         zoomGroup.getChildren().remove(location);
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67,70,76));
                         scrollTo(currState.getStartNode());
