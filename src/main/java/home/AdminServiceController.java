@@ -33,6 +33,9 @@ public class AdminServiceController {
     private JFXToggleNode aStarToggle;
 
     @FXML
+    private JFXTextField autoLogout;
+
+    @FXML
     private JFXToggleNode depthFirstToggle;
 
     @FXML
@@ -147,5 +150,11 @@ public class AdminServiceController {
         event.setEventName("methodSwitch");
         event.setSearchMethod("dijsktra");
         ApplicationState.getApplicationState().getObservableBus().updateEvent(event);
+    }
+
+    public void updateLogout(ActionEvent actionEvent){
+        if(autoLogout.getText().matches("^[0-9]*$")) {
+            ApplicationState.getApplicationState().setIMTimeOut(autoLogout.getText() + "000" );
+        }
     }
 }

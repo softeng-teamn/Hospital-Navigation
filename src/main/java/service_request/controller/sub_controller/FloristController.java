@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -47,7 +48,8 @@ public class FloristController extends RequestController {
                 description.setText("");
                 bouquetType.setText("");
                 quantity.getSelectionModel().select(0);
-                errorMsg.setText("");
+                errorMsg.setTextFill(Color.BLACK);
+                errorMsg.setText("Request Submitted!");
             }
         } else {
             errorMsg.setText("Please Select a Location");

@@ -34,6 +34,8 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.internalTransportRequest, is(notNullValue()));
         assertThat(ResourceLoader.reservablespaces, is(notNullValue()));
         assertThat(ResourceLoader.employees, is(notNullValue()));
+<<<<<<< Temporary merge branch 1
+=======
 
         assertThat(ResourceLoader.continue_icon, is(notNullValue()));
         assertThat(ResourceLoader.elevator_icon, is(notNullValue()));
@@ -47,6 +49,9 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.turn_slight_left_icon, is(notNullValue()));
         assertThat(ResourceLoader.turn_slight_right_icon, is(notNullValue()));
         assertThat(ResourceLoader.uturn_icon, is(notNullValue()));
+
+        assertThat(ResourceLoader.default_style, is(notNullValue()));
+        assertThat(ResourceLoader.high_contrast_style, is(notNullValue()));
 
     }
 

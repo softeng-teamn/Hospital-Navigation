@@ -3,6 +3,7 @@ package service_request.controller.sub_controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -68,7 +69,8 @@ public class SanitationRequestController extends RequestController {
                 notes.setText("");
                 urgencyBox.getSelectionModel().select(0);
                 materialBox.getSelectionModel().select(0);
-                errorMsg.setText("");
+                errorMsg.setTextFill(Color.BLACK);
+                errorMsg.setText("Request Submitted!");
             }
         }
         else {

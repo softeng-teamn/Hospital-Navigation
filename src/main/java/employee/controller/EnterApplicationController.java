@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import service.ResourceLoader;
@@ -25,11 +26,11 @@ public class EnterApplicationController{
     //private Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
     @FXML
-    StackPane sp = new StackPane();
+    AnchorPane ap = new AnchorPane();
 
     @FXML
     public void initialize() throws Exception{
-        sp.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        ap.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event){
                 try {
@@ -39,7 +40,7 @@ public class EnterApplicationController{
                 }
             }
         });
-        sp.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        ap.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
 
@@ -48,9 +49,9 @@ public class EnterApplicationController{
     }
 
     public void enter() throws Exception {
-        Stage stage = (Stage) sp.getScene().getWindow();
+        Stage stage = (Stage) ap.getScene().getWindow();
         Parent root = load(ResourceLoader.home);
-        StageManager.changeExistingWindow(stage, root, "Scheduler");
+        StageManager.changeExistingWindow(stage, root, "Home");
     }
 
     public void gameStart() throws Exception{
