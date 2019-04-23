@@ -1289,9 +1289,11 @@ public class ScheduleController {
             GregorianCalendar gcalEndDay = GregorianCalendar.from(secondDate.atStartOfDay(ZoneId.systemDefault()));
 
             // Get reservations for this day
-            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceIdBetween(currentSelection.getSpaceID(), gcalStartDay, gcalEndDay);
+            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getConflictingReservationsBySpaceIdBetween(currentSelection.getSpaceID(), gcalStartDay, gcalEndDay);
 
             for (Reservation res : reservations) {
+                // todo: figure out how to display multiday reservations that fall across this time. also do this for other loop
+               // if (res.getStartTime())
                 // Get the start time
                 int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
                 int startMinutes = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60;
@@ -1519,17 +1521,7 @@ public class ScheduleController {
             return false;
         }
 
-        if (forRes) {
-            // For each time in the reservation, check whether it is already booked
-//            ArrayList<Integer> thisDay;
-//            if (datePicker.getValue().getDayOfWeek().getValue() == 7) {
-//                thisDay= weeklySchedule.get(0);
-//            }
-//            else {
-//                thisDay = weeklySchedule.get(datePicker.getValue().getDayOfWeek().getValue());
-//            }
-//            for (int i = index; i < endIndex; i++) {
-//                if (thisDay.get(i) == 1) {    // If so, show an error
+        if (forRes) {    // If this is for a reservation, check whether it conflicts with any current reservations
             ArrayList<GregorianCalendar> gcals = gCalsFromCurrTimes();
             ArrayList<ReservableSpace> freeSpace = (ArrayList) myDBS.getBookedReservableSpacesBetween(gcals.get(0), gcals.get(1));
             if (freeSpace.contains(currentSelection)) {
@@ -1537,9 +1529,7 @@ public class ScheduleController {
                 inputErrorLbl.setText(conflictErrorText);
                 return false;
             }
-//                }
-//            }
-        }    // todo: what about multi-day reservations?
+        }
         return true;
     }
 
@@ -1781,6 +1771,24 @@ public class ScheduleController {
             multidayCheckBox.setText("On");
             sidePaneVBox.getChildren().add(3, endDatePicker);
             sidePaneRegion.setPrefHeight(98);
+
+            boundCloseTime = false;
+            closeTimeCheckBox.setSelected(false);
+            closeTimeCheckBox.setText("Unbound");
+            closeTimeTextField.setVisible(false);
+            closeTime = 23;
+            closeTimeMinutes = timeStep;
+            closeTimeString = "23:59";
+
+            boundOpenTime = false;
+            openTimeCheckBox.setSelected(false);
+            openTimeCheckBox.setText("Unbound");
+            openTimeTextField.setVisible(false);
+            openTime = 0;
+            openTimeMinutes = 0;
+            openTimeStr = "00:00";
+
+            showRoomSchedule(true);
         }
     }
 

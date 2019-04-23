@@ -533,6 +533,19 @@ public class DatabaseService {
     }
 
     /**
+     * Get all reservations made for the given space ID that conflict with from and to.
+     *
+     * @param id   the spaceID of the reservable space being requested for
+     * @param from start of the window
+     * @param to   end of the window
+     * @return a list of the requested reservations
+     */
+    public List<Reservation> getConflictingReservationsBySpaceIdBetween(String id, GregorianCalendar from, GregorianCalendar to) {
+
+        return reservationDatabase.getConflictingReservationsBySpaceIdBetween(id, from, to);
+    }
+
+    /**
      * @param employee the employee to insert into the database
      * @return true if the insert succeeded or false if otherwise.
      */
