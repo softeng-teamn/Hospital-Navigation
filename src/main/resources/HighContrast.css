@@ -121,6 +121,14 @@
     -fx-background-color: -fx-unfocusedtext;
 }
 
+.background-polyline {
+    -fx-stroke: -fx-complementary;
+}
+
+.dashed-polyline {
+    -fx-stroke: -fx-primary;
+}
+
 /*******************************************************************************
  *                                                                             *
  * Text Area                                                                   *
