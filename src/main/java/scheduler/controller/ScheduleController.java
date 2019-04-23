@@ -31,6 +31,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
@@ -366,6 +367,8 @@ public class ScheduleController {
     @FXML
     public JFXDatePicker datePicker;
 
+    private JFXDatePicker endDatePicker;
+
     @FXML
     public JFXTimePicker startTimePicker, endTimePicker;
 
@@ -374,6 +377,12 @@ public class ScheduleController {
 
     @FXML
     private SVGPath classroom1, classroom2, classroom3, classroom4, classroom5, classroom6, classroom7, classroom8, classroom9, auditorium;
+
+    @FXML
+    private VBox sidePaneVBox;
+
+    @FXML
+    private Region sidePaneRegion;
 
     private CalendarView calendarView;
 
@@ -463,6 +472,7 @@ public class ScheduleController {
     private String clearFilterText = "Clear Filter";
     private String conflictErrorText = "Please select times that do not conflict with currently scheduled times.";
     private String pastDateErrorText = "Please select a date that is not in the past.";
+    private String endDateErrorText = "Please select an end date that is not before start date.";
     // Database
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -521,6 +531,16 @@ public class ScheduleController {
         endTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             focusState(newValue);
         });
+
+       endDatePicker = new JFXDatePicker(LocalDate.now());
+       endDatePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            focusState(newValue);    // todo: error check end date
+        });
+       endDatePicker.setPrefWidth(256);
+        if (allowMultidayRes) {
+            sidePaneVBox.getChildren().add(3, endDatePicker);
+            sidePaneRegion.setPrefHeight(98);
+        }
     }
 
     /**
@@ -1438,10 +1458,14 @@ public class ScheduleController {
      */
     private ArrayList<GregorianCalendar> gCalsFromCurrTimes() {
         LocalDate chosenDate = datePicker.getValue();
+        LocalDate endDate = datePicker.getValue();
+        if (allowMultidayRes) {
+            endDate = endDatePicker.getValue();
+        }
         LocalTime startTime = startTimePicker.getValue();
         LocalTime endTime = endTimePicker.getValue();
         GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((chosenDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
-        GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(chosenDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
+        GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(endDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
         ArrayList<GregorianCalendar> cals = new ArrayList<>();
         cals.add(gcalStart);
         cals.add(gcalEnd);
@@ -1480,6 +1504,13 @@ public class ScheduleController {
             return false;
         }
 
+        // If the chosen end date is before the start date, show an error
+        if (allowMultidayRes && forRes && endDatePicker.getValue().atStartOfDay().isBefore(datePicker.getValue().atStartOfDay())) {
+            inputErrorLbl.setVisible(true);
+            inputErrorLbl.setText(endDateErrorText);
+            return false;
+        }
+
         // If the times are outside the location's open times
         // or end is greater than start, the times are invalid
         if (endIndex <= index || start < openTime || closeTime < end) {
@@ -1490,21 +1521,25 @@ public class ScheduleController {
 
         if (forRes) {
             // For each time in the reservation, check whether it is already booked
-            ArrayList<Integer> thisDay;
-            if (datePicker.getValue().getDayOfWeek().getValue() == 7) {
-                thisDay= weeklySchedule.get(0);
+//            ArrayList<Integer> thisDay;
+//            if (datePicker.getValue().getDayOfWeek().getValue() == 7) {
+//                thisDay= weeklySchedule.get(0);
+//            }
+//            else {
+//                thisDay = weeklySchedule.get(datePicker.getValue().getDayOfWeek().getValue());
+//            }
+//            for (int i = index; i < endIndex; i++) {
+//                if (thisDay.get(i) == 1) {    // If so, show an error
+            ArrayList<GregorianCalendar> gcals = gCalsFromCurrTimes();
+            ArrayList<ReservableSpace> freeSpace = (ArrayList) myDBS.getBookedReservableSpacesBetween(gcals.get(0), gcals.get(1));
+            if (freeSpace.contains(currentSelection)) {
+                inputErrorLbl.setVisible(true);
+                inputErrorLbl.setText(conflictErrorText);
+                return false;
             }
-            else {
-                thisDay = weeklySchedule.get(datePicker.getValue().getDayOfWeek().getValue());
-            }
-            for (int i = index; i < endIndex; i++) {
-                if (thisDay.get(i) == 1) {    // If so, show an error
-                    inputErrorLbl.setVisible(true);
-                    inputErrorLbl.setText(conflictErrorText);
-                    return false;
-                }
-            }
-        }
+//                }
+//            }
+        }    // todo: what about multi-day reservations?
         return true;
     }
 
@@ -1737,11 +1772,15 @@ public class ScheduleController {
             allowMultidayRes = false;
             multidayCheckBox.setSelected(false);
             multidayCheckBox.setText("Off");
+            sidePaneVBox.getChildren().remove(3);
+            sidePaneRegion.setPrefHeight(139);
         }
         else {
             allowMultidayRes = true;
             multidayCheckBox.setSelected(true);
             multidayCheckBox.setText("On");
+            sidePaneVBox.getChildren().add(3, endDatePicker);
+            sidePaneRegion.setPrefHeight(98);
         }
     }
 

@@ -48,7 +48,7 @@
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
          <children>
-            <VBox alignment="BOTTOM_CENTER" prefHeight="952.0" prefWidth="419.0" spacing="48.0">
+            <VBox fx:id="sidePaneVBox" alignment="BOTTOM_CENTER" prefHeight="952.0" prefWidth="419.0" spacing="48.0">
                <children>
                   <Label fx:id="schedLbl" styleClass="big-label" text="Weekly Schedule for&#10; ">
                      <VBox.margin>
@@ -58,7 +58,7 @@
                   <JFXDatePicker fx:id="datePicker" maxWidth="256.0" prefWidth="256.0" promptText="Choose a Date" />
                   <JFXTimePicker fx:id="startTimePicker" maxWidth="256.0" prefWidth="256.0" promptText="Start Time" />
                   <JFXTimePicker fx:id="endTimePicker" maxWidth="256.0" prefWidth="256.0" promptText="End Time" />
-                  <Region prefHeight="139.0" prefWidth="419.0" />
+                  <Region fx:id="sidePaneRegion" prefHeight="139.0" prefWidth="419.0" />
                   <Label fx:id="inputErrorLbl" styleClass="small-label" wrapText="true" />
                   <JFXButton fx:id="makeReservationBtn" maxWidth="1.7976931348623157E308" onAction="#makeReservation" styleClass="confirm-button" text="Make Reservation" />
                </children>
@@ -302,8 +302,8 @@
                                     <Label prefHeight="50.0" text="Close Time:" />
                                     <Label prefHeight="50.0" text="Minimum Reservation (minutes):" />
                                     <Label prefHeight="50.0" text="Snap Minutes to Regular Timestep:" />
-                                    <Label prefHeight="50.0" text="Allow Multi-day Reservations:" />
-                                    <Label prefHeight="50.0" text="Allow Recurring Reservations:" />
+                                    <Label prefHeight="50.0" text="Multi-day Reservations:" />
+                                    <Label prefHeight="50.0" text="Recurring Reservations:" />
                                     <Label prefHeight="50.0" text="Show Event Contact Info:" />
                                  </children>
                                  <HBox.margin>
