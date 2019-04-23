@@ -1,43 +1,32 @@
 package regression;
 
 import application_state.ApplicationState;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXTimePicker;
 import database.DatabaseService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Cell;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.SVGPath;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import map.Node;
 import net.kurobako.gesturefx.GesturePane;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.loadui.testfx.GuiTest;
 import org.testfx.framework.junit.ApplicationTest;
-import scheduler.controller.ScheduleController;
 import service.ResourceLoader;
 import service.StageManager;
-import testclassifications.FastTest;
 import testclassifications.SlowTest;
 import testclassifications.UiTest;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -46,7 +35,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.control.ListViewMatchers.hasItems;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
 
 @Category({SlowTest.class, UiTest.class})
@@ -113,7 +101,7 @@ public class IterationThreeDemoRegression extends ApplicationTest {
         }
         clickOn("#editEmployeeBtn");
         TableView employeeEditTable = GuiTest.find("#employee_table");
-        Cell<HBox> danPhoneCell = from(employeeEditTable).lookup(".table-cell").nth(9).query();
+        Cell<HBox> danPhoneCell = from(employeeEditTable).lookup(".table-cell").nth(13).query();
         doubleClickOn(danPhoneCell).write("1234567890").type(KeyCode.ENTER);
         clickOn("#homeBtn");
 
