@@ -534,7 +534,7 @@ public class ScheduleController {
 
        endDatePicker = new JFXDatePicker(LocalDate.now());
        endDatePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            focusState(newValue);    // todo: error check end date
+            focusState(newValue);
         });
        endDatePicker.setPrefWidth(256);
         if (allowMultidayRes) {
@@ -1289,44 +1289,50 @@ public class ScheduleController {
             GregorianCalendar gcalEndDay = GregorianCalendar.from(secondDate.atStartOfDay(ZoneId.of("America/New_York")));
 
             // Get reservations for this day
-            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getConflictingReservationsBySpaceIdBetween(currentSelection.getSpaceID(), gcalStartDay, gcalEndDay);
+            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currentSelection.getSpaceID());
             System.out.println(gcalStartDay.toInstant() + " " + gcalEndDay.toInstant());
             System.out.println("weekly sched for : " + currentSelection.getSpaceName() + reservations);
 
             for (Reservation res : reservations) {
-                // todo: figure out how to display multiday reservations that fall across this time. also do this for other loop
-                // Get the start time
-                int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
-                int startMinutes = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60;
-                if (res.getStartTime().toInstant().isBefore(gcalStartDay.toInstant())) {
-                    startHour = 0;
-                    startMinutes = 0;
+                boolean sameDay = false;
+                if ((res.getStartTime().toInstant().isBefore(gcalStartDay.toInstant()) && res.getEndTime().toInstant().isAfter(gcalStartDay.toInstant())) ||
+                        (res.getStartTime().toInstant().isAfter(gcalStartDay.toInstant()) && res.getStartTime().toInstant().isBefore(gcalEndDay.toInstant()))) {
+                    sameDay = true;
                 }
-                int startFrac = startMinutes / (int) (timeStepMinutes);
+                if (sameDay) {
+                    // Get the start time
+                    int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+                    int startMinutes = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60;
+                    if (res.getStartTime().toInstant().isBefore(gcalStartDay.toInstant())) {
+                        startHour = 0;
+                        startMinutes = 0;
+                    }
+                    int startFrac = startMinutes / (int) (timeStepMinutes);
 
-                // Get the end time
-                int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
-                int endMinutes = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60;
-                if (res.getEndTime().toInstant().isAfter(gcalEndDay.toInstant())) {
-                    endHour = 24;
-                    endMinutes = 0;
-                }
-                int endFrac = endMinutes / (int) (timeStepMinutes);
+                    // Get the end time
+                    int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+                    int endMinutes = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60;
+                    if (res.getEndTime().toInstant().isAfter(gcalEndDay.toInstant())) {
+                        endHour = 24;
+                        endMinutes = 0;
+                    }
+                    int endFrac = endMinutes / (int) (timeStepMinutes);
 
-                // For every time between the start and end of the reservation,
-                // Mark it as booked, color it red, and display the event name
-                // or "Booked" depending on its privacy level
-                for (int box = (startHour - openTime) * timeStep - openTimeMinutes + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
-                    if (box >= 0 && box < schedToAdd.size()) {
-                        ScheduleWrapper time = schedToAdd.get(box);
-                        if (res.getPrivacyLevel() == 0) {
-                            time.setDayAvailability(dailySchedule, res.getEventName());
-                            // if private event
-                        } else {
-                            time.setDayAvailability(dailySchedule, "Booked");
+                    // For every time between the start and end of the reservation,
+                    // Mark it as booked, color it red, and display the event name
+                    // or "Booked" depending on its privacy level
+                    for (int box = (startHour - openTime) * timeStep - openTimeMinutes + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
+                        if (box >= 0 && box < schedToAdd.size()) {
+                            ScheduleWrapper time = schedToAdd.get(box);
+                            if (res.getPrivacyLevel() == 0) {
+                                time.setDayAvailability(dailySchedule, res.getEventName());
+                                // if private event
+                            } else {
+                                time.setDayAvailability(dailySchedule, "Booked");
+                            }
+                            // what does this do (set to booked?)
+                            weeklySchedule.get(dailySchedule).set(box, 1);
                         }
-                        // what does this do (set to booked?)
-                        weeklySchedule.get(dailySchedule).set(box, 1);
                     }
                 }
             }
@@ -1391,42 +1397,48 @@ public class ScheduleController {
         for (int roomSchedule = 0; roomSchedule < NUM_ROOMS; roomSchedule++) {
 
             // Get reservations for this day
-            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getConflictingReservationsBySpaceIdBetween(allResSpaces.get(roomSchedule).getSpaceID(), gcalStartDay, gcalEndDay);
-            System.out.println("daily sched for : " + allResSpaces.get(roomSchedule).getSpaceName() + reservations);
+            ArrayList<Reservation> reservations = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(allResSpaces.get(roomSchedule).getSpaceID());
 
             for (Reservation res : reservations) {
-                // Get the start time
-                int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
-                int startMinutes = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60;
-                if (res.getStartTime().toInstant().isBefore(gcalStartDay.toInstant())) {
-                    startHour = 0;
-                    startMinutes = 0;
+                boolean sameDay = false;
+                if ((res.getStartTime().toInstant().isBefore(gcalStartDay.toInstant()) && res.getEndTime().toInstant().isAfter(gcalStartDay.toInstant())) ||
+                        (res.getStartTime().toInstant().isAfter(gcalStartDay.toInstant()) && res.getStartTime().toInstant().isBefore(gcalEndDay.toInstant()))) {
+                    sameDay = true;
                 }
-                int startFrac = startMinutes / (int) (timeStepMinutes);
+                if (sameDay) {
+                    // Get the start time
+                    int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+                    int startMinutes = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60;
+                    if (res.getStartTime().toInstant().isBefore(gcalStartDay.toInstant())) {
+                        startHour = 0;
+                        startMinutes = 0;
+                    }
+                    int startFrac = startMinutes / (int) (timeStepMinutes);
 
-                // Get the end time
-                int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
-                int endMinutes = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60;
-                if (res.getEndTime().toInstant().isAfter(gcalEndDay.toInstant())) {
-                    endHour = 24;
-                    endMinutes = 0;
-                }
-                int endFrac = endMinutes / (int) (timeStepMinutes);
+                    // Get the end time
+                    int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+                    int endMinutes = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60;
+                    if (res.getEndTime().toInstant().isAfter(gcalEndDay.toInstant())) {
+                        endHour = 24;
+                        endMinutes = 0;
+                    }
+                    int endFrac = endMinutes / (int) (timeStepMinutes);
 
-                // For every time between the start and end of the reservation,
-                // Mark it as booked, color it red, and display the event name
-                // or "Booked" depending on its privacy level
-                for (int box = (startHour - openTime) * timeStep - openTimeMinutes + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
-                    if (box >= 0 && box < schedToAdd.size()) {
-                        ScheduleWrapper time = schedToAdd.get(box);
-                        if (res.getPrivacyLevel() == 0) {
-                            time.setRoomAvailability(roomSchedule, res.getEventName());
-                            // if private event
-                        } else {
-                            time.setRoomAvailability(roomSchedule, "Booked");
+                    // For every time between the start and end of the reservation,
+                    // Mark it as booked, color it red, and display the event name
+                    // or "Booked" depending on its privacy level
+                    for (int box = (startHour - openTime) * timeStep - openTimeMinutes + startFrac; box < (endHour - openTime) * timeStep + endFrac; box++) {
+                        if (box >= 0 && box < schedToAdd.size()) {
+                            ScheduleWrapper time = schedToAdd.get(box);
+                            if (res.getPrivacyLevel() == 0) {
+                                time.setRoomAvailability(roomSchedule, res.getEventName());
+                                // if private event
+                            } else {
+                                time.setRoomAvailability(roomSchedule, "Booked");
+                            }
+                            // what does this do (set to booked?)
+                            dailyScheduleAllRoomsInts.get(roomSchedule).set(box, 1);
                         }
-                        // what does this do (set to booked?)
-                        dailyScheduleAllRoomsInts.get(roomSchedule).set(box, 1);
                     }
                 }
             }
@@ -1533,7 +1545,7 @@ public class ScheduleController {
 
         // If the times are outside the location's open times
         // or end is greater than start, the times are invalid
-        if (endIndex <= index || start < openTime || closeTime < end) {
+        if ((!allowMultidayRes || (allowMultidayRes && endDatePicker.getValue().equals(datePicker.getValue()))) && (endIndex <= index || start < openTime || closeTime < end)) {
             inputErrorLbl.setVisible(true);
             inputErrorLbl.setText(timeErrorText);
             return false;
@@ -1866,11 +1878,10 @@ public class ScheduleController {
             closeTimeTextField.setText(closeTimeString);
             showRoomSchedule(true);
         }
-        // todo: check if valid close time: greater than open time
     }
 
     @FXML
-    private void validCloseTime() {    // todo: all the display stuff; ex w box, minutes, etc.
+    private void validCloseTime() {
         String valid = validFieldTime(closeTimeTextField.getText());
 
         if (valid.length() > 0) {
@@ -1964,7 +1975,7 @@ public class ScheduleController {
     }
 
     @FXML
-    private String validFieldTime(String time) {    // todo: abstract for closetime
+    private String validFieldTime(String time) {
         errorMessage.setVisible(false);
         boolean valid = true;
         if (time.length() != 5) {
