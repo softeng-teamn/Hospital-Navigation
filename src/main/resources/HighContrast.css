@@ -201,6 +201,7 @@
 
 .glyph-button:hover .glyph-icon{
     -fx-fill: -fx-complementary;
+
 }
 
 .node-button{
