@@ -1217,12 +1217,15 @@ public class ScheduleController {
             if (conflicts.size() > 0) {    // If there are conflicts, print them and don't allow the reservation
                 valid = false;
                 String conflictStr = "Your reservation conflicts on dates: ";
+                StringBuffer buf = new StringBuffer();
                 for (Reservation conflictRes : conflicts) {
                     String conflictDate = "" + conflictRes.getStartTime().getTime();
                     conflictDate = conflictDate.substring(0, 10) + ", " + conflictDate.substring(24);
-                    conflictStr += conflictDate;
-                    conflictStr += ", ";
+                    buf.append(conflictDate);
+                    buf.append(", ");
                 }
+                String s = buf.toString();
+                conflictStr += s;
                 conflictStr = conflictStr.substring(0, conflictStr.length() - 2);
                 inputErrorLbl.setVisible(true);
                 inputErrorLbl.setText(conflictStr);
@@ -2146,52 +2149,6 @@ public class ScheduleController {
         }
 
         /**
-         * Randomly color workstations while running.
-         */
-        private class WorkStationRunner implements Runnable{
-            private volatile boolean exit = false;    // Whether to stop running
-
-            public void run() {    // Note that these numbers are all adjustable: sleep time, rem, bound
-                int rem = 0;
-                while(!exit){    // Whil running
-                    final int r = rem;
-                    try {
-                        Thread.sleep(2000);    // Wait a little
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Random rand = new Random();
-                            for (int i = 0; i < workStations.size(); i++) {   // For each workstation,
-                                if (i % 5 == r) {
-                                    int n = rand.nextInt(5);
-                                    SVGPath ws = workStations.get(i);
-                                    if (n < 1) {
-                                        if (ws.getFill().equals(AVAILABLE_COLOR)) {
-                                            ws.setFill(UNAVAILABLE_COLOR);    // Set it as whatever it was not available
-                                        } else {
-                                            ws.setFill(AVAILABLE_COLOR);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    rem++;
-                    if (rem == 5) {
-                        rem = 0;
-                    }
-                }
-            }
-
-            public void stop(){
-                exit = true;
-            }
-        }
-
-        /**
          * Get the availability for the given room.
          * @param day  the room to get the availability for
          */
@@ -2282,7 +2239,7 @@ public class ScheduleController {
     /**
      * Randomly color workstations while running.
      */
-    private class WorkStationRunner implements Runnable{
+    private static class WorkStationRunner implements Runnable{
         private volatile boolean exit = false;    // Whether to stop running
 
         public void run() {    // Note that these numbers are all adjustable: sleep time, rem, bound
