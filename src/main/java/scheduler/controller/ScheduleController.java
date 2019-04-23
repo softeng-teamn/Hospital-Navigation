@@ -2260,7 +2260,6 @@ public class ScheduleController {
         saveSettings();
         // The name of the file to open.
         String fileName = "./src/main/resources/schedulerSettings.txt";
-
         try {
             // Assume default encoding.
             FileWriter fileWriter = new FileWriter(fileName);
