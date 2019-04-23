@@ -852,19 +852,21 @@ public class ScheduleController {
             VBox total = new VBox();
             total.getChildren().add(both);
 
-            // Create QR code popup
-            ImageView QRcode = null;
-            try {
-                QRcode = new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + res.getEventName() +
-                        "&eventLocation=" + myDBS.getReservableSpace(res.getLocationID()).getSpaceName() + "&eventOrganizer="
-                        + myDBS.getEmployee(res.getEmployeeId()).getFirstName() + "&" + myDBS.getEmployee(res.getEmployeeId()).getLastName()
-                        + "&startTime=" + res.getStartTime().getTimeInMillis()/1000 + "&endTime=" + res.getEndTime().getTimeInMillis()/1000, true));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (WriterException e) {
-                e.printStackTrace();
+            // Create QR code popup if public event
+            if (res.getPrivacyLevel() == 0) {
+                ImageView QRcode = null;
+                try {
+                    QRcode = new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + res.getEventName() +
+                            "&eventLocation=" + myDBS.getReservableSpace(res.getLocationID()).getSpaceName() + "&eventOrganizer="
+                            + myDBS.getEmployee(res.getEmployeeId()).getFirstName() + "&" + myDBS.getEmployee(res.getEmployeeId()).getLastName()
+                            + "&startTime=" + res.getStartTime().getTimeInMillis() / 1000 + "&endTime=" + res.getEndTime().getTimeInMillis() / 1000, true));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+                total.getChildren().add(QRcode);
             }
-            total.getChildren().add(QRcode);
 
             this.getChildren().add(total);
         }
