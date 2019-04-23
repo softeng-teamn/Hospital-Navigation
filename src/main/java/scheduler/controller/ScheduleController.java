@@ -480,6 +480,7 @@ public class ScheduleController {
     private String pastDateErrorText = "Please select a date that is not in the past.";
     private String endDateErrorText = "Please select an end date that is not before start date.";
     private String recurrenceErrorText = "Please select a repeat-until date at or after the end of your reservation.";
+    private String minResErrorText = "Reservations must be at least " + timeStepMinutes + " minutes long.";
     // Database
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -1741,6 +1742,18 @@ public class ScheduleController {
                 inputErrorLbl.setVisible(true);
                 inputErrorLbl.setText(conflictErrorText);
                 return false;
+            }
+            if (boundMinRes && gcals.get(0).toZonedDateTime().getDayOfYear() == gcals.get(1).toZonedDateTime().getDayOfYear()) {
+                System.out.println("In check for min res");
+                if((gcals.get(0).toZonedDateTime().getHour() == gcals.get(1).toZonedDateTime().getHour()
+                        && (gcals.get(0).toZonedDateTime().getMinute() - gcals.get(1).toZonedDateTime().getMinute() < timeStepMinutes))
+                || (gcals.get(0).toZonedDateTime().getHour() == gcals.get(1).toZonedDateTime().getHour() -1
+                        && (60 - gcals.get(0).toZonedDateTime().getMinute() + gcals.get(1).toZonedDateTime().getMinute() < timeStepMinutes))) {
+                        System.out.println("In minutes for min res");
+                        inputErrorLbl.setVisible(true);
+                        inputErrorLbl.setText(minResErrorText);
+                        return false;
+                }
             }
         }
         return true;
