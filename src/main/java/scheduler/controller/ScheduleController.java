@@ -1792,6 +1792,35 @@ public class ScheduleController {
                         return false;
                 }
             }
+            if (gcals.get(0).toZonedDateTime().getDayOfYear() != gcals.get(1).toZonedDateTime().getDayOfYear()) {
+                if (recurrenceComboBox.isVisible() && recurrenceComboBox.getSelectionModel().getSelectedIndex() == 0) {
+                    inputErrorLbl.setVisible(true);
+                    inputErrorLbl.setText("Multiday reservations cannot repeat daily.");
+                    return false;
+                }
+            }
+            if (gcals.get(0).get(java.util.Calendar.WEEK_OF_YEAR) != gcals.get(1).get(java.util.Calendar.WEEK_OF_YEAR)) {
+                System.out.println("weeks... + " + gcals.get(0).get(java.util.Calendar.WEEK_OF_YEAR) + gcals.get(1).get(java.util.Calendar.WEEK_OF_YEAR));
+                if (recurrenceComboBox.isVisible() && recurrenceComboBox.getSelectionModel().getSelectedIndex() < 2) {
+                    inputErrorLbl.setVisible(true);
+                    inputErrorLbl.setText("Multiweek reservations cannot repeat daily or weekly.");
+                    return false;
+                }
+            }
+            if (gcals.get(0).toZonedDateTime().getMonth() != gcals.get(1).toZonedDateTime().getMonth()) {
+                if (recurrenceComboBox.isVisible() && recurrenceComboBox.getSelectionModel().getSelectedIndex() < 3) {
+                    inputErrorLbl.setVisible(true);
+                    inputErrorLbl.setText("Multi-month reservations cannot repeat daily, weekly, or monthly.");
+                    return false;
+                }
+            }
+            if (gcals.get(0).toZonedDateTime().getYear() != gcals.get(1).toZonedDateTime().getYear()) {
+                if (recurrenceComboBox.isVisible()) {
+                    inputErrorLbl.setVisible(true);
+                    inputErrorLbl.setText("Multi-year reservations cannot repeat.");
+                    return false;
+                }
+            }
         }
         return true;
     }
