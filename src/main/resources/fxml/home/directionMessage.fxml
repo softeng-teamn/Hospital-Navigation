@@ -28,7 +28,7 @@
                     </HBox.margin>
                 </Pane>
             <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                <JFXButton fx:id="home_btn" contentDisplay="GRAPHIC_ONLY" onAction="#showSearchList" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button">
+                <JFXButton fx:id="home_btn" contentDisplay="GRAPHIC_ONLY" onAction="#closeThisDrawer" prefHeight="35.0" prefWidth="35.0" styleClass="exit-button">
                <graphic>
                   <FontAwesomeIconView glyphName="CLOSE" size="24" styleClass="request-glyph" />
                </graphic></JFXButton>

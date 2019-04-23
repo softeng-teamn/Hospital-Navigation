@@ -1,9 +1,10 @@
 package home;
 
 import application_state.ApplicationState;
+import application_state.Event;
 import application_state.Observer;
 import com.jfoenix.controls.JFXListView;
-import application_state.Event;
+import database.DatabaseService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,16 +20,12 @@ import javafx.scene.shape.Line;
 import map.Node;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
-import database.DatabaseService;
 import scheduler.model.Reservation;
 
 import java.util.*;
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.lang.Thread.sleep;
 
 /**
  * Controls the search bar
@@ -265,7 +262,7 @@ public class SearchResultsController implements Observer {
             hBoxes.add(hb);    // Add it all to the list
         }
         if (displayEvents) {
-            for (int i = 0; i < reservations.size(); i++) {    // For every
+            for (int i = 0; i < reservations.size(); i++) {    // For every public event
                 Reservation currRes = reservations.get(i);
                 if (currRes.getPrivacyLevel() == 0) {
                     HBox hb = new HBox();
@@ -296,20 +293,3 @@ public class SearchResultsController implements Observer {
     }
 
 }
-
-
-
-// old code to show the selected location on the map and auto scroll to that
-//        // Draw Circle on Map
-//        showDestination(selectedNode);
-//        // animation scroll to new position
-//        double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
-//        double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
-//        double scrollH = (Double) (selectedNode.getXcoord() / mapWidth);
-//        double scrollV = (Double) (selectedNode.getYcoord() / mapHeight);
-//        final Timeline timeline = new Timeline();
-//        final KeyValue kv1 = new KeyValue(map_scrollpane.hvalueProperty(), scrollH);
-//        final KeyValue kv2 = new KeyValue(map_scrollpane.vvalueProperty(), scrollV);
-//        final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
-//        timeline.getKeyFrames().add(kf);
-//        timeline.play();

@@ -81,7 +81,7 @@ public class ConfirmReservationController {
         String endDate = "" + cals.get(1).getTime();
         endDate = endDate.substring(0, 10) + ", " + endDate.substring(24);
 
-        // If recurring, display details
+        // If recurring, display recurrence details
         String recurring = "";
         if (e.isActuallyRecurring()) {
             String recurDate = "" + cals.get(2).getTime();
