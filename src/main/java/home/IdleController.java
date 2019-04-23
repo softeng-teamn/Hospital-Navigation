@@ -52,10 +52,10 @@ import static application_state.ApplicationState.getApplicationState;
 public class IdleController {
 
     @FXML
-    private JFXButton homeBtn ;
+    private VBox IdleScreen ;
 
     public void showHome() throws Exception{
-        Stage stage = (Stage) homeBtn.getScene().getWindow();
+        Stage stage = (Stage) IdleScreen.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
