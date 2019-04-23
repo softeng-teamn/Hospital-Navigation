@@ -353,6 +353,8 @@ public class ScheduleController {
     @FXML
     private JFXCheckBox closeTimeCheckBox, openTimeCheckBox, minResCheckBox, snapToCheckBox, recurringCheckBox, multidayCheckBox, showContactCheckBox;
 
+    private JFXCheckBox sidePaneRecurrenceCheckBox;
+
     @FXML
     private TableView<ScheduleWrapper> scheduleTable, dailyScheduleAllRooms;
 
@@ -368,7 +370,9 @@ public class ScheduleController {
     @FXML
     public JFXDatePicker datePicker;
 
-    private JFXDatePicker endDatePicker;
+    private JFXDatePicker endDatePicker, recurrenceDatePicker;
+
+    private JFXComboBox recurrenceComboBox = new JFXComboBox();
 
     @FXML
     public JFXTimePicker startTimePicker, endTimePicker;
@@ -474,6 +478,7 @@ public class ScheduleController {
     private String conflictErrorText = "Please select times that do not conflict with currently scheduled times.";
     private String pastDateErrorText = "Please select a date that is not in the past.";
     private String endDateErrorText = "Please select an end date that is not before start date.";
+    private String recurrenceErrorText = "Please select a repeat-until date at or after the end of your reservation.";
     // Database
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -508,6 +513,32 @@ public class ScheduleController {
         if (allowMultidayRes) {
             sidePaneVBox.getChildren().add(3, endDatePicker);
             sidePaneRegion.setPrefHeight(98);
+        }
+
+        sidePaneRecurrenceCheckBox = new JFXCheckBox("Repeat Event");
+        sidePaneRecurrenceCheckBox.setOnAction(e -> {
+            boolean vis = recurrenceDatePicker.isVisible();
+            recurrenceDatePicker.setVisible(!vis);
+            recurrenceComboBox.setVisible(!vis);
+            recurrenceComboBox.getSelectionModel().select(0);
+            recurrenceDatePicker.setValue(LocalDate.now());
+        });
+        ObservableList<String> options =
+                FXCollections.observableArrayList(
+                        "Daily",
+                        "Weekly", "Monthly", "Yearly"
+                );
+        recurrenceComboBox.setItems(options);
+        recurrenceDatePicker = new JFXDatePicker(LocalDate.now());
+        recurrenceDatePicker.setPrefWidth(256);
+        if (allowRecurringRes) {
+            sidePaneVBox.setSpacing(20);
+            sidePaneVBox.getChildren().remove(sidePaneRegion);
+            sidePaneVBox.getChildren().add(4, sidePaneRecurrenceCheckBox);
+            sidePaneVBox.getChildren().add(5, recurrenceDatePicker);
+            recurrenceDatePicker.setVisible(false);
+            sidePaneVBox.getChildren().add(6, recurrenceComboBox);
+            recurrenceComboBox.setVisible(false);
         }
 
         // Only allow admin to change settings. Note: doesn't change past reservations.
@@ -1631,6 +1662,19 @@ public class ScheduleController {
             return false;
         }
 
+        if (allowRecurringRes && recurrenceDatePicker.isVisible()) {
+            if (allowMultidayRes && recurrenceDatePicker.getValue().isBefore(endDatePicker.getValue())) {
+                inputErrorLbl.setVisible(true);
+                inputErrorLbl.setText(recurrenceErrorText);
+                return false;
+            }
+            else if (recurrenceDatePicker.getValue().isBefore(datePicker.getValue())) {
+                inputErrorLbl.setVisible(true);
+                inputErrorLbl.setText(recurrenceErrorText);
+                return false;
+            }
+        }
+
         if (forRes) {    // If this is for a reservation, check whether it conflicts with any current reservations
             ArrayList<GregorianCalendar> gcals = gCalsFromCurrTimes();
             ArrayList<ReservableSpace> freeSpace = (ArrayList) myDBS.getBookedReservableSpacesBetween(gcals.get(0), gcals.get(1));
@@ -1853,16 +1897,29 @@ public class ScheduleController {
     }
 
     @FXML
-    private void setRecurringRes() {    // todo: other things related to recurring reservations
+    private void setRecurringRes() {
         if (allowRecurringRes) {
             allowRecurringRes = false;
             recurringCheckBox.setSelected(false);
             recurringCheckBox.setText("Off");
+            sidePaneVBox.setSpacing(48);
+            sidePaneVBox.getChildren().add(4, sidePaneRegion);
+            sidePaneVBox.getChildren().remove( sidePaneRecurrenceCheckBox);
+            sidePaneVBox.getChildren().remove( recurrenceDatePicker);
+            sidePaneVBox.getChildren().remove( recurrenceComboBox);
         }
         else {
             allowRecurringRes = true;
             recurringCheckBox.setSelected(true);
             recurringCheckBox.setText("On");
+            sidePaneRecurrenceCheckBox.setSelected(false);
+            sidePaneVBox.setSpacing(20);
+            sidePaneVBox.getChildren().remove(sidePaneRegion);
+            sidePaneVBox.getChildren().add(4, sidePaneRecurrenceCheckBox);
+            sidePaneVBox.getChildren().add(5, recurrenceDatePicker);
+            recurrenceDatePicker.setVisible(false);
+            sidePaneVBox.getChildren().add(6, recurrenceComboBox);
+            recurrenceComboBox.setVisible(false);
         }
     }
 
@@ -1908,14 +1965,14 @@ public class ScheduleController {
             snapToMinutes = false;
             snapToCheckBox.setSelected(false);
             snapToCheckBox.setText("Off");
-            timeStep = 60;    // todo: test
+            timeStep = 60;
             timeStepMinutes = 60 / timeStep;
         }
         else {
             snapToMinutes = true;
             snapToCheckBox.setSelected(true);
             snapToCheckBox.setText("On");
-            timeStep = 2;    // todo: test
+            timeStep = 2;
             timeStepMinutes = 60 / timeStep;
         }
     }
@@ -2046,8 +2103,6 @@ public class ScheduleController {
             openTimeTextField.setText(openTimeStr);
             showRoomSchedule(true);
         }
-
-        // todo: what if minutes aren't snapTo? - maybe don't have to worry bc will just display really badly but logic still works?
     }
 
     @FXML

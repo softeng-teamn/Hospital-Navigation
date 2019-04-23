@@ -48,7 +48,7 @@
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
          <children>
-            <VBox fx:id="sidePaneVBox" alignment="BOTTOM_CENTER" prefHeight="952.0" prefWidth="419.0" spacing="48.0">
+            <VBox fx:id="sidePaneVBox" alignment="CENTER" prefHeight="952.0" prefWidth="419.0" spacing="48.0">
                <children>
                   <Label fx:id="schedLbl" styleClass="big-label" text="Weekly Schedule for&#10; ">
                      <VBox.margin>
