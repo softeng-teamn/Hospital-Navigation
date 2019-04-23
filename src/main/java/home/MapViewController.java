@@ -155,6 +155,30 @@ public class MapViewController implements Observer {
 
         infoNodeList.setRotate(90);
         infoNodeList.setSpacing(20);
+
+
+
+        ArrayList<Label> floorLbls = new ArrayList<Label>(Arrays.asList(show1, show2, show3, show4, showG, showL1, showL2));
+
+        // set directionally available floor labels to hidden
+        for (int i = 0; i < floorLbls.size(); i++) {
+            floorLbls.get(i).setVisible(false);
+        }
+
+
+        // update current floor to be yellow (does not work)
+        //changeCurrentFloorButton();
+        //floor1.setBackground(yellowBackground);
+/*
+        System.out.println("FLOOR RIGHT NOW = " + event.getFloor());
+        floor1.requestFocus();
+        System.out.println("floor one focus = " + floor1.isFocused());
+        if (floor1.isFocused()) {
+            floor1.setBackground(yellowBackground);
+            System.out.println("FLOOR ONE IS YELLOW! " + floor1.getBackground().toString());
+        }
+*/
+
     }
 
     void zoomGroupInit() {
@@ -218,7 +242,49 @@ public class MapViewController implements Observer {
         this.floorImg = newImg;
     }
 
-    /** change floor button controller
+    /**
+     * Changes the color of button of the current floor to yellow
+     */
+    private void changeCurrentFloorButton() {
+        String currFloor = event.getFloor();
+
+        floorBtns = new ArrayList<JFXButton>(Arrays.asList(floor1, floor2, floor3, floor4, floorG, floorL1, floorL2));
+
+        for (int i = 0; i < floorBtns.size(); i++) {
+
+            //System.out.println("floor = " + floorBtns.get(i).getText());
+
+            // if i is the current floor
+            if (floorBtns.get(i).getText().equals(currFloor)) {
+               // System.out.println("floor # " + floorBtns.get(i).getText() + " is the current floor, will be changed to yellow ") ;
+
+                // change color of button to yellow
+                floorBtns.get(i).setBackground(yellowBackground);
+                floorBtns.get(i).requestFocus();
+               // System.out.println("FOCUS REQUESTED");
+               // System.out.println("FOCUS = " + floorBtns.get(i).isFocused());
+               // System.out.println("background color of floor " + floorBtns.get(i).getText() + " is " + floorBtns.get(i).getBackground().toString());
+            }
+
+            // if i is not the current floor
+            else {
+                //System.out.println("floor #" + floorBtns.get(i).getText() + " is not the current floor");
+                // but is yellow
+                if (floorBtns.get(i).getBackground() == yellowBackground) {
+                    //System.out.println("but is yellow! changing to blue");
+
+                    // change i to blue
+                    floorBtns.get(i).setBackground(blueBackground);
+
+                }
+            }
+        }
+    }
+
+
+    /**
+     * change floor button controller
+     *
      * @param e FXML event that calls this method
      */
     @FXML
@@ -257,6 +323,7 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        changeCurrentFloorButton();
                         deletePolyLine();
                         drawIcon(currState.getEndNode());
                     }
@@ -266,6 +333,7 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        changeCurrentFloorButton();
                         deletePolyLine();
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67, 70, 76));
 
