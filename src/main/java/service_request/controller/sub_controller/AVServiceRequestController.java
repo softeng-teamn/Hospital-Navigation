@@ -74,6 +74,4 @@ public class AVServiceRequestController extends RequestController {
             errorMsg.setText("Please Select a Location");
         }
     }
-
 }
-
