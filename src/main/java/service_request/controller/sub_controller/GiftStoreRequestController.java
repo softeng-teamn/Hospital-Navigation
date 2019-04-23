@@ -2,6 +2,7 @@ package service_request.controller.sub_controller;
 
 import com.jfoenix.controls.*;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -53,7 +54,8 @@ public class GiftStoreRequestController extends RequestController {
                 description.setText("");
                 type.getSelectionModel().select(0);
                 patientName.setText("");
-                errorMsg.setText("");
+                errorMsg.setTextFill(Color.BLACK);
+                errorMsg.setText("Request Submitted!");
             }
         }
         else{

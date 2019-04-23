@@ -2,6 +2,7 @@ package service_request.controller.sub_controller;
 
 import com.jfoenix.controls.*;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -61,7 +62,8 @@ public class ExternalTransportationController  extends RequestController {
             description.setText("");
             datePicker.setValue(LocalDate.now());
             timePicker.setValue(LocalTime.now());
-            errorMsg.setText("");
+                errorMsg.setTextFill(Color.BLACK);
+                errorMsg.setText("Request Submitted!");
         }
         }
         else{

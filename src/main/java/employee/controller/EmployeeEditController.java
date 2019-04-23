@@ -10,15 +10,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -62,6 +66,9 @@ public class EmployeeEditController {
 
     @FXML
     private JFXButton remove;
+
+    @FXML
+    private VBox root;
 
     @FXML
     public void initialize() {
@@ -155,7 +162,7 @@ public class EmployeeEditController {
 
 
     @FXML
-    void addNewEmployee(ActionEvent event) {
+    void addNewEmployee(ActionEvent event) throws IOException {
         if (!new_password.getText().equals(new_password_conf.getText())) {
             new_password.getStyleClass().add("wrong-credentials");
             new_password_conf.getStyleClass().add("wrong-credentials");
@@ -181,21 +188,41 @@ public class EmployeeEditController {
             new_username.setText("");
             new_job.getSelectionModel().select(1);
             new_is_admin.setSelected(false);
-
             new_username.getStyleClass().remove("wrong-credentials");
+            /*Parent root = FXMLLoader.load(ResourceLoader.addEmployeeConfirm);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Help Confirmation");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(root.getScene().getWindow());
+            stage.showAndWait();*/
         } else {
             new_username.getStyleClass().add("wrong-credentials");
         }
     }
 
 
+
     @FXML
-    void onRemoveEmployee(ActionEvent event) {
+    void onRemoveEmployee(ActionEvent event) throws IOException {
+        Parent parent = FXMLLoader.load(ResourceLoader.deleteEmployeeConfirm);
+        Stage stage = new Stage();
+        stage.setScene(new Scene(parent));
+        stage.setTitle("Delete Confirmation");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(root.getScene().getWindow());
+        stage.showAndWait();
+    }
+
+    @FXML
+    void deleteEmployee(){
         Employee employee = employee_table.getSelectionModel().getSelectedItem();
         myDBS.deleteEmployee(employee);
         loadData();
         remove.setDisable(true);
     }
+
+
 
     public void showHome(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();

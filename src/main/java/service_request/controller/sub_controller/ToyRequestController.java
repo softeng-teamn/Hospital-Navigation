@@ -3,6 +3,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,7 +36,8 @@ public class ToyRequestController extends RequestController {
                     toyRequest.makeRequest();
                     description.setText("");
                     toy.setText("");
-                    errorMsg.setText("");
+                    errorMsg.setTextFill(Color.BLACK);
+                    errorMsg.setText("Request Submitted!");
                 }
             }
         }
