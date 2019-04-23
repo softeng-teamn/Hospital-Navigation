@@ -25,8 +25,6 @@ public class QRService {
     public static Image generateQRCode(String url, boolean shorten) throws IOException, WriterException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
 
-        url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
-
         if (shorten) {
             url = shortenURL(url);
         }
