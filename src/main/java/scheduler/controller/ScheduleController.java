@@ -1714,7 +1714,6 @@ public class ScheduleController {
         }
     }
 
-
     @FXML
     private void changeSnapToMinutes() {
         errorMessage.setVisible(false);
