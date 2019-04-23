@@ -57,6 +57,9 @@ public class FulfillRequestController implements Initializable {
     @FXML
     private TableColumn<Request, String> colID, colType, colLocation, colDescription, colEmployee, colFufilled;
 
+    @FXML
+    private VBox typeVBox;
+
     private ArrayList<Request> requests;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
