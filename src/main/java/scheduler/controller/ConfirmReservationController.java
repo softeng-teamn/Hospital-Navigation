@@ -220,6 +220,7 @@ public class ConfirmReservationController {
             myDBS.insertReservation(newRes);
         }
         else {
+            System.out.println("making recurring reservations: " + event.getRepeatReservations());
             for (Reservation res: event.getRepeatReservations()) {
                 res.setPrivacyLevel(privacy);
                 res.setEmployeeId(Integer.parseInt(employeeID.getText()));

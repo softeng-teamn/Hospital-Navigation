@@ -1588,18 +1588,22 @@ public class ScheduleController {
                 LocalDate currentEndDate = currentDate.plus(differece, ChronoUnit.DAYS);
                 LocalDateTime startDateTime = LocalDateTime.of(currentDate, startTimePicker.getValue());
                 LocalDateTime endDateTime = LocalDateTime.of(currentEndDate, endTimePicker.getValue());
+                boolean conflict = false;
                 for (Reservation res: existingReservations) {
                     if (res.getStartTime().toInstant().isBefore(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getEndTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) ||
                             (res.getStartTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getStartTime().toInstant().isBefore(endDateTime.atZone(ZoneId.of("America/New_York")).toInstant()))) {
                         conflicts.add(res);
+                        System.out.println("CONFLICTS111");
+                        conflict = true;
                     }
-                    else {
-                        LocalTime startTime = startTimePicker.getValue();
-                        LocalTime endTime = endTimePicker.getValue();
-                        GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((currentDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
-                        GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(currentEndDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
-                        event.getRepeatReservations().add(new Reservation(-1,0,0,"",currentSelection.getSpaceID(),gcalStart,gcalEnd));
-                    }
+                }
+                if (!conflict) {
+                    LocalTime startTime = startTimePicker.getValue();
+                    LocalTime endTime = endTimePicker.getValue();
+                    GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((currentDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
+                    GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(currentEndDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
+                    event.getRepeatReservations().add(new Reservation(-1,0,0,"",currentSelection.getSpaceID(),gcalStart,gcalEnd));
+                    System.out.println(event.getRepeatReservations());
                 }
                 if (recurrenceComboBox.getSelectionModel().getSelectedIndex() == 0) {
                     currentDate = currentDate.plus(1, DAYS);
