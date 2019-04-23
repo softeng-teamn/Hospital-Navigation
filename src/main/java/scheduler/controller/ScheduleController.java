@@ -1293,14 +1293,20 @@ public class ScheduleController {
 
             for (Reservation res : reservations) {
                 // todo: figure out how to display multiday reservations that fall across this time. also do this for other loop
-               // if (res.getStartTime())
                 // Get the start time
                 int startHour = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
                 int startMinutes = (int) (res.getStartTime().getTimeInMillis() / (1000 * 60)) % 60;
+                if (res.getStartTime().toInstant().isBefore(gcalStartDay.toInstant())) {
+                    startHour = 0;
+                    startMinutes = 0;
+                }
                 int startFrac = startMinutes / (int) (timeStepMinutes);
 
                 // Get the end time
                 int endHour = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60 * 60) - 4) % 24;
+                if (res.getEndTime().toInstant().isAfter(gcalEndDay.toInstant())) {
+                    endHour = 23;    // todo: end minutes
+                }
                 int endMinutes = (int) (res.getEndTime().getTimeInMillis() / (1000 * 60)) % 60;
                 int endFrac = endMinutes / (int) (timeStepMinutes);
 
