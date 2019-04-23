@@ -112,9 +112,7 @@ public class ITRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("IT Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getItRequestType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Description: %s, Type: %s", this.getNotes(), this.getItRequestType().name());
     }
 
     @Override
@@ -122,7 +120,9 @@ public class ITRequest extends Request {
         return typeString.equals("IT");
     }
 
+
+    @Override
+    public String getType(){
+        return "IT";
+    }
 }
-
-
-

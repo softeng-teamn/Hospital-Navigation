@@ -113,12 +113,17 @@ public class InterpreterRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Interpreter Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getLanguageType().name(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return String.format("Description: %s, Language: %s", this.getNotes(), this.getLanguageType().name());
     }
 
     @Override
     public boolean isOfType(String typeString) {
         return typeString.equals("Interpreter");
+    }
+
+
+    @Override
+    public String getType(){
+        return "Interpreter";
     }
 }

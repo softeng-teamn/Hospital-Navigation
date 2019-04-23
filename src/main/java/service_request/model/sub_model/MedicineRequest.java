@@ -117,12 +117,17 @@ public class MedicineRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Medicine Request %d, Description: %s, Type: %s, Assigned To: %s, Fulfilled: %s, Quantity: %f",
-                this.getId(), this.getNotes(), this.getMedicineType(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getQuantity());
+        return String.format("Description: %s, Type: %s, Quantity: %.2f", this.getNotes(), this.getMedicineType(), this.getQuantity());
     }
 
     @Override
     public boolean isOfType(String typeString) {
         return typeString.equals("Medicine");
     }
+
+    @Override
+    public String getType(){
+        return "Medicine";
+    }
+
 }

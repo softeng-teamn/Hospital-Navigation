@@ -2,10 +2,10 @@ package service_request;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXRadioButton;
-import javafx.beans.value.ObservableValue;
+import com.jfoenix.controls.JFXToggleNode;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,10 +16,13 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import employee.model.Employee;
 import database.DatabaseService;
+import javafx.util.StringConverter;
 import service.ResourceLoader;
 import service.StageManager;
 import service_request.model.Request;
@@ -37,90 +40,26 @@ import static employee.model.JobType.*;
 public class FulfillRequestController implements Initializable {
 
     @FXML
-    public JFXRadioButton completedRadio;
-    @FXML
     private JFXButton homeBtn;
-    @FXML
-    private JFXButton adminBtn;
-    @FXML
-    private JFXListView<Request> requestListView;
-    @FXML
-    private JFXListView<Employee> employeeListView;
+
     @FXML
     private JFXComboBox<String> typeCombo;
-    @FXML
-    private JFXRadioButton allRadio;
-    @FXML
-    private JFXRadioButton uncRadio;
-    @FXML
-    private VBox typeVBox;
 
-    ArrayList<Employee> employees;
-    ArrayList<Request> requests;
+    @FXML
+    private JFXComboBox<Employee> employeeCombo;
+
+    @FXML
+    private ToggleGroup filterGroup;
+
+    @FXML
+    private TableView<Request> requestTable;
+
+    @FXML
+    private TableColumn<Request, String> colID, colType, colLocation, colDescription, colEmployee, colFufilled;
+
+    private ArrayList<Request> requests;
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
-
-    /**
-     * switches window to home screen
-     *
-     * @throws Exception if the FXML fails to load
-     */
-    @FXML
-    public void showHome() throws Exception {
-        Stage stage = (Stage) homeBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.home);
-        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
-    }
-
-    @FXML
-    void typeFilterSwitch(ActionEvent event) {
-        String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
-
-        employeeListView.getItems().clear();
-        for (Employee employee : employees) {
-            if (requestTypeSelected.equals("All") || employee.getJob() == ADMINISTRATOR) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("AV Service") && employee.getJob() == AV) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("External Transport") && employee.getJob() == EXTERNAL_TRANSPORT) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Florist") && employee.getJob() == FLORIST) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Gift Store") && employee.getJob() == GIFT_SERVICES) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Internal Transport") && employee.getJob() == INTERNAL_TRANSPORT) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Interpreter") && employee.getJob() == INTERPRETER) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("IT") && employee.getJob() == IT) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Maintenance") && employee.getJob() == MAINTENANCE_WORKER) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Medicine") && (employee.getJob() == DOCTOR || employee.getJob() == NURSE)) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Patient Info") && employee.getJob() == NURSE) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Religious") && employee.getJob() == RELIGIOUS_OFFICIAL) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Sanitation") && employee.getJob() == JANITOR) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Security") && employee.getJob() == SECURITY_PERSONNEL) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Toy") && employee.getJob() == TOY) {
-                employeeListView.getItems().add(employee);
-            } else if (requestTypeSelected.equals("Help")){
-                employeeListView.getItems().add(employee);
-            }
-        }
-
-        requestListView.getItems().clear();
-        for (Request request : requests) {
-            if (requestTypeSelected.equals("All") || request.isOfType(requestTypeSelected)) {
-                requestListView.getItems().add(request);
-            }
-        }
-    }
-
 
     /**
      * initialize the list of requests
@@ -134,60 +73,94 @@ public class FulfillRequestController implements Initializable {
         typeCombo.setItems(FXCollections.observableArrayList(requestTypes));
         typeCombo.getSelectionModel().select(0);
 
-        employees = (ArrayList<Employee>) myDBS.getAllEmployees();
+        Callback<ListView<Employee>, ListCell<Employee>> factory = lv -> new ListCell<Employee>() {
 
-        employeeListView.setItems(FXCollections.observableArrayList(myDBS.getAllEmployees()));
-        employeeListView.setCellFactory(new Callback<ListView<Employee>, ListCell<Employee>>() {
             @Override
-            public ListCell<Employee> call(ListView<Employee> param) {
-                ListCell<Employee> cell = new ListCell<Employee>() {
-
-                    @Override
-                    protected void updateItem(Employee item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item.getUsername() + " (" + item.getID() + ")");
-                        } else {
-                            setText("");
-                        }
-                    }
-                };
-                return cell;
+            protected void updateItem(Employee item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? "" : item.getUsername());
             }
-        });
 
+        };
+
+        employeeCombo.setCellFactory(factory);
+        employeeCombo.setButtonCell(factory.call(null));
+        ObservableList<Employee> employees = FXCollections.observableArrayList();
+        employees.setAll(myDBS.getAllEmployees());
+        employeeCombo.setItems(employees);
+        employeeCombo.getSelectionModel().select(0);
+
+        initCols();
         requests = new ArrayList<>();
-
         setRequestsAll();
 
-        requestListView.setItems(FXCollections.observableArrayList(requests));
-        requestListView.setCellFactory(new Callback<ListView<Request>, ListCell<Request>>() {
-            @Override
-            public ListCell<Request> call(ListView<Request> param) {
-                ListCell<Request> cell = new ListCell<Request>() {
-
-                    @Override
-                    protected void updateItem(Request item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item.toDisplayString());
-                        } else {
-                            setText("");
-                        }
-                    }
-                };
-                return cell;
+        requestTable.getItems().clear();
+        String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
+        for (Request request : requests) {
+            if (requestTypeSelected.equals("All") || request.isOfType(requestTypeSelected)) {
+                requestTable.getItems().add(request);
             }
-        });
+        }
+    }
 
-        requestListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Request> observable, Request oldValue, Request newValue) -> {
-            employeeListView.getItems().clear();
-            for(Employee employee : employees) {
-                if (newValue == null || newValue.fulfillableByType(employee.getJob())) {
-                    employeeListView.getItems().add(employee);
-                }
+    private void initCols() {
+        colType.setCellValueFactory(param -> new SimpleStringProperty("" + param.getValue().getType()));
+        colID.setCellValueFactory(param -> new SimpleStringProperty("" + param.getValue().getId()));
+        colLocation.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getLocation().getLongName()));
+        colDescription.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().toDisplayString()));
+        colEmployee.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getAssignedTo() > 0 ? myDBS.getEmployee(param.getValue().getAssignedTo()).getUsername() : ""));
+        colFufilled.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().isCompleted() ? "Yes" : "No"));
+    }
+
+    @FXML
+    void typeFilterSwitch(ActionEvent event) {
+        String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
+
+        employeeCombo.getItems().clear();
+        for (Employee employee : myDBS.getAllEmployees()) {
+            if (requestTypeSelected.equals("All") || employee.getJob() == ADMINISTRATOR) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("AV Service") && employee.getJob() == AV) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("External Transport") && employee.getJob() == EXTERNAL_TRANSPORT) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Florist") && employee.getJob() == FLORIST) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Gift Store") && employee.getJob() == GIFT_SERVICES) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Internal Transport") && employee.getJob() == INTERNAL_TRANSPORT) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Interpreter") && employee.getJob() == INTERPRETER) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("IT") && employee.getJob() == IT) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Maintenance") && employee.getJob() == MAINTENANCE_WORKER) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Medicine") && (employee.getJob() == DOCTOR || employee.getJob() == NURSE)) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Patient Info") && employee.getJob() == NURSE) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Religious") && employee.getJob() == RELIGIOUS_OFFICIAL) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Sanitation") && employee.getJob() == JANITOR) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Security") && employee.getJob() == SECURITY_PERSONNEL) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Toy") && employee.getJob() == TOY) {
+                employeeCombo.getItems().add(employee);
+            } else if (requestTypeSelected.equals("Help")){
+                employeeCombo.getItems().add(employee);
             }
-        });
+        }
+
+        employeeCombo.getSelectionModel().select(0);
+
+        requestTable.getItems().clear();
+        for (Request request : requests) {
+            if (requestTypeSelected.equals("All") || request.isOfType(requestTypeSelected)) {
+                requestTable.getItems().add(request);
+            }
+        }
     }
 
     private void setRequestsAll() {
@@ -247,26 +220,39 @@ public class FulfillRequestController implements Initializable {
         requests.addAll(myDBS.getAllCompleteHelpRequests());
     }
 
+    @FXML
     public void reqStateChange(ActionEvent actionEvent) {
-        if (allRadio.isSelected()) {
-            setRequestsAll();
-        } else if(uncRadio.isSelected()) {
-            setRequestsIncomplete();
-        } else if(completedRadio.isSelected()) {
-            setRequestsComplete();
+        JFXToggleNode selected = (JFXToggleNode) filterGroup.getSelectedToggle();
+        String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
+
+        if(selected != null) {
+            switch (selected.getText()) {
+                case "Show All":
+                    setRequestsAll();
+                    break;
+                case "Show Fulfilled":
+                    setRequestsComplete();
+                    break;
+                case "Show Unfulfilled":
+                    setRequestsIncomplete();
+                    break;
+                default:
+                    break;
+            }
         }
 
-        requestListView.getItems().clear();
-        String requestTypeSelected = typeCombo.getSelectionModel().getSelectedItem();
+        requestTable.getItems().clear();
         for (Request request : requests) {
             if (requestTypeSelected.equals("All") || request.isOfType(requestTypeSelected)) {
-                requestListView.getItems().add(request);
+                requestTable.getItems().add(request);
             }
         }
     }
 
-    public void fulfillRequest(ActionEvent actionEvent) throws IOException {
-        Request selectedRequest = requestListView.getSelectionModel().getSelectedItem();
+    @FXML
+    public void fulfillRequest(ActionEvent actionEvent) throws IOException{
+        Request selectedRequest = requestTable.getSelectionModel().getSelectedItem();
+
 
         if (selectedRequest != null) {
             if (selectedRequest.getAssignedTo() == 0) {
@@ -284,14 +270,27 @@ public class FulfillRequestController implements Initializable {
         }
     }
 
+    @FXML
     public void assignRequest(ActionEvent actionEvent) {
-        Request selectedRequest = requestListView.getSelectionModel().getSelectedItem();
-        Employee selectedEmployee = employeeListView.getSelectionModel().getSelectedItem();
+        Request selectedRequest = requestTable.getSelectionModel().getSelectedItem();
+        Employee selectedEmployee = employeeCombo.getSelectionModel().getSelectedItem();
 
         if (selectedEmployee != null && selectedRequest != null) {
             selectedRequest.setAssignedTo(selectedEmployee.getID());
             selectedRequest.updateEmployee(selectedRequest, selectedEmployee);
             reqStateChange(null);
         }
+    }
+
+    /**
+     * switches window to home screen
+     *
+     * @throws Exception if the FXML fails to load
+     */
+    @FXML
+    public void showHome() throws Exception {
+        Stage stage = (Stage) homeBtn.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.home);
+        StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 }

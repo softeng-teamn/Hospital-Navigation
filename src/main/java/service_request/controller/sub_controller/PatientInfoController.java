@@ -26,7 +26,7 @@ public class PatientInfoController extends RequestController {
 
         firstName = firstNameField.getText();
         lastName = lastNameField.getText();
-        birthDay = birthYField.getText() + birthMField.getText() + birthDField.getText();
+        birthDay = birthMField.getText() + "/" + birthDField.getText() + "/" + birthYField.getText();
         description = descriptionArea.getText();
 
         if (selectedNode != null) {
