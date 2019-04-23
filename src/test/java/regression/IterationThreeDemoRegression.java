@@ -102,7 +102,7 @@ public class IterationThreeDemoRegression extends ApplicationTest {
 
         // 2.3. Switch to A*, pathfind to Obstetrics
         switchPathfinding("ASTAR");
-        testPathfind("Cafe", "Obstetrics", 65);
+        testPathfind("Cafe", "Obstetrics", 64);
 
         // 3. Set Dan's phone to (1234567890)
         clickOn("#fulfillBtn");
