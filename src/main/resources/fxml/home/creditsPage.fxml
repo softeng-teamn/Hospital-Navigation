@@ -63,10 +63,6 @@
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text="Language Request, Team M D19">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
                         <Label text="BWH Gift Request, Team P D19">
                             <font>
                                 <Font size="18.0" />
@@ -91,11 +87,15 @@
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text="ZXing">
+                        <Label text="Zxing">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
                         <Label text="Bitly">
+                            <font>
+                                <Font size="18.0" />
+                            </font></Label>
+                        <Label text="Placenote">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
