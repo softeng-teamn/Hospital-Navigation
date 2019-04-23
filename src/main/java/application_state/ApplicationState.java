@@ -2,6 +2,7 @@ package application_state;
 
 import javafx.scene.image.ImageView;
 import employee.model.Employee;
+import javafx.stage.Stage;
 import map.Edge;
 import map.Node;
 import service.ResourceLoader;
@@ -27,6 +28,9 @@ public class ApplicationState {
     private int employeeID;
     private Employee employeeLoggedIn;
     private String startEnd = "end";    // Whether the currently selected node in the listView is the start or end node
+    private boolean isInactive;
+    private InactivityManager IM = new InactivityManager(90000);
+    private Stage primaryStage;
     // sets the current theme
     private URL currentTheme = ResourceLoader.default_style;
 
@@ -148,6 +152,30 @@ public class ApplicationState {
         return DEFAULT_NODE;
     }
 
+
+    public boolean isInactive() {
+        return isInactive;
+    }
+
+    public void setInactive(boolean inactive) {
+        isInactive = inactive;
+    }
+
+    public InactivityManager getIM() {
+        return IM;
+    }
+
+    public void setIMTimeOut(String num){
+        IM.setInactivityLimit(Integer.parseInt(num));
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
     public int getOpenTime() {
         return openTime;
     }
