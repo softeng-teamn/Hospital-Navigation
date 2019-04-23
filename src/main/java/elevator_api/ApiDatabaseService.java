@@ -241,7 +241,7 @@ class ApiDatabaseService {
      * @param query      the query to use as the prepared statement.
      * @param cls        the class that the method should return
      * @param parameters the parameters for the prepared statement. There must be an equal number of ?s in the query and parameters in here for the query to run properly.
-     * @return a list of the given object type, based on the database query
+     * @return a list of the given object getType, based on the database query
      */
     private <T> List<Object> executeGetMultiple(String query, Class<T> cls, Object... parameters) {
         ArrayList<Object> reqs = new ArrayList();
@@ -330,7 +330,7 @@ class ApiDatabaseService {
      * @param query the query to
      * @param cls   the class of object to return
      * @param id    the id that functions as the key to retrieve
-     * @return an object of type cls
+     * @return an object of getType cls
      */
     private <T> Object executeGetById(String query, Class<T> cls, Object id) {
         PreparedStatement stmt = null;

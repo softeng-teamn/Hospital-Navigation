@@ -107,7 +107,7 @@ public class ConfirmReservationController {
     public void setID() {
         int idNum = ApplicationState.getApplicationState().getEmployeeLoggedIn().getID();
         String id = Integer.toString(idNum);
-        employeeID.setText(id);
+        employeeID.setText("Employee ID: " + id);
     }
 
 
@@ -150,6 +150,12 @@ public class ConfirmReservationController {
         // check employee id
         // parse around prompt text
         String id = employeeID.getText();
+
+        if (id.contains("Employee ID: ")) {
+            id = id.substring(13) ;
+            System.out.println("ID = " + "'" +id +"'");
+        }
+
         boolean badId = false;
 
         // Check whether the ID is a number
@@ -180,7 +186,7 @@ public class ConfirmReservationController {
         }
 
         // If the ID number is bad, display an error message.
-        if (myDBS.getEmployee(Integer.parseInt(employeeID.getText())) == null) {
+        if (myDBS.getEmployee(Integer.parseInt(employeeID.getText().substring(13))) == null) {
             inputErrorLbl.setText("Error: Please provide a valid employee ID number.");
             inputErrorLbl.setVisible(true);
             valid = false;
@@ -216,7 +222,7 @@ public class ConfirmReservationController {
 
         // create new reservation and add to database
         if (!event.isActuallyRecurring()) {
-            Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
+            Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText().substring(13)), eventName.getText(), roomID, cals.get(0), cals.get(1));
             myDBS.insertReservation(newRes);
         }
         else {
@@ -236,7 +242,7 @@ public class ConfirmReservationController {
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(stage);
         VBox dialogVbox = new VBox(20);
-        dialogVbox.getChildren().add(new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + eventName.getText() + "&eventLocation=" + myDBS.getReservableSpace(roomID).getSpaceName() + "&eventOrganizer=" + myDBS.getEmployee(Integer.parseInt(employeeID.getText())).getUsername() + "&startTime=" + cals.get(0).getTimeInMillis()/1000 + "&endTime=" + cals.get(1).getTimeInMillis()/1000, true)));
+        dialogVbox.getChildren().add(new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + eventName.getText() + "&eventLocation=" + myDBS.getReservableSpace(roomID).getSpaceName() + "&eventOrganizer=" + myDBS.getEmployee(Integer.parseInt(/*employeeID.getText()*/employeeID.getText().substring(13))).getUsername() + "&startTime=" + cals.get(0).getTimeInMillis()/1000 + "&endTime=" + cals.get(1).getTimeInMillis()/1000, true)));
         Scene dialogScene = new Scene(dialogVbox, 350, 350);
         dialog.setScene(dialogScene);
         dialog.show();

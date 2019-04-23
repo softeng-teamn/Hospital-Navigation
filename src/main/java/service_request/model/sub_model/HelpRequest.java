@@ -51,13 +51,17 @@ public class HelpRequest extends Request {
 
     @Override
     public String toDisplayString() {
-        if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Help Request %d, Description: %s, Assigned To: %s, Fulfilled: %s",
-                this.getId(), this.getNotes(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No");
+        return "";
     }
 
     @Override
     public boolean isOfType(String typeString) {
         return typeString.equals("Help");
+    }
+
+
+    @Override
+    public String getType(){
+        return "Help me";
     }
 }

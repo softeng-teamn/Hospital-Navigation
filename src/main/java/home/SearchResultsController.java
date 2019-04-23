@@ -265,7 +265,7 @@ public class SearchResultsController implements Observer {
             hBoxes.add(hb);    // Add it all to the list
         }
         if (displayEvents) {
-            for (int i = 0; i < reservations.size(); i++) {    // For every node
+            for (int i = 0; i < reservations.size(); i++) {    // For every
                 Reservation currRes = reservations.get(i);
                 if (currRes.getPrivacyLevel() == 0) {
                     HBox hb = new HBox();

@@ -309,7 +309,7 @@ public class CSVServiceTest {
         // Override the csv file
         setFinalStatic(ResourceLoader.class.getDeclaredField("nodes"), ResourceLoader.class.getResource("/test_nodes.csv"));
 
-        // Create a class to capture arguments of the type Node
+        // Create a class to capture arguments of the getType Node
         ArgumentCaptor<ArrayList<Node>> nodeCaptor = ArgumentCaptor.forClass(ArrayList.class);
 
         // Action being tested
@@ -333,7 +333,7 @@ public class CSVServiceTest {
         // Override the csv file
         setFinalStatic(ResourceLoader.class.getDeclaredField("edges"), service.ResourceLoader.class.getResource("/test_edges.csv"));
 
-        // Create a class to capture arguments of the type Edge
+        // Create a class to capture arguments of the getType Edge
         ArgumentCaptor<Edge> edgeCaptor = ArgumentCaptor.forClass(Edge.class);
 
         // Action being tested
@@ -360,7 +360,7 @@ public class CSVServiceTest {
         // Override the csv file
         setFinalStatic(ResourceLoader.class.getDeclaredField("reservablespaces"), service.ResourceLoader.class.getResource("/test_reservablespaces.csv"));
 
-        // Create a class to capture arguments of the type ReservableSpace
+        // Create a class to capture arguments of the getType ReservableSpace
         ArgumentCaptor<ReservableSpace> spaceCaptor = ArgumentCaptor.forClass(ReservableSpace.class);
 
         // Action being tested
@@ -387,7 +387,7 @@ public class CSVServiceTest {
         // Override the csv file
         setFinalStatic(ResourceLoader.class.getDeclaredField("employees"), service.ResourceLoader.class.getResource("/test_employees.csv"));
 
-        // Create a class to capture arguments of the type Employee
+        // Create a class to capture arguments of the getType Employee
         ArgumentCaptor<Employee> empCaptor = ArgumentCaptor.forClass(Employee.class);
 
         // Action being tested
