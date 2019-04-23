@@ -561,6 +561,7 @@ public class MapViewController implements Observer {
         } else {
             zoomGroup.getChildren().removeAll(circleCollection);
             circleCollection.clear();
+            showAllNodes();
         }
     }
 
