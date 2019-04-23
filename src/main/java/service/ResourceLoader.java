@@ -62,7 +62,7 @@ public class  ResourceLoader {
 
     public static final URL textingService = service.ResourceLoader.class.getResource("/SuperSecretPasswords.txt");
 
-    // images
+    /// images
     public static final URL firstFloor = service.ResourceLoader.class.getResource("/images/F1.png");
     public static final URL secondFloor = service.ResourceLoader.class.getResource("/images/F2.png");
     public static final URL thirdFloor = service.ResourceLoader.class.getResource("/images/F3.png");
