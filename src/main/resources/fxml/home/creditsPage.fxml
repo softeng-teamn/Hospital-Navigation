@@ -59,43 +59,15 @@
             <children>
                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="300.0" spacing="10.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text=", Team A">
+                        <Label text="Emergency, Team B D19">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text=", Team B">
+                        <Label text="Language Request, Team M D19">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text=", Team C">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text=", Team D">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text=", Team E">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text="Sanitation Service, Team F">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text="Gift Service Request, Team L">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text="Gift Service Request, Team M">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text="Domino's Pizza, Team O">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text=", Team P">
+                        <Label text="BWH Gift Request, Team P D19">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
