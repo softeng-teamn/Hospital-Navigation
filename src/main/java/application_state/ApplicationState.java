@@ -41,6 +41,7 @@ public class ApplicationState {
     private boolean boundOpenTime = true;    // Whether open time is defined
     private boolean boundCloseTime = true;    // Whether close time is defined
     private boolean boundMinRes = true;    // Whether minimum reservation is defined
+    private int minRes;
     private boolean snapToMinutes = true;
     private boolean allowMultidayRes = false;
     private boolean allowRecurringRes = false;
@@ -257,5 +258,13 @@ public class ApplicationState {
 
     public static void setShowContactInfo(boolean showContactInfo) {
         ApplicationState.showContactInfo = showContactInfo;
+    }
+
+    public int getMinRes() {
+        return minRes;
+    }
+
+    public void setMinRes(int minRes) {
+        this.minRes = minRes;
     }
 }

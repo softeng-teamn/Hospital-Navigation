@@ -70,7 +70,7 @@ public class ScheduleController {
     @FXML
     public JFXButton homeBtn, makeReservationBtn, availRoomsBtn, bookedRoomsBtn, deleteReservationBtn;
     @FXML
-    public JFXTextField closeTimeTextField, openTimeTextField, minResTextField;
+    public JFXTextField closeTimeTextField, openTimeTextField, minResTextField, snapToTextField;
     @FXML
     private JFXCheckBox closeTimeCheckBox, openTimeCheckBox, minResCheckBox, snapToCheckBox, recurringCheckBox, multidayCheckBox, showContactCheckBox;
     private JFXCheckBox sidePaneRecurrenceCheckBox;
@@ -148,8 +148,9 @@ public class ScheduleController {
     private int closeTime = 22;    // 24-hours hour to end schedule display
     private String closeTimeString = "22:00";
     private int closeTimeMinutes = 0;
-    private int timeStep = 2;    // Fractions of an hour
+    private int timeStep = 2;    // Fractions of an hour   todo
     private int timeStepMinutes = 60 / timeStep;    // In Minutes
+    private int minRes = 0;    // Minimum reservation time todo
     private static final int NUM_ROOMS = 10;
     private static final int NUM_DAYS_IN_WEEK = 7;
     private boolean boundOpenTime = true;
@@ -177,7 +178,6 @@ public class ScheduleController {
     private String pastDateErrorText = "Please select a date that is not in the past.";
     private String endDateErrorText = "Please select an end date that is not before start date.";
     private String recurrenceErrorText = "Please select a repeat-until date at or after the end of your reservation.";
-    private String minResErrorText = "Reservations must be at least " + timeStepMinutes + " minutes long.";
     // Database
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -282,41 +282,45 @@ public class ScheduleController {
      * Get settings from Application state.
      */
     private void getSettings() {
-        openTime = ApplicationState.getApplicationState().getOpenTime();   // hour to start schedule display
-        openTimeStr = ApplicationState.getApplicationState().getOpenTimeStr();
-        openTimeMinutes = ApplicationState.getApplicationState().getOpenTimeMinutes();
-        closeTime = ApplicationState.getApplicationState().getCloseTime();    // 24-hours hour to end schedule display
-        closeTimeString = ApplicationState.getApplicationState().getCloseTimeString();
-        closeTimeMinutes = ApplicationState.getApplicationState().getCloseTimeMinutes();
-        timeStep = ApplicationState.getApplicationState().getTimeStep();    // Fractions of an hour
+        ApplicationState currState = ApplicationState.getApplicationState();
+        openTime = currState.getOpenTime();   // hour to start schedule display
+        openTimeStr = currState.getOpenTimeStr();
+        openTimeMinutes = currState.getOpenTimeMinutes();
+        closeTime = currState.getCloseTime();    // 24-hours hour to end schedule display
+        closeTimeString = currState.getCloseTimeString();
+        closeTimeMinutes = currState.getCloseTimeMinutes();
+        timeStep = currState.getTimeStep();    // Fractions of an hour
         timeStepMinutes = 60 / timeStep;    // In Minutes
-        boundOpenTime = ApplicationState.getApplicationState().isBoundOpenTime();
-        boundCloseTime = ApplicationState.getApplicationState().isBoundCloseTime();
-        boundMinRes = ApplicationState.getApplicationState().isBoundMinRes();
-        snapToMinutes = ApplicationState.getApplicationState().isSnapToMinutes();
-        allowMultidayRes = ApplicationState.getApplicationState().isAllowMultidayRes();
-        allowRecurringRes = ApplicationState.getApplicationState().isAllowRecurringRes();
-        showContactInfo = ApplicationState.getApplicationState().isShowContactInfo();
+        boundOpenTime = currState.isBoundOpenTime();
+        boundCloseTime = currState.isBoundCloseTime();
+        boundMinRes = currState.isBoundMinRes();
+        minRes = currState.getMinRes();
+        snapToMinutes = currState.isSnapToMinutes();
+        allowMultidayRes = currState.isAllowMultidayRes();
+        allowRecurringRes = currState.isAllowRecurringRes();
+        showContactInfo = currState.isShowContactInfo();
     }
 
     /**
      * Save settings to Application state.
      */
     private void saveSettings() {
-        ApplicationState.getApplicationState().setOpenTime(openTime);   // hour to start schedule display
-        ApplicationState.getApplicationState().setOpenTimeStr(openTimeStr);
-        ApplicationState.getApplicationState().setOpenTimeMinutes(openTimeMinutes);
-        ApplicationState.getApplicationState().setCloseTime(closeTime);    // 24-hours hour to end schedule display
-        ApplicationState.getApplicationState().setCloseTimeString(closeTimeString);
-        ApplicationState.getApplicationState().setCloseTimeMinutes(closeTimeMinutes);
-        ApplicationState.getApplicationState().setTimeStep(timeStep);    // Fractions of an hour
-        ApplicationState.getApplicationState().setBoundOpenTime(boundOpenTime);
-        ApplicationState.getApplicationState().setBoundCloseTime(boundCloseTime);
-        ApplicationState.getApplicationState().setBoundMinRes(boundMinRes);
-        ApplicationState.getApplicationState().setSnapToMinutes(snapToMinutes);
-        ApplicationState.getApplicationState().setAllowMultidayRes(allowMultidayRes);
-        ApplicationState.getApplicationState().setAllowRecurringRes(allowRecurringRes);
-        ApplicationState.getApplicationState().setShowContactInfo(showContactInfo);
+        ApplicationState currState = ApplicationState.getApplicationState();
+        currState.setOpenTime(openTime);   // hour to start schedule display
+        currState.setOpenTimeStr(openTimeStr);
+        currState.setOpenTimeMinutes(openTimeMinutes);
+        currState.setCloseTime(closeTime);    // 24-hours hour to end schedule display
+        currState.setCloseTimeString(closeTimeString);
+        currState.setCloseTimeMinutes(closeTimeMinutes);
+        currState.setTimeStep(timeStep);    // Fractions of an hour
+        currState.setBoundOpenTime(boundOpenTime);
+        currState.setBoundCloseTime(boundCloseTime);
+        currState.setBoundMinRes(boundMinRes);
+        currState.setSnapToMinutes(snapToMinutes);
+        currState.setAllowMultidayRes(allowMultidayRes);
+        currState.setAllowRecurringRes(allowRecurringRes);
+        currState.setShowContactInfo(showContactInfo);
+        currState.setMinRes(minRes);
     }
 
     /**
@@ -376,6 +380,7 @@ public class ScheduleController {
         Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
             @Override
             public void run() {
+                System.out.println(this);
                 calendarView.setRequestedTime(LocalTime.now());
                 while (true) {
                     Platform.runLater(() -> {
@@ -466,9 +471,11 @@ public class ScheduleController {
         snapToCheckBox.setSelected(snapToMinutes);
         if (snapToMinutes) {
             snapToCheckBox.setText("On");
+            snapToTextField.setVisible(true);
         }
         else {
             snapToCheckBox.setText("Off");
+            snapToTextField.setVisible(false);
         }
         minResCheckBox.setSelected(boundMinRes);
         if (boundMinRes) {
@@ -503,12 +510,17 @@ public class ScheduleController {
         closeTimeTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             timeListener(newValue);
         });
-        minResTextField.setText(timeStepMinutes + "");
+        minResTextField.setText(minRes + "");
         minResTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             timeListener(newValue);
         });
+        snapToTextField.setText(timeStepMinutes + "");
+        snapToTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            timeListener(newValue);
+        });
         errorMessage.setVisible(false);
-        errorMessage.setText("Please enter a valid time in the format hh:mm.\nFor minimum reservation, enter a number of minutes\nthat is a divisor of 60 as mm.");
+        errorMessage.setText("Please enter a valid time in the format hh:mm.\n" +
+                "For minimum reservation and snap to minutes, \nenter a number of minutes between 1 and 60\nthat is a divisor of 60 as mm.");
     }
 
     /**
@@ -520,7 +532,8 @@ public class ScheduleController {
         if (!value) {
             closeTimeTextField.setText(closeTimeString);
             openTimeTextField.setText(openTimeStr);
-            minResTextField.setText(timeStepMinutes + "");
+            minResTextField.setText(minRes + "");
+            snapToTextField.setText(timeStepMinutes + "");
             errorMessage.setVisible(false);
         }
     }
@@ -1237,7 +1250,7 @@ public class ScheduleController {
             // Get the times and dates and turn them into gregorian calendars
             ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
 
-            if (recurrenceDatePicker.isVisible()) {    // If recurring event, tell the event/application state
+            if (allowRecurringRes && recurrenceDatePicker.isVisible()) {    // If recurring event, tell the event/application state
                 GregorianCalendar gcalRec = GregorianCalendar.from(ZonedDateTime.from((recurrenceDatePicker.getValue().atTime(endTimePicker.getValue())).atZone(ZoneId.of("America/New_York"))));
                 cals.add(gcalRec);
                 event.setActuallyRecurring(true);
@@ -1298,12 +1311,10 @@ public class ScheduleController {
             makeMinutesValid();
         }
         // Get the selected times
-        int start = startTimePicker.getValue().getHour();
-        int mins = startTimePicker.getValue().getMinute() / (timeStepMinutes);
-        int index = (start - openTime) * timeStep + mins;
-        int end = endTimePicker.getValue().getHour();
-        int endMins = endTimePicker.getValue().getMinute() / (timeStepMinutes);
-        int endIndex = (end - openTime) * timeStep + endMins;
+        int startHour = startTimePicker.getValue().getHour();
+        int startMins = startTimePicker.getValue().getMinute();
+        int endHour = endTimePicker.getValue().getHour();
+        int endMins = endTimePicker.getValue().getMinute();
 
         // If the chosen date is in the past, show an error
         if (forRes && datePicker.getValue().atStartOfDay().isBefore(LocalDate.now().atStartOfDay())) {
@@ -1321,7 +1332,9 @@ public class ScheduleController {
 
         // If the times are outside the location's open times
         // or end is greater than start, the times are invalid
-        if ((!allowMultidayRes || (allowMultidayRes && endDatePicker.getValue().equals(datePicker.getValue()))) && (endIndex <= index || start < openTime || closeTime < end)) {
+        if ((!allowMultidayRes || (allowMultidayRes && endDatePicker.getValue().equals(datePicker.getValue())))
+                && ((endHour < startHour || endHour == startHour && endMins <= startMins)|| (startHour < openTime || startHour == openTime && startMins < openTimeMinutes)
+                || (closeTime < endHour || closeTime == endHour && endMins > closeTimeMinutes))) {
             inputErrorLbl.setVisible(true);
             inputErrorLbl.setText("Please enter a valid time - note that rooms are only available for booking " + openTimeStr + " to " + closeTimeString);
             return false;
@@ -1352,11 +1365,11 @@ public class ScheduleController {
             // Make sure this reservation exceeds the minimum reservation time
             if (boundMinRes && gcals.get(0).toZonedDateTime().getDayOfYear() == gcals.get(1).toZonedDateTime().getDayOfYear()) {
                 if((gcals.get(0).toZonedDateTime().getHour() == gcals.get(1).toZonedDateTime().getHour()
-                        && (gcals.get(1).toZonedDateTime().getMinute() - gcals.get(0).toZonedDateTime().getMinute() < timeStepMinutes))
+                        && (gcals.get(1).toZonedDateTime().getMinute() - gcals.get(0).toZonedDateTime().getMinute() < minRes))
                 || (gcals.get(0).toZonedDateTime().getHour() == gcals.get(1).toZonedDateTime().getHour() -1
-                        && (60 - gcals.get(0).toZonedDateTime().getMinute() + gcals.get(1).toZonedDateTime().getMinute() < timeStepMinutes))) {
+                        && (60 - gcals.get(0).toZonedDateTime().getMinute() + gcals.get(1).toZonedDateTime().getMinute() < minRes))) {
                         inputErrorLbl.setVisible(true);
-                        inputErrorLbl.setText(minResErrorText);
+                        inputErrorLbl.setText("Reservations must be at least " + timeStepMinutes + " minutes long.");
                         return false;
                 }
             }
@@ -1662,7 +1675,7 @@ public class ScheduleController {
             closeTimeCheckBox.setText("Unbound");
             closeTimeTextField.setVisible(false);
             closeTime = 23;
-            closeTimeMinutes = timeStep;
+            closeTimeMinutes = 60;
             closeTimeString = "23:59";
 
             boundOpenTime = false;
@@ -1688,6 +1701,7 @@ public class ScheduleController {
             snapToCheckBox.setText("Off");
             timeStep = 60;
             timeStepMinutes = 60 / timeStep;
+            snapToTextField.setVisible(false);
         }
         else {
             snapToMinutes = true;
@@ -1695,7 +1709,41 @@ public class ScheduleController {
             snapToCheckBox.setText("On");
             timeStep = 2;
             timeStepMinutes = 60 / timeStep;
+            snapToTextField.setVisible(true);
+            snapToTextField.setText(timeStepMinutes + "");
         }
+    }
+
+
+    @FXML
+    private void changeSnapToMinutes() {
+        errorMessage.setVisible(false);
+        String min = snapToTextField.getText();
+        boolean valid = true;
+        if (min.length() != 2) {    // Check whether this is minutes in the form mm from 00 to 60.
+            valid = false;
+        }
+        if (min.length() == 2) {
+            String first = min.substring(0,1);
+            String second = min.substring(1,2);
+            if (!"0123456".contains(first) || !"0123456789".contains(second)) {
+                valid = false;
+            }
+        }
+        if (valid) {
+            int mins = Integer.parseInt(min);
+            if (60 % mins != 0 || mins < 1) {
+                valid = false;
+            }
+            else {
+                timeStepMinutes = mins;
+                timeStep = 60 / timeStepMinutes;
+            }
+        }
+        if (!valid) {
+            errorMessage.setVisible(true);
+        }
+        snapToTextField.setText("" + timeStepMinutes);
     }
 
     /**
@@ -1708,15 +1756,14 @@ public class ScheduleController {
             minResCheckBox.setSelected(false);
             minResCheckBox.setText("Unbound");
             minResTextField.setVisible(false);
-            timeStep = 60;
-            timeStepMinutes = 60 / timeStep;
+            minRes = 1;
         }
         else {
             boundMinRes = true;
             minResCheckBox.setSelected(true);
             minResCheckBox.setText("Bound");
             minResTextField.setVisible(true);
-            minResTextField.setText(timeStepMinutes + "");
+            minResTextField.setText(minRes + "");
         }
     }
 
@@ -1741,20 +1788,17 @@ public class ScheduleController {
         }
         if (valid) {
             int mins = Integer.parseInt(min);
-            if (60 % mins != 0) {
+            if (60 % mins != 0 || mins < 1) {
                 valid = false;
             }
             else {
-                timeStep = 60 / mins;
-                timeStepMinutes = 60 / timeStep;
-                showRoomSchedule(true);
+                minRes = mins;
             }
         }
         if (!valid) {
             errorMessage.setVisible(true);
         }
-        minResTextField.setText("" + timeStepMinutes);
-
+        minResTextField.setText("" + minRes);
     }
 
     /**
@@ -1768,7 +1812,7 @@ public class ScheduleController {
             closeTimeCheckBox.setText("Unbound");
             closeTimeTextField.setVisible(false);
             closeTime = 23;
-            closeTimeMinutes = timeStep;
+            closeTimeMinutes = 60;
             closeTimeString = "23:59";
             showRoomSchedule(true);
         }
@@ -1801,6 +1845,7 @@ public class ScheduleController {
         if (valid.length() > 0) {
             closeTimeString = valid;
             closeTime = Integer.parseInt(closeTimeString.substring(0,2));
+            closeTimeMinutes = Integer.parseInt(closeTimeString.substring(3));
             if (snapToMinutes) {    // Snap to minutes if setting on
                 if (Integer.parseInt(valid.substring(3)) % (timeStepMinutes) != 0) {
                     // Then round them down to the nearest timeStep
@@ -1865,6 +1910,7 @@ public class ScheduleController {
         if (valid.length() > 0) {
             openTimeStr = valid;
             openTime = Integer.parseInt(openTimeStr.substring(0,2));
+            openTimeMinutes = Integer.parseInt(openTimeStr.substring(3));
             if (snapToMinutes) {    // Snap to minutes if setting on
                 if (Integer.parseInt(valid.substring(3)) % (timeStepMinutes) != 0) {
                     // Then round them down to the nearest timeStep
@@ -1962,6 +2008,7 @@ public class ScheduleController {
             args.add(Boolean.toString(allowMultidayRes));
             args.add(Boolean.toString(allowRecurringRes));
             args.add(Boolean.toString(showContactInfo));
+            args.add(Integer.toString(minRes));
 
             for (int i = 0; i < args.size()-1; i++) {    // Write settings to file.
                 bufferedWriter.write(args.get(i));

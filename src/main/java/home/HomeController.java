@@ -240,5 +240,6 @@ public class HomeController implements Observer {
         currState.setAllowMultidayRes(Boolean.parseBoolean(args.get(11)));
         currState.setAllowRecurringRes(Boolean.parseBoolean(args.get(12)));
         currState.setShowContactInfo(Boolean.parseBoolean(args.get(13)));
+        currState.setMinRes(Integer.parseInt(args.get(14)));
     }
 }

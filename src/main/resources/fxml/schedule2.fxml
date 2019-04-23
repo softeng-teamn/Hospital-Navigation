@@ -304,7 +304,7 @@
                                           <Label prefHeight="50.0" text="Open Time: " />
                                           <Label prefHeight="50.0" text="Close Time:" />
                                           <Label prefHeight="50.0" text="Minimum Reservation (minutes):" />
-                                          <Label prefHeight="50.0" text="Snap Minutes to Regular Timestep:" />
+                                          <Label prefHeight="50.0" text="Snap Minutes to Closest (minutes):" />
                                           <Label prefHeight="50.0" text="Multi-day Reservations:" />
                                           <Label prefHeight="50.0" text="Recurring Reservations:" />
                                           <Label prefHeight="50.0" text="Show Event Contact Info:" />
@@ -335,6 +335,7 @@
                                           <JFXTextField fx:id="openTimeTextField" onAction="#validOpenTime" prefHeight="50.0" />
                                           <JFXTextField fx:id="closeTimeTextField" onAction="#validCloseTime" prefHeight="50.0" />
                                           <JFXTextField fx:id="minResTextField" onAction="#changeMinimumReservation" prefHeight="50.0" />
+                                          <JFXTextField fx:id="snapToTextField" onAction="#changeSnapToMinutes" prefHeight="50.0" />
                                           <Label fx:id="errorMessage" wrapText="true" />
                                        </children>
                                        <HBox.margin>
