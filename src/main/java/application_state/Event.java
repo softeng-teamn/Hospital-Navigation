@@ -40,10 +40,10 @@ public class Event {
     URL theme = ResourceLoader.default_style;
     // for scheduling an event.
     ArrayList<GregorianCalendar> startAndEndTimes = null ;    // times.
-    ArrayList<Reservation> repeatReservations = new ArrayList<>();
+    ArrayList<Reservation> repeatReservations = new ArrayList<>();    // Repeating reservations, if any
     String roomId = "" ;    // room
-    private boolean actuallyRecurring = false;
-    private String frequency = "Daily";
+    private boolean actuallyRecurring = false;    // Whether or not repeating reservations
+    private String frequency = "Daily";    // Frequency of repeating reservations
 
 
     public ResourceBundle getCurrentBundle() {

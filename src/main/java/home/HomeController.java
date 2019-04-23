@@ -180,9 +180,11 @@ public class HomeController implements Observer {
         drawer.open();
     }
 
+    /**
+     * Read the stored scheduler settings
+     */
     @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     private void readSchedulerSettings() {
-        // The name of the file to open.
         String fileName = "./src/main/resources/schedulerSettings.txt";
         ArrayList<String> args = new ArrayList<>();
         String line = null;
@@ -192,7 +194,7 @@ public class HomeController implements Observer {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             while((line = bufferedReader.readLine()) != null) {
                 String currArg = "";
-                for (int i = 0; i < line.length(); i++) {
+                for (int i = 0; i < line.length(); i++) {    // Read the settings from the file, separated by commas
                     String lett = line.substring(i, i+1);
                     if (lett.equals(",")) {
                         args.add(currArg);
@@ -204,7 +206,6 @@ public class HomeController implements Observer {
                 }
                 args.add(currArg);
             }
-            System.out.println(args);
 
             // Close files.
             bufferedReader.close();
@@ -223,6 +224,7 @@ public class HomeController implements Observer {
                             + fileName + "'");
         }
 
+        // Set the settings
         ApplicationState currState = ApplicationState.getApplicationState();
         currState.setOpenTime(Integer.parseInt(args.get(0)));
         currState.setOpenTimeStr(args.get(1));

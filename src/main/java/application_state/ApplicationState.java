@@ -30,16 +30,17 @@ public class ApplicationState {
     // sets the current theme
     private URL currentTheme = ResourceLoader.default_style;
 
+    // Scheduler settings
     private int openTime = 9;   // hour to start schedule display
-    private String openTimeStr = "09:00";
+    private String openTimeStr = "09:00";    // open time as string
     private int openTimeMinutes = 0;
     private int closeTime = 22;    // 24-hours hour to end schedule display
-    private String closeTimeString = "22:00";
+    private String closeTimeString = "22:00";    // close time as string
     private int closeTimeMinutes = 0;
     private int timeStep = 2;    // Fractions of an hour
-    private boolean boundOpenTime = true;
-    private boolean boundCloseTime = true;
-    private boolean boundMinRes = true;
+    private boolean boundOpenTime = true;    // Whether open time is defined
+    private boolean boundCloseTime = true;    // Whether close time is defined
+    private boolean boundMinRes = true;    // Whether minimum reservation is defined
     private boolean snapToMinutes = true;
     private boolean allowMultidayRes = false;
     private boolean allowRecurringRes = false;

@@ -13,6 +13,7 @@ import com.calendarfx.view.popover.EntryHeaderView;
 import com.calendarfx.view.popover.EntryPopOverPane;
 import com.calendarfx.view.popover.PopOverContentPane;
 import com.calendarfx.view.popover.PopOverTitledPane;
+import com.google.zxing.WriterException;
 import com.jfoenix.controls.*;
 import database.DatabaseService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -29,6 +30,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -43,14 +45,17 @@ import javafx.util.Callback;
 import map.Node;
 import scheduler.model.ReservableSpace;
 import scheduler.model.Reservation;
+import service.QRService;
 import service.ResourceLoader;
 import service.StageManager;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Objects.requireNonNull;
 
@@ -844,7 +849,24 @@ public class ScheduleController {
             }
             HBox both = new HBox();
             both.getChildren().addAll(left, right);
-            this.getChildren().add(both);
+            VBox total = new VBox();
+            total.getChildren().add(both);
+
+            // Create QR code popup
+            ImageView QRcode = null;
+            try {
+                QRcode = new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + res.getEventName() +
+                        "&eventLocation=" + myDBS.getReservableSpace(res.getLocationID()).getSpaceName() + "&eventOrganizer="
+                        + myDBS.getEmployee(res.getEmployeeId()).getFirstName() + "&" + myDBS.getEmployee(res.getEmployeeId()).getLastName()
+                        + "&startTime=" + res.getStartTime().getTimeInMillis()/1000 + "&endTime=" + res.getEndTime().getTimeInMillis()/1000, true));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+            total.getChildren().add(QRcode);
+
+            this.getChildren().add(total);
         }
     }
 

@@ -12,14 +12,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import scheduler.model.Reservation;
-import service.QRService;
 import service.ResourceLoader;
 import service.StageManager;
 
@@ -86,13 +81,15 @@ public class ConfirmReservationController {
         String endDate = "" + cals.get(1).getTime();
         endDate = endDate.substring(0, 10) + ", " + endDate.substring(24);
 
+        // If recurring, display details
         String recurring = "";
         if (e.isActuallyRecurring()) {
             String recurDate = "" + cals.get(2).getTime();
             recurDate = recurDate.substring(0, 10) + ", " + recurDate.substring(24);
-            recurring = "\n\nRecurring: " + e.getFrequency() + " until " + recurDate;
+            recurring = "\n\nRecurring:    " + e.getFrequency() + " until " + recurDate;
         }
 
+        // Display reservation details
         resInfoLbl.setText("Location:      " + myDBS.getReservableSpace(e.getRoomId()).getSpaceName()
                 + "\n\nStart Date:   " + date
                 + "\n\nStart Time:   " + startHour + ":" + startMinutes
@@ -220,32 +217,20 @@ public class ConfirmReservationController {
         ArrayList<GregorianCalendar> cals = event.getStartAndEndTimes();
         String roomID = event.getRoomId();
 
-        // create new reservation and add to database
+        // create new reservation and add to database, if one reservation
         if (!event.isActuallyRecurring()) {
             Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText().substring(13)), eventName.getText(), roomID, cals.get(0), cals.get(1));
             myDBS.insertReservation(newRes);
         }
-        else {
+        else {    // If recurring reserations, add all to database
             System.out.println("making recurring reservations: " + event.getRepeatReservations());
             for (Reservation res: event.getRepeatReservations()) {
                 res.setPrivacyLevel(privacy);
-                res.setEmployeeId(Integer.parseInt(employeeID.getText()));
+                res.setEmployeeId(Integer.parseInt(employeeID.getText().substring(13)));
                 res.setEventName(eventName.getText());
                 myDBS.insertReservation(res);
             }
         }
-
-        // Create QR code popup
-        // TODO: figure out adding some sort of label
-        Stage stage = (Stage) privacyLvlBox.getScene().getWindow();
-        final Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(stage);
-        VBox dialogVbox = new VBox(20);
-        dialogVbox.getChildren().add(new ImageView(QRService.generateQRCode("https://softeng-teamn.github.io/cal.html?eventName=" + eventName.getText() + "&eventLocation=" + myDBS.getReservableSpace(roomID).getSpaceName() + "&eventOrganizer=" + myDBS.getEmployee(Integer.parseInt(/*employeeID.getText()*/employeeID.getText().substring(13))).getUsername() + "&startTime=" + cals.get(0).getTimeInMillis()/1000 + "&endTime=" + cals.get(1).getTimeInMillis()/1000, true)));
-        Scene dialogScene = new Scene(dialogVbox, 350, 350);
-        dialog.setScene(dialogScene);
-        dialog.show();
 
         // Reset the screen
         resetView();
