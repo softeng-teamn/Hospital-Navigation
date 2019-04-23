@@ -23,8 +23,8 @@ public class InactivityManager implements Observer {
 
     private Event event;
 
-    int inactivityLimit;
-    Timer timer = new Timer();
+    private int inactivityLimit;
+    private Timer timer = new Timer();
 
     public InactivityManager(int inactivityLimit) {
         this.inactivityLimit = inactivityLimit;

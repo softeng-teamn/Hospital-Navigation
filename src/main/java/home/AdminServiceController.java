@@ -36,9 +36,6 @@ public class AdminServiceController {
     private JFXTextField autoLogout;
 
     @FXML
-    private JFXButton autoLogoutSet;
-
-    @FXML
     private JFXToggleNode depthFirstToggle;
 
     @FXML
@@ -157,7 +154,7 @@ public class AdminServiceController {
 
     public void updateLogout(ActionEvent actionEvent){
         if(autoLogout.getText().matches("^[0-9]*$")) {
-            ApplicationState.getApplicationState().setIM(autoLogout.getText() + "000" );
+            ApplicationState.getApplicationState().setIMTimeOut(autoLogout.getText() + "000" );
         }
     }
 }

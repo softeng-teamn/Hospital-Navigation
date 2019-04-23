@@ -150,8 +150,8 @@ public class ApplicationState {
         return IM;
     }
 
-    public void setIM(String num){
-        IM = new InactivityManager(Integer.parseInt(num));
+    public void setIMTimeOut(String num){
+        IM.setInactivityLimit(Integer.parseInt(num));
     }
 
     public Stage getPrimaryStage() {

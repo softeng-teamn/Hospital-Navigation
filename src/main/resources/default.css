@@ -275,7 +275,7 @@
     -fx-background-color: -fx-complementary;
     -fx-text-fill: -fx-complementarytext;
     -fx-background-radius: 7px;
-    -fx-font-size: 16pt;
+    -fx-font-size: 11pt;
     -fx-content-display: top;
     -fx-graphic-text-gap: 12px;
 }
