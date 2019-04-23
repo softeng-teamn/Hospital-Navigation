@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.controller.ConfirmReservationController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.controller.ConfirmReservationController">
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" styleClass="header">
          <children>
@@ -42,7 +42,7 @@
                <children>
                   <Label fx:id="resInfoLbl" styleClass="small-label" text="Times" />
                   <JFXTextField fx:id="eventName" prefWidth="235.0" promptText="Event Name" />
-                  <JFXTextField fx:id="employeeID" onAction="#setID" />
+                  <JFXTextField fx:id="employeeID" onAction="#setID" text="Employee ID: " />
                   <JFXComboBox fx:id="privacyLvlBox" maxWidth="1.7976931348623157E308" promptText="Event Privacy" />
                   <Label fx:id="inputErrorLbl" styleClass="small-label" text="confError" wrapText="true" />
                   <HBox alignment="CENTER">

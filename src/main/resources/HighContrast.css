@@ -1,12 +1,19 @@
 * {
-    -fx-primary: #F1F1F1;
-    -fx-complementary: #012D5A;
-    -fx-secondary: #F6BD38;
-    -fx-primarytext: #2F2F2F;
+    -fx-primary: #FFFFFF;
+    -fx-complementary: #000000;
+    -fx-secondary: #FFFFFF;
+    -fx-primarytext: #000000;
     -fx-complementarytext: #FFFFFF;
-    -fx-unfocusedtext: #6B6D6F;
+    -fx-unfocusedtext: #888888;
     -fx-red: #F44336;
-    -fx-mapText: #FFFFFF
+    -fx-mapText: #FFFFFF;
+    -fx-interactioncolor: #FFFFFF;
+    -fx-listCell: #00FFFF;
+    -fx-scrollBorder: #D9D9D9;
+    -fx-tableheader: #000000;
+    -fx-tableviewborder: #F3F3F3;
+    -fx-tableerror: #D34336;
+
 }
 
 /*******************************************************************************
@@ -24,12 +31,16 @@
     -fx-border-color: transparent transparent -fx-unfocusedtext transparent;
 }
 
+.drawer-background{
+    -fx-background-color: -fx-primary;
+}
+
 .jfx-hamburger StackPane {
     -fx-background-color: -fx-primary;
 }
 
 .interaction-area {
-    -fx-background-color: #C6C9CC;
+    -fx-background-color: -fx-interactioncolor;
 }
 
 .header-label{
@@ -62,20 +73,12 @@
     -fx-font-size: 13pt;
 }
 
-.floor-path-label {
-    -fx-background-color: -fx-secondary;
-    -fx-background-radius: 8px;
-    -fx-border-color: transparent;
-    -fx-text-fill: -fx-mapText;
-    -fx-font-size: 12pt;
-}
-
 .glyph-icon {
     -fx-fill: -fx-primary;
 }
 
 .dest-icon{
-    -fx-fill: #DE9528;
+    -fx-fill: -fx-complementary;
 }
 
 .request-glyph {
@@ -127,7 +130,7 @@
 .jfx-text-area {
     -fx-font-family: Roboto;
     -jfx-focus-color: -fx-complementary;
-    -jfx-unfocus-color: -fx-unfocusedtext;
+    -jfx-unfocus-color: -fx-complementary;
     -fx-padding: 0.333333em 0 0 0 ;
     -fx-font-size: 16pt;
 }
@@ -139,19 +142,19 @@
 
 .jfx-text-area,
 .jfx-text-area:focused {
-    -fx-prompt-text-fill: -fx-unfocusedtext;
+    -fx-prompt-text-fill: -fx-complementary;
 }
 
 .jfx-text-area,
 .jfx-text-area .scroll-pane,
 .jfx-text-area:focused,
 .jfx-text-area:focused .scroll-pane{
-    -fx-background-color: #D9D9D9;
+    -fx-background-color: -fx-scrollBorder;
 }
 
 .jfx-text-area .content,
 .jfx-text-area:focused .content{
-    -fx-background-color: #D9D9D9;
+    -fx-background-color: -fx-scrollBorder;
     -fx-padding: 0 0 0 0;
 }
 
@@ -177,9 +180,9 @@
 }
 
 .button:hover{
-    -fx-text-fill: -fx-primary;
-    -fx-border-color: -fx-secondary;
-    -fx-background-color: -fx-secondary;
+    -fx-text-fill: -fx-complementary;
+    -fx-border-color: -fx-complementary;
+    -fx-background-color: -fx-primary;
     -fx-border-radius: 5px;
 }
 
@@ -197,7 +200,7 @@
 }
 
 .glyph-button:hover .glyph-icon{
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
 }
 
 .node-button{
@@ -210,7 +213,7 @@
 }
 
 .node-button:hover .glyph-icon{
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
 }
 
 .confirm-button {
@@ -228,7 +231,7 @@
 }
 
 .confirm-button:hover .glyph-icon {
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
 }
 
 .floor-map-button {
@@ -238,33 +241,20 @@
     -fx-font-size: 15pt;
 }
 
-.floor-map-button:hover {
-    -fx-background-color: -fx-secondary;
-    -fx-fill: -fx-primary;
-}
-
 .floor-map-button:hover .glyph-icon {
-     -fx-fill: -fx-primary;
-}
-
-.floor-map-button:focused{
-    -fx-text-fill: -fx-primary;
-    -fx-border-color: -fx-secondary;
-    -fx-background-color: -fx-secondary;
-}
-
-.floor-map-button:focused .glyph-icon{
-    -fx-fill: -fx-complementary;
+    -fx-fill: -fx-primary;
 }
 
 .request-toggle-node {
     -fx-font-family: Roboto;
     -fx-background-color: -fx-complementary;
     -fx-text-fill: -fx-complementarytext;
-    -fx-background-radius: 7px;
+    -fx-background-radius: 5px;
     -fx-font-size: 16pt;
     -fx-content-display: top;
     -fx-graphic-text-gap: 12px;
+    -fx-border-width: 3px;
+    -fx-border-radius: 7px;
 }
 
 .request-toggle-node .glyph-icon{
@@ -272,23 +262,23 @@
 }
 
 .request-toggle-node:hover{
-    -fx-text-fill: -fx-primary;
-    -fx-border-color: -fx-secondary;
+    -fx-text-fill: -fx-complementary;
+    -fx-border-color: -fx-complementary;
     -fx-background-color: -fx-secondary;
 }
 
 .request-toggle-node:hover .glyph-icon{
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
 }
 
 .request-toggle-node:selected{
-    -fx-text-fill: -fx-primary;
-    -fx-border-color: -fx-secondary;
+    -fx-text-fill: -fx-complementary;
+    -fx-border-color: -fx-complementary;
     -fx-background-color: -fx-secondary;
 }
 
 .request-toggle-node:selected .glyph-icon{
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
 }
 
 .accessiblity-toggle-node {
@@ -300,7 +290,7 @@
 }
 
 .accessiblity-toggle-node:selected .glyph-icon{
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
 }
 
 .enum-toggle-node {
@@ -314,9 +304,9 @@
 }
 
 .enum-toggle-node:hover{
-    -fx-text-fill: -fx-primary;
-    -fx-border-color: -fx-secondary;
-    -fx-background-color: -fx-secondary;
+    -fx-text-fill: -fx-complementary;
+    -fx-border-color: -fx-complementary;
+    -fx-background-color: -fx-primary;
     -fx-background-radius: 7px;
     -fx-border-radius: 5px;
     -fx-font-size: 16pt;
@@ -324,9 +314,9 @@
 }
 
 .enum-toggle-node:selected{
-    -fx-text-fill: -fx-primary;
-    -fx-border-color: -fx-secondary;
-    -fx-background-color: -fx-secondary;
+    -fx-text-fill: -fx-complementary;
+    -fx-border-color: -fx-complementary;
+    -fx-background-color: -fx-primary;
     -fx-background-radius: 7px;
     -fx-border-radius: 5px;
     -fx-font-size: 16pt;
@@ -358,11 +348,11 @@
 }
 
 .list-view .list-cell:hover {
-    -fx-background-color: #7683ac;
+    -fx-background-color: -fx-listCell;
 }
 
 .list-view .list-cell:selected {
-    -fx-background-color: #7683ac;
+    -fx-background-color: -fx-listCell;
 }
 
 .list-view .label{
@@ -381,7 +371,7 @@
  ******************************************************************************/
 
 .scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
-    -fx-background-color: #D9D9D9;
+    -fx-background-color: -fx-scrollBorder;
     -fx-background-insets: 0.0;
 }
 
@@ -535,8 +525,8 @@
  *                                                                             *
  ******************************************************************************/
 .table-view {
-    -fx-table-color: rgba(82, 100, 174, 0.4);
-    -fx-table-rippler-color: rgba(82, 100, 174, 0.6);
+    -fx-table-color: #666666;
+    -fx-table-rippler-color: #888888;
 }
 
 .table-view:focused {
@@ -565,27 +555,28 @@
 
 .table-view .column-header {
     -fx-border-width: 0 1 0 1;
-    -fx-border-color: #F3F3F3;
-}
-
-.table-view .column-header .label {
-    -fx-text-fill: #949494;
-    -fx-padding: 16 0 16 0;
-}
-
-.table-view .column-header .arrow, .table-view .column-header .sort-order-dot {
-    -fx-background-color: #949494;
-}
-
-.table-view .column-header-background {
-    -fx-border-width: 0 0.0 1 0;
-    -fx-border-color: #F3F3F3;
+    -fx-border-color: -fx-tableviewborder;
 }
 
 .table-view .table-cell {
     -fx-border-width: 0 0 0 0;
-    -fx-padding: 16 0 16 0;
-    -fx-alignment: top-center;
+    -fx-padding: 16 16 16 16;
+    -fx-alignment: left-center;
+}
+
+.table-view .column-header .arrow, .table-view .column-header .sort-order-dot {
+    -fx-background-color: -fx-tableheader;
+}
+
+.table-view .column-header-background {
+    -fx-border-width: 0 0.0 1 0;
+    -fx-border-color: -fx-tableviewborder;
+}
+
+.table-view .table-cell {
+    -fx-border-width: 0 0 0 0;
+    -fx-padding: 16 16 16 16;
+    -fx-alignment: center-left;
 }
 
 .table-view .column-overlay {
@@ -604,16 +595,16 @@
 }
 
 .table-row-cell .jfx-text-field {
-    -fx-focus-color: rgb(82, 100, 174);
+    -fx-focus-color: #666666;
 }
 
 .table-row-cell .jfx-text-field .error-label {
-    -fx-text-fill: #D34336;
+    -fx-text-fill: -fx-tableerror;
     -fx-font-size: 0.75em;
 }
 
 .table-row-cell .jfx-text-field .error-icon {
-    -fx-fill: #D34336;
+    -fx-fill: -fx-tableerror;
     -fx-font-size: 1.0em;
 }
 
@@ -628,10 +619,7 @@
 
 .text-field-table-cell > .text-field {
     -fx-text-fill: black;
-
 }
-
-
 
 .tooltip {
     -fx-background-color: -fx-complementary;
