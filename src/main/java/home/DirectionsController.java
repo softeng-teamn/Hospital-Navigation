@@ -1,9 +1,12 @@
 package home;
 
 import application_state.ApplicationState;
-import application_state.Event;
 import application_state.Observer;
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
@@ -17,16 +20,27 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import application_state.Event;
 import map.MapController;
 import map.Node;
-import service.QRService;
 import service.ResourceLoader;
+import net.swisstech.bitly.BitlyClient;
+import net.swisstech.bitly.model.Response;
+import net.swisstech.bitly.model.v3.ShortenResponse;
 import service.TextingService;
 
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static application_state.ApplicationState.getApplicationState;
@@ -161,33 +175,26 @@ public class DirectionsController implements Observer {
             return null;
         }
 
-        ArrayList<Integer> directionsToEdgesMap = new ArrayList<>();
-
         final int NORTH_I = 1122 - 1886;    // Measurements from maps
         final int NORTH_J = 642 - 1501;    // Measurements from maps
 
         ArrayList<String> directions = new ArrayList<>();    // Collection of instructions
         directions.add("\nStart at " + path.get(0).getLongName() + ".\n");    // First instruction
-        directionsToEdgesMap.add(1);
 
         // Make the first instruction cardinal, or up/down if it is a floor connector
         String oldFloor = path.get(0).getFloor();
         String newFloor = path.get(1).getFloor();
         if (!floors.get(oldFloor).equals(floors.get(newFloor))) {
             directions.add(upDownConverter(oldFloor, newFloor, path.get(0).getNodeType()));
-            directionsToEdgesMap.add(1);
         }
         else if ((path.size() == 2 && path.get(1).getNodeType().equals("ELEV")) || (path.size() > 2 && path.get(1).getNodeType().equals("ELEV") && path.get(2).getNodeType().equals("ELEV"))) {
             directions.add("I");
-            directionsToEdgesMap.add(1);
         }
         else if ((path.size() == 2 && path.get(1).getNodeType().equals("STAI")) || (path.size() > 2 && path.get(1).getNodeType().equals("STAI") && path.get(2).getNodeType().equals("STAI"))) {
             directions.add("J");
-            directionsToEdgesMap.add(1);
         }
         else {
             directions.add(convertToCardinal(csDirPrint(path.get(0).getXcoord() + NORTH_I, path.get(0).getYcoord() + NORTH_J, path.get(0), path.get(1))));
-            directionsToEdgesMap.add(1);
         }
 
         // Make startNodes correspond to directions
@@ -203,32 +210,24 @@ public class DirectionsController implements Observer {
             if (afterFloorChange && !path.get(i + 2).getNodeType().equals("ELEV") && !path.get(i + 2).getNodeType().equals("STAI")) {
                 afterFloorChange = false;
                 directions.add(convertToCardinal(csDirPrint(path.get(i+1).getXcoord() + NORTH_I, path.get(i+1).getYcoord() + NORTH_J, path.get(i+1), path.get(i+2))));
-                directionsToEdgesMap.add(1);
             }
             else if(!path.get(i+1).getNodeType().equals("ELEV") && !path.get(i+1).getNodeType().equals("STAI") && (path.get(i+2).getNodeType().equals("ELEV") || path.get(i+2).getNodeType().equals("STAI"))
                     && ((i < path.size() - 3 && (path.get(i+3).getNodeType().equals("ELEV") || path.get(i+3).getNodeType().equals("STAI"))) || i == path.size() -3)) {    // If next node is elevator, say so
                 if (path.get(i+2).getNodeType().equals("ELEV")) {
                     directions.add("I");
-                    directionsToEdgesMap.add(1);
                 } else {
                     directions.add("J");
-                    directionsToEdgesMap.add(1);
                 }
             }
             else if (!floors.get(oldFl).equals(floors.get(newFl))) {    // Otherwise if we're changing floors, give a floor change direction
                 directions.add(upDownConverter(oldFl, newFl, path.get(i+1).getNodeType()));
-                directionsToEdgesMap.add(1);
                 afterFloorChange = true;
             }
             else {    // Otherwise provide a normal direction
                 directions.add(csDirPrint(path.get(i), path.get(i+1), path.get(i+2)));
-                directionsToEdgesMap.add(1);
                 afterFloorChange = false;
             }
         }
-
-        System.out.println(directions.size());
-        System.out.println(directionsToEdgesMap.size());
 
         //System.out.println("before simplifying: " + directions);
         // Simplify directions that continue approximately straight from each other
@@ -254,39 +253,13 @@ public class DirectionsController implements Observer {
                 directions.remove(i);
                 directions.remove(i-1);
                 directions.add(i-1, newDir);
-
-                directionsToEdgesMap.set(i-1, directionsToEdgesMap.get(i-1) + directionsToEdgesMap.get(i));
-                directionsToEdgesMap.remove(i);
-
                 startNodes.remove(i-1);
                 i--;
             }
         }
-        System.out.println(directions.size());
-        System.out.println(directionsToEdgesMap.size());
 
         // Add the final direction
-            directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
-            directionsToEdgesMap.add(1);
-
-        directions.add(";");
-
-        int segmentNumber = 0;
-        String lastFloor = path.get(0).getFloor();
-        for(Node n : path) {
-            if(!n.getFloor().equals(lastFloor)) {
-                lastFloor = n.getFloor();
-                segmentNumber++;
-            }
-            directions.add(String.format("%d;%d;%s-%d", n.getXcoord(), n.getYcoord(), n.getFloor(), segmentNumber));
-        }
-
-        directions.add(";");
-
-        for (Integer i : directionsToEdgesMap) {
-            directions.add(i.toString());
-        }
-
+        directions.add("You have arrived at " + path.get(path.size() - 1).getLongName() + ".");
         ApplicationState.getApplicationState().setEndNode(path.get(path.size() - 1));
         //System.out.println(directions);
         return directions;
@@ -330,17 +303,10 @@ public class DirectionsController implements Observer {
 
     /**
      * Populate the listview and turn the list of directions into one printable string.
-     * @param rawDirs the list of directions as strings
+     * @param ds the list of directions as strings
      * @return a String that is the sum of all the directions
      */
-    public String printDirections(ArrayList<String> rawDirs) {
-        // Remove the coordinates at the end
-        ArrayList<String> ds = new ArrayList<>();
-        for (String s : rawDirs) {
-            if (s.equals(";")) break;
-            ds.add(s);
-        }
-
+    public String printDirections(ArrayList<String> ds) {
         HashMap<String, String> backToFloors = new HashMap<>();
         backToFloors.put("A", "L2");
         backToFloors.put("B", "L1");
@@ -360,6 +326,7 @@ public class DirectionsController implements Observer {
         first.setTextFill(Color.WHITE);
         firstBox.getChildren().add(first);
         labels.add(firstBox);
+
         for (int i = 1; i < ds.size() - 1; i++) {
             String direct = ds.get(i);
             Image image = null;
@@ -838,15 +805,14 @@ public class DirectionsController implements Observer {
      */
     public void sendMapToPhone(){
         TextingService textSender = new TextingService();
-        ArrayList<String> directions = makeDirections(path);
         //this grabs the employee ID from the Application state and uses that to get the employee from the database, whose phone we want to use. and sends them the directions.
         if(!(phoneNumber.getText().equals(""))){
-            String url = "https://softeng-teamn.github.io/index.html?dirs="+ convertDirectionsToParameterString(directions);
-            textSender.textMap(phoneNumber.getText(), QRService.shortenURL(url));
+            String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(makeDirections(path));
+            url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
+            textSender.textMap(phoneNumber.getText(), url);
         }
         else if(!(getApplicationState().getEmployeeLoggedIn().getPhone().equals(""))) {
-            String url = "https://softeng-teamn.github.io/index.html?dirs="+ convertDirectionsToParameterString(directions);
-            textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(), QRService.shortenURL(url));
+            textSender.textMap(getApplicationState().getEmployeeLoggedIn().getPhone(), printDirections(makeDirections(path)));
         }
         else{
             System.out.println("NO PHONE NUMBER");
@@ -859,15 +825,15 @@ public class DirectionsController implements Observer {
      * Format: <Instruction> <Distance/Floor> <Hint>
      * @return the String to use in the QR code
      */
-    private String convertDirectionsToParameterString(ArrayList<String> directions) {
+    private String convertDirectionsToParamerterString(ArrayList<String> directions) {
         StringBuilder res = new StringBuilder();
 
-        for (int i = 1; i < directions.size(); i++) {
+        for (int i = 1; i < directions.size() - 1; i++) {
             res.append(directions.get(i));
             res.append(",");
         }
         res.delete(res.lastIndexOf(","), res.lastIndexOf(",") + 1);
-        return res.toString().replace(" ", "$").replace("&", "|");
+        return res.toString();
     }
 
     /**
@@ -877,8 +843,22 @@ public class DirectionsController implements Observer {
      * @throws IOException if the file is not found or cannot be written
      */
     public void generateQRCode(ArrayList<String> directions) throws WriterException, IOException {
-        String url = "https://softeng-teamn.github.io/index.html?dirs="+ convertDirectionsToParameterString(directions);
-        qrView.setImage(QRService.generateQRCode(url, true));
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+
+        // Uncomment and use resp.data.url in the QR to shorten the URL
+//        BitlyClient client = new BitlyClient("bcba608ae5c6045d223241662c704f38c52930e4");
+//        Response<ShortenResponse> resp = client.shorten()
+//                .setLongUrl("https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions))
+//                .call();
+        String url = "https://softeng-teamn.github.io/index.html?dirs="+convertDirectionsToParamerterString(directions);
+        url = url.replaceAll(" ", "\\$"); // Use a placeholder - spaces in a URL are iffy
+        BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, 350, 350);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        byte[] pngData = pngOutputStream.toByteArray();
+        Image qr = new Image(new ByteArrayInputStream(pngData));
+        qrView.setImage(qr);
     }
 
     /**

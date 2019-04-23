@@ -30,15 +30,12 @@ import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 
-/**
- * Controls the search bar
- */
 public class SearchResultsController implements Observer {
 
     private Event event;    // The current event
 
     @FXML
-    private JFXListView<HBox> list_view;    // Changed to HBox
+    private JFXListView<HBox> list_view;    // Changed to HBox TODO: put in requests pane, too
 
     private HashMap<String, String> buildingAbbrev = new HashMap<>();    // Abbreviate buildings to fit in listview
 

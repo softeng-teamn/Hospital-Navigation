@@ -4,7 +4,7 @@ import service_request.model.sub_model.HelpRequest;
 
 import java.util.List;
 
-class HelpRequestDatabase {
+public class HelpRequestDatabase {
     private final DatabaseService databaseService;
 
     HelpRequestDatabase(DatabaseService databaseService) {

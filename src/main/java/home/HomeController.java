@@ -36,6 +36,7 @@ public class HomeController implements Observer {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         currState.setDefaultStartNode();    // Set the default start
         currState.setEndNode(null);
+
         MapController.initConnections();
 
         drawer.setSidePane(drawerPane);

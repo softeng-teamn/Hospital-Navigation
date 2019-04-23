@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.controller.sub_controller.GiftStoreRequestController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.controller.sub_controller.GiftStoreRequestController">
    <children>
       <FontAwesomeIconView glyphName="GIFT" size="240" styleClass="request-glyph">
          <VBox.margin>
@@ -32,15 +32,15 @@
          </rotationAxis>
       </JFXTextArea>
       <Label styleClass="big-label" text="%GiftType" />
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" stylesheets="@/default.css">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" stylesheets="@/theme.css">
          <children>
             <JFXTextField fx:id="patientName" minHeight="-Infinity" promptText="%PatientName" HBox.hgrow="ALWAYS" />
             <Region prefHeight="38.0" prefWidth="70.0" />
             <JFXComboBox fx:id="type" prefHeight="34.0" prefWidth="184.0" promptText="%GiftType" unFocusColor="BLACK" />
          </children>
       </HBox>
-      <Region prefHeight="195.0" prefWidth="534.0" stylesheets="@/default.css" />
-      <Label fx:id="errorMsg" stylesheets="@../../default.css" textFill="#f44336">
+      <Region prefHeight="195.0" prefWidth="534.0" stylesheets="@/theme.css" />
+      <Label fx:id="errorMsg" stylesheets="@../../theme.css" textFill="#f44336">
          <font>
             <Font size="32.0" />
          </font></Label>

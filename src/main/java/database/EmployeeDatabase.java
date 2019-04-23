@@ -4,7 +4,7 @@ import employee.model.Employee;
 
 import java.util.List;
 
-class EmployeeDatabase {
+public class EmployeeDatabase {
     private final DatabaseService databaseService;
 
     public EmployeeDatabase(DatabaseService databaseService) {

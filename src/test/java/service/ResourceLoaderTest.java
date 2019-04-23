@@ -48,9 +48,6 @@ public class ResourceLoaderTest {
         assertThat(ResourceLoader.turn_slight_right_icon, is(notNullValue()));
         assertThat(ResourceLoader.uturn_icon, is(notNullValue()));
 
-        assertThat(ResourceLoader.default_style, is(notNullValue()));
-        assertThat(ResourceLoader.high_contrast_style, is(notNullValue()));
-
     }
 
 }

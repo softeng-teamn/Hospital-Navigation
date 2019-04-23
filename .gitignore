@@ -12,5 +12,3 @@ screenshot*.png
 *.iml
 *db*/
 testfx-test*.png
-BishopfishApiDatabases/
-EmergencyImageCaptures/
