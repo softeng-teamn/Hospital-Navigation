@@ -1,18 +1,25 @@
 package regression;
 
+import application_state.ApplicationState;
 import com.jfoenix.controls.JFXListView;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.LoadException;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Cell;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import map.Node;
+import net.kurobako.gesturefx.GesturePane;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -21,16 +28,23 @@ import org.testfx.framework.junit.ApplicationTest;
 import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
+import testclassifications.FastTest;
 import testclassifications.RegressionTest;
+import testclassifications.SlowTest;
+import testclassifications.UiTest;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.ListViewMatchers.hasItems;
 import static org.testfx.util.DebugUtils.informedErrorMessage;
 
-@Category({RegressionTest.class})
+@Category({SlowTest.class, UiTest.class})
 public class HomeRegressionSuite extends ApplicationTest {
     Stage stage;
 
@@ -38,20 +52,30 @@ public class HomeRegressionSuite extends ApplicationTest {
     public void start(Stage stage) throws Exception {
         System.out.println("start");
 
+        HashMap<String, ImageView> imageCache = new HashMap<>();
         try {
-            Parent root = FXMLLoader.load(ResourceLoader.home);
-            StageManager.changeWindow(stage, root, "Home");
-            stage.setMaximized(true);
-        } catch (LoadException e) {
-
+            imageCache.put("4", new ImageView(new Image(ResourceLoader.fourthFloor.openStream())));
+            imageCache.put("3", new ImageView(new Image(ResourceLoader.thirdFloor.openStream())));
+            imageCache.put("2", new ImageView(new Image(ResourceLoader.secondFloor.openStream())));
+            imageCache.put("1", new ImageView(new Image(ResourceLoader.firstFloor.openStream())));
+            imageCache.put("G", new ImageView(new Image(ResourceLoader.groundFloor.openStream())));
+            imageCache.put("L1", new ImageView(new Image(ResourceLoader.firstLowerFloor.openStream())));
+            imageCache.put("L2", new ImageView(new Image(ResourceLoader.secondLowerFloor.openStream())));
+        } catch(IOException e) {
+            e.printStackTrace();
         }
-        this.stage = stage;
-    }
+        ApplicationState.getApplicationState().setImageCache(imageCache);
 
-    @After
-    public void cleanup() {
-        System.out.println("Cleanup!");
         DatabaseService.getDatabaseService().wipeTables();
+        DatabaseService.getDatabaseService().createFlag = true;
+        DatabaseService.getDatabaseService().loadFromCSVsIfNecessary();
+
+
+        Parent root = FXMLLoader.load(ResourceLoader.home);
+        StageManager.changeWindow(stage, root, "Home");
+        stage.setMaximized(true);
+
+        this.stage = stage;
     }
 
 
@@ -59,47 +83,41 @@ public class HomeRegressionSuite extends ApplicationTest {
     public void testHomeAfterLogin() {
         // General concept: verify correct features show up on the home screen after the user logs in
 
-        verifyThat(stage.getScene().lookup("#edit_VBox"), is(nullValue()), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#edit_btn"), is(nullValue()), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#newRoom_btn"), is(nullValue()), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#fulfillBtn"), is(nullValue()), informedErrorMessage(this));
+        verifyThat(stage.getScene().lookup("#edit_btn").isVisible(), is(false), informedErrorMessage(this));
+        verifyThat(stage.getScene().lookup("#fulfillBtn").isVisible(), is(false), informedErrorMessage(this));
+        verifyThat(stage.getScene().lookup("#showAdminScene"), is(nullValue()), informedErrorMessage(this));
 
         clickOn("#auth_btn");
 
-        clickOn("#idText").write("1234");
-        clickOn("#passwordField").write("test");
+        clickOn("#usernameText").write("staff");
+        clickOn("#passwordField").write("staff");
 
         clickOn("#loginBtn");
+        verifyThat(stage.getScene().lookup("#edit_btn"), is(notNullValue()), informedErrorMessage(this));
         verifyThat(stage.getScene().lookup("#edit_btn").isVisible(), is(true), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#newRoom_btn").isVisible(), is(true), informedErrorMessage(this));
+        verifyThat(stage.getScene().lookup("#fulfillBtn"), is(notNullValue()), informedErrorMessage(this));
         verifyThat(stage.getScene().lookup("#fulfillBtn").isVisible(), is(true), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#edit_VBox"), is(nullValue()), informedErrorMessage(this));
+
+        verifyThat(ApplicationState.getApplicationState().getEmployeeLoggedIn(), is(notNullValue()), informedErrorMessage(this));
+        verifyThat(ApplicationState.getApplicationState().getEmployeeLoggedIn().getUsername(), is("staff"), informedErrorMessage(this));
+
+        clickOn("#search_bar");
 
         ListView listView = GuiTest.find("#list_view");
 
-        verifyThat(listView, hasItems(605));
+        verifyThat(listView, hasItems(647));
 
         Cell<Node> listItem = from(listView).lookup(".list-cell").nth(0).query();
         clickOn(listItem);
 
         verifyThat(stage.getScene().lookup("#edit_btn").isVisible(), is(true), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#newRoom_btn").isVisible(), is(true), informedErrorMessage(this));
         verifyThat(stage.getScene().lookup("#fulfillBtn").isVisible(), is(true), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#edit_VBox"), is(nullValue()), informedErrorMessage(this));
-
-        clickOn("#edit_btn");
-        // TODO: determine how to verify edit pane comes up
-        // verifyThat(stage.getScene().lookup("#edit_btn"), is(false), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#newRoom_btn").isVisible(), is(true), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#fulfillBtn").isVisible(), is(true), informedErrorMessage(this));
-        verifyThat(stage.getScene().lookup("#edit_VBox").isVisible(), is(true), informedErrorMessage(this));
     }
 
     @Test
     public void testBasicNavigation() {
         // Verify fuzzy search
         clickOn("#search_bar").write("shatuk");
-        type(KeyCode.ENTER);
         verifyThat("#list_view", hasItems(2), informedErrorMessage(this)); // Shattuck street entrance and Shattuck street vending machines
 
         type(KeyCode.BACK_SPACE);
@@ -108,41 +126,40 @@ public class HomeRegressionSuite extends ApplicationTest {
         type(KeyCode.BACK_SPACE);
         type(KeyCode.BACK_SPACE);
         type(KeyCode.BACK_SPACE);
-        type(KeyCode.ENTER);
 
-        verifyThat("#list_view", hasItems(198), informedErrorMessage(this)); // TOTAL nodes - HALLS - STAIRS
+        verifyThat("#list_view", hasItems(219), informedErrorMessage(this)); // TOTAL nodes - HALLS - STAIRS
 
         JFXListView listView = GuiTest.find("#list_view");
-        ScrollPane map_scrollpane = GuiTest.find("#map_scrollpane");
+        GesturePane map_scrollpane = GuiTest.find("#gPane");
 
         Group mapContent = (Group) map_scrollpane.getContent();
-        // Nodes and paths
-        Group drawnContent = (Group) mapContent.getChildren().get(0);
 
         // Verify that the initial node is drawn correctly (hard coded)
-        verifyThat((int) ((Circle) drawnContent.getChildren().get(2)).getCenterX(), is(1748), informedErrorMessage(this));
-        verifyThat((int) ((Circle) drawnContent.getChildren().get(2)).getCenterY(), is(1321), informedErrorMessage(this));
+        verifyThat((int) ((Circle) mapContent.getChildren().get(1)).getCenterX(), is(ApplicationState.getApplicationState().getStartNode().getXcoord()), informedErrorMessage(this));
+        verifyThat((int) ((Circle) mapContent.getChildren().get(1)).getCenterY(), is(ApplicationState.getApplicationState().getStartNode().getYcoord()), informedErrorMessage(this));
 
         // Verify that the navigation button is not initially visible
         boolean navigateBtnVisible = stage.getScene().lookup("#navigate_btn").isVisible();
         verifyThat(navigateBtnVisible, is(false), informedErrorMessage(this));
 
         // Verify that the first list item is BTM Conference room
-        Cell<Node> firstListItem = from(listView).lookup(".list-cell").nth(0).query();
-        verifyThat(firstListItem.getItem().getLongName(), is("BTM Conference Center"), informedErrorMessage(this));
+        Cell<HBox> firstListItem = from(listView).lookup(".list-cell").nth(0).query();
+        verifyThat(((Label) firstListItem.getItem().getChildren().get(0)).getText(), is("15 Francis Security Desk"), informedErrorMessage(this));
 
         // Search for, select and verify list item Shattuck Street Lobby ATM
-        clickOn("#search_bar").write("Shattuck Street Lobby ATM");
-        type(KeyCode.ENTER);
-        Cell<Node> targetListItem = from(listView).lookup(".list-cell").nth(0).query();
-        verifyThat(targetListItem.getItem().getLongName(), is("Shattuck Street Lobby ATM"), informedErrorMessage(this));
+        clickOn("#search_bar").write("Shattuck Street Lobby ATM").type(KeyCode.ENTER);
+        listView = GuiTest.find("#list_view");
+        Cell<HBox> targetListItem = from(listView).lookup(".list-cell").nth(0).query();
+        verifyThat(((Label) targetListItem.getItem().getChildren().get(0)).getText(), is("Shattuck Street Lobby ATM"), informedErrorMessage(this));
 
         // Click on the item
         clickOn(targetListItem, MouseButton.PRIMARY);
 
         // Verify that the destination node is drawn correctly (based on cell item)
-        verifyThat((int) ((Circle) drawnContent.getChildren().get(1)).getCenterX(), is(targetListItem.getItem().getXcoord()), informedErrorMessage(this));
-        verifyThat((int) ((Circle) drawnContent.getChildren().get(1)).getCenterY(), is(targetListItem.getItem().getYcoord()), informedErrorMessage(this));
+        System.out.println(Arrays.toString(mapContent.getChildren().toArray()));
+        verifyThat(((Text) mapContent.getChildren().get(56)).getText(), is("\uE0C8"), informedErrorMessage(this));
+        verifyThat((int) ((Text) mapContent.getChildren().get(56)).getTranslateX(), is(ApplicationState.getApplicationState().getEndNode().getXcoord() - 50), informedErrorMessage(this));
+        verifyThat((int) ((Text) mapContent.getChildren().get(56)).getTranslateY(), is(ApplicationState.getApplicationState().getEndNode().getYcoord()), informedErrorMessage(this));
 
         // Verify that the navigation button is now visible
         navigateBtnVisible = stage.getScene().lookup("#navigate_btn").isVisible();
@@ -151,7 +168,6 @@ public class HomeRegressionSuite extends ApplicationTest {
         // Click on the navigation button
         clickOn("#navigate_btn");
 
-        // 1 base pane, 2 node circles, and 12 segments
-        verifyThat(drawnContent.getChildren(), hasSize(1 + 2 + 12));
+        verifyThat(mapContent.getChildren(), hasSize(61));
     }
 }

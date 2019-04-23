@@ -15,9 +15,18 @@ import static employee.model.JobType.*;
 public class AVServiceRequest extends Request {
 
     public enum AVServiceType{
-        Audio,
-        Visual,
-        Other
+        Audio("Audio"),
+        Visual("Visual"),
+        Other("Other");
+
+        private String string;
+
+        AVServiceType(String name){string = name;}
+
+        @Override
+        public String toString() {
+            return string;
+        }
     }
 
     AVServiceType avServiceType;
