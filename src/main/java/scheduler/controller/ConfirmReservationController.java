@@ -86,12 +86,18 @@ public class ConfirmReservationController {
         String endDate = "" + cals.get(1).getTime();
         endDate = endDate.substring(0, 10) + ", " + endDate.substring(24);
 
+        String recurring = "";
+        if (e.isActuallyRecurring()) {
+            String recurDate = "" + cals.get(2).getTime();
+            recurDate = recurDate.substring(0, 10) + ", " + recurDate.substring(24);
+            recurring = "\n\nRecurring: " + e.getFrequency() + " until " + recurDate;
+        }
 
         resInfoLbl.setText("Location:      " + myDBS.getReservableSpace(e.getRoomId()).getSpaceName()
                 + "\n\nStart Date:   " + date
                 + "\n\nStart Time:   " + startHour + ":" + startMinutes
                 + "\n\nEnd Date:     " + endDate
-                + "\n\nEnd Time:    " + endHour + ":" + endMinutes);
+                + "\n\nEnd Time:    " + endHour + ":" + endMinutes + recurring);
     }
 
     /**
@@ -111,6 +117,7 @@ public class ConfirmReservationController {
      * @throws Exception
      */
     public void showHome() throws Exception {
+        resetView();
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
@@ -122,6 +129,7 @@ public class ConfirmReservationController {
      * @throws Exception
      */
     public void backToScheduler() throws Exception {
+        resetView();
         Stage stage = (Stage) backBtn.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.scheduler);
         StageManager.changeExistingWindow(stage, root, "Scheduler");
@@ -207,8 +215,18 @@ public class ConfirmReservationController {
         String roomID = event.getRoomId();
 
         // create new reservation and add to database
-        Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
-        myDBS.insertReservation(newRes);
+        if (!event.isActuallyRecurring()) {
+            Reservation newRes = new Reservation(-1, privacy, Integer.parseInt(employeeID.getText()), eventName.getText(), roomID, cals.get(0), cals.get(1));
+            myDBS.insertReservation(newRes);
+        }
+        else {
+            for (Reservation res: event.getRepeatReservations()) {
+                res.setPrivacyLevel(privacy);
+                res.setEmployeeId(Integer.parseInt(employeeID.getText()));
+                res.setEventName(eventName.getText());
+                myDBS.insertReservation(res);
+            }
+        }
 
         // Create QR code popup
         // TODO: figure out adding some sort of label
@@ -233,5 +251,6 @@ public class ConfirmReservationController {
         inputErrorLbl.setVisible(false);
         eventName.setText("");
         privacyLvlBox.setValue(null);
+        ApplicationState.getApplicationState().getObservableBus().getEvent().resetReservation();
     }
 }

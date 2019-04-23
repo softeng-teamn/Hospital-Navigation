@@ -52,6 +52,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Objects.requireNonNull;
 
 
@@ -1391,12 +1392,12 @@ public class ScheduleController {
         LocalDate selectedDate = datePicker.getValue();
         int selectedDayOfWeek = datePicker.getValue().getDayOfWeek().getValue();    // 1 is Monday, 7 is Sunday
         if (selectedDayOfWeek != 7) {
-            selectedDate = selectedDate.plus(-selectedDayOfWeek, ChronoUnit.DAYS);
+            selectedDate = selectedDate.plus(-selectedDayOfWeek, DAYS);
         }
         LocalDate startDate = selectedDate;
         // Populate each day's availability in the weekly schedule
         for (int dailySchedule = 0; dailySchedule < NUM_DAYS_IN_WEEK; dailySchedule++) {
-            LocalDate secondDate = startDate.plus(1, ChronoUnit.DAYS);
+            LocalDate secondDate = startDate.plus(1, DAYS);
             GregorianCalendar gcalStartDay = GregorianCalendar.from(startDate.atStartOfDay(ZoneId.of("America/New_York")));
             GregorianCalendar gcalEndDay = GregorianCalendar.from(secondDate.atStartOfDay(ZoneId.of("America/New_York")));
 
@@ -1446,7 +1447,7 @@ public class ScheduleController {
                     }
                 }
             }
-            startDate = startDate.plus(1, ChronoUnit.DAYS);
+            startDate = startDate.plus(1, DAYS);
 
         }
 
@@ -1501,7 +1502,7 @@ public class ScheduleController {
 
         // Start date is start of the selected date, end date is the beginning of the next day
         GregorianCalendar gcalStartDay = GregorianCalendar.from(datePicker.getValue().atStartOfDay(ZoneId.of("America/New_York")));
-        GregorianCalendar gcalEndDay = GregorianCalendar.from((datePicker.getValue().plus(1, ChronoUnit.DAYS)).atStartOfDay(ZoneId.of("America/New_York")));
+        GregorianCalendar gcalEndDay = GregorianCalendar.from((datePicker.getValue().plus(1, DAYS)).atStartOfDay(ZoneId.of("America/New_York")));
 
         // Populate each day's availability in the weekly schedule
         for (int roomSchedule = 0; roomSchedule < NUM_ROOMS; roomSchedule++) {
@@ -1574,10 +1575,64 @@ public class ScheduleController {
         boolean valid = validTimes(true);
         event = ApplicationState.getApplicationState().getObservableBus().getEvent() ;
 
+        if (valid && allowRecurringRes && recurrenceDatePicker.isVisible()) {
+            ArrayList<Reservation> conflicts = new ArrayList<>();
+            ArrayList<Reservation> existingReservations = (ArrayList) myDBS.getReservationsBySpaceId(currentSelection.getSpaceID());
+            LocalDate origEndDate = datePicker.getValue();
+            if (allowMultidayRes) {
+                origEndDate = endDatePicker.getValue();
+            }
+            LocalDate currentDate = datePicker.getValue();
+            long differece = DAYS.between(currentDate, origEndDate);
+            while(!currentDate.isAfter(recurrenceDatePicker.getValue())) {
+                LocalDate currentEndDate = currentDate.plus(differece, ChronoUnit.DAYS);
+                LocalDateTime startDateTime = LocalDateTime.of(currentDate, startTimePicker.getValue());
+                LocalDateTime endDateTime = LocalDateTime.of(currentEndDate, endTimePicker.getValue());
+                for (Reservation res: existingReservations) {
+                    if (res.getStartTime().toInstant().isBefore(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getEndTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) ||
+                            (res.getStartTime().toInstant().isAfter(startDateTime.atZone(ZoneId.of("America/New_York")).toInstant()) && res.getStartTime().toInstant().isBefore(endDateTime.atZone(ZoneId.of("America/New_York")).toInstant()))) {
+                        conflicts.add(res);
+                    }
+                    else {
+                        LocalTime startTime = startTimePicker.getValue();
+                        LocalTime endTime = endTimePicker.getValue();
+                        GregorianCalendar gcalStart = GregorianCalendar.from(ZonedDateTime.from((currentDate.atTime(startTime)).atZone(ZoneId.of("America/New_York"))));
+                        GregorianCalendar gcalEnd = GregorianCalendar.from(ZonedDateTime.from(currentEndDate.atTime(endTime).atZone(ZoneId.of("America/New_York"))));
+                        event.getRepeatReservations().add(new Reservation(-1,0,0,"",currentSelection.getSpaceID(),gcalStart,gcalEnd));
+                    }
+                }
+                if (recurrenceComboBox.getSelectionModel().getSelectedIndex() == 0) {
+                    currentDate = currentDate.plus(1, DAYS);
+                }
+                else if (recurrenceComboBox.getSelectionModel().getSelectedIndex() == 1) {
+                    currentDate = currentDate.plus(1, ChronoUnit.WEEKS);
+                }
+                else if (recurrenceComboBox.getSelectionModel().getSelectedIndex() == 2) {
+                    currentDate = currentDate.plus(1, ChronoUnit.MONTHS);
+                }
+                else {
+                    currentDate = currentDate.plus(1, ChronoUnit.YEARS);
+                }
+            }
+
+
+            if (conflicts.size() > 0) {
+                System.out.println("conflicts: " + conflicts);
+                valid = false;
+            }
+        }
+
         // If everything is okay, create the reservation
         if (valid) {
             // Get the times and dates and turn them into gregorian calendars
             ArrayList<GregorianCalendar> cals = gCalsFromCurrTimes();
+
+            if (recurrenceDatePicker.isVisible()) {
+                GregorianCalendar gcalRec = GregorianCalendar.from(ZonedDateTime.from((recurrenceDatePicker.getValue().atTime(endTimePicker.getValue())).atZone(ZoneId.of("America/New_York"))));
+                cals.add(gcalRec);
+                event.setActuallyRecurring(true);
+                event.setFrequency(recurrenceComboBox.getSelectionModel().getSelectedItem().toString());
+            }
 
             // post event to pass times
             event.setStartAndEndTimes(cals);

@@ -1,15 +1,15 @@
 package application_state;
 
 import map.Node;
+import scheduler.model.Reservation;
 import service.ResourceLoader;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
 import static service.ResourceLoader.dfBundle;
-
-import java.util.ArrayList;
 
 /**
  *
@@ -40,7 +40,10 @@ public class Event {
     URL theme = ResourceLoader.default_style;
     // for scheduling an event.
     ArrayList<GregorianCalendar> startAndEndTimes = null ;    // times.
+    ArrayList<Reservation> repeatReservations = new ArrayList<>();
     String roomId = "" ;    // room
+    private boolean actuallyRecurring = false;
+    private String frequency = "Daily";
 
 
     public ResourceBundle getCurrentBundle() {
@@ -145,5 +148,37 @@ public class Event {
 
     public void setTheme(URL theme) {
         this.theme = theme;
+    }
+
+    public boolean isActuallyRecurring() {
+        return actuallyRecurring;
+    }
+
+    public void setActuallyRecurring(boolean actuallyRecurring) {
+        this.actuallyRecurring = actuallyRecurring;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
+
+    public ArrayList<Reservation> getRepeatReservations() {
+        return repeatReservations;
+    }
+
+    public void setRepeatReservations(ArrayList<Reservation> repeatReservations) {
+        this.repeatReservations = repeatReservations;
+    }
+
+    public void resetReservation() {
+        startAndEndTimes = new ArrayList<>() ;    // times.
+        repeatReservations = new ArrayList<>();
+        roomId = "" ;    // room
+        actuallyRecurring = false;
+        frequency = "Daily";
     }
 }
