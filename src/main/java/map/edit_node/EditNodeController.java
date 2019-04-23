@@ -267,14 +267,6 @@ public class EditNodeController extends Control {
      */
     @FXML
     void deleteAction(ActionEvent e) throws IOException {
-        ApplicationState.getApplicationState().setEdgesToEdit(oldEdgesFromEditNode);
-        Parent root = FXMLLoader.load(ResourceLoader.deleteNodeConfirm);
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Delete Confirmation");
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initOwner(gPane.getScene().getWindow());
-        stage.showAndWait();
 
         if (ApplicationState.getApplicationState().getNodeToEdit() == null) {
             try {
@@ -314,14 +306,6 @@ public class EditNodeController extends Control {
         System.out.println(DatabaseService.getDatabaseService().getNode(tempEditNode.getNodeID()));
         // set edges globally
         ApplicationState.getApplicationState().setEdgesToEdit(newEdges);
-        // fire confirmation
-        Parent root = FXMLLoader.load(ResourceLoader.saveNodeConfirm);
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Save Confirmation");
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initOwner(gPane.getScene().getWindow());
-        stage.showAndWait();
     }
 
     private void updateNode() {

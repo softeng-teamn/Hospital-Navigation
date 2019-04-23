@@ -1093,30 +1093,16 @@ public class ScheduleController {
 
         // If the chosen date is in the past, show an error
         if (forRes && datePicker.getValue().atStartOfDay().isBefore(LocalDate.now().atStartOfDay())) {
-            Parent parent = FXMLLoader.load(ResourceLoader.invalidDate);
-            Stage stage = new Stage();
-            stage.setScene(new Scene(parent));
-            stage.setTitle("Invalid Date");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(vbox.getScene().getWindow());
-            stage.showAndWait();
-            //inputErrorLbl.setVisible(true);
-            //inputErrorLbl.setText(pastDateErrorText);
+            inputErrorLbl.setVisible(true);
+            inputErrorLbl.setText(pastDateErrorText);
             return false;
         }
 
         // If the times are outside the location's open times
         // or end is greater than start, the times are invalid
         if (endIndex <= index || start < openTime || closeTime < end) {
-            Parent parent = FXMLLoader.load(ResourceLoader.impossibleTime);
-            Stage stage = new Stage();
-            stage.setScene(new Scene(parent));
-            stage.setTitle("Invalid Time");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(vbox.getScene().getWindow());
-            stage.showAndWait();
-            //inputErrorLbl.setVisible(true);
-            //inputErrorLbl.setText(timeErrorText);
+            inputErrorLbl.setVisible(true);
+            inputErrorLbl.setText(timeErrorText);
             return false;
         }
 
@@ -1131,15 +1117,8 @@ public class ScheduleController {
             }
             for (int i = index; i < endIndex; i++) {
                 if (thisDay.get(i) == 1) {    // If so, show an error
-                    Parent parent = FXMLLoader.load(ResourceLoader.invalidTime);
-                    Stage stage = new Stage();
-                    stage.setScene(new Scene(parent));
-                    stage.setTitle("Invalid Time");
-                    stage.initModality(Modality.APPLICATION_MODAL);
-                    stage.initOwner(vbox.getScene().getWindow());
-                    stage.showAndWait();
-                    //inputErrorLbl.setVisible(true);
-                    //inputErrorLbl.setText(conflictErrorText);
+                    inputErrorLbl.setVisible(true);
+                    inputErrorLbl.setText(conflictErrorText);
                     return false;
                 }
             }
