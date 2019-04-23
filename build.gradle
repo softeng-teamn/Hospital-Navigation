@@ -80,8 +80,6 @@ task uiFastTest(type: Test) {
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
-    minHeapSize="2g"
-    maxHeapSize="4g"
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -96,8 +94,6 @@ task uiSlowTest(type: Test) {
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
-    minHeapSize="2g"
-    maxHeapSize="4g"
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -125,8 +121,6 @@ task regressionTest(type: Test) {
         excludeCategories 'testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
-    minHeapSize="2g"
-    maxHeapSize="4g"
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -150,8 +144,6 @@ test {
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
-    minHeapSize="2g"
-    maxHeapSize="4g"
 }
 
 repositories {
@@ -192,10 +184,7 @@ dependencies {
             [group: 'edu.wpi.cs3733.b17.teamG', name: 'FoodRequest', version:'1.0.0'],
             [group: 'com.google.zxing', name: 'core', version: '3.3.3'],
             [group: 'com.google.zxing', name: 'javase', version: '3.3.0'],
-            [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
-            [group: 'edu.wpi.cs3733.d19.teamM', name: 'LanguageRequest', version:'1.0.0'],
-            [group: 'edu.wpi.cs3733.d19.teamP', name: 'BWHGiftRequest', version:'1.0.1'],
-            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1']
+            [group: 'net.swisstech', name: 'bitly-api-client', version: '+']
     )
     compile(
             [group: 'net.kurobako', name: 'gesturefx', version: '0.3.0'],
@@ -216,11 +205,7 @@ dependencies {
             [group: 'edu.wpi.cs3733.b17.teamG', name: 'FoodRequest', version:'1.0.0'],
             [group: 'com.google.zxing', name: 'core', version: '3.3.3'],
             [group: 'com.google.zxing', name: 'javase', version: '3.3.0'],
-            [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
-            [group: 'edu.wpi.cs3733.d19.teamM', name: 'LanguageRequest', version:'1.0.0'],
-            [group: 'edu.wpi.cs3733.d19.teamP', name: 'BWHGiftRequest', version:'1.0.1'],
-            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1']
-
+            [group: 'net.swisstech', name: 'bitly-api-client', version: '+']
     )
 
     compileApi (

@@ -14,20 +14,7 @@ import static employee.model.JobType.*;
 
 public class GiftStoreRequest extends Request {
 
-    public enum GiftType {
-        BALLOONS("Balloons"),
-        TEDDY_BEAR("Teddy Bear"),
-        GIFT_BASKET("Gift Basket");
-
-        private String string;
-
-        GiftType(String name){string = name;}
-
-        @Override
-        public String toString() {
-            return string;
-        }
-    }
+    public enum GiftType {BALLOONS, TEDDY_BEAR, GIFT_BASKET}
     GiftType gType ;
     String patientName ;
 

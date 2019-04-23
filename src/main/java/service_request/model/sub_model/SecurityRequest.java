@@ -13,19 +13,9 @@ import java.util.Objects;
 import static employee.model.JobType.*;
 
 public class SecurityRequest extends Request {
+
     public enum Urgency {
-        NOT("Low"),
-        SOMEWHAT("Medium"),
-        VERY("High");
-
-        private String string;
-
-        Urgency(String name){string = name;}
-
-        @Override
-        public String toString() {
-            return string;
-        }
+        NOT, SOMEWHAT, VERY;
     }
 
     private Urgency urgency;

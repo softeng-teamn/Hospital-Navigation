@@ -1,7 +1,6 @@
 package service_request.controller;
 
 import application_state.ApplicationState;
-import bishopfishapi.Emergency;
 import com.jfoenix.controls.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import foodRequest.FoodRequest;
@@ -12,28 +11,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import application_state.Event;
 import map.Node;
-import requests.giftrequests.RunGiftRequest;
-import scheduler.model.Reservation;
 import service_request.controller.sub_controller.InternalTransportController;
 import service_request.model.Request;
 import database.DatabaseService;
 import service.ResourceLoader;
 import service.StageManager;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -53,7 +44,7 @@ public class RequestController implements Initializable {
     @FXML
     private JFXButton spanishBtn;
     @FXML
-    private JFXListView<HBox> list_view;
+    private JFXListView list_view;
     @FXML
     private JFXTextField search_bar;
     @FXML
@@ -64,7 +55,6 @@ public class RequestController implements Initializable {
 
     private ArrayList<Node> allNodes;
     private ObservableList<Node> allNodesObservable;
-    private HashMap<String, String> buildingAbbrev = new HashMap<>();    // Abbreviate buildings to fit in listview
 
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
@@ -82,14 +72,6 @@ public class RequestController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
-        buildingAbbrev.put("Shapiro", "Sha");    // Set all building abbreviations
-        buildingAbbrev.put("BTM", "BTM");
-        buildingAbbrev.put("Tower", "Tow");
-        buildingAbbrev.put("45 Francis", "45Fr");
-        buildingAbbrev.put("15 Francis", "15Fr");
-        buildingAbbrev.put("RES", "RES");
-        buildingAbbrev.put("FLEX", "FLEX");
-
         repopulateList();
     }
 
@@ -139,7 +121,7 @@ public class RequestController implements Initializable {
      * @param e FXML event that calls this method
      */
     @FXML
-    public void searchBarEnter(javafx.event.Event e) {
+    public void searchBarEnter(ActionEvent e) {
         String search = search_bar.getText();
         filterList(search);
     }
@@ -163,8 +145,7 @@ public class RequestController implements Initializable {
     private void filterList(String findStr) {
         if (findStr.equals("")) {
             list_view.getItems().clear();
-            ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodes);
-            list_view.getItems().addAll(observeHboxes);
+            list_view.getItems().addAll(allNodesObservable);
         } else {
             //Get List of all nodes
             ObservableList<Node> original = allNodesObservable;
@@ -179,10 +160,11 @@ public class RequestController implements Initializable {
 
             // Convert to list and then to observable list
             List<Node> filteredNodes = stream.collect(Collectors.toList());
-            ObservableList<HBox> toShow = makeIntoHBoxes((ArrayList) filteredNodes);
+            ObservableList<Node> toShow = FXCollections.observableList(filteredNodes);
 
             // Add to view
-            list_view.setItems(toShow);
+            list_view.getItems().clear();
+            list_view.getItems().addAll(toShow);
         }
     }
 
@@ -223,44 +205,22 @@ public class RequestController implements Initializable {
             return;
         }
 
-        ObservableList<HBox> observeHboxes = makeIntoHBoxes(allNodes);
+        list_view.getItems().clear();
         // add to listView
-        list_view.setItems(observeHboxes);
-    }
+        list_view.getItems().addAll(allNodesObservable);
 
-    /**
-     * Make the passed in arraylist into an observable list of hboxes with name, building, floor
-     * to put into the listview
-     * @param nodes the list of nodes to display
-     * @return the list of hboxes, one for each node
-     */
-    private ObservableList<HBox> makeIntoHBoxes(ArrayList<Node> nodes) {
-        ArrayList<HBox> hBoxes = new ArrayList<>();
-        for (int i = 0; i < nodes.size(); i++) {    // For every node
-            Node currNode = nodes.get(i);
-            HBox hb = new HBox();
-            HBox inner = new HBox();    // So the building can be right-aligned
-            inner.setAlignment(Pos.CENTER_RIGHT);
-            Label longName = new Label(currNode.getLongName());    // Make a label for the long name
-            String buildFlStr = buildingAbbrev.get(currNode.getBuilding()) + ", " + currNode.getFloor();
-            Label buildFloor = new Label(buildFlStr);    // Make a label for the building abbreviation and floor
-            Label nodeId = new Label(currNode.getNodeID());    // Save the nodeID for pathfinding but make it invisible
-            nodeId.setPrefWidth(0);
-            nodeId.setVisible(false);
-            nodeId.setPadding(new Insets(0, -10, 0, 0));
-            hb.getChildren().add(longName);    // Add the node name
-            inner.getChildren().add(nodeId);
-            inner.getChildren().add(buildFloor);    // Add the ID and building and floor to the right-aligned hbox
-            hb.getChildren().add(inner);    // Combine them
-            hb.setHgrow(inner, Priority.ALWAYS);
-            hb.setSpacing(0);
-            hBoxes.add(hb);    // Add it all to the list
-        }
-        ObservableList<HBox> observeHboxes = FXCollections.observableArrayList();
-        observeHboxes.addAll(hBoxes);
-        return observeHboxes;
+        list_view.setCellFactory(param -> new JFXListCell<Node>() {
+            @Override
+            protected void updateItem(Node item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNodeID() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getLongName());
+                }
+            }
+        });
     }
-
 
     @FXML
     public void internalTransportSelect(ActionEvent e) throws IOException {
@@ -301,9 +261,9 @@ public class RequestController implements Initializable {
     }
 
     @FXML
-    public void giftSelect (ActionEvent actionEvent) throws Exception {
-        RunGiftRequest rgr = new RunGiftRequest();
-        rgr.run(0,0, 1920, 1080, null, null, null);
+    public void giftSelect (ActionEvent actionEvent) throws IOException {
+        subSceneHolder.getChildren().clear();
+        subSceneHolder.getChildren().add(FXMLLoader.load(ResourceLoader.giftStoreRequest,event.getCurrentBundle()));
     }
 
     @FXML
@@ -315,7 +275,7 @@ public class RequestController implements Initializable {
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "I need to")
     @FXML
     public void locationSelected(MouseEvent mouseEvent) {
-        selectedNode = DatabaseService.getDatabaseService().getNode(((Label) ((HBox) list_view.getSelectionModel().getSelectedItem().getChildren().get(1)).getChildren().get(0)).getText());
+        selectedNode = (Node) list_view.getSelectionModel().getSelectedItem();
     }
 
     public void toyRequestSelect(ActionEvent actionEvent) throws IOException {
@@ -346,13 +306,5 @@ public class RequestController implements Initializable {
     public void foodSelect(ActionEvent actionEvent) throws ServiceException {
         FoodRequest req = new FoodRequest();
         req.run(0, 0, 1920, 1080, null, null, null);
-    }
-
-    public void emergencySelect(ActionEvent actionEvent) throws Exception {
-        Emergency emergency = new Emergency();
-        Emergency.setSender("neonnarwhalsd19");
-        Emergency.setSenderPassword("neonnarwhalsD19!");
-        Emergency.setRecipient(ApplicationState.getApplicationState().getEmployeeLoggedIn().getEmail());
-        emergency.run(50,50, 1500, 1000, null, "destNode", "originNode");
     }
 }

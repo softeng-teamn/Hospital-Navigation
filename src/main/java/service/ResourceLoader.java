@@ -18,7 +18,6 @@ public class  ResourceLoader {
     public static final URL saveNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/saveNodeConfirm.fxml");
 
     public static final URL about = service.ResourceLoader.class.getResource("/fxml/home/aboutPage.fxml");
-    public static final URL credit = service.ResourceLoader.class.getResource("/fxml/home/creditsPage.fxml");
     public static final URL directionMessage = service.ResourceLoader.class.getResource("/fxml/home/directionMessage.fxml");
     public static final URL pathFindingSettings = service.ResourceLoader.class.getResource("/fxml/home/pathfindingSettings.fxml");
     public static final URL searchResults = service.ResourceLoader.class.getResource("/fxml/home/searchResults.fxml");
@@ -76,12 +75,6 @@ public class  ResourceLoader {
     public static final URL turn_slight_left_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_slight_left.png");
     public static final URL turn_slight_right_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_slight_right.png");
     public static final URL uturn_icon = service.ResourceLoader.class.getResource("/images/direction_icons/uturn.png");
-
-    //themes
-    public static final URL default_style = service.ResourceLoader.class.getResource("/default.css");
-    public static final URL high_contrast_style = service.ResourceLoader.class.getResource("/HighContrast.css");
-    public static final URL night_style = service.ResourceLoader.class.getResource("/night.css");
-
 
     public static final ResourceBundle dfBundle = ResourceBundle.getBundle("strings", Locale.getDefault());
     public static final ResourceBundle enBundle = ResourceBundle.getBundle("strings", new Locale("en"));

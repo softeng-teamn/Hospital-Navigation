@@ -183,9 +183,4 @@ class NodeDatabase {
 
         return (ArrayList<Node>) (List<?>) databaseService.executeGetMultiple(query, Node.class, nodeID, nodeID);
     }
-
-    ArrayList<Node> getNodesByFloorByType(String floor, String type){
-        String query = "Select * FROM NODE WHERE NODE.FLOOR = ? AND NODE.TYPE = ?";
-        return (ArrayList<Node>) (List<?>) databaseService.executeGetMultiple(query, Node.class, floor, type);
-    }
 }

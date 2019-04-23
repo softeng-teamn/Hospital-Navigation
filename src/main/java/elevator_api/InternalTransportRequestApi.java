@@ -14,15 +14,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Team N Internal Transport Request API
- * This API can, but does not have to, integrate with Team N's physical elevator.
- * When a high urgency transport request is assigned to an employee, an elevator is
- * called to the floor of the request.
- *
- * You can check the remote status of the elevator using the provided functions.
- *
- * To schedule a time to practice with the elevator or for any other questions, reach out to Team N.
- *
+ * API main class
  */
 public class InternalTransportRequestApi {
     ApiDatabaseService myDBS = ApiDatabaseService.getDatabaseService();
@@ -31,17 +23,6 @@ public class InternalTransportRequestApi {
     private String team;
     private boolean useElev;
 
-    /**
-     * Use me if you don't want to use the elevator
-     * @param xcoord where you want the top left corner x coordinate to be
-     * @param ycoord where you want the top left corner y coordinate to be
-     * @param windowWidth the desired window width
-     * @param windowLength the desired window length
-     * @param cssPath path to custom css to use
-     * @param destination unused
-     * @param origin the node where you want the service request to be fulfilled
-     * @throws ServiceException never
-     */
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
     public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin) throws ServiceException {
         Stage primaryStage = new Stage();
@@ -71,20 +52,18 @@ public class InternalTransportRequestApi {
     }
 
 
-
     /**
-     * Use me if you want to use the elevator. The elevator will be called when a request is assigned to an employee
-     * @param xcoord where you want the top left corner x coordinate to be
-     * @param ycoord where you want the top left corner y coordinate to be
-     * @param windowWidth the desired window width
-     * @param windowLength the desired window length
-     * @param cssPath path to custom css to use
-     * @param destination unused
-     * @param origin the node where you want the service request to be fulfilled. The last two characters must bo "01" - "04"
-     *               corresponding to the floor the elevator will be called to.
-     * @param useElev true if you want the elevator to be active
-     * @param team "L", "M", "N", "O", "P" corresponding to your team name
-     * @throws ServiceException never
+     *
+     * @param xcoord of node
+     * @param ycoord of node
+     * @param windowWidth of window
+     * @param windowLength of window
+     * @param cssPath make it pretty
+     * @param destination where do i go
+     * @param origin where did i start
+     * @param useElev true if you want to use the elevator
+     * @param team the team letter in upper case
+     * @throws ServiceException
      */
     @SuppressFBWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "Can't figure out a better way (yet)")
     public void run(int xcoord, int ycoord, int windowWidth, int windowLength, String cssPath, String destination, String origin, boolean useElev, String team) throws ServiceException {
@@ -117,13 +96,13 @@ public class InternalTransportRequestApi {
     }
 
     /**
-     * @param t "L", "M", "N", "O", "P" corresponding to your team name
-     * @return a string containing elevator L's current floor for the team specified
+     *
+     * @return a string containing elevator L's current floor. empty string if error
      */
-    public String getCurrentElevFloor(String t) {
+    public String getCurrentElevFloor(){
         ElevatorConnection e = new ElevatorConnection();
         try {
-           return e.getFloor(t + "L");
+           return e.getFloor(team + "L");
         } catch (IOException e1) {
             System.out.println("Error Connecting to Elevator getCurrentElev in internal Transport Req API");
             e1.printStackTrace();
@@ -131,31 +110,22 @@ public class InternalTransportRequestApi {
         return "";
     }
 
-    /**
-     * Insert an employee into the API database - you need at least one. Only username and ID are used, ID must be &gt; 0 (-1 and 0 are forbidden)
-     * @param e The employee to insert
-     * @return true if the employee was successfully inserted
-     */
     public boolean insertEmployee(Employee e) {
         return myDBS.insertEmployee(e);
     }
 
-    // Get an employee by id
     public Employee getEmployee(int id) {
         return myDBS.getEmployee(id);
     }
 
-    // Update an employee
     public boolean updateEmployee(Employee e) {
         return myDBS.updateEmployee(e);
     }
 
-    // Delete an employee
     public boolean deleteEmployee(Employee e) {
         return myDBS.deleteEmployee(e);
     }
 
-    // Get an employee by username
     Employee getEmployeeByUsername(String username) {
         return myDBS.getEmployeeByUsername(username);
     }

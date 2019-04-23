@@ -20,33 +20,15 @@ import static employee.model.JobType.*;
 public class InternalTransportRequest extends Request {
 
     public enum TransportType {
-        Wheelchair("Wheelchair"),
-        MotorScooter("Motor Scooter"),
-        Stretcher("Stretcher");
-
-        private String string;
-
-        TransportType(String name){string = name;}
-
-        @Override
-        public String toString() {
-            return string;
-        }
+        Wheelchair,
+        MotorScooter,
+        Stretcher
     }
 
     public enum Urgency {
-        NOT("Low"),
-        SOMEWHAT("Medium"),
-        VERY("High");
-
-        private String string;
-
-        Urgency(String name){string = name;}
-
-        @Override
-        public String toString() {
-            return string;
-        }
+        NOT,
+        SOMEWHAT,
+        VERY
     }
 
     private Urgency urgency;

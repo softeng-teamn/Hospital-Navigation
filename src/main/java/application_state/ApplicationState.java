@@ -4,9 +4,6 @@ import javafx.scene.image.ImageView;
 import employee.model.Employee;
 import map.Edge;
 import map.Node;
-import service.ResourceLoader;
-
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,8 +24,6 @@ public class ApplicationState {
     private int employeeID;
     private Employee employeeLoggedIn;
     private String startEnd = "end";    // Whether the currently selected node in the listView is the start or end node
-    // sets the current theme
-    private URL currentTheme = ResourceLoader.default_style;
 
     //******************************************
 
@@ -84,16 +79,6 @@ public class ApplicationState {
     public void setEmployeeLoggedIn(Employee employeeLoggedIn) {
         this.employeeLoggedIn = employeeLoggedIn;
     }
-
-    // methods for controlling the current theme
-    public URL getCurrentTheme() {
-        return currentTheme;
-    }
-
-    public void setCurrentTheme(URL currentTheme) {
-        this.currentTheme = currentTheme;
-    }
-
 
     /**
      * Return the current path's start node.
