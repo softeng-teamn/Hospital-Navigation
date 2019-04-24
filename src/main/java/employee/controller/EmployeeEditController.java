@@ -226,9 +226,5 @@ public class EmployeeEditController {
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
     }
 
-    public void exitOutOfToast(ActionEvent actionEvent){
-        JFXButton btn = (JFXButton) actionEvent.getSource();
-        Stage stage = (Stage) btn.getScene().getWindow();
-        stage.close();
-    }
+
 }
