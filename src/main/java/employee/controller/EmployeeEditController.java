@@ -254,8 +254,6 @@ public class EmployeeEditController {
         remove.setDisable(true);
     }
 
-
-
     public void showHome(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader();

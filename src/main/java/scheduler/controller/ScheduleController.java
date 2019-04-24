@@ -16,7 +16,6 @@ import com.calendarfx.view.popover.PopOverTitledPane;
 import com.google.zxing.WriterException;
 import com.jfoenix.controls.*;
 import database.DatabaseService;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import employee.model.Employee;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -48,12 +47,12 @@ import scheduler.model.Reservation;
 import service.QRService;
 import service.ResourceLoader;
 import service.StageManager;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+
 import java.io.IOException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Objects.requireNonNull;
 
@@ -934,6 +933,7 @@ public class ScheduleController {
 
         showWeeklySchedule();
         showDailySchedule();
+        saveSettings();
     }
 
     /**
@@ -1616,6 +1616,7 @@ public class ScheduleController {
             showContactCheckBox.setSelected(true);
             showContactCheckBox.setText("On");
         }
+        showRoomSchedule(true);
     }
 
     /**
@@ -1648,6 +1649,7 @@ public class ScheduleController {
             sidePaneVBox.getChildren().add(index + 2, recurrenceComboBox);
             recurrenceComboBox.setVisible(false);
         }
+        showRoomSchedule(true);
     }
 
     /**
@@ -1685,9 +1687,8 @@ public class ScheduleController {
             openTime = 0;
             openTimeMinutes = 0;
             openTimeStr = "00:00";
-
-            showRoomSchedule(true);
         }
+        showRoomSchedule(true);
     }
 
     /**
@@ -1712,6 +1713,7 @@ public class ScheduleController {
             snapToTextField.setVisible(true);
             snapToTextField.setText(timeStepMinutes + "");
         }
+        showRoomSchedule(true);
     }
 
     @FXML
@@ -1743,6 +1745,7 @@ public class ScheduleController {
             errorMessage.setVisible(true);
         }
         snapToTextField.setText("" + timeStepMinutes);
+        showRoomSchedule(true);
     }
 
     /**
@@ -1764,6 +1767,7 @@ public class ScheduleController {
             minResTextField.setVisible(true);
             minResTextField.setText(minRes + "");
         }
+        showRoomSchedule(true);
     }
 
     /**
@@ -1798,6 +1802,7 @@ public class ScheduleController {
             errorMessage.setVisible(true);
         }
         minResTextField.setText("" + minRes);
+        showRoomSchedule(true);
     }
 
     /**
@@ -1813,7 +1818,6 @@ public class ScheduleController {
             closeTime = 23;
             closeTimeMinutes = 60;
             closeTimeString = "23:59";
-            showRoomSchedule(true);
         }
         else {
             boundCloseTime = true;
@@ -1821,10 +1825,10 @@ public class ScheduleController {
             closeTimeCheckBox.setText("Bound");
             closeTimeTextField.setVisible(true);
             closeTimeTextField.setText(closeTimeString);
-            showRoomSchedule(true);
             allowMultidayRes = true;
             setMultidayRes();
         }
+        showRoomSchedule(true);
     }
 
     /**
@@ -1863,6 +1867,7 @@ public class ScheduleController {
             errorMessage.setVisible(true);
         }
         closeTimeTextField.setText(closeTimeString);
+        showRoomSchedule(true);
     }
 
     /**
@@ -1890,6 +1895,7 @@ public class ScheduleController {
             allowMultidayRes = true;
             setMultidayRes();
         }
+        showRoomSchedule(true);
     }
 
     /**
@@ -1928,6 +1934,7 @@ public class ScheduleController {
             errorMessage.setVisible(true);
         }
         openTimeTextField.setText(openTimeStr);
+        showRoomSchedule(true);
     }
 
     /**
@@ -1972,59 +1979,6 @@ public class ScheduleController {
         }
         else {
             return "";
-        }
-    }
-
-    /**
-     * Save current settings to file for next run.
-     */
-    @FXML
-    @SuppressFBWarnings("DM_DEFAULT_ENCODING")
-    private void saveSettingsToFile() {
-        saveSettings();
-        // The name of the file to open.
-        String fileName = "./src/main/resources/schedulerSettings.txt";
-        try {
-            // Assume default encoding.
-            FileWriter fileWriter = new FileWriter(fileName);
-
-            // Always wrap FileWriter in BufferedWriter.
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-            // Get settings to save.
-            ArrayList<String> args = new ArrayList<>();
-            args.add(Integer.toString(openTime));
-            args.add(openTimeStr);
-            args.add(Integer.toString(openTimeMinutes));
-            args.add(Integer.toString(closeTime));
-            args.add(closeTimeString);
-            args.add(Integer.toString(closeTimeMinutes));
-            args.add(Integer.toString(timeStep));
-            args.add(Boolean.toString(boundOpenTime));
-            args.add(Boolean.toString(boundCloseTime));
-            args.add(Boolean.toString(boundMinRes));
-            args.add(Boolean.toString(snapToMinutes));
-            args.add(Boolean.toString(allowMultidayRes));
-            args.add(Boolean.toString(allowRecurringRes));
-            args.add(Boolean.toString(showContactInfo));
-            args.add(Integer.toString(minRes));
-
-            for (int i = 0; i < args.size()-1; i++) {    // Write settings to file.
-                bufferedWriter.write(args.get(i));
-                bufferedWriter.write(",");
-
-            }
-            bufferedWriter.write(args.get(args.size() -1));
-            bufferedWriter.newLine();
-
-            // Close files.
-            bufferedWriter.close();
-            fileWriter.close();
-        }
-        catch(IOException ex) {
-            System.out.println(
-                    "Error writing to file '"
-                            + fileName + "'");
         }
     }
 

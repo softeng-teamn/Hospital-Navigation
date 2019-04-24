@@ -45,7 +45,7 @@ public class ApplicationState {
     private boolean boundOpenTime = true;    // Whether open time is defined
     private boolean boundCloseTime = true;    // Whether close time is defined
     private boolean boundMinRes = true;    // Whether minimum reservation is defined
-    private int minRes;
+    private int minRes = 15;
     private boolean snapToMinutes = true;
     private boolean allowMultidayRes = false;
     private boolean allowRecurringRes = false;

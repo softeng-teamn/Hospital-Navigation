@@ -65,7 +65,6 @@ public class MapViewController implements Observer {
     private JFXNodesList infoNodeList;
     private Event event = ApplicationState.getApplicationState().getObservableBus().getEvent();
 
-
     private String currentMethod;
 
     JFXButton startNodeLabel;
@@ -393,7 +392,9 @@ public class MapViewController implements Observer {
      */
     @Override
     public void notify(Object e) {
-        System.out.println("    mapView notified " + event.getEventName() + " " + this);   // todo cut
+        if (!event.getEventName().equals("reset-timer")){
+            System.out.println("    mapView notified " + event.getEventName() + " " + this);   // todo cut
+        }
         ApplicationState currState = ApplicationState.getApplicationState();
         event = (Event) e;
         switch (event.getEventName()) {
@@ -657,6 +658,7 @@ public class MapViewController implements Observer {
             zoomGroup.getChildren().remove(startNodeLabel);
         }
 
+        System.out.println("Node in MaPviewController: " + node);
         if (!node.getFloor().equals(event.getFloor())) {
             //switch the map
             //System.out.println(node + node.getFloor());

@@ -13,14 +13,23 @@ public class ObservableBus {
      * @param ev the new event
      */
     public void updateEvent(Event ev){
-        event = ev;
-        notifyObservers();
+        if (ev != null) {
+            event = ev;
+            notifyObservers();
+        }
+        else {
+            System.out.println("trying to set null event");
+        }
     }
 
     /**
      * @return the current event
      */
     public Event getEvent(){
+        if (event == null) {
+            event = new Event();
+            return event;
+        }
         return event;
     }
 

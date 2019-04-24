@@ -1,14 +1,10 @@
 package service;
 
 import application_state.ApplicationState;
-import application_state.Observer;
 import application_state.Event;
-import application_state.InactivityManager;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import static application_state.ApplicationState.getApplicationState;
 
 /**
  * controls scene switching
@@ -63,7 +59,7 @@ public class StageManager {
         //set the style sheet here
         root.getStylesheets().removeAll();
         root.getStylesheets().add(ApplicationState.getApplicationState().getCurrentTheme().toString());
-        primaryStage.setFullScreen(true);
+        //todo uncomment primaryStage.setFullScreen(true);
         primaryStage.show();
         return primaryStage;
     }

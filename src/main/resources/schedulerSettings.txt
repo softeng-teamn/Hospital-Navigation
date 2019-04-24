@@ -1,1 +1,1 @@
-7,07:00,0,23,23:00,0,2,true,true,true,true,false,false,true,15
+7,07:00,0,23,23:00,0,3,true,true,true,true,false,false,true,10

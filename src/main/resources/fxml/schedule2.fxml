@@ -344,7 +344,6 @@
                                     </VBox>
                                  </children>
                               </HBox>
-                              <JFXButton onAction="#saveSettingsToFile" styleClass="confirm-button" text="Save Settings" />
                            </children>
                         </VBox>
                      </content>
