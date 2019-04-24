@@ -290,10 +290,11 @@
 
 .floor-switcher-button{
     -fx-shape: "M 300 150 L 300 50 L 500 50 L 700 250 L 500 450 L 300 450 L 300 350 L 400 250 L 300 150";
+    -fx-background-insets: 0 0 0 -20;
     -fx-border-width: 0px;
-    -fx-pref-width: 125;
-    -fx-pref-height: 150;
-    -fx-font-size: 24pt;
+    -fx-pref-width: 90px;
+    -fx-pref-height: 90px;
+    -fx-font-size: 20pt;
 }
 
 .request-toggle-node {
@@ -783,6 +784,20 @@
 .button-bar > .container > .button:focused {
     -fx-background-color: -fx-secondary;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+}
+
+.button-bar > .container > .button.left-pill {
+    -fx-background-radius: 3 0 0 3;
+}
+
+.button-bar > .container > .button.right-pill {
+    -fx-background-radius: 0 3 3 0;
+    -fx-background-insets: -2 -2 -2 0, 0, 1 1 1 0, 2 2 2 1;
+}
+
+.button-bar > .container > .button.center-pill {
+    -fx-background-radius: 0;
+    -fx-background-insets: -2 0 -2 -1, 0 0 0 -1, 1 1 1 0, 2 2 2 1;
 }
 
 /*******************************************************************************

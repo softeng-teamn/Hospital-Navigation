@@ -76,6 +76,7 @@ public class MapViewController implements Observer {
     private HashMap<String, ArrayList<Polyline>> polylineCollection;
     private boolean hasPath = false;
     private ArrayList<Node> path;
+    private ArrayList<Polyline> whiteDashes;
     private String units = "feet";    // Feet or meters conversion
     private HashMap<String, Integer> floors = new HashMap<String, Integer>();
     // Scroll & Zoom
@@ -99,6 +100,8 @@ public class MapViewController implements Observer {
     private GesturePane gPane;
     @FXML
     private Label FloorInfo;
+    @FXML
+    private Label showFL;
     @FXML
     private Label show4;
     @FXML
@@ -183,6 +186,7 @@ public class MapViewController implements Observer {
 
         // Setup collection of lines
         polylineCollection = new HashMap<>();
+        whiteDashes = new ArrayList<>();
 
         // Set start circle
         startCircle = new Circle();
@@ -199,7 +203,7 @@ public class MapViewController implements Observer {
         infoNodeList.setSpacing(20);
 
 
-        ArrayList<Label> floorLbls = new ArrayList<Label>(Arrays.asList(show1, show2, show3, show4, showG, showL1, showL2));
+        ArrayList<Label> floorLbls = new ArrayList<Label>(Arrays.asList(showFL, show1, show2, show3, show4, showG, showL1, showL2));
 
         // set directionally available floor labels to hidden
         for (int i = 0; i < floorLbls.size(); i++) {
@@ -379,7 +383,7 @@ public class MapViewController implements Observer {
     @FXML
     void showFloorChangeLbls(Node start, Node end) {
 
-        ArrayList<Label> floorLbls = new ArrayList<Label>(Arrays.asList(show1, show2, show3, show4, showG, showL1, showL2));
+        ArrayList<Label> floorLbls = new ArrayList<Label>(Arrays.asList(showFL, show1, show2, show3, show4, showG, showL1, showL2));
 
         String startFloor = "";
         String endFloor = "";
@@ -418,9 +422,11 @@ public class MapViewController implements Observer {
      * Clear the navigation floor labels from any previous searches
      */
     private void clearFloorChangeLabels() {
-        floorLbls = new ArrayList<Label>(Arrays.asList(show1, show2, show3, show4, showG, showL1, showL2));
+        floorLbls = new ArrayList<Label>(Arrays.asList(showFL, show1, show2, show3, show4, showG, showL1, showL2));
 
         // set the orginal floor name text back on the labels & hide
+        showFL.setText("FL");
+        showFL.setVisible(false);
         show1.setText("1");
         show1.setVisible(false);
         show2.setText("2");
@@ -701,10 +707,11 @@ public class MapViewController implements Observer {
     private void deletePolyLine() {
         for (ArrayList<Polyline> polylines : polylineCollection.values()) {
             for (Polyline polyline : polylines) {
-                if (zoomGroup.getChildren().contains(polyline)) {
-                    zoomGroup.getChildren().remove(polyline);
-                }
+                zoomGroup.getChildren().remove(polyline);
             }
+        }
+        for (Polyline polyline : whiteDashes){
+            zoomGroup.getChildren().remove(polyline);
         }
         hasPath = false;
     }
@@ -938,6 +945,7 @@ public class MapViewController implements Observer {
                     pl2.getPoints().addAll(pl.getPoints());
                     addAnimation(pl2);
                     zoomGroup.getChildren().add(pl2);
+                    whiteDashes.add(pl2);
                 }
             }
         }

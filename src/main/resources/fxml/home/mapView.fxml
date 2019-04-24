@@ -17,7 +17,7 @@
     <children>
         <GesturePane fx:id="gPane" HBarEnabled="false" VBarEnabled="false" />
       <Region maxWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" />
-      <HBox fx:id="floorOrderBox" alignment="CENTER" fillHeight="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="125.0" prefWidth="1440.0" spacing="25.0" StackPane.alignment="BOTTOM_RIGHT">
+      <HBox fx:id="floorOrderBox" alignment="CENTER" fillHeight="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="125.0" prefWidth="1440.0" StackPane.alignment="BOTTOM_RIGHT">
          <StackPane.margin>
             <Insets bottom="10.0" />
          </StackPane.margin>
@@ -28,6 +28,7 @@
                <children>
                   <VBox alignment="BOTTOM_RIGHT" prefHeight="858.0" prefWidth="100.0" spacing="12.0">
                      <children>
+                        <Label fx:id="showFL" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="FL" />
                         <Label fx:id="show4" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="4" />
                         <Label fx:id="show3" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="3" />
                         <Label fx:id="show2" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="2" />
@@ -35,7 +36,7 @@
                         <Label fx:id="showG" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="G" />
                         <Label fx:id="showL1" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="L1" />
                         <Label fx:id="showL2" alignment="CENTER" prefHeight="60.0" prefWidth="140.0" styleClass="floor-path-label" text="L2" />
-                        <Region maxHeight="-Infinity" prefHeight="142.0" prefWidth="200.0" />
+                        <Region maxHeight="-Infinity" prefHeight="72.0" prefWidth="100.0" />
                      </children>
                   </VBox>
                </children>
