@@ -278,6 +278,14 @@
     -fx-fill: -fx-complementary;
 }
 
+.floor-switcher-button{
+    -fx-shape: "M 300 150 L 300 50 L 500 50 L 700 250 L 500 450 L 300 450 L 300 350 L 400 250 L 300 150";
+    -fx-border-width: 0px;
+    -fx-scale-x: 4.5;
+    -fx-scale-y: 4.5;
+    -fx-font-size: 10pt;
+}
+
 .request-toggle-node {
     -fx-font-family: Roboto;
     -fx-background-color: -fx-complementary;

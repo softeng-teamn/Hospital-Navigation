@@ -28,10 +28,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
@@ -90,6 +87,7 @@ public class MapViewController implements Observer {
     public static final Color PRIMARY_COLOR = Color.rgb(1, 45, 90);
     public Background yellowBackground = new Background(new BackgroundFill(SECONDARY_COLOR, new CornerRadii(8), Insets.EMPTY));
     public Background blueBackground = new Background(new BackgroundFill(PRIMARY_COLOR, new CornerRadii(8), Insets.EMPTY));
+    public HBox floorOrderBox ;
 
 
     @FXML
@@ -317,6 +315,59 @@ public class MapViewController implements Observer {
     }
 
 
+    @FXML
+    private void floorChangeInPathOrder () {
+
+        // list of traversed floors
+        ArrayList<String> floorOrder = new ArrayList<String>() ;
+        // add the first floor to list
+
+        floorOrder.add(path.get(0).getFloor()) ;
+        // set current floor to starting floor
+        String currFloor = path.get(0).getFloor() ;
+
+        // for as many nodes in the path
+        for (int i = 0 ; i < path.size() ; i++) {
+            // if the current node does not equal the previously set floor
+            if (!path.get(i).getFloor().equals(currFloor)) {
+                // add that new floor to the path
+                floorOrder.add(path.get(i).getFloor()) ;
+                // reset current floor
+                currFloor = path.get(i).getFloor() ;
+            }
+        }
+
+        System.out.println("FLOOR ORDER = " + floorOrder);
+
+
+        for (int i = 0 ; i < floorOrder.size() ; i++) {
+
+            JFXButton floor = new JFXButton(floorOrder.get(i));
+            floor.getStyleClass().add("floor-switcher-button");
+
+            floorOrderBox.getChildren().add(floor);
+
+            // when clicked on go to that floor
+            floor.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    //setFloor(floor.getText());
+                    floorChangeAction(event);
+                }
+            });
+
+
+        }
+
+    }
+
+
+    @FXML
+    private void clearFloorOrder () {
+        floorOrderBox.getChildren().clear();
+    }
+
+
     /**
      * Show the buttons indicating which floor the pathfinding begins and ends on
      *
@@ -402,7 +453,10 @@ public class MapViewController implements Observer {
                     @Override
                     public void run() {
                         try {
+                            clearFloorOrder () ;
                             navigationHandler();
+                            // create buttons for floor order
+                            floorChangeInPathOrder () ;
                         } catch (Exception ex) {
                             //System.out.println("error posting floor");
                             ex.printStackTrace();
@@ -414,6 +468,7 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        clearFloorOrder () ;
                         changeCurrentFloorButton();
                         deletePolyLine();
                         clearFloorChangeLabels();
@@ -426,6 +481,7 @@ public class MapViewController implements Observer {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        clearFloorOrder () ;
                         changeCurrentFloorButton();
                         deletePolyLine();
                         clearFloorChangeLabels();
@@ -467,6 +523,7 @@ public class MapViewController implements Observer {
                     public void run() {
                         deletePolyLine();
                         clearFloorChangeLabels();
+                        clearFloorOrder () ;
                         if (zoomGroup.getChildren().contains(startNodeLabel)) {
                             zoomGroup.getChildren().remove(startNodeLabel);
                         }
@@ -485,6 +542,7 @@ public class MapViewController implements Observer {
                         circleCollection.clear();
                         deletePolyLine();
                         clearFloorChangeLabels();
+                        clearFloorOrder () ;
                         zoomGroup.getChildren().remove(location);
                         drawPoint(currState.getStartNode(), startCircle, Color.rgb(67,70,76));
                         scrollTo(currState.getStartNode());
