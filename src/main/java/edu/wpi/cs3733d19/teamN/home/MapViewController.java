@@ -35,6 +35,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -357,7 +358,6 @@ public class MapViewController implements Observer {
             }
         }
         // NOTE: make sure to make buttons visible/invisible to respective places
-
     }
 
     /**
@@ -844,7 +844,7 @@ public class MapViewController implements Observer {
             Node current = path.get(i);
             if (!current.getFloor().equals(last.getFloor())) {
                 addToList(last.getFloor(), polyline);
-                if (last.getFloor().equals(event.getFloor())) {
+                if (last.getFloor().equals(event.getFloor()) && i < path.size() - 1) {
                     Node next = current;
                     int j = i;
                     while (next.getNodeType().equals(current.getNodeType())) {
@@ -860,14 +860,19 @@ public class MapViewController implements Observer {
         }
 
         addToList(path.get(path.size() - 1).getFloor(), polyline);
+        System.out.println(polylineCollection);
 
         for (String floor : polylineCollection.keySet()) {
             if (floor.equals(event.getFloor())) {
                 ArrayList<Polyline> polylines = polylineCollection.get(floor);
                 for (Polyline pl : polylines) {
-                    addAnimation(pl);
+                    pl.getStyleClass().add("background-polyline");
+                    pl.setStrokeWidth(20);
                     zoomGroup.getChildren().add(pl);
-
+                    Polyline pl2 = new Polyline();
+                    pl2.getPoints().addAll(pl.getPoints());
+                    addAnimation(pl2);
+                    zoomGroup.getChildren().add(pl2);
                 }
             }
         }
@@ -880,14 +885,18 @@ public class MapViewController implements Observer {
             drawIcon(currState.getEndNode());
         }
 
-
-
-
         hasPath = true;
     }
 
     private void addButton(Node current, Node next) {
-        JFXButton floorSwitcher = new JFXButton("Take the " + current.getNodeType() + " to floor " + next.getFloor());
+        String upDown;
+        if (current.getNodeType().equals("STAI")){
+            upDown = "stairs";
+        }
+        else {
+            upDown = "elevator";
+        }
+        JFXButton floorSwitcher = new JFXButton("Take the " + upDown + " to floor " + next.getFloor());
         floorSwitcher.getStyleClass().add("path-button");
         floorSwitcher.setTranslateX(current.getXcoord());
         floorSwitcher.setTranslateY(current.getYcoord());
@@ -936,9 +945,10 @@ public class MapViewController implements Observer {
     }
 
     private void addAnimation(Polyline line) {
-        line.getStrokeDashArray().setAll(16d, 16d);
-        line.setStroke(Color.BLUE);
-        line.setStrokeWidth(8);
+        line.getStrokeDashArray().setAll(16d, 24d);
+        line.setStrokeLineCap(StrokeLineCap.ROUND);
+        line.getStyleClass().add("dashed-polyline");
+        line.setStrokeWidth(6);
 
         final double maxOffset =
                 line.getStrokeDashArray().stream()

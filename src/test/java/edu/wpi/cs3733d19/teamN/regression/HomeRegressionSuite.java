@@ -163,6 +163,6 @@ public class HomeRegressionSuite extends ApplicationTest {
         // Click on the navigation button
         clickOn("#navigate_btn");
 
-        verifyThat(mapContent.getChildren(), hasSize(61));
+        verifyThat(mapContent.getChildren(), hasSize(63));
     }
 }

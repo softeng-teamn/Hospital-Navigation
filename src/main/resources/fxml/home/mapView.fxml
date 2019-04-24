@@ -59,9 +59,9 @@
                      </graphic>
                   </JFXButton>
                    <JFXButton fx:id="credit_btn" alignment="CENTER" contentDisplay="TOP" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#showCredit" styleClass="node-button" text="Credits">
-                       <graphic>
-                           <MaterialIconView boundsType="VISUAL" glyphName="INFO_OUTLINE" size="29" text="" />
-                       </graphic>
+                     <graphic>
+                        <FontAwesomeIconView glyphName="COPYRIGHT" size="29" />
+                     </graphic>
                   </JFXButton>
                   <JFXButton alignment="CENTER" contentDisplay="TOP" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#sendHelp" styleClass="node-button" text="Help">
                      <graphic>

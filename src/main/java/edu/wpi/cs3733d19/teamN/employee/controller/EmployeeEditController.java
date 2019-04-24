@@ -221,7 +221,7 @@ public class EmployeeEditController {
             new_job.getSelectionModel().select(1);
             new_is_admin.setSelected(false);
             new_username.getStyleClass().remove("wrong-credentials");
-            /*Parent root = FXMLLoader.load(ResourceLoader.addEmployeeConfirm);
+            /*
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Help Confirmation");
@@ -231,19 +231,6 @@ public class EmployeeEditController {
         } else {
             new_username.getStyleClass().add("wrong-credentials");
         }
-    }
-
-
-
-    @FXML
-    void onRemoveEmployee(ActionEvent event) throws IOException {
-        Parent parent = FXMLLoader.load(ResourceLoader.deleteEmployeeConfirm);
-        Stage stage = new Stage();
-        stage.setScene(new Scene(parent));
-        stage.setTitle("Delete Confirmation");
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initOwner(root.getScene().getWindow());
-        stage.showAndWait();
     }
 
     @FXML
