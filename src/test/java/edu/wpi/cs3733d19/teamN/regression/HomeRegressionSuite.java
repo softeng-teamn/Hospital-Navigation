@@ -100,7 +100,7 @@ public class HomeRegressionSuite extends ApplicationTest {
 
         ListView listView = GuiTest.find("#list_view");
 
-        verifyThat(listView, hasItems(647));
+        verifyThat(listView, hasItems(664));
 
         Cell<Node> listItem = from(listView).lookup(".list-cell").nth(0).query();
         clickOn(listItem);
@@ -122,7 +122,7 @@ public class HomeRegressionSuite extends ApplicationTest {
         type(KeyCode.BACK_SPACE);
         type(KeyCode.BACK_SPACE);
 
-        verifyThat("#list_view", hasItems(219), informedErrorMessage(this)); // TOTAL nodes - HALLS - STAIRS
+        verifyThat("#list_view", hasItems(236), informedErrorMessage(this)); // TOTAL nodes - HALLS - STAIRS
 
         JFXListView listView = GuiTest.find("#list_view");
         GesturePane map_scrollpane = GuiTest.find("#gPane");

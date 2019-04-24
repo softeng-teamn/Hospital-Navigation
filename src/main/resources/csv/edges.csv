@@ -768,3 +768,19 @@ XHALL 1204XHALL  704,XHALL 1204,XHALL  704
 XHALL 1204XCONF 1204,XHALL 1204,XCONF 1204
 XCONF 1304XHALL 1204,XCONF 1304,XHALL 1204
 XCONF 1404XHALL 1104,XCONF 1404,XHALL 1104
+sidespeakspeak,sidespeak,speak
+cfsidespeak,cf,sidespeak
+cfim1,cf,im1
+woim1,wo,im1
+excf,ex,cf
+im2im1,im2,im1
+imcim2,imc,im2
+imeximc,imex,imc
+hbotcf,hbot,cf
+dlwrsidespeak,dlwr,sidespeak
+bstrdlwr,bstr,dlwr
+1strbstr,1str,bstr
+2str1str,2str,1str
+3str2str,3str,2str
+tstr3str,tstr,3str
+tfronttstr,tfront,tstr
