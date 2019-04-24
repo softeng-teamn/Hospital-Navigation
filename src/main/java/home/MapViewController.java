@@ -89,7 +89,7 @@ public class MapViewController implements Observer {
     public static final Color PRIMARY_COLOR = Color.rgb(1, 45, 90);
     public Background yellowBackground = new Background(new BackgroundFill(SECONDARY_COLOR, new CornerRadii(8), Insets.EMPTY));
     public Background blueBackground = new Background(new BackgroundFill(PRIMARY_COLOR, new CornerRadii(8), Insets.EMPTY));
-    public HBox floorOrderBox ;
+    public HBox floorOrderBox = new HBox ();
 
 
     @FXML
@@ -171,7 +171,6 @@ public class MapViewController implements Observer {
 
     @FXML
     void initialize() {
-        floorOrderBox = new HBox ();
     // Initialize Circle Collection
         circleCollection = new ArrayList<>();
         //pingTiming();
