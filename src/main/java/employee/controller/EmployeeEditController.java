@@ -32,7 +32,7 @@ public class EmployeeEditController {
     static DatabaseService myDBS = DatabaseService.getDatabaseService();
 
     @FXML
-    private Button homeBtn;
+    private Button homeBtn, closeButton;
 
     @FXML
     private TableView<Employee> employee_table;
@@ -170,15 +170,8 @@ public class EmployeeEditController {
         }
         //HERE IS THE OTHER PART OF THE PASSWORD MINIMUM CODE
         else if(new_password.getText().length() < 6){
-            Parent parent = FXMLLoader.load(ResourceLoader.passwordTooShort);
-            Stage stage = new Stage();
-            stage.setScene(new Scene(parent));
-            stage.setTitle("Password Error");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(root.getScene().getWindow());
-            stage.showAndWait();
-            //new_password.getStyleClass().add("wrong-credentials");
-            //new_password_conf.getStyleClass().add("wrong-credentials");
+            new_password.getStyleClass().add("wrong-credentials");
+            new_password_conf.getStyleClass().add("wrong-credentials");
             return;
         }
         else {
