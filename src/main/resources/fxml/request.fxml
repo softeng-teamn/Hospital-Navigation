@@ -84,12 +84,6 @@
                                  </graphic>
                               </JFXToggleNode>
                               <Region prefHeight="50.0" />
-                               <JFXToggleNode onAction="#emergencySelect" prefHeight="256.0" prefWidth="256.0" styleClass="request-toggle-node" text="Emergency Request" textAlignment="CENTER" toggleGroup="$requestType" wrapText="true">
-                                   <graphic>
-                                       <FontAwesomeIconView glyphName="EXCLAMATION_CIRCLE" size="128" styleClass="button-glyph-icon" />
-                                   </graphic>
-                               </JFXToggleNode>
-                               <Region prefHeight="50.0" />
                            </children>
                         </VBox>
                         <Region prefHeight="610.0" prefWidth="50.0" />

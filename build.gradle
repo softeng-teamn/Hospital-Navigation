@@ -195,7 +195,6 @@ dependencies {
             [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
             [group: 'edu.wpi.cs3733.d19.teamM', name: 'LanguageRequest', version:'1.0.0'],
             [group: 'edu.wpi.cs3733.d19.teamP', name: 'BWHGiftRequest', version:'1.0.1'],
-            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1'],
             [group: 'com.calendarfx', name: 'calendar', version: '8.5.0'],
             [group: 'com.calendarfx', name: 'recurrence', version: '8.5.0'],
             [group: 'com.calendarfx', name: 'view', version: '8.5.0']
@@ -222,7 +221,6 @@ dependencies {
             [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
             [group: 'edu.wpi.cs3733.d19.teamM', name: 'LanguageRequest', version:'1.0.0'],
             [group: 'edu.wpi.cs3733.d19.teamP', name: 'BWHGiftRequest', version:'1.0.1'],
-            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1'],
             [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
             [group: 'com.calendarfx', name: 'calendar', version: '8.5.0'],
             [group: 'com.calendarfx', name: 'recurrence', version: '8.5.0'],
