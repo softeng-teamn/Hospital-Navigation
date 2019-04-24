@@ -48,6 +48,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static javafx.geometry.Pos.CENTER;
+
 
 /**
  * controls the map view screen
@@ -169,6 +171,7 @@ public class MapViewController implements Observer {
 
     @FXML
     void initialize() {
+        floorOrderBox = new HBox ();
     // Initialize Circle Collection
         circleCollection = new ArrayList<>();
         //pingTiming();
@@ -346,6 +349,7 @@ public class MapViewController implements Observer {
             floor.getStyleClass().add("floor-switcher-button");
 
             floorOrderBox.getChildren().add(floor);
+
 
             // when clicked on go to that floor
             floor.setOnAction(new EventHandler<ActionEvent>() {
