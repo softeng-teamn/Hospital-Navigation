@@ -107,8 +107,8 @@ public class IterationThreeDemoRegression extends ApplicationTest {
         // 4. Logout
         logout();
 
-        // 5. Login to dan (dduff, duff)
-        login("dduff", "duff");
+        // 5. Login to dan (dduff, dduff)
+        login("dduff", "dduff");
         assertThat(ApplicationState.getApplicationState().getEmployeeLoggedIn().getPhone(), is("1234567890"));
 
         // 6. Navigate BTM Conference Center to Amphitheater
