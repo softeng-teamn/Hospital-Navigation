@@ -777,3 +777,10 @@ im2im1,im2,im1
 imcim2,imc,im2
 imeximc,imex,imc
 hbotcf,hbot,cf
+dlwrsidespeak,dlwr,sidespeak
+bstrdlwr,bstr,dlwr
+1strbstr,1str,bstr
+2str1str,2str,1str
+3str2str,3str,2str
+tstr3str,tstr,3str
+tfronttstr,tfront,tstr

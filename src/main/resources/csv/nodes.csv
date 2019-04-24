@@ -656,3 +656,10 @@ im2,1103,802,FL,Fuller Lower,AR,mid hall IMGD,mid hall IMGD
 imc,915,804,FL,Fuller Lower,AR,corner IMGD,coner IMGD hall
 imex,915,1022,FL,Fuller Lower,AR,IMGD Exit,IMGD Exit
 hbot,1461,910,FL,Fuller Lower,AR,hall bot,hall bot
+dlwr,1363,1048,FL,Fuller Lower,AR,door lwr,door lwr
+bstr,1403,1080,FL,Fuller Lower,AR,bottom stairs,bstair
+1str,1407,1218,FL,Fuller Lower,AR,lower stairs 1,stair1
+2str,1411,1378,FL,Fuller Lower,AR,lower stairs 2,low star2
+3str,1411,1514,FL,Fuller Lower,AR,lower stairs 3,lower stairs 3
+tstr,1415,1644,FL,Fuller Lower,AR,top stairs,top stairs
+tfront,1571,1798,FL,Fuller Lower,AR,top front enter,Top Front Enter
