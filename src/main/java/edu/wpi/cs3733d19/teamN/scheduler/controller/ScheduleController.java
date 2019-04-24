@@ -423,6 +423,7 @@ public class ScheduleController {
             CalendarSource source = calendarView.getCalendarSources().get(s);
             for (int i = 0; i < source.getCalendars().size(); i++) {    // For each calendar
                 Calendar currCal = source.getCalendars().get(i);
+                currCal.clear();
                 currCal.setReadOnly(true);    // Don't let users edit it
                 ArrayList<Reservation> roomRes = (ArrayList<Reservation>) myDBS.getReservationsBySpaceId(currCal.getShortName());
                 for (Reservation r : roomRes) {     // Get each reservation for that calendar
