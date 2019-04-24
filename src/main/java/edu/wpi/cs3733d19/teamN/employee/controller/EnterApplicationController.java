@@ -1,14 +1,14 @@
 package edu.wpi.cs3733d19.teamN.employee.controller;
 
+import edu.wpi.cs3733d19.teamN.service.ResourceLoader;
+import edu.wpi.cs3733d19.teamN.service.StageManager;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import edu.wpi.cs3733d19.teamN.service.ResourceLoader;
-import edu.wpi.cs3733d19.teamN.service.StageManager;
 
 import static javafx.fxml.FXMLLoader.load;
 
