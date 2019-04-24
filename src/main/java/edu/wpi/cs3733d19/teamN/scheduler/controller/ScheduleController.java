@@ -338,7 +338,6 @@ public class ScheduleController {
         calendarView.setPrefHeight(915);
         calendarView.setShowPrintButton(false);
         calendarView.setShowAddCalendarButton(false);
-        calendarView.getDayPage().setVisible(false);
         calendarView.getStylesheets().add("default.css");
 
         // Create calendar for each room and set style
