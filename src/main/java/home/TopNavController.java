@@ -405,7 +405,6 @@ public class TopNavController implements Observer {
             startSearch.setPrefWidth(180);
             startSearch.setId("startSearch");
             top_nav.getChildren().add(2, startSearch);
-            currState.setStartNode(null);
             startNode_btn.setText("Use default");
             home_icon.setIcon(MaterialIcon.ARROW_BACK);
         }
