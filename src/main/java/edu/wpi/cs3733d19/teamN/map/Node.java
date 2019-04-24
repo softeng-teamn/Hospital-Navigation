@@ -67,6 +67,9 @@ public class Node {
         else if (floor.equals("L1")){
             return -1;
         }
+        else if (floor.equals("FL")){
+            return -3;
+        }
         else if (floor.equals("G")){
             return 0;
         }

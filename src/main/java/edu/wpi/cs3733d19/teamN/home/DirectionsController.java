@@ -13,12 +13,15 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import edu.wpi.cs3733d19.teamN.map.MapController;
 import edu.wpi.cs3733d19.teamN.map.Node;
 import edu.wpi.cs3733d19.teamN.service.QRService;
@@ -88,6 +91,7 @@ public class DirectionsController implements Observer {
         ((Runnable) () -> {
             try {
                 generateQRCode(allDirs);
+                generateARQR(path);
             } catch (WriterException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -127,6 +131,7 @@ public class DirectionsController implements Observer {
                         ((Runnable) () -> {
                             try {
                                 generateQRCode(dirs);
+                                generateARQR(path);
                             } catch (WriterException e) {
                                 e.printStackTrace();
                             } catch (IOException e) {
@@ -156,6 +161,7 @@ public class DirectionsController implements Observer {
         floors.put("2", 2);
         floors.put("3", 3);
         floors.put("4", 4);
+        floors.put("FL", 5);
 
         // Don't do anything if it's not a valid path
         if (path == null || path.size() < 2) {
@@ -303,6 +309,7 @@ public class DirectionsController implements Observer {
         floorsQR.put("2", "E");
         floorsQR.put("3", "F");
         floorsQR.put("4", "G");
+        floorsQR.put("5", "H");
 
         String ret = "";
 
@@ -841,6 +848,13 @@ public class DirectionsController implements Observer {
             unitSwitch_btn.setText("Meters");
         }
         printDirections(makeDirections(path));
+        try {
+            generateARQR(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setPath(ArrayList<Node> thePath) {
@@ -912,7 +926,8 @@ public class DirectionsController implements Observer {
             res.append(",");
         }
         res.delete(res.lastIndexOf(","), res.lastIndexOf(",") + 1);
-        return res.toString().replace(" ", "$").replace("&", "|");
+
+        return res.toString().replaceAll(" ", "\\$").replaceAll("&", "|");
     }
 
     /**
@@ -924,6 +939,21 @@ public class DirectionsController implements Observer {
     public void generateQRCode(ArrayList<String> directions) throws WriterException, IOException {
         String url = "https://softeng-teamn.github.io/index.html?dirs="+ convertDirectionsToParameterString(directions);
         qrView.setImage(QRService.generateQRCode(url, true));
+    }
+
+
+    private void generateARQR(ArrayList<Node> path) throws IOException, WriterException {
+        StringBuilder text = new StringBuilder();
+        for (Node n : path) {
+            if (!n.getFloor().equals("FL")) return;
+
+            text.append(n.getNodeID());
+            text.append("$");
+        }
+        text.deleteCharAt(text.lastIndexOf("$"));
+
+
+        qrView.setImage(QRService.generateQRCode(text.toString(), false));
     }
 
     /**

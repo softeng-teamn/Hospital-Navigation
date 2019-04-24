@@ -38,6 +38,7 @@
                   <Insets />
                </VBox.margin>
             </Pane>
+             <JFXButton mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="FL" />
             <JFXButton fx:id="floor4" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="4" />
                <JFXButton fx:id="floor3" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="3" />
                <JFXButton fx:id="floor2" mnemonicParsing="false" onAction="#floorChangeAction" prefHeight="60.0" prefWidth="60.0" styleClass="floor-map-button" text="2" />
