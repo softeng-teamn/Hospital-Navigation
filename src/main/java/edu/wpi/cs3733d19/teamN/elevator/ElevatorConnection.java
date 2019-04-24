@@ -44,6 +44,7 @@ public class ElevatorConnection {
     }
 
     public void postFloor(String floorNum) throws IOException {
+        System.out.println("Posting floor " + floorNum + "...");
         postFloor(this.teamName + "L", floorNum);
     }
 
