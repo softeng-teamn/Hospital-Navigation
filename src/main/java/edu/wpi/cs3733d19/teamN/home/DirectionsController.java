@@ -88,16 +88,14 @@ public class DirectionsController implements Observer {
         }
 
         // Generate the QR code
-        ((Runnable) () -> {
+        Platform.runLater(() -> {
             try {
                 generateQRCode(allDirs);
                 generateARQR(path);
-            } catch (WriterException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (WriterException | IOException e) {
                 e.printStackTrace();
             }
-        }).run();
+        });
         qrView.setVisible(false);
     }
 
@@ -128,7 +126,7 @@ public class DirectionsController implements Observer {
                         printDirections(dirs);
 
                         // Generate QR code
-                        ((Runnable) () -> {
+                        Platform.runLater(() -> {
                             try {
                                 generateQRCode(dirs);
                                 generateARQR(path);
@@ -137,7 +135,7 @@ public class DirectionsController implements Observer {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                        }).run();
+                        });
                     }
                 });
                 break;
