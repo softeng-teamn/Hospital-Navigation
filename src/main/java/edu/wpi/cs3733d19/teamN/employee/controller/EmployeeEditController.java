@@ -197,7 +197,13 @@ public class EmployeeEditController {
             new_password.getStyleClass().add("wrong-credentials");
             new_password_conf.getStyleClass().add("wrong-credentials");
             return;
-        } else {
+        }
+        else if(new_password.getText().length() < 5){
+            new_password.getStyleClass().add("wrong-credentials");
+            new_password_conf.getStyleClass().add("wrong-credentials");
+            return;
+        }
+        else {
             new_password.getStyleClass().remove("wrong-credentials");
             new_password_conf.getStyleClass().remove("wrong-credentials");
         }
