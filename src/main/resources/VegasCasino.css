@@ -7,7 +7,7 @@
     -fx-unfocusedtext: #646464;
     -fx-red: #F44336;
     -fx-mapText: #FFFFFF;
-    -fx-interactioncolor: #C6C9CC;
+    -fx-interactioncolor: #2A2E37;
     -fx-listCell: #7683ac;
     -fx-scrollBorder: #D9D9D9;
     -fx-tableheader: #949494;
@@ -15,7 +15,6 @@
     -fx-tableerror: #D34336;
     -fx-tablerowcellcolor: rgb(82, 100, 174);
     -fx-tablecolor: rgba(82, 100, 174, 0.4);;
-
 }
 
 /*******************************************************************************
@@ -38,7 +37,7 @@
 }
 
 .jfx-hamburger StackPane {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: -fx-secondary;
 }
 
 .interaction-area {
@@ -52,7 +51,7 @@
 }
 
 .unfocused-header-label{
-    -fx-text-fill: -fx-unfocusedtext;
+    -fx-text-fill: -fx-primaryText;
     -fx-font-family: Roboto;
     -fx-font-size: 18pt;
 }
@@ -61,6 +60,12 @@
     -fx-text-fill: -fx-primaryText;
     -fx-font-family: Roboto;
     -fx-font-size: 24pt;
+}
+
+.very-big-label{
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-family: Roboto;
+    -fx-font-size: 40pt;
 }
 
 .small-label{
@@ -84,22 +89,22 @@
 }
 
 .glyph-icon {
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-primarytext;
 }
 
 .dest-icon{
-    -fx-fill: #DE9528;
+    -fx-fill: -fx-secondary;
 }
 
 .request-glyph {
-    -fx-fill: -fx-complementary;
+    -fx-fill: -fx-secondary;
 }
 
 .text-field {
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primaryText;
     -fx-font-size: 14pt;
-    -jfx-focus-color: -fx-complementary;
+    -jfx-focus-color: -fx-secondary;
     -jfx-unfocus-color: -fx-unfocusedtext;
     -fx-prompt-text-fill: -fx-unfocusedtext;
 }
@@ -139,7 +144,7 @@
 
 .jfx-text-area {
     -fx-font-family: Roboto;
-    -jfx-focus-color: -fx-complementary;
+    -jfx-focus-color: -fx-secondary;
     -jfx-unfocus-color: -fx-unfocusedtext;
     -fx-padding: 0.333333em 0 0 0 ;
     -fx-font-size: 16pt;
@@ -177,7 +182,7 @@
 .button{
     -fx-background-color: -fx-complementary;
     -fx-font-family: Roboto;
-    -fx-text-fill: -fx-primary;
+    -fx-text-fill: -fx-primarytext;
     -fx-border-color: -fx-secondary;
     -fx-border-width: 3px;
     -fx-border-radius: 5px;
@@ -201,12 +206,10 @@
 }
 
 .glyph-button{
-    -fx-background-color: -fx-complementary;
-    -fx-font-size: 12pt;
+    -fx-font-size: 11pt;
     -fx-background-radius: 7px;
     -fx-content-display: top;
     -fx-graphic-text-gap: 12pt;
-    -fx-border-width: 0px;
 }
 
 .glyph-button:hover .glyph-icon{
@@ -227,9 +230,8 @@
 }
 
 .confirm-button {
-    -fx-background-color: -fx-complementary;
+    -fx-background-color: -fx-primary;
     -fx-background-radius: 8px;
-    -fx-border-color: transparent;
     -fx-font-size: 16pt;
 }
 
@@ -273,7 +275,10 @@
 .request-toggle-node {
     -fx-font-family: Roboto;
     -fx-background-color: -fx-complementary;
+    -fx-border-color: -fx-secondary;
     -fx-text-fill: -fx-complementarytext;
+    -fx-border-radius: 5px;
+    -fx-border-width: 3px;
     -fx-background-radius: 7px;
     -fx-font-size: 16pt;
     -fx-content-display: top;
@@ -306,14 +311,25 @@
 
 .accessiblity-toggle-node {
     -fx-content-display: graphic_only;
+    -fx-border-color: -fx-secondary;
+    -fx-border-width: 3px;
+    -fx-border-radius: 5px;
+}
+
+.accessiblity-toggle-node:hover {
+    -fx-background-color: -fx-secondary;
 }
 
 .accessiblity-toggle-node:hover .glyph-icon{
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
+}
+
+.accessiblity-toggle-node:selected {
+    -fx-background-color: -fx-secondary;
 }
 
 .accessiblity-toggle-node:selected .glyph-icon{
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
 }
 
 .enum-toggle-node {
