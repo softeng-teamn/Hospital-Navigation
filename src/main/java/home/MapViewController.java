@@ -561,6 +561,7 @@ public class MapViewController implements Observer {
         } else {
             zoomGroup.getChildren().removeAll(circleCollection);
             circleCollection.clear();
+            showAllNodes();
         }
     }
 
@@ -657,7 +658,11 @@ public class MapViewController implements Observer {
             zoomGroup.getChildren().remove(startNodeLabel);
         }
 
-        if (!node.getFloor().equals(event.getFloor())) {
+        if (event == null){
+            setFloor("1");
+            Event e = new Event();
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(e);
+        }else if (!node.getFloor().equals(event.getFloor())) {
             //switch the map
             //System.out.println(node + node.getFloor());
             setFloor(node.getFloor());
