@@ -1,37 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
+<?import de.jensd.fx.glyphs.materialicons.MaterialIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.effect.GaussianBlur?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-
-<StackPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.172-ea" fx:id="sp" fx:controller="employee.controller.EnterApplicationController" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="sp" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733d19.teamN.home.EnterApplicationController">
    <children>
       <ImageView fitWidth="1920.0" opacity="0.65" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/realbackgroundimg.jpg" />
+            <Image url="@/images/realbackgroundimg.jpg" />
          </image>
          <effect>
-            <GaussianBlur radius="22.98" />
+            <GaussianBlur radius="24.0">
+               <input>
+                  <ColorAdjust brightness="-0.25" />
+               </input></GaussianBlur>
          </effect>
       </ImageView>
-      <ImageView fitHeight="338.0" fitWidth="429.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="338.0" fitWidth="429.0" opacity="0.8" pickOnBounds="true" preserveRatio="true" scaleX="0.75" scaleY="0.75" StackPane.alignment="TOP_LEFT">
          <image>
-            <Image url="@../images/logotransparent.png" />
+            <Image url="@/images/logotransparent.png" />
          </image>
+         <StackPane.margin>
+            <Insets left="-0.0" />
+         </StackPane.margin>
       </ImageView>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
          <children>
-            <Label text="TOUCH THE SCREEN TO BEGIN" textFill="WHITE">
-               <font>
-                  <Font size="96.0" />
-               </font>
-            </Label>
+            <MaterialIconView fx:id="tapToStart" fill="#022e59cc" glyphName="TOUCH_APP" size="400" styleClass="login-glyph" />
          </children>
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
       </VBox>
    </children>
 </StackPane>
