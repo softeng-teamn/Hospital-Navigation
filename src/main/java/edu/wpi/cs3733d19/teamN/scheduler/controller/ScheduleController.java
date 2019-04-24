@@ -1,7 +1,5 @@
 package edu.wpi.cs3733d19.teamN.scheduler.controller;
 
-import edu.wpi.cs3733d19.teamN.application_state.ApplicationState;
-import edu.wpi.cs3733d19.teamN.application_state.Event;
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.Calendar.Style;
 import com.calendarfx.model.CalendarSource;
@@ -15,9 +13,16 @@ import com.calendarfx.view.popover.PopOverContentPane;
 import com.calendarfx.view.popover.PopOverTitledPane;
 import com.google.zxing.WriterException;
 import com.jfoenix.controls.*;
+import edu.wpi.cs3733d19.teamN.application_state.ApplicationState;
+import edu.wpi.cs3733d19.teamN.application_state.Event;
 import edu.wpi.cs3733d19.teamN.database.DatabaseService;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.cs3733d19.teamN.employee.model.Employee;
+import edu.wpi.cs3733d19.teamN.map.Node;
+import edu.wpi.cs3733d19.teamN.scheduler.model.ReservableSpace;
+import edu.wpi.cs3733d19.teamN.scheduler.model.Reservation;
+import edu.wpi.cs3733d19.teamN.service.QRService;
+import edu.wpi.cs3733d19.teamN.service.ResourceLoader;
+import edu.wpi.cs3733d19.teamN.service.StageManager;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
@@ -42,18 +47,12 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import edu.wpi.cs3733d19.teamN.map.Node;
-import edu.wpi.cs3733d19.teamN.scheduler.model.ReservableSpace;
-import edu.wpi.cs3733d19.teamN.scheduler.model.Reservation;
-import edu.wpi.cs3733d19.teamN.service.QRService;
-import edu.wpi.cs3733d19.teamN.service.ResourceLoader;
-import edu.wpi.cs3733d19.teamN.service.StageManager;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+
 import java.io.IOException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Objects.requireNonNull;
 
@@ -223,6 +222,12 @@ public class ScheduleController {
             recurrenceComboBox.setVisible(!vis);
             recurrenceComboBox.getSelectionModel().select(0);
             recurrenceDatePicker.setValue(LocalDate.now());
+            if (vis) {
+                sidePaneRecurrenceCheckBox.setText("Repeat Event");
+            }
+            else {
+                sidePaneRecurrenceCheckBox.setText("Repeat Until");
+            }
         });
         ObservableList<String> options =
                 FXCollections.observableArrayList(
