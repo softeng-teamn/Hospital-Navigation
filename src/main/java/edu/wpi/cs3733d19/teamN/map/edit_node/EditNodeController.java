@@ -276,6 +276,16 @@ public class EditNodeController extends Control {
                 execp.printStackTrace();
             }
 
+        } else {
+            DatabaseService.getDatabaseService().deleteNode(ApplicationState.getApplicationState().getNodeToEdit());
+            try {
+                Parent myRoot = FXMLLoader.load(ResourceLoader.home);
+                Stage myStage = (Stage)gPane.getScene().getWindow();
+                StageManager.changeExistingWindow(myStage, myRoot, "Home");
+            } catch (Exception execp) {
+                execp.printStackTrace();
+            }
+
         }
 
     }
