@@ -170,7 +170,7 @@ public class EmployeeEditController {
         }
         //HERE IS THE OTHER PART OF THE PASSWORD MINIMUM CODE
         else if(new_password.getText().length() < 6){
-            Parent parent = FXMLLoader.load(ResourceLoader.home);
+            Parent parent = FXMLLoader.load(ResourceLoader.passwordTooShort);
             Stage stage = new Stage();
             stage.setScene(new Scene(parent));
             stage.setTitle("Password Error");
@@ -234,7 +234,8 @@ public class EmployeeEditController {
     }
 
     public void exitOutOfToast(ActionEvent actionEvent){
-        Stage stage = (Stage) root.getScene().getWindow();
-        Parent root = FXMLLoader.load(ResourceLoader.)
+        JFXButton btn = (JFXButton) actionEvent.getSource();
+        Stage stage = (Stage) btn.getScene().getWindow();
+        stage.close();
     }
 }

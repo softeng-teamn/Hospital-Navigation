@@ -48,7 +48,7 @@ public class  ResourceLoader {
     public static final URL reservablespaces = service.ResourceLoader.class.getResource("/csv/reservablespaces.csv");
     public static final URL employees = service.ResourceLoader.class.getResource("/csv/employees.csv");
     public static final URL employeeEdit = service.ResourceLoader.class.getResource("/fxml/employeeEdit.fxml");
-
+    public static final URL passwordTooShort = service.ResourceLoader.class.getResource("/fxml/passwordTooShort.fxml");
 
     public static final URL textingService = service.ResourceLoader.class.getResource("/SuperSecretPasswords.txt");
 
