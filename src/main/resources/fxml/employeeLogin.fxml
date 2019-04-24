@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" fillWidth="false" prefHeight="406.0" prefWidth="490.0" stylesheets="@/default.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employee.controller.EmployeeLoginController">
+<VBox alignment="CENTER" fillWidth="false" prefHeight="406.0" prefWidth="490.0" stylesheets="@/default.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733d19.teamN.employee.edu.wpi.cs3733d19.teamN.controller.EmployeeLoginController">
    <children>
       <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" scaleX="2.0" scaleY="2.0" scaleZ="2.0">
          <image>
