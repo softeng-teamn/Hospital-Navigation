@@ -75,7 +75,7 @@
                </VBox.margin></Label>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="26.0">
                <children>
-                  <JFXToggleNode fx:id="aStarToggle" onAction="#astarSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="request-toggle-node" text="Astar" textAlignment="CENTER">
+                  <JFXToggleNode fx:id="aStarToggle" onAction="#astarSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="pathfinding-toggle-node" text="Astar" textAlignment="CENTER">
                      <graphic>
                         <FontAwesomeIconView glyphName="STAR" glyphStyle="FAR" size="48" styleClass="request-glyph" text="" />
                      </graphic>
@@ -83,12 +83,12 @@
                         <ToggleGroup fx:id="algorithm" />
                      </toggleGroup>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="bestFirstToggle" onAction="#bestSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="request-toggle-node" text="Best" textAlignment="CENTER" toggleGroup="$algorithm">
+                  <JFXToggleNode fx:id="bestFirstToggle" onAction="#bestSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="pathfinding-toggle-node" text="Best" textAlignment="CENTER" toggleGroup="$algorithm">
                      <graphic>
                         <FontAwesomeIconView glyphName="TROPHY" size="48" styleClass="request-glyph" />
                      </graphic>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="dijsktraToggle" onAction="#dijsktraSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="request-toggle-node" text="Dijsktra" textAlignment="CENTER" toggleGroup="$algorithm">
+                  <JFXToggleNode fx:id="dijsktraToggle" onAction="#dijsktraSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="pathfinding-toggle-node" text="Dijsktra" textAlignment="CENTER" toggleGroup="$algorithm">
 
                     <graphic>
                         <EmojiOneView glyphName="REGIONAL_INDICATOR_D" size="48" styleClass="request-glyph" />
@@ -101,12 +101,12 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="480.0" spacing="36.0">
                <children>
-                  <JFXToggleNode fx:id="depthFirstToggle" onAction="#depthSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="request-toggle-node" text="Depth" textAlignment="CENTER" toggleGroup="$algorithm">
+                  <JFXToggleNode fx:id="depthFirstToggle" onAction="#depthSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="pathfinding-toggle-node" text="Depth" textAlignment="CENTER" toggleGroup="$algorithm">
                      <graphic>
                         <FontAwesomeIconView glyphName="" size="48" styleClass="request-glyph" text="" />
                      </graphic>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="breadthFirstToggle" onAction="#breadthSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="request-toggle-node" text="Breadth" textAlignment="CENTER" toggleGroup="$algorithm">
+                  <JFXToggleNode fx:id="breadthFirstToggle" onAction="#breadthSwitch" prefHeight="100.0" prefWidth="100.0" styleClass="pathfinding-toggle-node" text="Breadth" textAlignment="CENTER" toggleGroup="$algorithm">
                      <graphic>
                         <FontAwesomeIconView glyphName="BOLD" size="48" styleClass="request-glyph" />
                      </graphic>

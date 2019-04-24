@@ -290,10 +290,11 @@
 
 .floor-switcher-button{
     -fx-shape: "M 300 150 L 300 50 L 500 50 L 700 250 L 500 450 L 300 450 L 300 350 L 400 250 L 300 150";
+    -fx-background-insets: 0 0 0 -20;
     -fx-border-width: 0px;
-    -fx-pref-width: 125;
-    -fx-pref-height: 150;
-    -fx-font-size: 24pt;
+    -fx-pref-width: 90px;
+    -fx-pref-height: 90px;
+    -fx-font-size: 20pt;
 }
 
 .request-toggle-node {
@@ -301,7 +302,7 @@
     -fx-background-color: -fx-complementary;
     -fx-text-fill: -fx-complementarytext;
     -fx-background-radius: 7px;
-    -fx-font-size: 11pt;
+    -fx-font-size: 16pt;
     -fx-content-display: top;
     -fx-graphic-text-gap: 12px;
 }
@@ -327,6 +328,40 @@
 }
 
 .request-toggle-node:selected .glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
+.pathfinding-toggle-node {
+    -fx-font-family: Roboto;
+    -fx-background-color: -fx-complementary;
+    -fx-text-fill: -fx-complementarytext;
+    -fx-background-radius: 7px;
+    -fx-font-size: 11pt;
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 12px;
+}
+
+.pathfinding-toggle-node .glyph-icon{
+    -fx-fill: -fx-complementarytext;
+}
+
+.pathfinding-toggle-node:hover{
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
+}
+
+.pathfinding-toggle-node:hover .glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
+.pathfinding-toggle-node:selected{
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
+}
+
+.pathfinding-toggle-node:selected .glyph-icon{
     -fx-fill: -fx-primary;
 }
 
@@ -711,7 +746,7 @@
     -style10-color: rgba(128.0, 255.0, 0.0, 0.9);
 
     -weekend-fill-color: rgb(245.0, 245.0, 245.0);
-    -today-fill-color: firebrick;
+    -today-fill-color: -fx-secondary;
 
     -usage-very-low-color: lightgreen;
     -usage-low-color: green;
@@ -724,6 +759,45 @@
     -usage-medium-text-color: black;
     -usage-high-text-color: black;
     -usage-very-high-text-color: white;
+}
+
+#search-field {
+    -fx-background-radius: 0px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -fx-unfocusedtext transparent;
+    -fx-font-family: Roboto;
+    -fx-pref-width: 200px;
+}
+
+#search-icon {
+    -glyph-name: "SEARCH";
+    -glyph-size: 1.0em;
+    -fx-fill: -fx-unfocusedtext;
+}
+
+.button-bar > .container > .button {
+    -fx-padding: 3 15 3 15;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-complementary;
+}
+
+.button-bar > .container > .button:focused {
+    -fx-background-color: -fx-secondary;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+}
+
+.button-bar > .container > .button.left-pill {
+    -fx-background-radius: 3 0 0 3;
+}
+
+.button-bar > .container > .button.right-pill {
+    -fx-background-radius: 0 3 3 0;
+    -fx-background-insets: -2 -2 -2 0, 0, 1 1 1 0, 2 2 2 1;
+}
+
+.button-bar > .container > .button.center-pill {
+    -fx-background-radius: 0;
+    -fx-background-insets: -2 0 -2 -1, 0 0 0 -1, 1 1 1 0, 2 2 2 1;
 }
 
 /*******************************************************************************

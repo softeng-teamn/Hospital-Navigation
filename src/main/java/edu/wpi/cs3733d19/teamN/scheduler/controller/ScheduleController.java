@@ -1178,7 +1178,11 @@ public class ScheduleController {
         dailyScheduleAllRooms.setItems(wrap);
         String month = datePicker.getValue().getMonth() + "";
         month = month.substring(0,1) + month.substring(1).toLowerCase();
-        dailyScheduleTab.setText("Day Schedule All Rooms: " + month + " " + datePicker.getValue().getDayOfMonth() + ", " + datePicker.getValue().getYear());
+        String space = "";
+        if (!currentSelection.getSpaceName().contains("Comp")) {
+            space = "   ";
+        }
+        dailyScheduleTab.setText(space + "Day Schedule All Rooms: " + month + " " + datePicker.getValue().getDayOfMonth() + ", " + datePicker.getValue().getYear());
     }
 
     /**
