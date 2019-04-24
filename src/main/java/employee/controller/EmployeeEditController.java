@@ -169,7 +169,7 @@ public class EmployeeEditController {
             return;
         }
         //HERE IS THE OTHER PART OF THE PASSWORD MINIMUM CODE
-        else if(new_password.getText().length() < 6){
+        else if(new_password.getText().length() < 5){
             new_password.getStyleClass().add("wrong-credentials");
             new_password_conf.getStyleClass().add("wrong-credentials");
             return;
