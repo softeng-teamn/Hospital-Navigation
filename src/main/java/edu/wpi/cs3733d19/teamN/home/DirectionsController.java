@@ -773,9 +773,7 @@ public class DirectionsController implements Observer {
         String landmark = "";
         ArrayList<Node> closeNodes = MapController.getNodesConnectedTo(next);
         for (Node n: closeNodes) {
-            if (n.equals(curr)) {
-                // do nothing
-            }
+            if (n.equals(curr)) {/* do nothing*/  }
             else if (!landmark.contains("towards") && n.getNodeType().equals("HALL")) {
                 landmark = " down the hall";
             }
