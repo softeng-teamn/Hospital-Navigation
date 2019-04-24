@@ -809,10 +809,16 @@ public class DirectionsController implements Observer {
         if (units.equals("feet")) {
             int fives = (int) distance / 5;
             distance = fives * 5;
+            if (distance == 0) {
+                distance = 1;
+            }
         }
         else {
             int twos = (int) distance / 2;
             distance = twos * 2;
+            if (distance == 0) {
+                distance = 1;
+            }
         }
         String orig = String.format("%.0f", distance);
         for (int i = 0; i < 6; i++) {    // Assume max distance is less than 99999 feet
