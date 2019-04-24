@@ -308,6 +308,41 @@
     -fx-fill: -fx-complementary;
 }
 
+
+.pathfinding-toggle-node {
+    -fx-font-family: Roboto;
+    -fx-background-color: -fx-complementary;
+    -fx-text-fill: -fx-complementarytext;
+    -fx-background-radius: 7px;
+    -fx-font-size: 11pt;
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 12px;
+}
+
+.pathfinding-toggle-node .glyph-icon{
+    -fx-fill: -fx-complementarytext;
+}
+
+.pathfinding-toggle-node:hover{
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
+}
+
+.pathfinding-toggle-node:hover .glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
+.pathfinding-toggle-node:selected{
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-secondary;
+}
+
+.pathfinding-toggle-node:selected .glyph-icon{
+    -fx-fill: -fx-primary;
+}
+
 .accessiblity-toggle-node {
     -fx-content-display: graphic_only;
     -fx-border-color: -fx-secondary;
