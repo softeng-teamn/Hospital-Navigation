@@ -50,8 +50,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         ApplicationState.getApplicationState().setPrimaryStage(primaryStage);
-        Parent root = FXMLLoader.load(ResourceLoader.scheduler);
-        getApplicationState().getObservableBus().register("scheduler", ApplicationState.getApplicationState().getIM());
+        Parent root = FXMLLoader.load(ResourceLoader.idle);
+        getApplicationState().getObservableBus().register("InactivityManager", ApplicationState.getApplicationState().getIM());
         //
         // Closes all threads
         primaryStage.setOnCloseRequest((ae) -> {
@@ -59,6 +59,6 @@ public class Main extends Application {
             System.exit(0);
         });
         primaryStage.setMaximized(true);
-        StageManager.changeWindow(primaryStage, root, "scheduler");
+        StageManager.changeWindow(primaryStage, root, "Idle");
     }
 }
