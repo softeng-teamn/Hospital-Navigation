@@ -1,4 +1,0 @@
-/**
- * Elevator controller
- */
-package elevator;

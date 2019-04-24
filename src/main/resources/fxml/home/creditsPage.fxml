@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@/default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.CreditPageController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@/default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733d19.teamN.home.CreditPageController">
     <children>
         <HBox alignment="CENTER_RIGHT" prefHeight="128.0" prefWidth="200.0" spacing="5.0" styleClass="header">
             <children>
@@ -59,43 +59,11 @@
             <children>
                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="300.0" spacing="10.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text=", Team A">
+                        <Label text="Emergency, Team B D19">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text=", Team B">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text=", Team C">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text=", Team D">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text=", Team E">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text="Sanitation Service, Team F">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text="Gift Service Request, Team L">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text="Gift Service Request, Team M">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text="Domino's Pizza, Team O">
-                            <font>
-                                <Font size="18.0" />
-                            </font></Label>
-                        <Label text=", Team P">
+                        <Label text="BWH Gift Request, Team P D19">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
@@ -119,11 +87,15 @@
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
-                        <Label text="ZXing">
+                        <Label text="Zxing">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>
                         <Label text="Bitly">
+                            <font>
+                                <Font size="18.0" />
+                            </font></Label>
+                        <Label text="Placenote">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>

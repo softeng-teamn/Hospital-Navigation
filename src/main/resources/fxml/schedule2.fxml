@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTimePicker?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -19,7 +22,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.controller.ScheduleController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733d19.teamN.scheduler.controller.ScheduleController">
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="128.0" prefWidth="200.0" spacing="5.0" styleClass="header">
          <children>
@@ -45,7 +48,7 @@
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
          <children>
-            <VBox alignment="BOTTOM_CENTER" prefHeight="952.0" prefWidth="419.0" spacing="48.0">
+            <VBox fx:id="sidePaneVBox" alignment="CENTER" prefHeight="952.0" prefWidth="419.0" spacing="48.0">
                <children>
                   <Label fx:id="schedLbl" styleClass="big-label" text="Weekly Schedule for&#10; ">
                      <VBox.margin>
@@ -55,8 +58,8 @@
                   <JFXDatePicker fx:id="datePicker" maxWidth="256.0" prefWidth="256.0" promptText="Choose a Date" />
                   <JFXTimePicker fx:id="startTimePicker" maxWidth="256.0" prefWidth="256.0" promptText="Start Time" />
                   <JFXTimePicker fx:id="endTimePicker" maxWidth="256.0" prefWidth="256.0" promptText="End Time" />
-                  <Region prefHeight="139.0" prefWidth="419.0" />
-                  <Label fx:id="inputErrorLbl" styleClass="small-label" wrapText="true" />
+                  <Region fx:id="sidePaneRegion" prefHeight="139.0" prefWidth="419.0" />
+                  <Label fx:id="inputErrorLbl" maxWidth="300.0" minHeight="-Infinity" styleClass="small-label" wrapText="true" />
                   <JFXButton fx:id="makeReservationBtn" maxWidth="1.7976931348623157E308" onAction="#makeReservation" styleClass="confirm-button" text="Make Reservation" />
                </children>
                <HBox.margin>
@@ -66,7 +69,7 @@
                   <Insets bottom="48.0" top="24.0" />
                </padding>
             </VBox>
-            <JFXTabPane prefWidth="1536.0" stylesheets="@../default.css">
+            <JFXTabPane fx:id="tabPane" prefWidth="1536.0" stylesheets="@../default.css">
                <tabs>
                   <Tab fx:id="mapAvailRooms" text="Map of Available Rooms">
                     <content>
@@ -250,7 +253,7 @@
                     <content>
                       <AnchorPane prefHeight="915.0" prefWidth="1485.0">
                            <children>
-                              <TableView fx:id="scheduleTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="915.0" prefWidth="1485.0" />
+                              <TableView fx:id="scheduleTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1485.0" />
                            </children>
                            <padding>
                               <Insets top="5.0" />
@@ -258,13 +261,91 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab fx:id="dailyScheduleTab" text="Daily Schedule All Rooms">
+                  <Tab fx:id="dailyScheduleTab" text="Day Schedule All Rooms">
                      <content>
                         <AnchorPane prefHeight="915.0" prefWidth="1485.0">
                            <children>
-                              <TableView fx:id="dailyScheduleAllRooms" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="915.0" prefWidth="1485.0" />
+                              <TableView fx:id="dailyScheduleAllRooms" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1485.0" />
                            </children>
                         </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="calendarTab" onSelectionChanged="#setCalInset" text="Calendar">
+                     <content>
+                        <AnchorPane fx:id="subSceneHolder" prefHeight="915.0" prefWidth="1485.0" />
+                     </content>
+                  </Tab>
+                  <Tab fx:id="allResTab" text="List of All Reservations">
+                     <content>
+                        <VBox alignment="TOP_CENTER" spacing="30.0">
+                           <children>
+                              <TableView fx:id="resTable" prefHeight="800.0" prefWidth="1480.0">
+                                <columns>
+                                  <TableColumn fx:id="eventCol" prefWidth="290.0" text="Event Name" />
+                                  <TableColumn fx:id="locationCol" prefWidth="290.0" text="Location" />
+                                    <TableColumn fx:id="reserverCol" prefWidth="290.0" text="Reserver" />
+                                    <TableColumn fx:id="eventStartCol" prefWidth="290.0" text="Event Start" />
+                                    <TableColumn fx:id="eventEndCol" prefWidth="290.0" text="Event End" />
+                                </columns>
+                              </TableView>
+                              <JFXButton fx:id="deleteReservationBtn" onAction="#deleteReservation" styleClass="confirm-button" text="Delete Reservation" />
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="settingsTab" onSelectionChanged="#setCalInset" text="Settings">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="900.0" prefWidth="1480.0" spacing="20.0">
+                           <children>
+                              <HBox spacing="30.0">
+                                 <children>
+                                    <VBox prefHeight="500.0" prefWidth="740.0" spacing="20.0">
+                                       <children>
+                                          <Label prefHeight="50.0" text="Open Time: " />
+                                          <Label prefHeight="50.0" text="Close Time:" />
+                                          <Label prefHeight="50.0" text="Minimum Reservation (minutes):" />
+                                          <Label prefHeight="50.0" text="Snap Minutes to Closest (minutes):" />
+                                          <Label prefHeight="50.0" text="Multi-day Reservations:" />
+                                          <Label prefHeight="50.0" text="Recurring Reservations:" />
+                                          <Label prefHeight="50.0" text="Show Event Contact Info:" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="20.0" />
+                                       </HBox.margin>
+                                       <padding>
+                                          <Insets left="450.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox prefHeight="500.0" prefWidth="191.0" spacing="20.0">
+                                       <children>
+                                          <JFXCheckBox fx:id="openTimeCheckBox" onAction="#setOpenTime" prefHeight="50.0" text="No Bound" />
+                                          <JFXCheckBox fx:id="closeTimeCheckBox" onAction="#setCloseTime" prefHeight="50.0" text="No Bound" />
+                                          <JFXCheckBox fx:id="minResCheckBox" onAction="#setMinRes" prefHeight="50.0" text="No Bound" />
+                                          <JFXCheckBox fx:id="snapToCheckBox" onAction="#setSnapTo" prefHeight="50.0" text="Off" />
+                                          <JFXCheckBox fx:id="multidayCheckBox" onAction="#setMultidayRes" prefHeight="50.0" text="Off" />
+                                          <JFXCheckBox fx:id="recurringCheckBox" onAction="#setRecurringRes" prefHeight="50.0" text="Off" />
+                                          <JFXCheckBox fx:id="showContactCheckBox" onAction="#setShowContact" prefHeight="50.0" text="Off" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="20.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <VBox prefHeight="500.0" prefWidth="191.0" spacing="20.0">
+                                       <children>
+                                          <JFXTextField fx:id="openTimeTextField" onAction="#validOpenTime" prefHeight="50.0" />
+                                          <JFXTextField fx:id="closeTimeTextField" onAction="#validCloseTime" prefHeight="50.0" />
+                                          <JFXTextField fx:id="minResTextField" onAction="#changeMinimumReservation" prefHeight="50.0" />
+                                          <JFXTextField fx:id="snapToTextField" onAction="#changeSnapToMinutes" prefHeight="50.0" />
+                                          <Label fx:id="errorMessage" wrapText="true" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="20.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
                      </content>
                   </Tab>
                </tabs>

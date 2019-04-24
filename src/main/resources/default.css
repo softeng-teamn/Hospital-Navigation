@@ -101,6 +101,10 @@
     -fx-fill: -fx-complementary;
 }
 
+.login-glyph {
+    -fx-fill: #012D5ACC
+}
+
 .text-field {
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primaryText;
@@ -135,6 +139,14 @@
 
 .combo-box .list-view .list-cell:hover {
     -fx-background-color: -fx-unfocusedtext;
+}
+
+.background-polyline {
+    -fx-stroke: -fx-complementary;
+}
+
+.dashed-polyline {
+    -fx-stroke: -fx-primary;
 }
 
 /*******************************************************************************
@@ -281,7 +293,7 @@
     -fx-background-color: -fx-complementary;
     -fx-text-fill: -fx-complementarytext;
     -fx-background-radius: 7px;
-    -fx-font-size: 16pt;
+    -fx-font-size: 11pt;
     -fx-content-display: top;
     -fx-graphic-text-gap: 12px;
 }
@@ -670,4 +682,627 @@
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primary;
     -fx-font-size: 20pt;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView base colors                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+* {
+    -style1-color: rgba(65.0, 49.0, 129.0, 0.9);
+    -style2-color: rgba(0.0, 102.0, 204.0, 0.9);
+    -style3-color: rgba(0.0, 128.0, 255.0, 0.9);
+    -style4-color: rgba(51.0, 51.0, 255.0, 0.9);
+    -style5-color: rgba(0.0, 102.0, 0.0, 0.9);
+    -style6-color: rgba(0.0, 153.0, 0.0, 0.9);
+    -style7-color: rgba(0.0, 204.0, 0.0, 0.9);
+    -style8-color: rgba(0.0, 255.0, 0.0, 0.9);
+    -style9-color: rgba(51.0, 255.0, 153.0, 0.9);
+    -style10-color: rgba(128.0, 255.0, 0.0, 0.9);
+
+    -weekend-fill-color: rgb(245.0, 245.0, 245.0);
+    -today-fill-color: firebrick;
+
+    -usage-very-low-color: lightgreen;
+    -usage-low-color: green;
+    -usage-medium-color: gold;
+    -usage-high-color: darkorange;
+    -usage-very-high-color: red;
+
+    -usage-very-low-text-color: green;
+    -usage-low-text-color: lightgreen;
+    -usage-medium-text-color: black;
+    -usage-high-text-color: black;
+    -usage-very-high-text-color: white;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-1 calendar (purple; amphitheater)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style1-icon, .style1-icon-small {
+    -fx-fill: -style1-color;
+    -fx-stroke: -style1-color;
+}
+
+.style1-entry {
+    -fx-background-color: derive(-style1-color, 70.0%);
+    -fx-border-color: -style1-color;
+}
+
+.style1-entry:selected {
+    -fx-background-color: -style1-color;
+}
+
+.style1-entry-time-label, .style1-entry-title-label {
+    -fx-text-fill: derive(-style1-color, -30.0%);
+}
+
+.style1-entry-small:selected {
+    -fx-background-color: -style1-color;
+}
+
+.style1-entry-small-full-day {
+    -fx-background-color: derive(-style1-color, 70.0%);
+}
+
+.style1-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style1-color, -30.0%);
+}
+
+.style1-entry-small-full-day:selected {
+    -fx-background-color: -style1-color;
+}
+
+.style1-visibility-checkbox > .box,
+.style1-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style1-color, 70.0%);
+}
+
+.style1-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style1-color, 70.0%);
+}
+
+.style1-entry-popover-title {
+    -fx-text-fill: derive(-style1-color, -50.0%) !important;
+}
+
+.style1-calendar-header {
+    -fx-background-color: derive(-style1-color, 70.0%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-2 calendar (blue; classroom)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style2-icon, .style2-icon-small {
+    -fx-fill: -style2-color;
+    -fx-stroke: -style2-color;
+}
+
+.style2-entry {
+    -fx-background-color: derive(-style2-color, 70.0%);
+    -fx-border-color: -style2-color;
+}
+
+.style2-entry:selected {
+    -fx-background-color: -style2-color;
+}
+
+.style2-entry-time-label, .style2-entry-title-label {
+    -fx-text-fill: derive(-style2-color, -50.0%);
+}
+
+.style2-entry-small:selected {
+    -fx-background-color: -style2-color;
+}
+
+.style2-entry-small-full-day {
+    -fx-background-color: derive(-style2-color, 70.0%);
+}
+
+.style2-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style2-color, -30.0%);
+}
+
+.style2-entry-small-full-day:selected {
+    -fx-background-color: -style2-color;
+}
+
+.style2-visibility-checkbox > .box,
+.style2-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style2-color, 70.0%);
+}
+
+.style2-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style2-color, 70.0%);
+}
+
+.style2-entry-popover-title {
+    -fx-text-fill: derive(-style2-color, -30.0%) !important;
+}
+
+.style2-calendar-header {
+    -fx-background-color: derive(-style2-color, 70.0%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-3 calendar (blue; classroom)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style3-icon, .style3-icon-small {
+    -fx-fill: -style3-color;
+    -fx-stroke: -style3-color;
+}
+
+.style3-entry {
+    -fx-background-color: derive(-style3-color, 70.0%);
+    -fx-border-color: -style3-color;
+}
+
+.style3-entry:selected {
+    -fx-background-color: -style3-color;
+}
+
+.style3-entry-time-label, .style3-entry-title-label {
+    -fx-text-fill: derive(-style3-color, -50.0%);
+}
+
+.style3-entry-small:selected {
+    -fx-background-color: -style3-color;
+}
+
+.style3-entry-small-full-day {
+    -fx-background-color: derive(-style3-color, 70.0%);
+}
+
+.style3-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style3-color, -30.0%);
+}
+
+.style3-entry-small-full-day:selected {
+    -fx-background-color: -style3-color;
+}
+
+.style3-visibility-checkbox > .box,
+.style3-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style3-color, 70.0%);
+}
+
+.style3-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style3-color, 70.0%);
+}
+
+.style3-entry-popover-title {
+    -fx-text-fill: derive(-style3-color, -30.0%) !important;
+}
+
+.style3-calendar-header {
+    -fx-background-color: derive(-style3-color, 70.0%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-4 calendar (blue; classroom)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style4-icon, .style4-icon-small {
+    -fx-fill: -style4-color;
+    -fx-stroke: -style4-color;
+}
+
+.style4-entry {
+    -fx-background-color: derive(-style4-color, 70.0%);
+    -fx-border-color: -style4-color;
+}
+
+.style4-entry:selected {
+    -fx-background-color: -style4-color;
+}
+
+.style4-entry-time-label, .style4-entry-title-label {
+    -fx-text-fill: derive(-style4-color, -50.0%);
+}
+
+.style4-entry-small:selected {
+    -fx-background-color: -style4-color;
+}
+
+.style4-entry-small-full-day {
+    -fx-background-color: derive(-style4-color, 70.0%);
+}
+
+.style4-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style4-color, -30.0%);
+}
+
+.style4-entry-small-full-day:selected {
+    -fx-background-color: -style4-color;
+}
+
+.style4-visibility-checkbox > .box,
+.style4-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style4-color, 70.0%);
+}
+
+.style4-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style4-color, 70.0%);
+}
+
+.style4-entry-popover-title {
+    -fx-text-fill: derive(-style4-color, -30.0%) !important;
+}
+
+.style4-calendar-header {
+    -fx-background-color: derive(-style4-color, 70.0%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-5 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style5-icon, .style5-icon-small {
+    -fx-fill: -style5-color;
+    -fx-stroke: -style5-color;
+}
+
+.style5-entry {
+    -fx-background-color: derive(-style5-color, 70.0%);
+    -fx-border-color: -style5-color;
+}
+
+.style5-entry:selected {
+    -fx-background-color: -style5-color;
+}
+
+.style5-entry-time-label, .style5-entry-title-label {
+    -fx-text-fill: derive(-style5-color, -50.0%);
+}
+
+.style5-entry-small:selected {
+    -fx-background-color: -style6-color;
+}
+
+.style5-entry-small-full-day {
+    -fx-background-color: derive(-style5-color, 70.0%);
+}
+
+.style5-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style5-color, -30.0%);
+}
+
+.style5-entry-small-full-day:selected {
+    -fx-background-color: -style5-color;
+}
+
+.style5-visibility-checkbox > .box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style5-color, 70.0%);
+}
+
+.style5-visibility-checkbox:focused > .box,
+.style5-source-grid-item-box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style5-color, 70.0%);
+}
+
+.style5-entry-popover-title {
+    -fx-text-fill: derive(-style5-color, -30.0%) !important;
+}
+
+.style5-calendar-header {
+    -fx-background-color: derive(-style5-color, 70.0%);
+}
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-6 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style6-icon, .style6-icon-small {
+    -fx-fill: -style6-color;
+    -fx-stroke: -style6-color;
+}
+
+.style6-entry {
+    -fx-background-color: derive(-style6-color, 70.0%);
+    -fx-border-color: -style6-color;
+}
+
+.style6-entry:selected {
+    -fx-background-color: -style6-color;
+}
+
+.style6-entry-time-label, .style6-entry-title-label {
+    -fx-text-fill: derive(-style6-color, -50.0%);
+}
+
+.style6-entry-small:selected {
+    -fx-background-color: -style6-color;
+}
+
+.style6-entry-small-full-day {
+    -fx-background-color: derive(-style6-color, 70.0%);
+}
+
+.style6-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style6-color, -30.0%);
+}
+
+.style6-entry-small-full-day:selected {
+    -fx-background-color: -style6-color;
+}
+
+.style6-visibility-checkbox > .box,
+.style6-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style6-color, 70.0%);
+}
+
+.style6-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style6-color, 70.0%);
+}
+
+.style6-entry-popover-title {
+    -fx-text-fill: derive(-style6-color, -30.0%) !important;
+}
+
+.style6-calendar-header {
+    -fx-background-color: derive(-style6-color, 70.0%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-7 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style7-icon, .style7-icon-small {
+    -fx-fill: -style7-color;
+    -fx-stroke: -style7-color;
+}
+
+.style7-entry {
+    -fx-background-color: derive(-style7-color, 70.0%);
+    -fx-border-color: -style7-color;
+}
+
+.style7-entry:selected {
+    -fx-background-color: -style7-color;
+}
+
+.style7-entry-time-label, .style7-entry-title-label {
+    -fx-text-fill: derive(-style7-color, -50.0%);
+}
+
+.style7-entry-small:selected {
+    -fx-background-color: -style7-color;
+}
+
+.style7-entry-small-full-day {
+    -fx-background-color: derive(-style7-color, 70.0%);
+}
+
+.style7-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style7-color, -30.0%);
+}
+
+.style7-entry-small-full-day:selected {
+    -fx-background-color: -style7-color;
+}
+
+.style7-visibility-checkbox > .box,
+.style7-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style7-color, 70.0%);
+}
+
+.style7-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style7-color, 70.0%);
+}
+
+.style7-entry-popover-title {
+    -fx-text-fill: derive(-style7-color, -30.0%) !important;
+}
+
+.style7-calendar-header {
+    -fx-background-color: derive(-style7-color, 70.0%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-8 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style8-icon, .style8-icon-small {
+    -fx-fill: -style8-color;
+    -fx-stroke: -style8-color;
+}
+
+.style8-entry {
+    -fx-background-color: derive(-style8-color, 70.0%);
+    -fx-border-color: -style8-color;
+}
+
+.style8-entry:selected {
+    -fx-background-color: -style8-color;
+}
+
+.style8-entry-time-label, .style8-entry-title-label {
+    -fx-text-fill: derive(-style8-color, -30.0%);
+}
+
+.style8-entry-small:selected {
+    -fx-background-color: -style8-color;
+}
+
+.style8-entry-small-full-day {
+    -fx-background-color: derive(-style8-color, 70.0%);
+}
+
+.style8-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style8-color, -30.0%);
+}
+
+.style8-entry-small-full-day:selected {
+    -fx-background-color: -style8-color;
+}
+
+.style8-visibility-checkbox > .box,
+.style8-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style8-color, 70.0%);
+}
+
+.style8-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style8-color, 70.0%);
+}
+
+.style8-entry-popover-title {
+    -fx-text-fill: derive(-style8-color, -50.0%) !important;
+}
+
+.style8-calendar-header {
+    -fx-background-color: derive(-style8-color, 70.0%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-9 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style9-icon, .style9-icon-small {
+    -fx-fill: -style9-color;
+    -fx-stroke: -style9-color;
+}
+
+.style9-entry {
+    -fx-background-color: derive(-style9-color, 70.0%);
+    -fx-border-color: -style9-color;
+}
+
+.style9-entry:selected {
+    -fx-background-color: -style9-color;
+}
+
+.style9-entry-time-label, .style9-entry-title-label {
+    -fx-text-fill: derive(-style9-color, -30.0%);
+}
+
+.style9-entry-small:selected {
+    -fx-background-color: -style9-color;
+}
+
+.style9-entry-small-full-day {
+    -fx-background-color: derive(-style9-color, 70.0%);
+}
+
+.style9-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style9-color, -30.0%);
+}
+
+.style9-entry-small-full-day:selected {
+    -fx-background-color: -style9-color;
+}
+
+.style9-visibility-checkbox > .box,
+.style9-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style9-color, 70.0%);
+}
+
+.style9-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style9-color, 70.0%);
+}
+
+.style9-entry-popover-title {
+    -fx-text-fill: derive(-style9-color, -50.0%) !important;
+}
+
+.style9-calendar-header {
+    -fx-background-color: derive(-style9-color, 70.0%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CalendarView - styles for style-10 calendar (green; computer room)                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.style10-icon, .style10-icon-small {
+    -fx-fill: -style10-color;
+    -fx-stroke: -style10-color;
+}
+
+.style10-entry {
+    -fx-background-color: derive(-style10-color, 70.0%);
+    -fx-border-color: -style10-color;
+}
+
+.style10-entry:selected {
+    -fx-background-color: -style10-color;
+}
+
+.style10-entry-time-label, .style10-entry-title-label {
+    -fx-text-fill: derive(-style10-color, -30.0%);
+}
+
+.style10-entry-small:selected {
+    -fx-background-color: -style10-color;
+}
+
+.style10-entry-small-full-day {
+    -fx-background-color: derive(-style10-color, 70.0%);
+}
+
+.style10-entry-small-title-label-full-day {
+    -fx-text-fill: derive(-style10-color, -30.0%);
+}
+
+.style10-entry-small-full-day:selected {
+    -fx-background-color: -style10-color;
+}
+
+.style10-visibility-checkbox > .box,
+.style10-source-grid-item-box {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border,
+    -fx-inner-border, derive(-style10-color, 70.0%);
+}
+
+.style10-visibility-checkbox:focused > .box {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color,
+    -fx-faint-focus-color, derive(-style10-color, 70.0%);
+}
+
+.style10-entry-popover-title {
+    -fx-text-fill: derive(-style10-color, -50.0%) !important;
+}
+
+.style10-calendar-header {
+    -fx-background-color: derive(-style10-color, 70.0%);
 }

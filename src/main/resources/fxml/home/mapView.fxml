@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import net.kurobako.gesturefx.GesturePane?>
 
-<StackPane alignment="CENTER_RIGHT" prefHeight="952.0" prefWidth="1920.0" stylesheets="@/default.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.MapViewController">
+<StackPane alignment="CENTER_RIGHT" prefHeight="952.0" prefWidth="1920.0" stylesheets="@/default.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733d19.teamN.home.MapViewController">
     <children>
         <GesturePane fx:id="gPane" HBarEnabled="false" VBarEnabled="false" />
       <Region maxWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" />
@@ -59,9 +59,9 @@
                      </graphic>
                   </JFXButton>
                    <JFXButton fx:id="credit_btn" alignment="CENTER" contentDisplay="TOP" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#showCredit" styleClass="node-button" text="Credits">
-                       <graphic>
-                           <MaterialIconView boundsType="VISUAL" glyphName="INFO_OUTLINE" size="29" text="" />
-                       </graphic>
+                     <graphic>
+                        <FontAwesomeIconView glyphName="COPYRIGHT" size="29" />
+                     </graphic>
                   </JFXButton>
                   <JFXButton alignment="CENTER" contentDisplay="TOP" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#sendHelp" styleClass="node-button" text="Help">
                      <graphic>

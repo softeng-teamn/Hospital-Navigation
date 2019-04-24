@@ -15,87 +15,105 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employee.controller.EmployeeEditController">
+<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733d19.teamN.employee.controller.EmployeeEditController">
    <children>
-      <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="128.0" spacing="12.0" styleClass="header">
+   <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="128.0" spacing="12.0" styleClass="header">
+      <children>
+         <Label styleClass="header-label" text="Edit Employees" />
+         <Region prefHeight="102.0" prefWidth="732.0" />
+         <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" maxHeight="-Infinity" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
+            <graphic>
+               <FontAwesomeIconView glyphName="HOME" size="60" styleClass="glyph-button" />
+            </graphic>
+         </JFXButton>
+      </children>
+      <VBox.margin>
+         <Insets />
+      </VBox.margin>
+      <padding>
+         <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+      </padding>
+   </HBox>
+   <HBox fx:id="hbox_container" alignment="CENTER" VBox.vgrow="ALWAYS">
+   <children>
+      <TableView fx:id="employee_table" editable="false" prefHeight="952.0" prefWidth="1536.0">
+         <columns>
+                        <TableColumn fx:id="col_id" editable="false" prefWidth="70.0" resizable="false" text="ID" />
+                        <TableColumn fx:id="col_username" editable="true" prefWidth="170.0" resizable="false" text="Username" />
+                        <TableColumn fx:id="col_firstname" editable="true" prefWidth="170.0" resizable="false" text="First Name" />
+                        <TableColumn fx:id="col_lastname" editable="true" prefWidth="170.0" resizable="false" text="Last Name" />
+                        <TableColumn fx:id="col_job" editable="true" prefWidth="170.0" resizable="false" text="Job" />
+                        <TableColumn fx:id="col_phone" editable="true" prefWidth="200.0" resizable="false" text="Phone" />
+                        <TableColumn fx:id="col_email" editable="true" prefWidth="170.0" resizable="false" text="Email" />
+                        <TableColumn fx:id="col_admin" editable="true" prefWidth="150.0" resizable="false" text="Administrator?" />
+                     </columns>
+                  </TableView>
+      <VBox alignment="BOTTOM_CENTER" prefHeight="952.0" prefWidth="935.0">
          <children>
-            <Label styleClass="header-label" text="Edit Employees" />
-            <Region prefHeight="102.0" prefWidth="732.0" />
-            <JFXButton fx:id="homeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="2.0" maxHeight="-Infinity" onAction="#showHome" prefHeight="80.0" prefWidth="80.0" text="Home">
-               <graphic>
-                  <FontAwesomeIconView glyphName="HOME" size="60" styleClass="glyph-button" />
-               </graphic>
+            <MaterialIconView glyphName="PERSON_ADD" size="240" styleClass="request-glyph">
+               <VBox.margin>
+                  <Insets top="48.0" />
+               </VBox.margin>
+            </MaterialIconView>
+            <JFXTextField fx:id="new_firstname" disable="false" maxWidth="-Infinity" prefHeight="40.0" prefWidth="295.0" promptText="First Name">
+               <VBox.margin>
+                  <Insets bottom="12.0" top="12.0" />
+               </VBox.margin>
+            </JFXTextField>
+            <JFXTextField fx:id="new_lastname" disable="false" maxWidth="-Infinity" prefHeight="40.0" prefWidth="295.0" promptText="Last Name">
+               <VBox.margin>
+                  <Insets bottom="12.0" top="12.0" />
+               </VBox.margin>
+            </JFXTextField>
+            <JFXTextField fx:id="new_username" disable="false" labelFloat="true" maxWidth="-Infinity" prefHeight="40.0" prefWidth="295.0" promptText="Set Username">
+               <VBox.margin>
+                  <Insets bottom="12.0" top="12.0" />
+               </VBox.margin>
+            </JFXTextField>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="660.0" prefHeight="108.0" prefWidth="660.0">
+               <children>
+                  <JFXComboBox fx:id="new_job" prefHeight="38.0" prefWidth="160.0" promptText="Job">
+                     <HBox.margin>
+                        <Insets right="24.0" />
+                     </HBox.margin>
+                  </JFXComboBox>
+                  <JFXCheckBox fx:id="new_is_admin" prefHeight="37.0" prefWidth="111.0" text="Is Admin" />
+               </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="92.0" prefWidth="660.0">
+               <children>
+                  <JFXPasswordField fx:id="new_password" labelFloat="true" promptText="Password">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </JFXPasswordField>
+                  <JFXPasswordField fx:id="new_password_conf" labelFloat="true" promptText="Confirm Password">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </JFXPasswordField>
+               </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+            </HBox>
+            <Region prefHeight="90.0" prefWidth="660.0" />
+            <JFXButton onAction="#addNewEmployee" prefHeight="69.0" prefWidth="400.0" styleClass="confirm-button" text="Add New">
+               <VBox.margin>
+                  <Insets bottom="30.0" />
+               </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="remove" onAction="#deleteEmployee" prefHeight="69.0" prefWidth="400.0" style="-fx-background-color: #ef5350;" styleClass="confirm-button" text="Remove Selected">
+               <VBox.margin>
+                  <Insets bottom="72.0" />
+               </VBox.margin>
             </JFXButton>
          </children>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-         <padding>
-            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
-         </padding>
-      </HBox>
-      <HBox fx:id="hbox_container" alignment="CENTER" VBox.vgrow="ALWAYS">
-         <children>
-            <TableView fx:id="employee_table" editable="false" prefHeight="952.0" prefWidth="1536.0">
-               <columns>
-                  <TableColumn fx:id="col_id" editable="false" prefWidth="70.0" resizable="false" text="ID" />
-                  <TableColumn fx:id="col_username" editable="true" prefWidth="210.0" resizable="false" text="Username" />
-                  <TableColumn fx:id="col_job" editable="true" prefWidth="251.0" resizable="false" text="Job" />
-                  <TableColumn fx:id="col_phone" editable="true" prefWidth="242.0" resizable="false" text="Phone" />
-                  <TableColumn fx:id="col_email" editable="true" prefWidth="284.0" resizable="false" text="Email" />
-                  <TableColumn fx:id="col_admin" editable="true" prefWidth="203.0" resizable="false" text="Is Kiosk Administrator?" />
-               </columns>
-            </TableView>
-            <VBox alignment="BOTTOM_CENTER" prefHeight="952.0" prefWidth="935.0">
-               <children>
-                  <MaterialIconView glyphName="PERSON_ADD" size="240" styleClass="request-glyph">
-                     <VBox.margin>
-                        <Insets top="48.0" />
-                     </VBox.margin>
-                  </MaterialIconView>
-                  <JFXTextField fx:id="new_username" disable="false" labelFloat="true" maxWidth="-Infinity" prefHeight="40.0" prefWidth="295.0" promptText="Set Username">
-                     <VBox.margin>
-                        <Insets bottom="24.0" top="24.0" />
-                     </VBox.margin>
-                  </JFXTextField>
-                  <HBox alignment="CENTER" layoutX="10.0" layoutY="660.0" prefHeight="108.0" prefWidth="660.0">
-                     <children>
-                        <JFXComboBox fx:id="new_job" prefHeight="38.0" prefWidth="160.0" promptText="Job">
-                           <HBox.margin>
-                              <Insets right="24.0" />
-                           </HBox.margin>
-                        </JFXComboBox>
-                        <JFXCheckBox fx:id="new_is_admin" prefHeight="37.0" prefWidth="111.0" text="Is Admin" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="92.0" prefWidth="660.0">
-                     <children>
-                        <JFXPasswordField fx:id="new_password" labelFloat="true" promptText="Password">
-                           <HBox.margin>
-                              <Insets right="10.0" />
-                           </HBox.margin>
-                        </JFXPasswordField>
-                        <JFXPasswordField fx:id="new_password_conf" labelFloat="true" promptText="Confirm Password">
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                        </JFXPasswordField>
-                     </children>
-                  </HBox>
-                  <Region prefHeight="90.0" prefWidth="660.0" />
-                  <JFXButton onAction="#addNewEmployee" prefHeight="69.0" prefWidth="400.0" styleClass="confirm-button" text="Add New">
-                     <VBox.margin>
-                        <Insets bottom="72.0" />
-                     </VBox.margin>
-                  </JFXButton>
-                  <JFXButton fx:id="remove" onAction="#onRemoveEmployee" prefHeight="69.0" prefWidth="400.0" style="-fx-background-color: #ef5350;" styleClass="confirm-button" text="Remove Selected">
-                     <VBox.margin>
-                        <Insets bottom="72.0" />
-                     </VBox.margin>
-                  </JFXButton>
-               </children>
-            </VBox>
-         </children>
-      </HBox>
+      </VBox>
+   </children>
+   </HBox>
    </children>
 </VBox>
