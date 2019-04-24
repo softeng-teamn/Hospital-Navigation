@@ -1,8 +1,8 @@
-ID,username,job,isAdmin,password
-1,wwong,DOCTOR,true,wong
-2,dduff,IT,false,duff
-3,mbenn,NURSE,false,bennett
-4,jsmit,JANITOR,false,clean
-5,staff,ADMINISTRATOR,true,staff
-6,it,IT,false,it
-1234,admin,ADMINISTRATOR,true,test
+ID,username,firstname,lastname,job,isAdmin,password
+1,wwong,Wilson,Wong,DOCTOR,true,wong
+2,dduff,Dan,Duff,IT,false,duff
+3,mbenn,Mary,Bennett,NURSE,false,bennett
+4,jsmit,John,Smit,JANITOR,false,clean
+5,staff,Staff,Staff,ADMINISTRATOR,true,staff
+6,it,Itay,Turner,IT,false,it
+1234,admin,Admin,Admin,ADMINISTRATOR,true,test
