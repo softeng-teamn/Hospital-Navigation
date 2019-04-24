@@ -93,6 +93,8 @@ public class  ResourceLoader {
     public static final URL default_style = ResourceLoader.class.getResource("/default.css");
     public static final URL high_contrast_style = ResourceLoader.class.getResource("/HighContrast.css");
     public static final URL night_style = ResourceLoader.class.getResource("/night.css");
+    public static final URL vegas_casino_style = ResourceLoader.class.getResource("/VegasCasino.css");
+    public static final URL narwhal_style = ResourceLoader.class.getResource("/narwhal.css");
 
 
     public static final ResourceBundle dfBundle = ResourceBundle.getBundle("strings", Locale.getDefault());
