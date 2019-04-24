@@ -1,4 +1,0 @@
-/**
- * @deprecated
- */
-package controller;
