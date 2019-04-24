@@ -88,7 +88,7 @@
                         <Insets bottom="72.0" />
                      </VBox.margin>
                   </JFXButton>
-                  <JFXButton fx:id="remove" onAction="#onRemoveEmployee" prefHeight="69.0" prefWidth="400.0" style="-fx-background-color: #ef5350;" styleClass="confirm-button" text="Remove Selected">
+                  <JFXButton fx:id="remove" onAction="#deleteEmployee" prefHeight="69.0" prefWidth="400.0" style="-fx-background-color: #ef5350;" styleClass="confirm-button" text="Remove Selected">
                      <VBox.margin>
                         <Insets bottom="72.0" />
                      </VBox.margin>
