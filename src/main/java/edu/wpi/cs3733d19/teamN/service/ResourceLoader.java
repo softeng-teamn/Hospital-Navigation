@@ -59,7 +59,6 @@ public class  ResourceLoader {
     public static final URL employees = ResourceLoader.class.getResource("/csv/employees.csv");
     public static final URL employeeEdit = ResourceLoader.class.getResource("/fxml/employeeEdit.fxml");
 
-
     public static final URL textingService = ResourceLoader.class.getResource("/SuperSecretPasswords.txt");
 
     // images
