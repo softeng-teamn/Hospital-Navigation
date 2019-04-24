@@ -2412,5 +2412,4 @@ public class ScheduleController {
             this.getChildren().add(total);
         }
     }
-
 }
