@@ -168,7 +168,7 @@ public class DirectionsController implements Observer {
         final int NORTH_J = 642 - 1501;    // Measurements from maps
 
         ArrayList<String> directions = new ArrayList<>();    // Collection of instructions
-        directions.add("\nStart at " + path.get(0).getLongName() + ".\n");    // First instruction
+        directions.add("Start at " + path.get(0).getLongName() + ".");    // First instruction
         directionsToEdgesMap.add(1);
 
         // Make the first instruction cardinal, or up/down if it is a floor connector
