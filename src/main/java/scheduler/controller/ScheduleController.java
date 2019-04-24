@@ -31,14 +31,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
@@ -396,15 +399,18 @@ public class ScheduleController {
     @FXML
     private Tab weeklyScheduleTab, dailyScheduleTab;
 
+    @FXML
+    private VBox vbox;
+
     private Event event ;    // The current event
     private Thread randStationsThread;    // Random stations thread
     private WorkStationRunner runner;    // Stoppable part
 
     // Map Stuff
-    public static final Color AVAILABLE_COLOR = Color.rgb(67, 160, 71,0.6);
-    public static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.8);
-    public static final Color SELECT_AVAILABLE_COLOR = Color.rgb(67, 160, 71,0.9);
-    public static final Color SELECT_UNAVAILABLE_COLOR = Color.rgb(255, 82, 59, 0.9);
+    public static final Color AVAILABLE_COLOR = Color.rgb(0, 160, 100,0.6);
+    public static final Color UNAVAILABLE_COLOR = Color.rgb(255, 82, 30, 0.8);
+    public static final Color SELECT_AVAILABLE_COLOR = Color.rgb(13, 160, 100,0.9);
+    public static final Color SELECT_UNAVAILABLE_COLOR = Color.rgb(255, 82, 30, 0.9);
     ArrayList<Node> nodeCollection = new ArrayList<Node>();
     ArrayList<SVGPath> shapeCollection = new ArrayList<SVGPath>();
     ArrayList<SVGPath> workStations = new ArrayList<>();
@@ -468,13 +474,25 @@ public class ScheduleController {
             listFocus(newValue);
         });
         datePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            focusState(newValue);
+            try {
+                focusState(newValue);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         startTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            focusState(newValue);
+            try {
+                focusState(newValue);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         endTimePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            focusState(newValue);
+            try {
+                focusState(newValue);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -747,7 +765,7 @@ public class ScheduleController {
      *
      * @param value whether it is focused or not
      */
-    private void focusState(boolean value) {
+    private void focusState(boolean value) throws IOException {
         // If this was selected and loses selection, show the room schedule based on the current filters
         if (!value && validTimes(false)) {
             if (availRoomsBtn.getText().contains("ear")) {
@@ -1059,7 +1077,7 @@ public class ScheduleController {
      *
      * @return true if the selected times are valid, false otherwise
      */
-    private boolean validTimes(boolean forRes) {
+    private boolean validTimes(boolean forRes) throws IOException {
 
         // reset label
         inputErrorLbl.setText("");
@@ -1133,7 +1151,7 @@ public class ScheduleController {
      * Filter rooms by currently selected date and times
      * Displays rooms without reservations that overlap those times
      */
-    public void availRooms() {
+    public void availRooms() throws IOException {
         boolean valid = validTimes(false);
         if (valid) {
             // Get selected times
@@ -1148,7 +1166,11 @@ public class ScheduleController {
             availRoomsBtn.setText(clearFilterText);
             bookedRoomsBtn.setText(bookedRoomsText);
             bookedRoomsBtn.setOnAction(EventHandler -> {
-                bookedRooms();
+                try {
+                    bookedRooms();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
 
             Collections.sort(availBetween);
@@ -1166,7 +1188,7 @@ public class ScheduleController {
     /**
      * Display booked rooms for currently selected date and times
      */
-    public void bookedRooms() {
+    public void bookedRooms() throws IOException {
         boolean valid = validTimes(false);
         if (valid) {
             repopulateMap();
@@ -1187,7 +1209,11 @@ public class ScheduleController {
             bookedRoomsBtn.setText(clearFilterText);
             availRoomsBtn.setText(availRoomsText);
             availRoomsBtn.setOnAction(EventHandler -> {
-                availRooms();
+                try {
+                    availRooms();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
 
             reservableList.setItems(resSpaces);
@@ -1215,10 +1241,18 @@ public class ScheduleController {
         repopulateMap();
 
         availRoomsBtn.setOnAction(EventHandler -> {
-            availRooms();
+            try {
+                availRooms();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         bookedRoomsBtn.setOnAction(EventHandler -> {
-            bookedRooms();
+            try {
+                bookedRooms();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         availRoomsBtn.setText(availRoomsText);
         bookedRoomsBtn.setText(bookedRoomsText);

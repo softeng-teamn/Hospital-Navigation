@@ -39,6 +39,7 @@ public class QRService {
     }
 
     public static String shortenURL(String url) {
+        if (url.length() > 2000) return url;
         BitlyClient client = new BitlyClient("bcba608ae5c6045d223241662c704f38c52930e4");
         Response<ShortenResponse> resp = client.shorten()
                 .setLongUrl(url)

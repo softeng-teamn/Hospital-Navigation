@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXToggleNode;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -67,13 +68,12 @@ public class AVServiceRequestController extends RequestController {
                 avServiceRequest.makeRequest();
                 description.setText("");
                 AVType.selectToggle(audioToggle);
-                errorMsg.setText("");
+                errorMsg.setTextFill(Color.BLACK);
+                errorMsg.setText("Request Submitted!");
             }
         }
         else{
             errorMsg.setText("Please Select a Location");
         }
     }
-
 }
-

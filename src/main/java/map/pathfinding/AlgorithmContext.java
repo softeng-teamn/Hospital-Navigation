@@ -8,6 +8,9 @@ import map.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Template for algorithms to inherit
+ */
 public abstract class AlgorithmContext{
     abstract void initial(MapNode start, MapNode dest, boolean accessibility, String filter);
     abstract MapNode throughMap();

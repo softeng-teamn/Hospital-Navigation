@@ -3,6 +3,7 @@ package service_request.controller.sub_controller;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -39,7 +40,8 @@ public class ReligiousRequestController extends RequestController {
                 religiousRequest.makeRequest();
                 description.setText("");
                 type.getSelectionModel().select(4);
-                errorMsg.setText("");
+                errorMsg.setTextFill(Color.BLACK);
+                errorMsg.setText("Request Submitted!");
             }
         }
         else{

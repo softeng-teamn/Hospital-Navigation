@@ -3,6 +3,7 @@ package service_request.controller.sub_controller;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import service_request.controller.RequestController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,7 +26,7 @@ public class PatientInfoController extends RequestController {
 
         firstName = firstNameField.getText();
         lastName = lastNameField.getText();
-        birthDay = birthYField.getText() + birthMField.getText() + birthDField.getText();
+        birthDay = birthMField.getText() + "/" + birthDField.getText() + "/" + birthYField.getText();
         description = descriptionArea.getText();
 
         if (selectedNode != null) {
@@ -50,7 +51,8 @@ public class PatientInfoController extends RequestController {
                 birthDField.setText("");
                 birthMField.setText("");
                 birthYField.setText("");
-                errorMsg.setText("");
+                errorMsg.setTextFill(Color.BLACK);
+                errorMsg.setText("Request Submitted!");
             }
         }
         else{

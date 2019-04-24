@@ -135,8 +135,7 @@ public class PatientInfoRequest extends Request {
     @Override
     public String toDisplayString() {
         if (this.getAssignedTo() == 0) this.setAssignedTo(-1);
-        return String.format("Patient Info Request %d, Description: %s, Assigned To: %s, Fulfilled: %s, First Name: %s, Last Name: %s, Birthday: %s",
-                this.getId(), this.getNotes(), this.getAssignedTo() == -1 ? "None" : "" + this.getAssignedTo(), this.isCompleted() ? "Yes" : "No", this.getFirstName(), this.getLastName(), this.getBirthDay());
+        return String.format("Description: %s, Name: %s %s, Birthday: %s", this.getNotes(), this.getFirstName(), this.getLastName(), this.getBirthDay());
     }
 
     @Override
@@ -144,4 +143,8 @@ public class PatientInfoRequest extends Request {
         return typeString.equals("Patient Info");
     }
 
+    @Override
+    public String getType(){
+        return "Patient Info";
+    }
 }

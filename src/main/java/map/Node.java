@@ -173,7 +173,7 @@ public class Node {
      * @param nodeID the desired ID of the node
      * @param floor the floor the node is on
      * @param building the building the node is in
-     * @param nodeType the type of node this node is
+     * @param nodeType the getType of node this node is
      * @param longName the long name of the node, used on the display
      * @param shortName the abbreviated name of the node, used internally
      */
@@ -191,7 +191,7 @@ public class Node {
 
     /**
      * ensures nodeType is a string
-     * @param nodeType the type of node to check
+     * @param nodeType the getType of node to check
      * @return true
      */
     public boolean validateType(String nodeType) {

@@ -1,4 +1,5 @@
 import application_state.ApplicationState;
+import application_state.InactivityManager;
 import javafx.application.Platform;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,9 @@ import service.StageManager;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import static application_state.ApplicationState.getApplicationState;
+import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseMotionListener;
 
 public class Main extends Application {
 
@@ -34,7 +38,7 @@ public class Main extends Application {
         } catch(IOException e) {
             e.printStackTrace();
         }
-        ApplicationState.getApplicationState().setImageCache(imageCache);
+        getApplicationState().setImageCache(imageCache);
         launch();
     }
 
@@ -45,7 +49,9 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(ResourceLoader.home);
+        ApplicationState.getApplicationState().setPrimaryStage(primaryStage);
+        Parent root = FXMLLoader.load(ResourceLoader.idle);
+        getApplicationState().getObservableBus().register("InactivityManager", ApplicationState.getApplicationState().getIM());
         //
         // Closes all threads
         primaryStage.setOnCloseRequest((ae) -> {
@@ -53,7 +59,7 @@ public class Main extends Application {
             System.exit(0);
         });
         primaryStage.setMaximized(true);
-        StageManager.changeWindow(primaryStage, root, "Home");
+        StageManager.changeWindow(primaryStage, root, "Idle");
     }
 
 }

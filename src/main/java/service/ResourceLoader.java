@@ -14,8 +14,7 @@ public class  ResourceLoader {
     public static final URL scheduler = service.ResourceLoader.class.getResource("/fxml/schedule2.fxml");
     public static final URL request = service.ResourceLoader.class.getResource("/fxml/request.fxml");
     public static final URL createNode = service.ResourceLoader.class.getResource("/fxml/createNode.fxml");
-    public static final URL deleteNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/deleteNodeConfirm.fxml");
-    public static final URL saveNodeConfirm = service.ResourceLoader.class.getResource("/fxml/toast/saveNodeConfirm.fxml");
+    public static final URL idle = service.ResourceLoader.class.getResource("/fxml/Idle.fxml");
 
     public static final URL about = service.ResourceLoader.class.getResource("/fxml/home/aboutPage.fxml");
     public static final URL credit = service.ResourceLoader.class.getResource("/fxml/home/creditsPage.fxml");
@@ -62,6 +61,9 @@ public class  ResourceLoader {
     public static final URL groundFloor = service.ResourceLoader.class.getResource("/images/ground.png");
     public static final URL firstLowerFloor = service.ResourceLoader.class.getResource("/images/L1.png");
     public static final URL secondLowerFloor = service.ResourceLoader.class.getResource("/images/L2.png");
+    public static final URL square = service.ResourceLoader.class.getResource("/images/square.png");
+    public static final URL spike = service.ResourceLoader.class.getResource("/images/spike.png");
+    public static final URL background = service.ResourceLoader.class.getResource("/images/background.jpg");
     public static final URL adminLogin = service.ResourceLoader.class.getResource("/fxml/employeeLogin.fxml");
 
     // direction icons
@@ -77,6 +79,12 @@ public class  ResourceLoader {
     public static final URL turn_slight_left_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_slight_left.png");
     public static final URL turn_slight_right_icon = service.ResourceLoader.class.getResource("/images/direction_icons/turn_slight_right.png");
     public static final URL uturn_icon = service.ResourceLoader.class.getResource("/images/direction_icons/uturn.png");
+
+    //themes
+    public static final URL default_style = service.ResourceLoader.class.getResource("/default.css");
+    public static final URL high_contrast_style = service.ResourceLoader.class.getResource("/HighContrast.css");
+    public static final URL night_style = service.ResourceLoader.class.getResource("/night.css");
+
 
     public static final ResourceBundle dfBundle = ResourceBundle.getBundle("strings", Locale.getDefault());
     public static final ResourceBundle enBundle = ResourceBundle.getBundle("strings", new Locale("en"));

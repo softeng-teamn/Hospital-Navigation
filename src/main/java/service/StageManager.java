@@ -1,9 +1,18 @@
 package service;
 
+import application_state.ApplicationState;
+import application_state.Observer;
+import application_state.Event;
+import application_state.InactivityManager;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import static application_state.ApplicationState.getApplicationState;
+
+/**
+ * controls scene switching
+ */
 public class StageManager {
 
     /**
@@ -16,8 +25,25 @@ public class StageManager {
      */
     public static Stage changeWindow(Stage primaryStage, Parent root, String title) throws Exception {
         primaryStage.setTitle(title);
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.getScene().setOnMouseMoved(e -> {
+            Event ev = ApplicationState.getApplicationState().getObservableBus().getEvent();
+            ev.setEventName("reset-timer");
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(ev);
+        });
+        primaryStage.getScene().setOnKeyPressed(e-> {
+            Event ev = ApplicationState.getApplicationState().getObservableBus().getEvent();
+            ev.setEventName("reset-timer");
+            ApplicationState.getApplicationState().getObservableBus().updateEvent(ev);
+        });
+        System.out.println("1st time Scene: " + primaryStage.getScene());
         primaryStage.setFullScreen(true);
+        //set the style here
+        scene.getStylesheets().clear();
+        //setUserAgentStylesheets(null);
+        scene.getStylesheets().add(ApplicationState.getApplicationState().getCurrentTheme().toString());
+        primaryStage.setScene(scene);
         primaryStage.show();
         return primaryStage;
     }
@@ -35,6 +61,9 @@ public class StageManager {
         primaryStage.setTitle(title);
         primaryStage.getScene().setRoot(root);
         primaryStage.setFullScreen(true);
+        //set the style sheet here
+        root.getStylesheets().removeAll();
+        root.getStylesheets().add(ApplicationState.getApplicationState().getCurrentTheme().toString());
         primaryStage.show();
         return primaryStage;
     }

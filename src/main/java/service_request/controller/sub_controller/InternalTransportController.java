@@ -3,7 +3,6 @@ package service_request.controller.sub_controller;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXToggleNode;
-import elevator.ElevatorConnection;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import service_request.controller.RequestController;
@@ -11,7 +10,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import service_request.model.sub_model.InternalTransportRequest;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -64,20 +62,11 @@ public class InternalTransportController extends RequestController{
                 errorMsg.setText("Please Enter Details");
             }
             else {
-                ElevatorConnection e = new ElevatorConnection("N");
                 InternalTransportRequest request = new InternalTransportRequest(-1, text_area.getText(), RequestController.selectedNode, false, dropdown.getSelectionModel().getSelectedItem(), urgencyLevel);
                 request.makeRequest();
                 dropdown.getSelectionModel().select(0);
                 text_area.setText("");
                 errorMsg.setText("");
-                if(request.getUrgency() == InternalTransportRequest.Urgency.VERY) {
-                    try {
-                        e.postFloor(request.getLocation().getFloor());
-                    } catch (IOException e1) {
-                        System.out.println("Error posting elev in int. trans. req");
-                        e1.printStackTrace();
-                    }
-                }
             }
         }
         else{
