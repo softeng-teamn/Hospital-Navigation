@@ -1,7 +1,7 @@
 ID,username,firstname,lastname,job,isAdmin,password
 1,wwong,Wilson,Wong,DOCTOR,true,wong
 2,dduff,Dan,Duff,IT,false,duff
-3,mbenn,Mary,Bennett,NURSE,false,bennett
+3,mbenn,Mary,Bennett,IT,false,bennett
 4,jsmit,John,Smit,JANITOR,false,clean
 5,staff,Staff,Staff,ADMINISTRATOR,true,staff
 6,it,Itay,Turner,IT,false,it

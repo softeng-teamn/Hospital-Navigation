@@ -87,6 +87,10 @@
     -fx-fill: -fx-complementary;
 }
 
+.login-glyph {
+    -fx-fill: #012D5ACC
+}
+
 .text-field {
     -fx-font-family: Roboto;
     -fx-text-fill: -fx-primaryText;
