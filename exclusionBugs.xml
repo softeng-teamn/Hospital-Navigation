@@ -5,35 +5,35 @@
   </Match>
   <Match>
     <Bug code="DLS" />
-    <Class name="home.HomeController" />
+    <Class name="edu.wpi.cs3733d19.teamN.home.HomeController" />
   </Match>
   <Match>
     <Bug code="ST" />
-    <Class name="map.edit_node.EditNodeController" />
+    <Class name="edu.wpi.cs3733d19.teamN.map.edit_node.EditNodeController" />
   </Match>
   <Match>
     <Bug code="NP" />
-    <Class name="map.edit_node.EditNodeController" />
+    <Class name="edu.wpi.cs3733d19.teamN.map.edit_node.EditNodeController" />
   </Match>
   <Match>
     <Bug code="UwF" />
-    <Class name="map.edit_node.EditNodeController" />
+    <Class name="edu.wpi.cs3733d19.teamN.map.edit_node.EditNodeController" />
   </Match>
   <Match>
     <Bug code="NP" />
-    <Class name="map.edit_node.EditConfirmController" />
+    <Class name="edu.wpi.cs3733d19.teamN.map.edit_node.EditConfirmController" />
   </Match>
   <Match>
     <Bug code="UwF" />
-    <Class name="map.edit_node.EditConfirmController" />
+    <Class name="edu.wpi.cs3733d19.teamN.map.edit_node.EditConfirmController" />
   </Match>
   <Match>
     <Bug code="ST" />
-    <Class name="home.MapViewController$5" />
+    <Class name="edu.wpi.cs3733d19.teamN.home.MapViewController$5" />
   </Match>
   <Match>
     <Bug code="NP,UwF" />
-    <Class name="home.TopNavController" />
+    <Class name="edu.wpi.cs3733d19.teamN.home.TopNavController" />
   </Match>
 </FindBugsFilter>
 
