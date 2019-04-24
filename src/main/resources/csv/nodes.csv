@@ -646,11 +646,13 @@ XHALL 1104,3302,1871,4,FLEX,HALL,Flex Hall,Flex Hall
 XHALL 1204,2787,2106,4,FLEX,HALL,Flex Hall,Flex Hall
 XCONF 1304,2785,2164,4,FLEX,CONF,Flexible Workzone 4,Workzone 4
 XCONF 1404,3273,1836,4,FLEX,CONF,Flexible Workzone 2,Workzone 2
-ARFL001,1197,974,FL,Fuller Lower,AR,Lower Perreault Speaker,LPerreault Speak
-XAR  1FL,1337,978,FL,Fuller Lower,AR,Lower Perreault Hall Enter,LPerreault Hall Enter
-XAR  2FL,1351,858,FL,Fuller Lower,AR,Lower Platform 1,Low Platform 1
-XAR  3FL,1275,800,FL,Fuller Lower,AR,Lower Platform Hall 1,Low Hall 1
-XAR  4FL,1317,732,FL,Fuller Lower,AR,DrWong Office,DrWong Office
-XAR  5FL,1409,854,FL,Fuller Lower,AR,Lower Platform 2,Low Platform 2
-XEXIT  0FL,1437,798,FL,Fuller Lower,EXIT,Lower Platform Exit,Low Platform Exit
-XAR  6FL,1405,1096,FL,Fuller Lower,AR,Middle Platform Stairs,MD Platform Stairs
+speak,1197,974,FL,Fuller Lower,AR,Lower Perreault Speaker,LPerreault Speak
+sidespeak,1351,978,FL,Fuller Lower,AR,Side hall speaker,Side speaker
+cf,1341,858,FL,Fuller Lower,AR,center floor lower,center floor lower
+im1,1275,802,FL,Fuller Lower,AR,top hall enter,top hall enter
+wo,1321,730,FL,Fuller Lower,AR,dr wong office,Dr Wong
+ex,1435,806,FL,Fuller Lower,AR,exit lower floor,exit lower
+im2,1103,802,FL,Fuller Lower,AR,mid hall IMGD,mid hall IMGD
+imc,915,804,FL,Fuller Lower,AR,corner IMGD,coner IMGD hall
+imex,915,1022,FL,Fuller Lower,AR,IMGD Exit,IMGD Exit
+hbot,1461,910,FL,Fuller Lower,AR,hall bot,hall bot
