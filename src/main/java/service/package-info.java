@@ -1,4 +1,0 @@
-/**
- * Miscellaneous controllers
- */
-package service;

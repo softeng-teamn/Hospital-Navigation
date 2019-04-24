@@ -11,7 +11,7 @@
 <?import javafx.scene.control.Label?>
 
 <?import javafx.scene.text.Font?>
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="service_request.controller.sub_controller.MedicineRequestController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="952.0" prefWidth="582.0" spacing="24.0" stylesheets="@/default.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733d19.teamN.service_request.edu.wpi.cs3733d19.teamN.controller.sub_controller.MedicineRequestController">
    <children>
       <FontAwesomeIconView glyphName="AMBULANCE" size="240" styleClass="request-glyph">
          <VBox.margin>
