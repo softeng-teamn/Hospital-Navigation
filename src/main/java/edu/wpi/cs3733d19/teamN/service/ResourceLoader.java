@@ -73,6 +73,7 @@ public class  ResourceLoader {
     public static final URL spike = ResourceLoader.class.getResource("/images/spike.png");
     public static final URL background = ResourceLoader.class.getResource("/images/background.jpg");
     public static final URL adminLogin = ResourceLoader.class.getResource("/fxml/employeeLogin.fxml");
+    public static final URL fullerLowerFloor = ResourceLoader.class.getResource("/images/FL.png");
 
     // direction icons
     public static final URL continue_icon = ResourceLoader.class.getResource("/images/direction_icons/continue.png");
