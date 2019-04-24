@@ -215,6 +215,7 @@ public class EmployeeEditController {
         }
     }
 
+
     @FXML
     void deleteEmployee(){
         Employee employee = employee_table.getSelectionModel().getSelectedItem();
@@ -230,5 +231,10 @@ public class EmployeeEditController {
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(ResourceLoader.home);
         StageManager.changeExistingWindow(stage, root, "Home (Path Finder)");
+    }
+
+    public void exitOutOfToast(ActionEvent actionEvent){
+        Stage stage = (Stage) root.getScene().getWindow();
+        Parent root = FXMLLoader.load(ResourceLoader.)
     }
 }
