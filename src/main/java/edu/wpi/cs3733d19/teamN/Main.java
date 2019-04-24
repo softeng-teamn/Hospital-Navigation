@@ -60,5 +60,4 @@ public class Main extends Application {
         primaryStage.setMaximized(true);
         StageManager.changeWindow(primaryStage, root, "Idle");
     }
-
 }
