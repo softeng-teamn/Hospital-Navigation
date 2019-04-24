@@ -185,7 +185,7 @@ public class HomeController implements Observer {
      */
     @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     private void readSchedulerSettings() {
-        String fileName = "./src/main/resources/schedulerSettings.txt";
+        String fileName = "/schedulerSettings.txt";
         ArrayList<String> args = new ArrayList<>();
         String line = null;
 
