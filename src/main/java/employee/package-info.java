@@ -1,4 +1,0 @@
-/**
- * Employee management
- */
-package employee;

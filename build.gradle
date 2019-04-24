@@ -37,7 +37,7 @@ jacocoTestReport {
     }
 }
 
-mainClassName = "Main" // replace with your main class
+mainClassName = "edu.wpi.cs3733d19.teamN.Main" // replace with your main class
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -45,12 +45,12 @@ targetCompatibility = 1.8
 //noinspection GroovyAssignabilityCheck
 task fastTest(type: Test) {
     useJUnit {
-        includeCategories 'testclassifications.FastTest'
-        excludeCategories 'testclassifications.UiTest'
-        excludeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.RegressionTest'
-        excludeCategories 'testclassifications.SpecialTest'
-        excludeCategories 'testclassifications.ElevatorTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.FastTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.UiTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.LocalTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.RegressionTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.SpecialTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
 }
@@ -58,12 +58,12 @@ task fastTest(type: Test) {
 //noinspection GroovyAssignabilityCheck
 task slowTest(type: Test) {
     useJUnit {
-        includeCategories 'testclassifications.SlowTest'
-        excludeCategories 'testclassifications.UiTest'
-        excludeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.RegressionTest'
-        excludeCategories 'testclassifications.SpecialTest'
-        excludeCategories 'testclassifications.ElevatorTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.SlowTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.UiTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.LocalTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.RegressionTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.SpecialTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
 }
@@ -71,12 +71,12 @@ task slowTest(type: Test) {
 //noinspection GroovyAssignabilityCheck
 task uiFastTest(type: Test) {
     useJUnit {
-        includeCategories 'testclassifications.UiTest'
-        excludeCategories 'testclassifications.SlowTest'
-        excludeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.RegressionTest'
-        excludeCategories 'testclassifications.SpecialTest'
-        excludeCategories 'testclassifications.ElevatorTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.UiTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.SlowTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.LocalTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.RegressionTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.SpecialTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
@@ -87,12 +87,12 @@ task uiFastTest(type: Test) {
 //noinspection GroovyAssignabilityCheck
 task uiSlowTest(type: Test) {
     useJUnit {
-        includeCategories 'testclassifications.UiTest'
-        excludeCategories 'testclassifications.FastTest'
-        excludeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.RegressionTest'
-        excludeCategories 'testclassifications.SpecialTest'
-        excludeCategories 'testclassifications.ElevatorTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.UiTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.FastTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.LocalTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.RegressionTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.SpecialTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
@@ -103,8 +103,8 @@ task uiSlowTest(type: Test) {
 //noinspection GroovyAssignabilityCheck
 task localTest(type: Test) {
     useJUnit {
-        includeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.ElevatorTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.LocalTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
 }
@@ -112,7 +112,7 @@ task localTest(type: Test) {
 //noinspection GroovyAssignabilityCheck
 task elevatorTest(type: Test) {
     useJUnit {
-        includeCategories 'testclassifications.ElevatorTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
@@ -121,8 +121,8 @@ task elevatorTest(type: Test) {
 //noinspection GroovyAssignabilityCheck
 task regressionTest(type: Test) {
     useJUnit {
-        includeCategories 'testclassifications.RegressionTest'
-        excludeCategories 'testclassifications.ElevatorTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.RegressionTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
     minHeapSize="2g"
@@ -132,21 +132,21 @@ task regressionTest(type: Test) {
 //noinspection GroovyAssignabilityCheck
 task specialTest(type: Test) {
     useJUnit {
-        includeCategories 'testclassifications.SpecialTest'
-        excludeCategories 'testclassifications.ElevatorTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.SpecialTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
 }
 
 test {
     useJUnit {
-        includeCategories 'testclassifications.FastTest'
-        includeCategories 'testclassifications.SlowTest'
-        includeCategories 'testclassifications.UiTest'
-        excludeCategories 'testclassifications.RegressionTest'
-        excludeCategories 'testclassifications.LocalTest'
-        excludeCategories 'testclassifications.SpecialTest'
-        excludeCategories 'testclassifications.ElevatorTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.FastTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.SlowTest'
+        includeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.UiTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.RegressionTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.LocalTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.SpecialTest'
+        excludeCategories 'edu.wpi.cs3733d19.teamN.testclassifications.ElevatorTest'
     }
     outputs.upToDateWhen { false }
     forkEvery = 1
@@ -195,7 +195,10 @@ dependencies {
             [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
             [group: 'edu.wpi.cs3733.d19.teamM', name: 'LanguageRequest', version:'1.0.0'],
             [group: 'edu.wpi.cs3733.d19.teamP', name: 'BWHGiftRequest', version:'1.0.1'],
-            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1']
+            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1'],
+            [group: 'com.calendarfx', name: 'calendar', version: '8.5.0'],
+            [group: 'com.calendarfx', name: 'recurrence', version: '8.5.0'],
+            [group: 'com.calendarfx', name: 'view', version: '8.5.0']
     )
     compile(
             [group: 'net.kurobako', name: 'gesturefx', version: '0.3.0'],
@@ -219,8 +222,11 @@ dependencies {
             [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
             [group: 'edu.wpi.cs3733.d19.teamM', name: 'LanguageRequest', version:'1.0.0'],
             [group: 'edu.wpi.cs3733.d19.teamP', name: 'BWHGiftRequest', version:'1.0.1'],
-            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1']
-
+            [group: 'edu.wpi.cs3733.d19.teamB', name: 'TeamBEmergency', version:'1.0.1'],
+            [group: 'net.swisstech', name: 'bitly-api-client', version: '+'],
+            [group: 'com.calendarfx', name: 'calendar', version: '8.5.0'],
+            [group: 'com.calendarfx', name: 'recurrence', version: '8.5.0'],
+            [group: 'com.calendarfx', name: 'view', version: '8.5.0']
     )
 
     compileApi (
