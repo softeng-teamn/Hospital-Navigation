@@ -1,7 +1,7 @@
 package edu.wpi.cs3733d19.teamN.service_request.controller;
 
 import edu.wpi.cs3733d19.teamN.application_state.ApplicationState;
-import bishopfishapi.Emergency;
+//import bishopfishapi.Emergency;
 import com.jfoenix.controls.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import foodRequest.FoodRequest;
@@ -346,11 +346,11 @@ public class RequestController implements Initializable {
         req.run(0, 0, 1920, 1080, null, null, null);
     }
 
-    public void emergencySelect(ActionEvent actionEvent) throws Exception {
-        Emergency emergency = new Emergency();
-        Emergency.setSender("neonnarwhalsd19");
-        Emergency.setSenderPassword("neonnarwhalsD19!");
-        Emergency.setRecipient(ApplicationState.getApplicationState().getEmployeeLoggedIn().getEmail());
-        emergency.run(50,50, 1500, 1000, null, "destNode", "originNode");
-    }
+//    public void emergencySelect(ActionEvent actionEvent) throws Exception {
+//        Emergency emergency = new Emergency();
+//        Emergency.setSender("neonnarwhalsd19");
+//        Emergency.setSenderPassword("neonnarwhalsD19!");
+//        Emergency.setRecipient(ApplicationState.getApplicationState().getEmployeeLoggedIn().getEmail());
+//        emergency.run(50,50, 1500, 1000, null, "", "");
+//    }
 }
