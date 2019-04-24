@@ -745,7 +745,7 @@
     -style10-color: rgba(128.0, 255.0, 0.0, 0.9);
 
     -weekend-fill-color: rgb(245.0, 245.0, 245.0);
-    -today-fill-color: firebrick;
+    -today-fill-color: -fx-secondary;
 
     -usage-very-low-color: lightgreen;
     -usage-low-color: green;
@@ -760,8 +760,29 @@
     -usage-very-high-text-color: white;
 }
 
-.calendar-page > .container > .header > .date-text {
-    -fx-font-fill: -fx-complementarytext;
+#search-field {
+    -fx-background-radius: 0px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -fx-unfocusedtext transparent;
+    -fx-font-family: Roboto;
+    -fx-pref-width: 200px;
+}
+
+#search-icon {
+    -glyph-name: "SEARCH";
+    -glyph-size: 1.0em;
+    -fx-fill: -fx-unfocusedtext;
+}
+
+.button-bar > .container > .button {
+    -fx-padding: 3 15 3 15;
+    -fx-border-color: -fx-secondary;
+    -fx-background-color: -fx-complementary;
+}
+
+.button-bar > .container > .button:focused {
+    -fx-background-color: -fx-secondary;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
 }
 
 /*******************************************************************************
