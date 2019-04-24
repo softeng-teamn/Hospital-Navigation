@@ -63,6 +63,12 @@
     -fx-font-size: 24pt;
 }
 
+.very-big-label{
+    -fx-text-fill: -fx-primaryText;
+    -fx-font-family: Roboto;
+    -fx-font-size: 40pt;
+}
+
 .small-label{
     -fx-text-fill: -fx-primaryText;
     -fx-font-family: Roboto;
@@ -295,14 +301,25 @@
 
 .accessiblity-toggle-node {
     -fx-content-display: graphic_only;
+    -fx-border-color: -fx-secondary;
+    -fx-border-width: 3px;
+    -fx-border-radius: 5px;
+}
+
+.accessiblity-toggle-node:hover {
+    -fx-background-color: -fx-secondary;
 }
 
 .accessiblity-toggle-node:hover .glyph-icon{
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
+}
+
+.accessiblity-toggle-node:selected {
+    -fx-background-color: -fx-secondary;
 }
 
 .accessiblity-toggle-node:selected .glyph-icon{
-    -fx-fill: -fx-primary;
+    -fx-fill: -fx-complementary;
 }
 
 .enum-toggle-node {

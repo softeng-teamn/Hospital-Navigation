@@ -33,7 +33,7 @@ public class PathSettingController {
     void initialize() {
         event = ApplicationState.getApplicationState().getObservableBus().getEvent();
         accessibilityButton.setSelected(event.isAccessiblePath());
-        theme.setItems(FXCollections.observableArrayList("Default", "High-Contrast", "Night"));
+        theme.setItems(FXCollections.observableArrayList("Default", "High-Contrast", "Night", "Iteration 1", "Neon Narwhal"));
         //theme.getSelectionModel().select(0);
     }
 
@@ -144,6 +144,10 @@ public class PathSettingController {
             ApplicationState.getApplicationState().setCurrentTheme(ResourceLoader.high_contrast_style);
         } else if (newTheme.equals("Night")){
             ApplicationState.getApplicationState().setCurrentTheme(ResourceLoader.night_style);
+        } else if(newTheme.equals("Iteration 1")){
+            ApplicationState.getApplicationState().setCurrentTheme(ResourceLoader.vegas_casino_style);
+        } else if(newTheme.equals("Neon Narwhal")){
+            ApplicationState.getApplicationState().setCurrentTheme(ResourceLoader.narwhal_style);
         }
         Stage stage = (Stage) accessibilityButton.getScene().getWindow();
         Parent root = FXMLLoader.load(ResourceLoader.home);
