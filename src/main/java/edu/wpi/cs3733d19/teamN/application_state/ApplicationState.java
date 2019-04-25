@@ -169,6 +169,8 @@ public class ApplicationState {
         IM.setInactivityLimit(Integer.parseInt(num));
     }
 
+    public String getIMTimeOut() {return "" + IM.getInactivityLimit()/1000;}
+
     public Stage getPrimaryStage() {
         return primaryStage;
     }

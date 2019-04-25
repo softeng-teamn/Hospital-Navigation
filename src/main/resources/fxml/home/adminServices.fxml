@@ -62,7 +62,7 @@
             <FontAwesomeIconView glyphName="DOWNLOAD" />
          </graphic>
       </JFXButton>
-      <JFXTextField fx:id="autoLogout" labelFloat="true" maxWidth="325.0" onAction="#updateLogout" prefHeight="38.0" prefWidth="325.0" promptText="Set Seconds Till Timeout" text="30">
+      <JFXTextField fx:id="autoLogout" labelFloat="true" maxWidth="325.0" onAction="#updateLogout" prefHeight="38.0" prefWidth="325.0" promptText="Set Seconds Till Timeout">
          <VBox.margin>
             <Insets top="40.0" />
          </VBox.margin>

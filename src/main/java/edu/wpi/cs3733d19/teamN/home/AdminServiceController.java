@@ -133,6 +133,7 @@ public class AdminServiceController {
         else if (event.getSearchMethod().equals("dijsktra")){
             algorithm.selectToggle(dijsktraToggle);
         }
+        autoLogout.setText(ApplicationState.getApplicationState().getIMTimeOut());
 
     }
 

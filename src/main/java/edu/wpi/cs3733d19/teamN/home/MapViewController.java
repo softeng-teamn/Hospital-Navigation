@@ -319,7 +319,6 @@ public class MapViewController implements Observer {
         }
     }
 
-
     @FXML
     private void floorChangeInPathOrder () {
 
@@ -335,15 +334,29 @@ public class MapViewController implements Observer {
         for (int i = 0 ; i < path.size() ; i++) {
             // if the current node does not equal the previously set floor
             if (!path.get(i).getFloor().equals(currFloor)) {
-                // add that new floor to the path
-                floorOrder.add(path.get(i).getFloor()) ;
-                // reset current floor
-                currFloor = path.get(i).getFloor() ;
+
+                // if path is elevator
+                if (path.get(i).getNodeType().equals("ELEV") || path.get(i).getNodeType().equals("STAI")) {
+                    // next node
+                    String nextFloor = path.get(i + 1).getFloor();
+                    if (nextFloor.equals(currFloor)) {
+                        // add that new floor to the path
+                        floorOrder.add(path.get(i).getFloor()) ;
+                        // reset current floor
+                        currFloor = path.get(i).getFloor() ;
+                    }
+
+                } else {
+
+                    // add that new floor to the path
+                    floorOrder.add(path.get(i).getFloor());
+                    // reset current floor
+                    currFloor = path.get(i).getFloor();
+                }
             }
         }
 
         System.out.println("FLOOR ORDER = " + floorOrder);
-
 
         for (int i = 0 ; i < floorOrder.size() ; i++) {
 
@@ -361,12 +374,8 @@ public class MapViewController implements Observer {
                     floorChangeAction(event);
                 }
             });
-
-
         }
-
     }
-
 
     @FXML
     private void clearFloorOrder () {
